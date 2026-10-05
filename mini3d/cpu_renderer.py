@@ -12,7 +12,8 @@ def project(screen, point_camera, fov):
     ])
 
 
-def draw_line(screen, color, start, end, camera, near=1.0, width=1):
+def draw_line(screen, color, start, end, camera, near=None, width=1):
+    near = camera.near if near is None else near
     az, bz = start[2], end[2]
     if az < near and bz < near:
         return None
@@ -23,12 +24,13 @@ def draw_line(screen, color, start, end, camera, near=1.0, width=1):
         t = (near - bz) / (az - bz)
         end = end + t * (start - end)
 
-    sp1 = project(screen, start, camera.fov)
-    sp2 = project(screen, end, camera.fov)
+    focal = screen.get_height() / (2 * np.tan(np.deg2rad(camera.fov_y) / 2))
+    sp1 = project(screen, start, focal)
+    sp2 = project(screen, end, focal)
     pygame.draw.line(screen, color, (int(sp1[0]), int(sp1[1])), (int(sp2[0]), int(sp2[1])), width)
 
     
-def draw_axes(screen, camera, T_o_to_w, axis_len=20.0, width=3, near=1.0):
+def draw_axes(screen, camera, T_o_to_w, axis_len=20.0, width=3, near=None):
     """
     使用 draw_line 在屏幕上绘制一个坐标轴（RGB = XYZ）
     - camera: 需要 camera.T_w_to_c
@@ -59,6 +61,8 @@ class Renderer:
         self.half_h = self.height / 2
 
     def render(self, scene, camera):
+        self.width, self.height = self.screen.get_size()
+        self.half_w, self.half_h = self.width / 2, self.height / 2
         entities = scene.get_flat_render_list()
         if not entities: return
         # print("CPU Renderer: Drawing {} entities".format(len(entities)))
@@ -129,10 +133,11 @@ class Renderer:
         x, y, z = verts_cam[:, 0], verts_cam[:, 1], verts_cam[:, 2]
         
         screen_coords = np.zeros((len(verts_cam), 2), dtype=np.int32)
-        valid_mask = z > 1.0
+        valid_mask = (z > camera.near) & (z < camera.far)
         
         if np.any(valid_mask):
-            factor = camera.fov / z[valid_mask]
+            focal = self.height / (2 * np.tan(np.deg2rad(camera.fov_y) / 2))
+            factor = focal / z[valid_mask]
             screen_coords[valid_mask, 0] = (x[valid_mask] * factor + self.half_w).astype(np.int32)
             screen_coords[valid_mask, 1] = (y[valid_mask] * factor + self.half_h).astype(np.int32)
 
@@ -184,7 +189,7 @@ class Renderer:
             if ent.isaxes:
                 draw_axes(self.screen, camera, ent.world_matrix)
     
-    def draw_grid(self, camera, grid_size=200, step=20, z0=0.0, near=1.0):
+    def draw_grid(self, camera, grid_size=200, step=20, z0=0.0, near=None):
         """
         Z-up 世界：画“地面”网格 => XY 平面，z = z0
         - 主轴加粗：X轴(红)、Y轴(绿)

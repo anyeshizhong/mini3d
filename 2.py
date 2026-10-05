@@ -1,3 +1,5 @@
+from pathlib import Path
+from mini3d.viewer import Viewer
 # main.py
 import math
 import numpy as np
@@ -112,78 +114,6 @@ class Scene:
 
 # ================= 4. 相机类 (Camera) =================
 
-class Camera:
-    def __init__(self, camera_pos, camera_nv):
-        """
-        __init__ 的 Docstring
-        
-        :param camera_pos: 相机系的原点在世界系的坐标
-        :param camera_nv: 相机系的基底在世界系的表示，第一行是X轴方向，第二行是Y轴方向，第三行是Z轴方向
-        """ 
-        self.cam_pos = camera_pos
-        self.cam_nv = camera_nv
-        self.cam_pos_ = camera_pos.copy()
-        self.cam_nv_ = camera_nv.copy()
-        
-        self.fov = 500.0
-        self.fov_min = 50.0
-        self.fov_max = 3000.0
-
-        
-        self.yaw = 0
-        self.pitch = 0
-        self.roll = 0
-        
-        # 运动参数
-        self.move_speed = 1.0
-        self.rotate_speed = 0.01
-        
-        # 根据公式(X Y Z)(p-C_0)得到，世界系点p到相机系q的变换
-        self.T_w_to_c = np.eye(4, dtype=DTYPE)
-        self.T_w_to_c[:3, :3] = self.cam_nv_
-        self.T_w_to_c[:3, 3] = - self.cam_nv_ @ self.cam_pos_
-        pass
-    def update(self):
-        # 构建旋转矩阵
-        cx, sx = math.cos(self.pitch), math.sin(self.pitch)
-        cy, sy = math.cos(self.yaw), math.sin(self.yaw)
-                
-        # 组合旋转 (Euler Angles)
-        R_x = np.array([[1, 0, 0], [0, cx, -sx], [0, sx, cx]])
-        R_y = np.array([[cy, 0, sy], [0, 1, 0], [-sy, 0, cy]])
-        R = R_x @ R_y # 先绕X再绕Y R = R_y @ R_x @ R_z（旋转顺序Z→X→Y，矩阵顺序Y→X→Z） 小心万向节死锁现象
-        
-        self.cam_nv_ = R @ self.cam_nv
-        self.T_w_to_c[:3, :3] = self.cam_nv_
-        self.T_w_to_c[:3, 3] = - self.cam_nv_ @ self.cam_pos_
-        
-    def handle_input(self, keys): 
-        if keys[pygame.K_w]: 
-            self.cam_pos_ += self.cam_nv_[2] * self.move_speed
-        if keys[pygame.K_s]: 
-            self.cam_pos_ -= self.cam_nv_[2] * self.move_speed
-        if keys[pygame.K_a]: 
-            self.cam_pos_ -= self.cam_nv_[0] * self.move_speed
-        if keys[pygame.K_d]: 
-            self.cam_pos_ += self.cam_nv_[0] * self.move_speed 
-        # 简单的飞行 (Q/E)
-        if keys[pygame.K_q]: 
-            self.cam_pos_ -= self.cam_nv_[1] * self.move_speed
-        if keys[pygame.K_e]: 
-            self.cam_pos_ += self.cam_nv_[1] * self.move_speed
-        
-        if keys[pygame.K_r]: 
-            self.cam_pos_ = self.cam_pos.copy()
-            self.yaw = 0
-            self.pitch = 0
-        
-        # 控制yaw,绕y轴转动
-        if keys[pygame.K_LEFT]: self.yaw += self.rotate_speed
-        if keys[pygame.K_RIGHT]: self.yaw -= self.rotate_speed
-        # 控制pitch，绕x轴转动
-        if keys[pygame.K_UP]: self.pitch -= self.rotate_speed
-        if keys[pygame.K_DOWN]: self.pitch += self.rotate_speed
-        pass
 
 # ================= 5. 数据结构层 (Mesh) =================
 class Mesh:
@@ -266,7 +196,7 @@ class STLModel(Mesh):
         # 3. 重组索引 (N, 3)
         indices = inverse.reshape(-1, 3)
         
-        print(f"✓ STL Loaded: {filename}")
+        print(f"STL Loaded: {filename}")
         print(f"  原始顶点数: {len(points)} -> 优化后: {len(unique_points)} (节省 {(1-len(unique_points)/len(points))*100:.1f}%)")
         
         # 调用父类初始化
@@ -279,16 +209,17 @@ class STLModel(Mesh):
 def main():
     pygame.init()
     W, H = 1200, 800
-    screen = pygame.display.set_mode((W, H), OPENGL | DOUBLEBUF | RESIZABLE)
-    pygame.display.set_caption("URDF + Entity Engine (stable)")
+    pygame.display.set_mode((W, H), OPENGL | DOUBLEBUF | RESIZABLE)
+    pygame.display.set_caption("Mini3D URDF | Drag: orbit | Shift+drag: pan | Wheel: zoom | F/Home/R")
 
     gl_renderer = GLRenderer(W, H)
     clock = pygame.time.Clock()
 
     # ---- Load URDF ----
+    asset_dir = Path(__file__).resolve().parent
     urdf = load_urdf(
-        r"car\urdf\car.urdf",
-        package_map={"car": r"car"}
+        str(asset_dir / "car" / "urdf" / "car.urdf"),
+        package_map={"car": str(asset_dir / "car")}
     )
 
     def model_loader(mesh_path, rgba01):
@@ -319,17 +250,17 @@ def main():
     ground = Entity(model=ground_model, pos=[0, 0, -5], rot=[0,0,0], scale=1.0)
     scene.add(ground)
 
-    # ---- Camera ----
-    cam_pos = np.array([150.0, 20.0, 0.0], dtype=DTYPE)
-    cam_nv = np.array([[0.0, 1.0, 0.0],
-                       [0.0, 0.0, -1.0],
-                       [-1.0, 0.0, 0.0]], dtype=DTYPE)
-    camera = Camera(cam_pos, cam_nv)
+    viewer = Viewer(scene, W, H)
+    viewer.selected_entity = root
+    viewer.focus(root)
+    viewer.save_camera()
+    print("Camera: drag to orbit; Shift+drag/right drag to pan; wheel to zoom")
+    print("F: focus car/selected wheel; Home: frame all; 1/3/7: front/right/top; R: reset")
 
     # ---- Joint state ----
     q = {jname: 0.0 for jname in joint_order}
     active_joint_idx = 0
-    joint_speed = 0.02
+    joint_speed = 1.2  # radians per second
 
     # ---- Debug: draw axes at some links / joints ----
     # 你可以让某些 link_ent.isaxes=True 来看 link frame
@@ -343,41 +274,36 @@ def main():
 
     running = True
     while running:
+        dt = clock.tick(60) / 1000.0
         # Events
         for e in pygame.event.get():
-            if e.type == pygame.QUIT:
+            if e.type == pygame.QUIT or (e.type == pygame.KEYDOWN and e.key == pygame.K_ESCAPE):
                 running = False
             elif e.type == pygame.VIDEORESIZE:
-                screen = pygame.display.set_mode((e.w, e.h), OPENGL | DOUBLEBUF | RESIZABLE)
-                gl_renderer.resize(e.w, e.h)
+                gl_renderer.resize(max(1, e.w), max(1, e.h))
             elif e.type == pygame.KEYDOWN:
                 if e.key == pygame.K_TAB and joint_order:
                     active_joint_idx = (active_joint_idx + 1) % len(joint_order)
+                    viewer.selected_entity = link_entities[urdf.joints[joint_order[active_joint_idx]].child]
                     print("Active joint:", joint_order[active_joint_idx])
-            elif e.type == pygame.MOUSEWHEEL:
-                zoom = 1.1 ** e.y
-                camera.fov = float(np.clip(camera.fov * zoom, camera.fov_min, camera.fov_max))
-                print("camera.fov =", camera.fov)
+            viewer.handle_event(e)
 
-        # Input
         keys = pygame.key.get_pressed()
-        camera.handle_input(keys)
-        camera.update()
 
         # Move whole robot root (这就是“车前进”的关键：移动 root)
         # I/K 前后，J/L 左右，U/O 转向
-        if keys[pygame.K_i]: root.pos[1] -= 1.0
-        if keys[pygame.K_k]: root.pos[1] += 1.0
-        if keys[pygame.K_j]: root.pos[0] -= 1.0
-        if keys[pygame.K_l]: root.pos[0] += 1.0
-        if keys[pygame.K_u]: root.rot[1] += 0.03
-        if keys[pygame.K_o]: root.rot[1] -= 0.03
+        if keys[pygame.K_i]: root.pos[1] -= 60.0 * dt
+        if keys[pygame.K_k]: root.pos[1] += 60.0 * dt
+        if keys[pygame.K_j]: root.pos[0] -= 60.0 * dt
+        if keys[pygame.K_l]: root.pos[0] += 60.0 * dt
+        if keys[pygame.K_u]: root.rot[1] += 1.8 * dt
+        if keys[pygame.K_o]: root.rot[1] -= 1.8 * dt
 
         # ro control (选中一个关节调角)
         if joint_order:
             active_joint = joint_order[active_joint_idx]
-            if keys[pygame.K_z]: q[active_joint] += joint_speed
-            if keys[pygame.K_x]: q[active_joint] -= joint_speed
+            if keys[pygame.K_z]: q[active_joint] += joint_speed * dt
+            if keys[pygame.K_x]: q[active_joint] -= joint_speed * dt
 
         # Apply joint transforms: set child_link.extra_local
         for jname in joint_order:
@@ -407,9 +333,8 @@ def main():
         scene.update()
 
         # Render
-        gl_renderer.render(scene, camera)
+        gl_renderer.render(scene, viewer.camera)
         pygame.display.flip()
-        clock.tick(60)
 
     pygame.quit()
 

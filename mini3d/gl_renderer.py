@@ -1833,12 +1833,12 @@ class GLRenderer:
 
         self.resize(width, height)
         
-        print(f"🎨 Renderer initialized in {self.render_mode} mode")
+        print(f"Renderer initialized in {self.render_mode} mode")
 
     def resize(self, width, height):
-        self.w = width
-        self.h = height
-        glViewport(0, 0, width, height)
+        self.w = max(1, int(width))
+        self.h = max(1, int(height))
+        glViewport(0, 0, self.w, self.h)
 
     def _get_gpu(self, mesh):
         key = id(mesh)
@@ -1851,21 +1851,11 @@ class GLRenderer:
         glClearColor(30/255, 30/255, 35/255, 1.0)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
-        # ==================== View Matrix ====================
-        # Your camera uses Z-forward (+Z is forward)
-        # OpenGL uses Z-backward (-Z is forward)
-        # Apply Z-flip to convert
-        Z_FLIP = np.diag([1, 1, -1, 1]).astype(DTYPE)
-        V = (Z_FLIP @ camera.T_w_to_c).astype(DTYPE)
-
-        # ==================== Projection Matrix ====================
-        P = perspective_from_focal(camera.fov, self.w, self.h, near=1.0, far=5000.0)
-        
-        # Flip Y to match your coordinate system (Y-down in screen space)
-        P[1, 1] *= -1.0
-        
-        # Camera position for toon shader
-        cam_pos = camera.cam_pos_
+        # Camera owns a standard OpenGL view/projection (Y-up, -Z forward).
+        # Read viewport aspect every frame, including after a window resize.
+        V = camera.view_matrix.astype(DTYPE)
+        P = camera.projection_matrix(self.w / self.h).astype(DTYPE)
+        cam_pos = camera.position
 
         # ==================== Render Based on Mode ====================
         entities = scene.get_flat_render_list()
@@ -2193,10 +2183,12 @@ class GLRenderer:
         glDrawArrays(GL_LINES, 0, inter.shape[0])
         glBindVertexArray(0)
 
-    def draw_grid_cpu_like(self, camera, grid_size=200, step=20, z0=0.0, near=1.0):
+    def draw_grid_cpu_like(self, camera, grid_size=200, step=20, z0=0.0, near=None):
         """
         Fallback: CPU-side grid rendering (for compatibility)
         """
+        near = camera.near if near is None else near
+        focal = self.h / (2 * np.tan(np.deg2rad(camera.fov_y) / 2))
         base_color = (90, 90, 90)
         x_axis_color = (180, 80, 80)
         y_axis_color = (80, 180, 80)
@@ -2245,10 +2237,10 @@ class GLRenderer:
             if p0[2] <= near or p1[2] <= near:
                 continue
 
-            x0 = camera.fov * (p0[0] / p0[2]) + self.w / 2.0
-            y0 = camera.fov * (p0[1] / p0[2]) + self.h / 2.0
-            x1 = camera.fov * (p1[0] / p1[2]) + self.w / 2.0
-            y1 = camera.fov * (p1[1] / p1[2]) + self.h / 2.0
+            x0 = focal * (p0[0] / p0[2]) + self.w / 2.0
+            y0 = focal * (p0[1] / p0[2]) + self.h / 2.0
+            x1 = focal * (p1[0] / p1[2]) + self.w / 2.0
+            y1 = focal * (p1[1] / p1[2]) + self.h / 2.0
 
             seg2d.append([[x0, y0], [x1, y1]])
             segcol.append(col)

@@ -1,3 +1,5 @@
+from pathlib import Path
+from mini3d.viewer import Viewer
 from mini3d.urdf_loader import load_urdf, build_entity_tree
 import pygame
 import numpy as np
@@ -83,14 +85,14 @@ class Entity:
         for child in self.children:
             child.update_transform(self.world_matrix)
     
-    def handle_input(self, keys):
+    def handle_input(self, keys, dt):
         # 简单的控制示例
-        if keys[pygame.K_i]: self.pos[1] -= 1  # 上
-        if keys[pygame.K_k]: self.pos[1] += 1  # 下
-        if keys[pygame.K_j]: self.pos[0] -= 1  # 左
-        if keys[pygame.K_l]: self.pos[0] += 1  # 右
-        if keys[pygame.K_u]: self.rot[1] += 0.05 # 旋转
-        if keys[pygame.K_o]: self.rot[1] -= 0.05
+        if keys[pygame.K_i]: self.pos[1] -= 60 * dt  # 上
+        if keys[pygame.K_k]: self.pos[1] += 60 * dt  # 下
+        if keys[pygame.K_j]: self.pos[0] -= 60 * dt  # 左
+        if keys[pygame.K_l]: self.pos[0] += 60 * dt  # 右
+        if keys[pygame.K_u]: self.rot[1] += 3 * dt # 旋转
+        if keys[pygame.K_o]: self.rot[1] -= 3 * dt
 
 # ================= 2. 场景类 (Scene) =================
 class Scene:
@@ -128,80 +130,7 @@ class Scene:
 # 迁移到 gl_renderer.py 文件中
 
 
-# ================= 4. 相机类 (Camera) =================
-
-class Camera:
-    def __init__(self, camera_pos, camera_nv):
-        """
-        __init__ 的 Docstring
-        
-        :param camera_pos: 相机系的原点在世界系的坐标
-        :param camera_nv: 相机系的基底在世界系的表示，第一行是X轴方向，第二行是Y轴方向，第三行是Z轴方向
-        """ 
-        self.cam_pos = camera_pos
-        self.cam_nv = camera_nv
-        self.cam_pos_ = camera_pos.copy()
-        self.cam_nv_ = camera_nv.copy()
-        
-        self.fov = 500.0
-        self.fov_min = 50.0
-        self.fov_max = 3000.0
-
-        
-        self.yaw = 0
-        self.pitch = 0
-        self.roll = 0
-        
-        # 运动参数
-        self.move_speed = 1.0
-        self.rotate_speed = 0.01
-        
-        # 根据公式(X Y Z)(p-C_0)得到，世界系点p到相机系q的变换
-        self.T_w_to_c = np.eye(4, dtype=DTYPE)
-        self.T_w_to_c[:3, :3] = self.cam_nv_
-        self.T_w_to_c[:3, 3] = - self.cam_nv_ @ self.cam_pos_
-        pass
-    def update(self):
-        # 构建旋转矩阵
-        cx, sx = math.cos(self.pitch), math.sin(self.pitch)
-        cy, sy = math.cos(self.yaw), math.sin(self.yaw)
-                
-        # 组合旋转 (Euler Angles)
-        R_x = np.array([[1, 0, 0], [0, cx, -sx], [0, sx, cx]])
-        R_y = np.array([[cy, 0, sy], [0, 1, 0], [-sy, 0, cy]])
-        R = R_x @ R_y # 先绕X再绕Y R = R_y @ R_x @ R_z（旋转顺序Z→X→Y，矩阵顺序Y→X→Z） 小心万向节死锁现象
-        
-        self.cam_nv_ = R @ self.cam_nv
-        self.T_w_to_c[:3, :3] = self.cam_nv_
-        self.T_w_to_c[:3, 3] = - self.cam_nv_ @ self.cam_pos_
-        
-    def handle_input(self, keys): 
-        if keys[pygame.K_w]: 
-            self.cam_pos_ += self.cam_nv_[2] * self.move_speed
-        if keys[pygame.K_s]: 
-            self.cam_pos_ -= self.cam_nv_[2] * self.move_speed
-        if keys[pygame.K_a]: 
-            self.cam_pos_ -= self.cam_nv_[0] * self.move_speed
-        if keys[pygame.K_d]: 
-            self.cam_pos_ += self.cam_nv_[0] * self.move_speed 
-        # 简单的飞行 (Q/E)
-        if keys[pygame.K_q]: 
-            self.cam_pos_ -= self.cam_nv_[1] * self.move_speed
-        if keys[pygame.K_e]: 
-            self.cam_pos_ += self.cam_nv_[1] * self.move_speed
-        
-        if keys[pygame.K_r]: 
-            self.cam_pos_ = self.cam_pos.copy()
-            self.yaw = 0
-            self.pitch = 0
-        
-        # 控制yaw,绕y轴转动
-        if keys[pygame.K_LEFT]: self.yaw += self.rotate_speed
-        if keys[pygame.K_RIGHT]: self.yaw -= self.rotate_speed
-        # 控制pitch，绕x轴转动
-        if keys[pygame.K_UP]: self.pitch -= self.rotate_speed
-        if keys[pygame.K_DOWN]: self.pitch += self.rotate_speed
-        pass
+# Camera interaction lives in mini3d.viewer.
 
 # ================= 5. 数据结构层 (Mesh) =================
 class Mesh:
@@ -284,132 +213,64 @@ class STLModel(Mesh):
         # 3. 重组索引 (N, 3)
         indices = inverse.reshape(-1, 3)
         
-        print(f"✓ STL Loaded: {filename}")
+        print(f"STL Loaded: {filename}")
         print(f"  原始顶点数: {len(points)} -> 优化后: {len(unique_points)} (节省 {(1-len(unique_points)/len(points))*100:.1f}%)")
         
         # 调用父类初始化
         super().__init__(unique_points, indices, color)
 
 
-# --- 主程序 ---
 
-pygame.init()
-WIDTH, HEIGHT = 1200, 800
-screen = pygame.display.set_mode((WIDTH, HEIGHT), OPENGL | DOUBLEBUF | RESIZABLE)
-pygame.display.set_caption("Winter Leaf Engine v2.0 (OpenGL)")
+def main():
+    pygame.init()
+    width, height = 1200, 800
+    pygame.display.set_mode((width, height), OPENGL | DOUBLEBUF | RESIZABLE)
+    pygame.display.set_caption("Mini3D | Drag: orbit | Shift+drag: pan | Wheel: zoom | F/Home/R")
+    renderer = GLRenderer(width, height)
+    clock = pygame.time.Clock()
+    scene = Scene()
+    scene.light_dir = normalize(np.array([0.0, 1.0, 1.0], dtype=DTYPE))
+    asset_dir = Path(__file__).resolve().parent
+    cube_model = STLModel(str(asset_dir / "model" / "cube.STL"), color=np.array([100, 200, 100]))
+    model = Entity(cube_model, pos=[45, 0, 0], name="STL cube")
+    model.isaxes = True
+    scene.add(model)
 
-gl_renderer = GLRenderer(WIDTH, HEIGHT)
-
-clock = pygame.time.Clock()
-
-# 1. 场景初始化
-scene = Scene()
-scene.light_dir = normalize(np.array([0.0, 1.0, 1.0], dtype=DTYPE))
-
-# 2. 资源加载
-cube_model = STLModel("model/cube.stl", color=np.array([100, 200, 100])) # 假设用同一个模型演示
-model = Entity(cube_model, pos=[45, 0, 0])
-model.isaxes = True
-scene.add(model)
-
-# 球体 (make_sphere 现在返回 verts, indices)
-sphere_verts, sphere_inds = make_sphere(radius=50, rings=16, sectors=24)
-# 直接用 Mesh 类
-sphere_model = Mesh(sphere_verts, sphere_inds, color=np.array([255, 100, 100]))
-# 一个球体放在左边
-entity_sphere = Entity(sphere_model, pos=[-40, 0, 5])
-scene.add(entity_sphere)
-
-# 圆柱
-cyl_verts, cyl_inds = make_cylinder(radius=10, height=40, sectors=20)
-cylinder_model = Mesh(cyl_verts, cyl_inds, color=np.array([100, 255, 100]))
-entity_cylinder = Entity(cylinder_model, pos=[0, 60, 0])
-scene.add(entity_cylinder)
-
-
-# 方块
-box_verts, box_inds = make_box(w=10, h=10, d=10)
-box_model = Mesh(box_verts, box_inds, color=np.array([100, 100, 255]))
-# 一个方块放在右边
-entity_box = Entity(box_model, pos=[40, 0, 5])
-scene.add(entity_box)
-
-
-# 3. 系统组件
-cam_pos = np.array([100.0, 0.0, 0.0], dtype=DTYPE)
-# 让相机看向原点：简单 LookAt 逻辑
-# target = np.array([0,0,0], dtype=DTYPE)
-# fwd = normalize(target - cam_pos) # Z轴 (LookDir)
-# right = normalize(np.cross(np.array([0,1,0]), fwd)) # X轴 (World Up cross Fwd) (左手系/右手系调整这里)
-# up = np.cross(fwd, right) # Y轴
-
-# 构造旋转矩阵 [Right, Up, -Fwd] (取决于你的坐标系定义，这里沿用你的逻辑)
-# 你的原始代码：cam_nv 第三行是 -Z。
-# cam_nv = np.array([right, up, -fwd]) 
-cam_nv = np.array([[0.0, 1.0, 0.0], [0.0, 0.0, -1.0], [-1.0, 0.0, 0.0]]) 
-
-camera = Camera(cam_pos, cam_nv)
-# 4. 状态控制
-running = True
-control_target_idx = 0
-controllable_entities = [entity_sphere, entity_cylinder, entity_box, model] # 可以按 Tab 切换控制的列表
-
-entities = scene.get_flat_render_list()
-print("entities:", len(entities))
-print("with model:", sum(1 for e in entities if e.model is not None))
-for e in entities[:3]:
-    if e.model:
-        print(e.name, "verts:", len(e.model.vertices))
-for e in entities[:5]:
-    print(e.world_matrix)
+    sphere_model = Mesh(*make_sphere(radius=50, rings=16, sectors=24), color=np.array([255, 100, 100]))
+    entity_sphere = Entity(sphere_model, pos=[-40, 0, 5], name="Sphere")
+    scene.add(entity_sphere)
+    cylinder_model = Mesh(*make_cylinder(radius=10, height=40, sectors=20), color=np.array([100, 255, 100]))
+    entity_cylinder = Entity(cylinder_model, pos=[0, 60, 0], name="Cylinder")
+    scene.add(entity_cylinder)
+    box_model = Mesh(*make_box(w=10, h=10, d=10), color=np.array([100, 100, 255]))
+    entity_box = Entity(box_model, pos=[40, 0, 5], name="Box")
+    scene.add(entity_box)
+    viewer = Viewer(scene, width, height)
+    controllable_entities = [entity_sphere, entity_cylinder, entity_box, model]
+    control_target_idx = 0
+    viewer.selected_entity = controllable_entities[control_target_idx]
+    print("Camera: drag to orbit; Shift+drag/right drag to pan; wheel to zoom")
+    print("F: focus selection; Home: frame all; 1/3/7: front/right/top; Ctrl: opposite; R: reset")
+    print("Tab: select object; IJKL/UO: move/rotate selected object; Esc: exit")
+    running = True
+    while running:
+        dt = clock.tick(60) / 1000.0
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
+                running = False
+            elif event.type == pygame.VIDEORESIZE:
+                renderer.resize(max(1, event.w), max(1, event.h))
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_TAB:
+                control_target_idx = (control_target_idx + 1) % len(controllable_entities)
+                viewer.selected_entity = controllable_entities[control_target_idx]
+                print("Selected:", viewer.selected_entity.name)
+            viewer.handle_event(event)
+        viewer.selected_entity.handle_input(pygame.key.get_pressed(), dt)
+        scene.update()
+        renderer.render(scene, viewer.camera)
+        pygame.display.flip()
+    pygame.quit()
 
 
-control_target_idx = 0
-
-while running:
-    # --- Event ---
-    for e in pygame.event.get():
-        if e.type == pygame.QUIT: running = False
-        elif e.type == pygame.VIDEORESIZE:
-            screen = pygame.display.set_mode((e.w, e.h), OPENGL | DOUBLEBUF | RESIZABLE)
-            gl_renderer.resize(e.w, e.h)
-        elif e.type == pygame.KEYDOWN:
-                if e.key == pygame.K_TAB:
-                    control_target_idx = (control_target_idx + 1) % len(controllable_entities)
-                    print("控制目标切换到:", controllable_entities[control_target_idx].name)
-        elif e.type == pygame.MOUSEWHEEL:
-            # e.y: 向上滚是 +1，向下滚是 -1（pygame 2.x）
-            zoom = 1.1 ** e.y
-            camera.fov = float(np.clip(camera.fov * zoom, camera.fov_min, camera.fov_max))
-            print("camera.fov =", camera.fov)
-            
-        
-
-    # --- Update ---
-    keys = pygame.key.get_pressed()
-    
-    # 相机一直可以控制
-    camera.handle_input(keys)
-    camera.update()
-    
-    # 实体控制
-    current_entity = controllable_entities[control_target_idx]
-    current_entity.handle_input(keys)
-    
-    
-    # 更新场景矩阵
-    scene.update()
-
-    # --- Render ---
-    screen.fill((30, 30, 35))
-
-    gl_renderer.render(scene, camera)
-    # 3. UI / Info
-    fps = int(clock.get_fps())
-    # 把关节角应用到各 child
-        
-        
-    pygame.display.flip()
-    clock.tick(60)
-
-pygame.quit()
+if __name__ == "__main__":
+    main()
