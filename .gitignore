@@ -1,3 +1,11 @@
 __pycache__/
 *.py[cod]
 .pytest_cache/
+
+# Optional local assets; only the small 06 STL fixture is distributed.
+/model/01_box/
+/model/02_water_bottle/
+/model/03_side_table/
+/model/04_fox/
+/model/05_roman_soldier/
+/model/07_urdf_car/

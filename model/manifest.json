@@ -1,0 +1,150 @@
+{
+  "05_roman_soldier": {
+    "name": "Roman legionnaire",
+    "status": "downloaded",
+    "entry": "roman_legionnaire.glb",
+    "source": "https://sketchfab.com/3d-models/roman-legionnaire-40b87797180148e4bace023b6da0c45a",
+    "author": "Geoffrey Marchal",
+    "author_url": "https://sketchfab.com/geoffreymarchal",
+    "license": "CC Attribution-NonCommercial-ShareAlike",
+    "license_url": "http://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "license_note": "Author must be credited. No commercial use. Modified versions must have the same license.",
+    "preview_source": "https://media.sketchfab.com/models/40b87797180148e4bace023b6da0c45a/thumbnails/57bf4ba4c0554bfb8417fa64ba618a6e/880f64f407b84dba95933c1e836b52f2.jpeg",
+    "sha256": "255f02bda756ac8e81ba1895ca338d54d5d5cae33e46d47d97628adb53afc08d",
+    "bytes": 29411784,
+    "meshes": 6,
+    "materials": 1,
+    "images": 2,
+    "skins": 0,
+    "animations": [],
+    "triangles": 589879
+  },
+  "01_box": {
+    "name": "Box",
+    "status": "downloaded",
+    "entry": "Box.glb",
+    "source": "https://github.com/KhronosGroup/glTF-Sample-Assets/tree/main/Models/Box",
+    "license": "CC-BY-4.0; Cesium",
+    "sha256": "ed52f7192b8311d700ac0ce80644e3852cd01537e4d62241b9acba023da3d54e",
+    "bytes": 1664,
+    "meshes": 1,
+    "materials": 1,
+    "images": 0,
+    "skins": 0,
+    "animations": [],
+    "triangles": 12
+  },
+  "04_fox": {
+    "name": "Fox",
+    "status": "downloaded",
+    "entry": "Fox.glb",
+    "source": "https://github.com/KhronosGroup/glTF-Sample-Assets/tree/main/Models/Fox",
+    "license": "Model: CC0-1.0, PixelMannen; rig/animation: CC-BY-4.0, tomkranis; glTF conversion: CC-BY-4.0, AsoboStudio and scurest",
+    "sha256": "d97044e701822bac5a62696459b27d7b375aada5de8574ed4362edbba94771f7",
+    "bytes": 162852,
+    "meshes": 1,
+    "materials": 1,
+    "images": 1,
+    "skins": 1,
+    "animations": [
+      "Survey",
+      "Walk",
+      "Run"
+    ],
+    "triangles": 576
+  },
+  "02_water_bottle": {
+    "name": "WaterBottle",
+    "status": "downloaded",
+    "entry": "WaterBottle.glb",
+    "source": "https://github.com/KhronosGroup/glTF-Sample-Assets/tree/main/Models/WaterBottle",
+    "license": "CC0-1.0; Microsoft",
+    "sha256": "b337e526fd6a162013c2984aeec163f5fbb4f717252724dfc3f3458bd51df94b",
+    "bytes": 8966700,
+    "meshes": 1,
+    "materials": 1,
+    "images": 4,
+    "skins": 0,
+    "animations": [],
+    "triangles": 4510
+  },
+  "03_side_table": {
+    "name": "Side Table Tall 01",
+    "status": "downloaded",
+    "entry": "side_table.glb",
+    "source": "https://polyhaven.com/a/side_table_tall_01",
+    "author": {
+      "James Ray Cock": "All"
+    },
+    "license": "CC0-1.0",
+    "license_url": "https://polyhaven.com/license",
+    "resolution": "2K",
+    "files": {
+      "side_table_tall_01_2k.gltf": {
+        "include": {
+          "side_table_tall_01.bin": {
+            "size": 204400,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/8k/side_table_tall_01/side_table_tall_01.bin",
+            "md5": "a7d0f3e80744524b1a40162590d65350"
+          },
+          "textures/side_table_tall_01_diff_2k.jpg": {
+            "size": 430894,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/side_table_tall_01/side_table_tall_01_diff_2k.jpg",
+            "md5": "2d7d3254241bbc485abdd483abb61107"
+          },
+          "textures/side_table_tall_01_arm_2k.jpg": {
+            "size": 519437,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/side_table_tall_01/side_table_tall_01_arm_2k.jpg",
+            "md5": "79ac59d48890d76500203c7379cfe13e"
+          },
+          "textures/side_table_tall_01_nor_gl_2k.jpg": {
+            "size": 251010,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/side_table_tall_01/side_table_tall_01_nor_gl_2k.jpg",
+            "md5": "d2126366cca7c80adc0523566b8c0941"
+          }
+        },
+        "size": 2755,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/2k/side_table_tall_01/side_table_tall_01_2k.gltf",
+        "md5": "0dcf032f5f804471de1fa4c997e1169c"
+      },
+      "side_table_tall_01.bin": {
+        "size": 204400,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/8k/side_table_tall_01/side_table_tall_01.bin",
+        "md5": "a7d0f3e80744524b1a40162590d65350"
+      },
+      "textures/side_table_tall_01_diff_2k.jpg": {
+        "size": 430894,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/side_table_tall_01/side_table_tall_01_diff_2k.jpg",
+        "md5": "2d7d3254241bbc485abdd483abb61107"
+      },
+      "textures/side_table_tall_01_arm_2k.jpg": {
+        "size": 519437,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/side_table_tall_01/side_table_tall_01_arm_2k.jpg",
+        "md5": "79ac59d48890d76500203c7379cfe13e"
+      },
+      "textures/side_table_tall_01_nor_gl_2k.jpg": {
+        "size": 251010,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/side_table_tall_01/side_table_tall_01_nor_gl_2k.jpg",
+        "md5": "d2126366cca7c80adc0523566b8c0941"
+      }
+    },
+    "meshes": 1,
+    "materials": 1,
+    "images": 3,
+    "original_entry": "side_table_tall_01_2k.gltf",
+    "packaging": "Repacked original glTF, binary and JPEG textures into one GLB; no geometry, material or texture content changed.",
+    "bytes": 1407512,
+    "sha256": "1b493435a2e0ccbb0d4fb7eb065af5184b4ea0e43347d6d9f47bcb202a89b888",
+    "triangles": 6408,
+    "skins": 0,
+    "animations": []
+  },
+  "06_stl_cube": {
+    "name": "STL Cube",
+    "status": "downloaded",
+    "entry": "cube.STL",
+    "triangles": 12,
+    "bytes": 684,
+    "license": "Existing project test asset"
+  }
+}

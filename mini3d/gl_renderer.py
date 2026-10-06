@@ -1859,6 +1859,8 @@ class GLRenderer:
 
         # ==================== Render Based on Mode ====================
         entities = scene.get_flat_render_list()
+        imported = [e for e in entities if getattr(e.model, "material", None) is not None]
+        entities = [e for e in entities if getattr(e.model, "material", None) is None]
         
         if self.render_mode == "OUTLINE":
             # Two-pass rendering: outline + toon shading
@@ -1871,21 +1873,32 @@ class GLRenderer:
             # Standard realistic rendering
             self._render_realistic_pass(entities, V, P, scene)
 
+        if imported:
+            if not hasattr(self, "material_renderer"):
+                from .material_renderer import MaterialRenderer
+                self.material_renderer = MaterialRenderer()
+            self.material_renderer.render(imported, camera, scene, self.w, self.h,
+                                          mode=getattr(scene, "render_mode", "Lit"))
+
         # ==================== Render Grid ====================
         glUseProgram(self.line_program)
-        glUniformMatrix4fv(self.line_locView, 1, GL_TRUE, V)
+        grid_scale = getattr(scene, "grid_scale", 1.0)
+        grid_view = V @ np.diag([grid_scale, grid_scale, 1, 1])
+        glUniformMatrix4fv(self.line_locView, 1, GL_TRUE, grid_view.astype(DTYPE))
         glUniformMatrix4fv(self.line_locProj, 1, GL_TRUE, P)
 
         glBindVertexArray(self.grid.vao)
         glLineWidth(1.0)
-        glDrawArrays(GL_LINES, 0, self.grid.count)
+        if getattr(scene, "show_grid", True):
+            glDrawArrays(GL_LINES, 0, self.grid.count)
         glBindVertexArray(0)
 
         # ==================== Render Axes ====================
         glDisable(GL_DEPTH_TEST)
         
         # World axes
-        self.draw_axes_world(V, P, origin=(0, 0, 0), scale=60.0)
+        if getattr(scene, "show_axes", True):
+            self.draw_axes_world(V, P, origin=(0, 0, 0), scale=60.0)
         
         # Entity axes
         for ent in entities:

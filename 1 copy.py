@@ -231,7 +231,7 @@ def main():
     scene = Scene()
     scene.light_dir = normalize(np.array([0.0, 1.0, 1.0], dtype=DTYPE))
     asset_dir = Path(__file__).resolve().parent
-    cube_model = STLModel(str(asset_dir / "model" / "cube.STL"), color=np.array([100, 200, 100]))
+    cube_model = STLModel(str(asset_dir / "model" / "06_stl_cube" / "cube.STL"), color=np.array([100, 200, 100]))
     model = Entity(cube_model, pos=[45, 0, 0], name="STL cube")
     model.isaxes = True
     scene.add(model)

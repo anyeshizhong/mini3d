@@ -218,8 +218,8 @@ def main():
     # ---- Load URDF ----
     asset_dir = Path(__file__).resolve().parent
     urdf = load_urdf(
-        str(asset_dir / "car" / "urdf" / "car.urdf"),
-        package_map={"car": str(asset_dir / "car")}
+        str(asset_dir / "model" / "07_urdf_car" / "car" / "urdf" / "car.urdf"),
+        package_map={"car": str(asset_dir / "model" / "07_urdf_car" / "car")}
     )
 
     def model_loader(mesh_path, rgba01):

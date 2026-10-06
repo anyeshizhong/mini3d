@@ -1,6 +1,47 @@
 # Mini3D
 
-基于 Python、Pygame、NumPy 和 OpenGL 的三维展示原型，支持 STL 模型、基础几何体、URDF 实体树和关节运动。
+基于 Python、Pygame、NumPy 和 OpenGL 的三维引擎，支持 STL、基础几何体、URDF 实体树，以及 glTF/GLB 模型与材质。新增 pyimgui 编辑器作为后续场景编辑功能的入口。
+
+## Mini3D Editor 0.1
+
+```powershell
+cd F:/python_project/mini3d
+& F:/gymenv/python.exe -m pip install -r requirements.txt
+& F:/gymenv/python.exe -B editor.py
+```
+
+默认展示罗马士兵。`--asset 1` 至 `--asset 5` 分别展示方块、水瓶、边桌、狐狸和士兵；`--empty` 从空场景开始。
+
+![Mini3D 编辑器实际渲染](docs/editor-preview.png)
+
+左侧 Assets 列表可双击添加模型，或拖入中央视口：优先放在鼠标指向的模型表面，否则放到地面；射线不与地面相交时使用相机观察目标。右侧 Outliner 展示原始层级，选中以整个模型实例为单位；Inspector 修改名称、显隐、位置、旋转和缩放。模型保持原始单位、枢轴和层级，仅将 glTF 的 Y 向上转换为引擎的 Z 向上。同一资产的实例共享网格、图片与 GPU 资源，变换相互独立。
+
+| 操作 | 编辑器功能 |
+| --- | --- |
+| 左键点击模型 | 按三角形几何选择，显示橙色轮廓 |
+| 中键拖动 / Shift + 中键拖动 | 环绕 / 平移相机 |
+| 滚轮 | 拉近、拉远 |
+| Q / G / R / S | 选择 / 移动 / 旋转 / 缩放工具 |
+| 拖动彩色轴或旋转环 | 沿世界轴变换；中心手柄支持屏幕平面移动、统一缩放 |
+| Esc | 取消当前 Gizmo 拖动 |
+| F / Home | 聚焦选中实例 / 框选全部可见实例 |
+| Ctrl + D / Delete | 复制 / 删除实例 |
+| Ctrl + S / Ctrl + O | 保存 / 载入场景 |
+| 1 / 3 / 7，Ctrl 切换反面 | 前 / 右 / 顶视图 |
+
+输入框编辑文字或数值时暂停场景快捷键。工具栏支持 Lit、Unlit、Wireframe 和网格开关。点击 Assets 的 **+ Import model** 或 File → Import model，可用系统文件选择窗口添加 `.glb`、`.gltf`、`.stl` 模型（扩展名不区分大小写）。窗口未关闭时编辑器仍会刷新、响应窗口缩放和退出；Assets 中的 Cancel file picker 可取消选择，重复点击不会打开多个对话框。选中后自动导入并聚焦，取消不改变场景；下次选择会记住上次目录。也可通过 File → Import from path 手动输入路径。
+
+STL 同时支持 ASCII 和二进制文件，接入与 glTF 相同的选择、轮廓、变换、复制及场景保存流程。`mini3d/stl_loader.py` 保留原始坐标、尺寸和枢轴，以独立面法线保持硬边；STL 没有标准材质和单位信息，默认用灰色非金属材质显示，不自动换算毫米或米，也不自动旋转坐标轴。
+
+文件选择器使用独立进程中的 Tkinter，Tk 根窗口隐藏，并在选择完成或失败后销毁；退出编辑器时也会回收尚未关闭的选择器。这样不会把阻塞的原生文件对话框放进 Pygame 渲染循环。`F:/gymenv` 已包含 Tk 8.6，无需额外 pip 安装。其他环境缺少 Tk 时可使用手动路径导入。
+
+File 菜单支持保存或载入默认场景。场景存为 `scenes/editor_scene.json`，保存资产引用、实例变换、相机及显示设置，不复制模型文件；代码接口 `save_scene(path)` / `load_scene(path)` 可指定其他路径。
+
+代码按职责拆分：`editor.py` 为启动入口；`mini3d/editor.py` 管理状态与输入，`editor_ui.py` 管理 ImGui 面板，`editor_tools.py` 管理 Gizmo，`scene.py` 管理实例层级，`gltf_loader.py` 管理资产缓存，`picking.py` 做几何拾取，`render_target.py` 提供视口缓冲区，`material_renderer.py` 渲染 glTF 材质。
+
+当前边界：采用随窗口尺寸调整的固定面板布局，尚无任意拖拽 Docking、撤销栈和独立 Shot Camera；狐狸显示默认骨骼姿态，暂不播放动画。材质支持基础色、金属度、粗糙度、法线、AO、自发光和 specular 贴图，使用近似工作室照明，尚非完整环境 IBL。选择依据几何，不穿透透明贴图区域；未支持的压缩扩展或 UV 通道会明确报错。
+
+五个模型的来源与许可见 [model/README.md](model/README.md)。其中罗马士兵为 CC BY-NC-SA 4.0，使用和分发需遵守该许可。
 
 ## 运行
 
@@ -18,7 +59,7 @@
 
 资源路径相对脚本文件解析，可从其他工作目录启动。依赖为 `pygame`、`numpy`、`numpy-stl`、`PyOpenGL`，主渲染器需要支持 GLSL 3.30 的 OpenGL 环境。
 
-## 相机操作
+## 原有示例的相机操作
 
 三个示例统一使用 Orbit 相机，启动时自动取景。
 
@@ -69,6 +110,9 @@ renderer.render(scene, viewer.camera)
 ```powershell
 & F:/gymenv/python.exe -B -m unittest discover -s tests -v
 & F:/gymenv/python.exe -B tests/render_smoke.py
+& F:/gymenv/python.exe -B tests/editor_smoke.py
+& F:/gymenv/python.exe -B tests/file_dialog_smoke.py
+& F:/gymenv/python.exe -B tests/stl_render_smoke.py
 ```
 
 单元测试覆盖投影、不同尺度的自动取景、层级包围盒、拖拽、预设、重置和 resize。第二条在隐藏 OpenGL 窗口中运行三个真实示例，注入导航事件并检查模型像素及 GL 错误；需本机图形驱动，可追加截图输出目录参数。

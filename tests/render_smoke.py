@@ -82,4 +82,7 @@ if __name__ == "__main__":
     if output is not None:
         output.mkdir(parents=True, exist_ok=True)
     for filename in ("1.py", "1 copy.py", "2.py"):
+        if filename == '2.py' and not (ROOT / 'model/07_urdf_car/car/urdf/car.urdf').is_file():
+            print('SKIP: 2.py requires optional local 07 URDF assets')
+            continue
         run_demo(filename, output)
