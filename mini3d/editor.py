@@ -1,6 +1,7 @@
 """Editor application state and window loop, separate from ImGui presentation."""
 import json
 import math
+from datetime import datetime
 from pathlib import Path
 
 import numpy as np
@@ -12,6 +13,7 @@ from .gltf_loader import AssetCache
 from .picking import pick_entity, screen_ray, ground_hit
 from .editor_tools import TransformGizmo
 from .model_dialog import ModelFileDialog
+from .shot_camera import ShotCamera, render_shot, capture_png
 
 
 PROJECT = Path(__file__).resolve().parents[1]
@@ -41,6 +43,38 @@ class Editor:
         self._orbiting = False
         self._instance_number = 0
         self.model_dialog = ModelFileDialog(PROJECT / "model")
+        self.shot_camera = None
+        self.camera_view = False
+        self.composition_grid = True
+        self.capture_requested = False
+        self.capture_directory = PROJECT / "captures"
+        self.last_capture = None
+
+    def create_camera_from_view(self):
+        self.shot_camera = ShotCamera(self.viewer.camera)
+        self.status = "Shot Camera created from Editor View"
+
+    def set_camera_view(self, enabled):
+        if enabled and self.shot_camera is None:
+            raise ValueError("Create Camera From View first")
+        self._orbiting = False
+        self.gizmo.finish()
+        self.camera_view = enabled
+
+    def set_shot_lens(self, focal_mm):
+        if self.shot_camera is None:
+            raise ValueError("Create Camera From View first")
+        self.shot_camera.set_lens(focal_mm)
+
+    def set_shot_aspect(self, name):
+        if self.shot_camera is None:
+            raise ValueError("Create Camera From View first")
+        self.shot_camera.set_aspect(name)
+
+    def request_capture(self):
+        if self.shot_camera is None:
+            raise ValueError("Create Camera From View first")
+        self.capture_requested = True
 
     def browse_model(self):
         if self.model_dialog.open():
@@ -216,6 +250,15 @@ class Editor:
     def draw_viewport_overlay(self, draw_list, rect):
         # The UI provides the current image rectangle before overlay/drop events.
         self.viewport_rect = rect
+        if self.camera_view:
+            if self.composition_grid:
+                import imgui
+                x, y, width, height = rect
+                color = imgui.get_color_u32_rgba(1, 1, 1, .5)
+                for fraction in (1 / 3, 2 / 3):
+                    draw_list.add_line(x + width * fraction, y, x + width * fraction, y + height, color, 1)
+                    draw_list.add_line(x, y + height * fraction, x + width, y + height * fraction, color, 1)
+            return
         self.viewer.resize(rect[2], rect[3])
         self.gizmo.draw(draw_list, rect)
 
@@ -235,6 +278,8 @@ class Editor:
             if event.button == 1:
                 self.gizmo.finish()
             return
+        if self.camera_view:
+            return  # Photo preview is fixed; scene placement/navigation uses Editor View.
         mouse_event = event.type in (pygame.MOUSEMOTION, pygame.MOUSEBUTTONDOWN, pygame.MOUSEWHEEL)
         if ui.modal_open or (mouse_event and (ui.mouse_captured or ui.asset_dragging)):
             self._orbiting = False
@@ -402,13 +447,24 @@ def run(initial_asset="auto", frames=None, screenshot=None, hidden=False):
             app.scene.update()
             app.scene.render_mode, app.scene.show_grid = app.render_mode, app.show_grid
             app.scene.grid_scale = 10 ** math.floor(math.log10(max(app.viewer.controller.distance / 10, 1e-9))) / 20
-            target.resize(rect[2], rect[3])
-            target.bind()
-            gl.glDisable(gl.GL_SCISSOR_TEST)
-            gl.glDepthMask(True)
-            renderer.resize(*rect[2:])
-            renderer.render(app.scene, app.viewer.camera)
-            if app.selection is not None and app.selection.visible and hasattr(renderer, "material_renderer"):
+            if app.capture_requested:
+                app.capture_requested = False
+                try:
+                    path = app.capture_directory / ("shot_" + datetime.now().strftime("%Y%m%d_%H%M%S_%f") + ".png")
+                    app.last_capture = capture_png(app.scene, app.shot_camera, renderer, path)
+                    app.status = "Captured: " + str(app.last_capture)
+                except (OSError, ValueError, pygame.error) as exc:
+                    app.status = "Capture failed: " + str(exc)
+            if app.camera_view:
+                render_shot(app.scene, app.shot_camera, renderer, target)
+            else:
+                target.resize(rect[2], rect[3])
+                target.bind()
+                gl.glDisable(gl.GL_SCISSOR_TEST)
+                gl.glDepthMask(True)
+                renderer.resize(*rect[2:])
+                renderer.render(app.scene, app.viewer.camera)
+            if not app.camera_view and app.selection is not None and app.selection.visible and hasattr(renderer, "material_renderer"):
                 selected = Scene()
                 selected.add(app.selection)
                 renderer.material_renderer.render_selection(selected.get_flat_render_list(), app.viewer.camera, *rect[2:])

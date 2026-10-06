@@ -41,7 +41,19 @@ File 菜单支持保存或载入默认场景。场景存为 `scenes/editor_scene
 
 编辑器显式关闭 Viewer 的默认输入绑定，只由 `Editor.handle_event()` 分配场景输入：左键选择/Gizmo，中键 Orbit，Shift+中键 Pan，滚轮 Zoom；UI 捕获鼠标时停止视口操作。集成调用链、回归验证及剩余问题见 [Editor 审计记录](docs/editor-audit.md)。
 
-当前边界：采用随窗口尺寸调整的固定面板布局，尚无任意拖拽 Docking、撤销栈和独立 Shot Camera；狐狸显示默认骨骼姿态，暂不播放动画。材质支持基础色、金属度、粗糙度、法线、AO、自发光和 specular 贴图，使用近似工作室照明，尚非完整环境 IBL。选择依据几何，不穿透透明贴图区域；未支持的压缩扩展或 UV 通道会明确报错。
+### 最小拍照流程
+
+1. 在 **Editor View** 中摆放场景、调整浏览相机。
+2. 点击 **Create Camera From View**，将 Editor Camera 的位置、旋转、垂直视角和裁剪范围复制为独立 Shot Camera；再次点击会覆盖当前 Shot Camera。
+3. 点击 **Camera View** 查看最终画幅。**24mm / 35mm / 50mm / 85mm** 调整 Shot Camera 镜头，**16:9 / 3:2 / 4:3 / 1:1** 调整拍照比例。焦距按 36mm 宽的虚拟画幅换算，改变比例时保持焦距、调整画幅高度。
+4. **Grid On / Grid Off** 切换九宫格构图线，只作用于 Camera View；与 Editor View 的地面 Grid 无关。
+5. 点击 **Capture**，PNG 保存到项目的 `captures/shot_日期_时间_微秒.png`，状态栏显示完整路径。固定输出宽度 1920：四种比例分别为 1920×1080、1920×1280、1920×1440、1920×1920。
+
+Camera View 使用与成片相同的 Lit 离屏渲染和画幅比例，并留黑边适配窗口；不显示选中轮廓、Gizmo、地面网格。九宫格仅在 UI 上叠加，PNG 不包含它。即使 Editor View 处于 Wireframe 或打开地面网格，Capture 也始终输出 Shot Camera 的干净 Lit 画面。
+
+Shot Camera 不接受鼠标导航；需要调整位置时，返回 Editor View 调整后再次 Create Camera From View。单纯切换视图或浏览 Editor Camera 不会改变 Shot Camera。当前 Shot Camera 仅保留在本次运行内，尚未加入场景 JSON 保存；渲染和写 PNG 为同步操作。`mini3d/shot_camera.py` 复用现有 GLRenderer/RenderTarget，没有增加阴影、HDRI、景深等效果。
+
+当前边界：采用随窗口尺寸调整的固定面板布局，尚无任意拖拽 Docking、撤销栈；狐狸显示默认骨骼姿态，暂不播放动画。材质支持基础色、金属度、粗糙度、法线、AO、自发光和 specular 贴图，使用近似工作室照明，尚非完整环境 IBL。选择依据几何，不穿透透明贴图区域；未支持的压缩扩展或 UV 通道会明确报错。
 
 五个模型的来源与许可见 [model/README.md](model/README.md)。其中罗马士兵为 CC BY-NC-SA 4.0，使用和分发需遵守该许可。
 
@@ -114,6 +126,7 @@ renderer.render(scene, viewer.camera)
 & F:/gymenv/python.exe -B tests/render_smoke.py
 & F:/gymenv/python.exe -B tests/editor_smoke.py
 & F:/gymenv/python.exe -B tests/editor_integration_smoke.py
+& F:/gymenv/python.exe -B tests/photo_smoke.py
 & F:/gymenv/python.exe -B tests/file_dialog_smoke.py
 & F:/gymenv/python.exe -B tests/stl_render_smoke.py
 ```

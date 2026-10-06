@@ -256,8 +256,38 @@ class EditorUI:
         imgui.text_disabled("Source preview")
 
     def _viewport(self, x, y, width, height, texture_id):
-        self._panel("Viewport  /  Editor Camera", x, y, width, height,
+        self._panel("Viewport", x, y, width, height,
                     imgui.WINDOW_NO_SCROLLBAR | imgui.WINDOW_NO_SCROLL_WITH_MOUSE)
+        if imgui.button("Create Camera From View"):
+            self._call("create_camera_from_view")
+        imgui.same_line()
+        if imgui.button("Editor View"):
+            self._call("set_camera_view", False)
+        imgui.same_line()
+        if imgui.button("Camera View"):
+            self._call("set_camera_view", True)
+        for index, focal in enumerate((24, 35, 50, 85)):
+            if index:
+                imgui.same_line()
+            if imgui.button(str(focal) + "mm"):
+                self._call("set_shot_lens", focal)
+        if self.app.shot_camera is not None:
+            imgui.same_line()
+            shot = self.app.shot_camera
+            imgui.text_disabled("{:.1f}mm | {} | {}x{}".format(shot.focal_mm, shot.aspect_name, *shot.size))
+        for index, ratio in enumerate(("16:9", "3:2", "4:3", "1:1")):
+            if index:
+                imgui.same_line()
+            if imgui.button(ratio):
+                self._call("set_shot_aspect", ratio)
+        imgui.same_line()
+        if imgui.button("Grid On" if self.app.composition_grid else "Grid Off"):
+            self.app.composition_grid = not self.app.composition_grid
+        imgui.same_line()
+        if imgui.button("Capture"):
+            self._call("request_capture")
+        imgui.text_disabled("Shot Camera preview" if self.app.camera_view else "Editor Camera")
+        imgui.separator()
         for index, (tool, label) in enumerate(self.TOOLS):
             if index:
                 imgui.same_line()
@@ -275,7 +305,7 @@ class EditorUI:
             self.app.render_mode = self.MODES[mode_index]
         imgui.pop_item_width()
         imgui.same_line()
-        _, self.app.show_grid = imgui.checkbox("Grid", self.app.show_grid)
+        _, self.app.show_grid = imgui.checkbox("Ground Grid", self.app.show_grid)
         imgui.same_line()
         if imgui.button("Frame all"):
             self._call("frame_all")
@@ -286,6 +316,12 @@ class EditorUI:
         image_x, image_y = imgui.get_cursor_screen_pos()
         image_w, image_h = imgui.get_content_region_available()
         image_w, image_h = max(1, int(image_w)), max(1, int(image_h))
+        if self.app.camera_view:
+            draw_list = imgui.get_window_draw_list()
+            draw_list.add_rect_filled(image_x, image_y, image_x + image_w, image_y + image_h,
+                                      imgui.get_color_u32_rgba(.025, .025, .03, 1))
+            image_x, image_y, image_w, image_h = self.app.shot_camera.fit_rect((image_x, image_y, image_w, image_h))
+            imgui.set_cursor_screen_pos((image_x, image_y))
         self.viewport_rect = (int(image_x), int(image_y), image_w, image_h)
         imgui.image(texture_id, image_w, image_h, uv0=(0, 1), uv1=(1, 0))
         self.viewport_hovered = bool(imgui.is_item_hovered())
@@ -297,7 +333,7 @@ class EditorUI:
                                      image_y + image_h, True)
             overlay(draw_list, self.viewport_rect)
             draw_list.pop_clip_rect()
-        if imgui.begin_drag_drop_target().hovered:
+        if not self.app.camera_view and imgui.begin_drag_drop_target().hovered:
             payload = imgui.accept_drag_drop_payload(self.PAYLOAD)
             if payload is not None:
                 self._call("drop_asset", int(payload.decode("ascii")), tuple(imgui.get_mouse_pos()))

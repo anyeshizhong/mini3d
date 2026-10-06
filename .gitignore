@@ -1,5 +1,6 @@
 __pycache__/
 *.py[cod]
+/captures/
 .pytest_cache/
 
 # Optional local assets; only the small 06 STL fixture is distributed.
