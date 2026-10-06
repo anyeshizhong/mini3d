@@ -25,7 +25,7 @@ class EditorTests(unittest.TestCase):
         self.app.viewport_rect = (100, 50, 800, 600)
         self.center = (500, 350)
         self.ui = SimpleNamespace(modal_open=False, viewport_hovered=True,
-                                  asset_dragging=False, keyboard_captured=False)
+                                  asset_dragging=False, keyboard_captured=False, mouse_captured=False)
         self.temporary = tempfile.TemporaryDirectory()
         self.path = Path(self.temporary.name) / 'scene.json'
         # A generated unit cube keeps editor tests independent of optional downloads.
@@ -257,6 +257,78 @@ class EditorTests(unittest.TestCase):
         self.app.gizmo.update(points[16])
         self.assertFalse(np.allclose(rotation_xyz(root.rot), rotation_xyz(before[1])))
         self.assert_cancel_restored(root, before)
+
+    def test_editor_viewer_cannot_consume_legacy_mouse_or_keyboard_bindings(self):
+        before = self.app.viewer.controller.snapshot()
+        for event in (
+            pygame.event.Event(pygame.MOUSEBUTTONDOWN, button=1, pos=self.center),
+            pygame.event.Event(pygame.MOUSEMOTION, rel=(50, 30), buttons=(1, 0, 0)),
+            pygame.event.Event(pygame.MOUSEWHEEL, y=2),
+            pygame.event.Event(pygame.KEYDOWN, key=pygame.K_r, mod=0),
+        ):
+            self.assertFalse(self.app.viewer.handle_event(event))
+        self.assert_camera_equal(self.app.viewer.controller.snapshot(), before)
+
+    def test_left_selection_drag_does_not_orbit(self):
+        self.add_box()
+        self.app.tool = 'select'
+        before = self.app.viewer.controller.snapshot()
+        self.app.handle_event(pygame.event.Event(pygame.MOUSEBUTTONDOWN, button=1, pos=self.center), self.ui)
+        self.app.handle_event(pygame.event.Event(pygame.MOUSEMOTION, pos=(520, 370), rel=(20, 20), buttons=(1, 0, 0)), self.ui)
+        self.assert_camera_equal(self.app.viewer.controller.snapshot(), before)
+
+    def test_ui_capture_blocks_click_wheel_and_an_existing_orbit(self):
+        original = self.add_box()
+        self.app.handle_event(pygame.event.Event(pygame.MOUSEBUTTONDOWN, button=2, pos=self.center), self.ui)
+        before = self.app.viewer.controller.snapshot()
+        self.ui.mouse_captured = True
+        for event in (
+            pygame.event.Event(pygame.MOUSEMOTION, pos=self.center, rel=(30, 20), buttons=(0, 1, 0)),
+            pygame.event.Event(pygame.MOUSEWHEEL, y=2),
+            pygame.event.Event(pygame.MOUSEBUTTONDOWN, button=1, pos=self.center),
+        ):
+            self.app.handle_event(event, self.ui)
+        self.assertIs(self.app.selection, original)
+        self.assertFalse(self.app._orbiting)
+        self.assert_camera_equal(self.app.viewer.controller.snapshot(), before)
+
+    def test_gizmo_and_camera_cannot_own_the_same_gesture(self):
+        root, before = self.prepare_gizmo('move')
+        _, points = self.app.gizmo.handles[0]
+        center, end = map(np.asarray, points)
+        start = center + .8 * (end - center)
+        self.app.handle_event(pygame.event.Event(pygame.MOUSEBUTTONDOWN, button=1, pos=start), self.ui)
+        self.assertIsNotNone(self.app.gizmo.drag)
+        camera = self.app.viewer.controller.snapshot()
+        self.app.handle_event(pygame.event.Event(pygame.MOUSEBUTTONDOWN, button=2, pos=start), self.ui)
+        self.assertFalse(self.app._orbiting)
+        self.app.handle_event(pygame.event.Event(pygame.MOUSEMOTION, pos=start + (20, 0), rel=(20, 0), buttons=(1, 1, 0)), self.ui)
+        self.assertFalse(np.allclose(root.pos, before[0]))
+        self.assert_camera_equal(self.app.viewer.controller.snapshot(), camera)
+        position = root.pos.copy()
+        self.ui.mouse_captured = True
+        self.app.handle_event(pygame.event.Event(pygame.MOUSEMOTION, pos=start + (40, 0), rel=(20, 0), buttons=(1, 0, 0)), self.ui)
+        np.testing.assert_allclose(root.pos, position)
+        self.assertIsNone(self.app.gizmo.drag)
+
+    def test_middle_shift_pan_and_wheel_have_separate_effects(self):
+        before = self.app.viewer.controller.snapshot()
+        self.app.handle_event(pygame.event.Event(pygame.MOUSEBUTTONDOWN, button=2, pos=self.center), self.ui)
+        self.app.handle_event(pygame.event.Event(pygame.MOUSEMOTION, pos=self.center, rel=(25, 12), buttons=(0, 1, 0), mod=pygame.KMOD_SHIFT), self.ui)
+        after = self.app.viewer.controller.snapshot()
+        self.assertFalse(np.allclose(before['target'], after['target']))
+        self.assertEqual(before['yaw'], after['yaw'])
+        self.assertEqual(before['pitch'], after['pitch'])
+        self.app.handle_event(pygame.event.Event(pygame.MOUSEBUTTONUP, button=2), self.ui)
+        self.app.handle_event(pygame.event.Event(pygame.MOUSEWHEEL, y=1), self.ui)
+        self.assertLess(self.app.viewer.controller.distance, after['distance'])
+
+    def test_lost_focus_or_missing_button_release_clears_orbit(self):
+        for event in (pygame.event.Event(pygame.WINDOWFOCUSLOST),
+                      pygame.event.Event(pygame.MOUSEMOTION, pos=self.center, rel=(20, 20), buttons=(0, 0, 0))):
+            self.app.handle_event(pygame.event.Event(pygame.MOUSEBUTTONDOWN, button=2, pos=self.center), self.ui)
+            self.app.handle_event(event, self.ui)
+            self.assertFalse(self.app._orbiting)
 
 
 if __name__ == '__main__':

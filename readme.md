@@ -7,7 +7,7 @@
 ```powershell
 cd F:/python_project/mini3d
 & F:/gymenv/python.exe -m pip install -r requirements.txt
-& F:/gymenv/python.exe -B editor.py
+& F:/gymenv/python.exe -B editor_app.py
 ```
 
 默认展示罗马士兵。`--asset 1` 至 `--asset 5` 分别展示方块、水瓶、边桌、狐狸和士兵；`--empty` 从空场景开始。
@@ -37,7 +37,9 @@ STL 同时支持 ASCII 和二进制文件，接入与 glTF 相同的选择、轮
 
 File 菜单支持保存或载入默认场景。场景存为 `scenes/editor_scene.json`，保存资产引用、实例变换、相机及显示设置，不复制模型文件；代码接口 `save_scene(path)` / `load_scene(path)` 可指定其他路径。
 
-代码按职责拆分：`editor.py` 为启动入口；`mini3d/editor.py` 管理状态与输入，`editor_ui.py` 管理 ImGui 面板，`editor_tools.py` 管理 Gizmo，`scene.py` 管理实例层级，`gltf_loader.py` 管理资产缓存，`picking.py` 做几何拾取，`render_target.py` 提供视口缓冲区，`material_renderer.py` 渲染 glTF 材质。
+代码按职责拆分：`editor_app.py` 为统一启动入口，旧 `editor.py` 转发到同一入口；`mini3d/editor.py` 管理状态、主循环与输入仲裁，`editor_ui.py` 管理 ImGui 面板，`editor_tools.py` 管理 Gizmo，`scene.py` 管理实例层级，`gltf_loader.py` 管理资产缓存，`picking.py` 做几何拾取，`render_target.py` 提供视口缓冲区，`material_renderer.py` 渲染 glTF 材质。
+
+编辑器显式关闭 Viewer 的默认输入绑定，只由 `Editor.handle_event()` 分配场景输入：左键选择/Gizmo，中键 Orbit，Shift+中键 Pan，滚轮 Zoom；UI 捕获鼠标时停止视口操作。集成调用链、回归验证及剩余问题见 [Editor 审计记录](docs/editor-audit.md)。
 
 当前边界：采用随窗口尺寸调整的固定面板布局，尚无任意拖拽 Docking、撤销栈和独立 Shot Camera；狐狸显示默认骨骼姿态，暂不播放动画。材质支持基础色、金属度、粗糙度、法线、AO、自发光和 specular 贴图，使用近似工作室照明，尚非完整环境 IBL。选择依据几何，不穿透透明贴图区域；未支持的压缩扩展或 UV 通道会明确报错。
 
@@ -111,6 +113,7 @@ renderer.render(scene, viewer.camera)
 & F:/gymenv/python.exe -B -m unittest discover -s tests -v
 & F:/gymenv/python.exe -B tests/render_smoke.py
 & F:/gymenv/python.exe -B tests/editor_smoke.py
+& F:/gymenv/python.exe -B tests/editor_integration_smoke.py
 & F:/gymenv/python.exe -B tests/file_dialog_smoke.py
 & F:/gymenv/python.exe -B tests/stl_render_smoke.py
 ```

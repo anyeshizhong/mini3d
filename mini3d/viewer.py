@@ -42,10 +42,14 @@ class Viewer:
     Left/middle drag: orbit. Shift+drag or right drag: pan. Wheel: dolly.
     F: focus selected_entity, Home: frame all, R: restore startup view.
     1/3/7: front/right/top (2 is also top); Ctrl gives opposite views.
+    These bindings apply only with input_enabled=True. Editor creates this
+    object with input_enabled=False and calls controller/framing methods itself.
     """
 
-    def __init__(self, scene, width, height, camera=None):
+    def __init__(self, scene, width, height, camera=None, input_enabled=True):
         self.scene = scene
+        # Standalone demos opt into these bindings; the editor owns arbitration.
+        self.input_enabled = input_enabled
         self.camera = camera if camera is not None else Camera()
         self.controller = OrbitController(self.camera)
         self.selected_entity = None
@@ -94,6 +98,8 @@ class Viewer:
 
     def handle_event(self, event):
         """Consume navigation events. Relative mouse deltas do not use dt."""
+        if not self.input_enabled:
+            return False
         if event.type == pygame.VIDEORESIZE:
             self.resize(event.w, event.h)
             return False  # The application must also resize its renderer.

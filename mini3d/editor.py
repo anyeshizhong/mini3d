@@ -26,7 +26,7 @@ class Editor:
                        for key, info in sorted(manifest.items())
                        if info.get("status") == "downloaded" and
                        (PROJECT / "model" / key / info["entry"]).is_file()]
-        self.viewer = Viewer(self.scene, width, height)
+        self.viewer = Viewer(self.scene, width, height, input_enabled=False)
         self.viewer.controller.yaw = -.9
         self.viewer.controller.pitch = .25
         self.viewer.controller.update()
@@ -220,6 +220,11 @@ class Editor:
         self.gizmo.draw(draw_list, rect)
 
     def handle_event(self, event, ui):
+        """The editor's only input router; never forward raw events to Viewer.
+
+        Releases/focus loss always clear gestures. UI capture takes precedence;
+        then a gesture owns either the gizmo (left) or the camera (middle).
+        """
         if event.type == pygame.WINDOWFOCUSLOST:
             self._orbiting = False
             self.gizmo.finish()
@@ -230,13 +235,25 @@ class Editor:
             if event.button == 1:
                 self.gizmo.finish()
             return
-        if ui.modal_open:
+        mouse_event = event.type in (pygame.MOUSEMOTION, pygame.MOUSEBUTTONDOWN, pygame.MOUSEWHEEL)
+        if ui.modal_open or (mouse_event and (ui.mouse_captured or ui.asset_dragging)):
+            self._orbiting = False
+            self.gizmo.finish()
             return
         if event.type == pygame.MOUSEMOTION:
             if self.gizmo.drag is not None:
-                self.gizmo.update(event.pos)
+                if getattr(event, "buttons", (True, False, False))[0]:
+                    self.gizmo.update(event.pos)
+                else:
+                    self.gizmo.finish()
             elif self._orbiting:
-                if pygame.key.get_mods() & pygame.KMOD_SHIFT:
+                if not getattr(event, "buttons", (False, True, False))[1]:
+                    self._orbiting = False
+                    return
+                mods = getattr(event, "mod", None)
+                if mods is None:
+                    mods = pygame.key.get_mods()
+                if mods & pygame.KMOD_SHIFT:
                     self.viewer.controller.pan(*event.rel, self.viewer.height)
                 else:
                     self.viewer.controller.orbit(*event.rel)
@@ -245,13 +262,13 @@ class Editor:
             x, y, width, height = self.viewport_rect
             if not (x <= event.pos[0] < x + width and y <= event.pos[1] < y + height):
                 return
-            if event.button == 2:
+            if event.button == 2 and self.gizmo.drag is None:
                 self._orbiting = True
-            elif event.button == 1 and not self.gizmo.begin(event.pos, self.viewport_rect):
+            elif event.button == 1 and not self._orbiting and not self.gizmo.begin(event.pos, self.viewport_rect):
                 entity, _ = pick_entity(self.scene, self.viewer.camera, event.pos, self.viewport_rect)
                 self.select(entity)
             return
-        if event.type == pygame.MOUSEWHEEL and ui.viewport_hovered:
+        if event.type == pygame.MOUSEWHEEL and ui.viewport_hovered and self.gizmo.drag is None:
             self.viewer.controller.zoom(event.y)
         if event.type != pygame.KEYDOWN or ui.keyboard_captured:
             return
