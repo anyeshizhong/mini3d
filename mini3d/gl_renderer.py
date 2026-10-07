@@ -1883,7 +1883,12 @@ class GLRenderer:
         # ==================== Render Grid ====================
         glUseProgram(self.line_program)
         grid_scale = getattr(scene, "grid_scale", 1.0)
-        grid_view = V @ np.diag([grid_scale, grid_scale, 1, 1])
+        grid_transform = np.diag([grid_scale, grid_scale, 1., 1.])
+        if getattr(scene, "ground", None) is not None:
+            # Bias only the editor guide lines above the built-in surface.
+            # Ground geometry and placement remain exactly at world Z=0.
+            grid_transform[2, 3] = grid_scale * .02
+        grid_view = V @ grid_transform
         glUniformMatrix4fv(self.line_locView, 1, GL_TRUE, grid_view.astype(DTYPE))
         glUniformMatrix4fv(self.line_locProj, 1, GL_TRUE, P)
 

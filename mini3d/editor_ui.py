@@ -54,6 +54,7 @@ class EditorUI:
         self.import_error = ""
         self._open_import = False
         self._open_help = False
+        self._edit_item_key = None
         self._configure_style()
 
     @staticmethod
@@ -138,6 +139,10 @@ class EditorUI:
                     self._call("load_scene")
                 imgui.end_menu()
             if imgui.begin_menu("Edit").opened:
+                if imgui.menu_item("Undo", "Ctrl+Z")[0]:
+                    self._call("undo")
+                if imgui.menu_item("Redo", "Ctrl+Y")[0]:
+                    self._call("redo")
                 selected = self.app.selection is not None
                 if imgui.menu_item("Duplicate", "Ctrl+D", enabled=selected)[0]:
                     self._call("duplicate_selected")
@@ -295,9 +300,31 @@ class EditorUI:
             if selected:
                 imgui.push_style_color(imgui.COLOR_BUTTON, 0.18, 0.46, 0.58, 1.0)
             if imgui.button(label):
+                self._call("finish_edit")
                 self.app.tool = tool
             if selected:
                 imgui.pop_style_color()
+        for index, space in enumerate(("world", "local")):
+            if index:
+                imgui.same_line()
+            if imgui.radio_button(space.title(), self.app.transform_space == space):
+                self._call("finish_edit")
+                self.app.transform_space = space
+        imgui.same_line()
+        imgui.push_item_width(132)
+        anchor_values = ("bounds_bottom", "pivot")
+        changed, anchor = imgui.combo("##drop_anchor", anchor_values.index(self.app.placement_anchor),
+                                      ["Bounds Bottom", "Pivot"])
+        if changed:
+            self.app.placement_anchor = anchor_values[anchor]
+        imgui.pop_item_width()
+        if imgui.is_item_hovered():
+            imgui.set_tooltip("Placement anchor for newly added assets")
+        imgui.same_line()
+        if imgui.button("Place on Surface"):
+            self._call("begin_surface_placement")
+        if self.app.place_selected_mode:
+            imgui.text_disabled("Click a surface to place the selection. Esc cancels.")
         imgui.push_item_width(100)
         mode_index = self.MODES.index(self.app.render_mode) if self.app.render_mode in self.MODES else 0
         changed, mode_index = imgui.combo("##render_mode", mode_index, list(self.MODES))
@@ -307,6 +334,12 @@ class EditorUI:
         imgui.same_line()
         _, self.app.show_grid = imgui.checkbox("Ground Grid", self.app.show_grid)
         imgui.same_line()
+        ground = self.app.scene.ground
+        if ground is not None:
+            changed, _ = imgui.checkbox("Ground", ground.visible)
+            if changed:
+                self._call("toggle_ground")
+            imgui.same_line()
         if imgui.button("Frame all"):
             self._call("frame_all")
         imgui.same_line()
@@ -349,6 +382,10 @@ class EditorUI:
             imgui.text_wrapped("Add an asset to start building the scene.")
         for entity in roots:
             self._entity_node(entity, entity)
+        if self.app.selection is not None:
+            locked = self.app.selection.locked
+            if imgui.button("Unlock selected" if locked else "Lock selected", width=-1):
+                self._call("unlock_selected" if locked else "lock_selected")
         imgui.end()
 
     def _entity_node(self, entity, root):
@@ -362,6 +399,8 @@ class EditorUI:
         name = getattr(entity, "name", "Object") or "Object"
         if not getattr(entity, "visible", True):
             name += " (hidden)"
+        if getattr(entity, "locked", False):
+            name += " [Locked]"
         opened = imgui.tree_node(name + "##node", flags)
         if imgui.is_item_clicked() and not imgui.is_item_toggled_open():
             self._call("select", root)
@@ -374,6 +413,24 @@ class EditorUI:
             imgui.tree_pop()
         imgui.pop_id()
 
+    def _record_item_edit(self, entity, attribute, changed, apply):
+        """One active ImGui field (including typed values) is one command."""
+        key = (entity.entity_id, attribute)
+        activated = imgui.is_item_activated()
+        deactivated = imgui.is_item_deactivated()
+        commands = self.app.commands
+        if self._edit_item_key and not commands.active_transaction:
+            self._edit_item_key = None
+        if (activated or changed) and self._edit_item_key != key:
+            self._call("finish_edit")
+            commands.begin_transaction("Inspector " + attribute)
+            self._edit_item_key = key
+        if changed:
+            apply()
+        if deactivated and self._edit_item_key == key:
+            commands.commit_transaction()
+            self._edit_item_key = None
+
     def _inspector(self, x, y, width, height):
         self._panel("Inspector", x, y, width, height)
         entity = self.app.selection
@@ -384,10 +441,18 @@ class EditorUI:
         imgui.push_id(str(id(entity)))
         imgui.push_item_width(-1)
         changed, name = imgui.input_text("##name", entity.name, 256)
-        if changed:
-            entity.name = name
+        self._record_item_edit(entity, "name", changed,
+                               lambda: self.app.commands.set_metadata(entity, name=name))
         imgui.pop_item_width()
-        _, entity.visible = imgui.checkbox("Visible", entity.visible)
+        imgui.text_disabled(entity.entity_id or "Unregistered entity")
+        changed, visible = imgui.checkbox("Visible", entity.visible)
+        if changed:
+            self.app.set_entity_metadata(entity, visible=visible)
+        imgui.same_line()
+        if imgui.button("Unlock" if entity.locked else "Lock"):
+            self._call("unlock_selected" if entity.locked else "lock_selected")
+        if entity.locked:
+            imgui.text_colored("Locked - unlock to edit placement", 1.0, .75, .3)
         imgui.separator()
         imgui.text("Transform")
         imgui.text_disabled("Axis order: X / Y / Z")
@@ -397,21 +462,46 @@ class EditorUI:
             ("Scale", "scale", entity.scale, 0.01),
         ):
             imgui.text(label)
+            if entity.locked:
+                imgui.text_disabled(" / ".join("{:.3f}".format(value) for value in values))
+                continue
             imgui.push_item_width(-1)
             changed, result = imgui.drag_float3("##" + attribute, *map(float, values),
                                                 change_speed=speed, format="%.3f")
+            result = np.asarray(result, dtype=np.float64)
+            if attribute == "rot":
+                result = np.radians(result)
+            elif attribute == "scale":
+                result = np.maximum(result, 0.001)
+            command_attribute = {"pos": "position", "rot": "rotation", "scale": "scale"}[attribute]
+            self._record_item_edit(entity, attribute, changed and np.all(np.isfinite(result)),
+                                   lambda: self.app.commands.set_transform(entity, **{command_attribute: result}))
             imgui.pop_item_width()
-            if changed:
-                result = np.asarray(result, dtype=np.float64)
-                if attribute == "rot":
-                    result = np.radians(result)
-                elif attribute == "scale":
-                    result = np.maximum(result, 0.001)
-                if np.all(np.isfinite(result)):
-                    setattr(entity, attribute, result)
         imgui.push_text_wrap_pos(0)
         imgui.text_disabled("Ctrl+click a value to type precisely.")
         imgui.pop_text_wrap_pos()
+        if self.app.tool == "scale" and self.app.transform_space == "world":
+            imgui.text_wrapped("World scale projects onto local scale axes; no shear.")
+        imgui.separator()
+        imgui.text("Placement")
+        if entity.locked:
+            imgui.text_disabled(entity.placement_type + " / " + entity.placement_anchor)
+        else:
+            imgui.push_item_width(-1)
+            types = ("prop", "character")
+            changed, index = imgui.combo("##placement_type", types.index(entity.placement_type),
+                                         ["Prop", "Character"])
+            if changed:
+                self.app.set_entity_metadata(entity, placement_type=types[index],
+                                              keep_upright=types[index] == "character")
+            anchors = ("bounds_bottom", "pivot")
+            changed, index = imgui.combo("##entity_anchor", anchors.index(entity.placement_anchor),
+                                         ["Bounds Bottom", "Pivot"])
+            if changed:
+                self.app.set_entity_metadata(entity, placement_anchor=anchors[index])
+            imgui.pop_item_width()
+            if entity.placement_type == "character":
+                imgui.text_disabled("Surface placement keeps world Z upright.")
         imgui.separator()
         if imgui.button("Focus [F]"):
             self._call("focus_selected")
@@ -487,8 +577,11 @@ class EditorUI:
                 "F: focus selected | Home: frame all",
                 "1 / 3 / 7: front / right / top",
                 "Ctrl+D: duplicate | Delete: remove selected",
+                "Ctrl+Z: undo | Ctrl+Y / Ctrl+Shift+Z: redo",
                 "Ctrl+S: save scene | Ctrl+O: load scene",
-                "Drag assets into the viewport to place them on the ground.",
+                "Drag assets onto geometry or Ground; choose the placement anchor.",
+                "Place on Surface: reposition selection with its saved anchor.",
+                "Locked objects remain surfaces; select them in Outliner to unlock.",
             ):
                 imgui.text(text)
             if imgui.button("Close"):

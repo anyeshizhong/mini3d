@@ -121,26 +121,29 @@ def _triangle_hit(mesh, origin, direction, lower, upper):
         distance = np.einsum('ij,ij->i', edge2, cross_two) * inverse
         valid &= (distance >= lower) & (distance <= upper)
         if valid.any():
-            upper = float(distance[valid].min())
-            closest = upper
+            nearest = int(np.argmin(np.where(valid, distance, np.inf)))
+            upper = float(distance[nearest])
+            closest = (upper, np.cross(edge1[nearest], edge2[nearest]))
     return closest
 
 
-def pick_entity(scene, camera, screen_pos, rect):
-    """Return (top-level instance, world hit), or (None, None).
+def raycast_entities(roots, camera, screen_pos, rect, include_locked=True, exclude=None):
+    """Return (instance, world hit, world normal, ray distance), or None.
 
     Hidden subtrees and geometry outside the camera clipping range are excluded.
     Geometric triangles are tested on both sides; texture alpha is not sampled.
+    Normals face the incoming ray, including mirrored or nonuniformly scaled
+    instances. ``exclude`` accepts a root, its ID, or a collection of either.
+    Selection and placement share this exact triangle traversal.
     """
     x, y, width, height = _rect(rect)
     px, py = screen_pos
     if not (x <= px < x + width and y <= py < y + height):
-        return None, None
-    scene.update()
+        return None
     origin, direction = screen_ray(camera, screen_pos, rect)
     depth_per_unit = float(np.dot(direction, camera.forward))
     if depth_per_unit <= 0:
-        return None, None
+        return None
     lower = camera.near / depth_per_unit
     upper = camera.far / depth_per_unit
     candidates = []
@@ -159,18 +162,39 @@ def pick_entity(scene, camera, screen_pos, rect):
                 local_direction = inverse[:3, :3] @ direction
                 interval = _aabb(local_origin, local_direction, mesh.bounds, lower, upper)
                 if interval is not None:
-                    candidates.append((interval[0], root, mesh, local_origin, local_direction))
+                    candidates.append((interval[0], root, mesh, local_origin, local_direction,
+                                       inverse[:3, :3]))
         for child in entity.children:
             collect(child, root)
 
-    for root in scene.root_entities:
+    excluded = exclude if isinstance(exclude, (list, tuple, set)) else [exclude]
+    for root in roots:
+        if any(item is root or (isinstance(item, str) and item == getattr(root, 'entity_id', None))
+               for item in excluded):
+            continue
+        if not include_locked and (getattr(root, 'locked', False) or
+                                   getattr(root, 'entity_id', None) == 'ground'):
+            continue
+        root.update_transform()
         collect(root, root)
     candidates.sort(key=lambda item: item[0])
     selected = None
-    for entry, root, mesh, local_origin, local_direction in candidates:
+    normal = None
+    for entry, root, mesh, local_origin, local_direction, inverse_linear in candidates:
         if entry > upper:
             break
-        distance = _triangle_hit(mesh, local_origin, local_direction, lower, upper)
-        if distance is not None:
+        hit = _triangle_hit(mesh, local_origin, local_direction, lower, upper)
+        if hit is not None:
+            distance, local_normal = hit
             selected, upper = root, distance
-    return (selected, origin + upper * direction) if selected is not None else (None, None)
+            normal = inverse_linear.T @ local_normal
+            normal /= np.linalg.norm(normal)
+            if np.dot(normal, direction) > 0:
+                normal = -normal
+    return (selected, origin + upper * direction, normal, upper) if selected is not None else None
+
+
+def pick_entity(scene, camera, screen_pos, rect):
+    """Select an unlocked ordinary instance; Ground is never selectable."""
+    hit = raycast_entities(scene.root_entities, camera, screen_pos, rect, include_locked=False)
+    return (hit[0], hit[1]) if hit is not None else (None, None)

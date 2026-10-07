@@ -22,10 +22,11 @@ cd F:/python_project/mini3d
 | 中键拖动 / Shift + 中键拖动 | 环绕 / 平移相机 |
 | 滚轮 | 拉近、拉远 |
 | Q / G / R / S | 选择 / 移动 / 旋转 / 缩放工具 |
-| 拖动彩色轴或旋转环 | 沿世界轴变换；中心手柄支持屏幕平面移动、统一缩放 |
-| Esc | 取消当前 Gizmo 拖动 |
+| 拖动彩色轴或旋转环 | 按 World / Local 轴变换；中心手柄支持屏幕平面移动、统一缩放 |
+| Esc | 取消当前 Gizmo 拖动或待执行的表面放置 |
 | F / Home | 聚焦选中实例 / 框选全部可见实例 |
 | Ctrl + D / Delete | 复制 / 删除实例 |
+| Ctrl + Z / Ctrl + Y 或 Ctrl + Shift + Z | 撤销 / 重做摆放操作 |
 | Ctrl + S / Ctrl + O | 保存 / 载入场景 |
 | 1 / 3 / 7，Ctrl 切换反面 | 前 / 右 / 顶视图 |
 
@@ -41,6 +42,16 @@ File 菜单支持保存或载入默认场景。场景存为 `scenes/editor_scene
 
 编辑器显式关闭 Viewer 的默认输入绑定，只由 `Editor.handle_event()` 分配场景输入：左键选择/Gizmo，中键 Orbit，Shift+中键 Pan，滚轮 Zoom；UI 捕获鼠标时停止视口操作。集成调用链、回归验证及剩余问题见 [Editor 审计记录](docs/editor-audit.md)。
 
+### Placement V1
+
+拖入资产默认使用 **Bounds Bottom**：模型当前旋转、缩放和完整层级的世界包围盒底部中心落到命中的表面。工具栏可将新资产的锚点改为 **Pivot**；已放置实例的锚点在 Inspector 中修改。选中实例后点击 **Place on Surface**，再点击视口中的表面即可重新摆放；射线忽略自身，先找模型几何，再找内置 Ground，最后使用观察目标作为 fallback。直接移动 Gizmo 不会自动吸附。
+
+Roman Legionnaire 默认 Character，重新表面放置时保留朝向角并清除前后、左右倾斜，保持世界 Z 向上。Prop 默认不纠正旋转。Ground 是 Z=0、边长 2000 的内置两三角形平面，不是 Asset；Ground 开关同时控制其显示与表面命中，Ground Grid 单独控制辅助线。Ground 是场景几何，开启时也会出现在照片中；辅助线不会进入照片。
+
+Outliner 或 Inspector 的 **Lock / Unlock** 控制实例锁定。锁定模型继续显示并接收表面放置，但普通左键无法选中，Gizmo、变换和删除命令拒绝修改；通过 Outliner 选中后可以解锁。复制锁定对象得到可编辑的新实例，Mesh/Texture 仍共享。
+
+每个实例拥有与名称无关的 `ent_000001` 式 ID。场景 JSON v2 保存 ID、变换、锁定、摆放类型、锚点、直立规则及 ID 计数器，兼容原 v1 场景。成功载入会清空操作历史，失败不会替换原场景。一次 Gizmo/Inspector 连续编辑或一次拖入只占一条 Undo；批量事务可供后续其他调用方使用。完整命令示例、验收结果与限制见 [Placement V1 记录](docs/placement-v1.md)。
+
 ### 最小拍照流程
 
 1. 在 **Editor View** 中摆放场景、调整浏览相机。
@@ -53,7 +64,7 @@ Camera View 使用与成片相同的 Lit 离屏渲染和画幅比例，并留黑
 
 Shot Camera 不接受鼠标导航；需要调整位置时，返回 Editor View 调整后再次 Create Camera From View。单纯切换视图或浏览 Editor Camera 不会改变 Shot Camera。当前 Shot Camera 仅保留在本次运行内，尚未加入场景 JSON 保存；渲染和写 PNG 为同步操作。`mini3d/shot_camera.py` 复用现有 GLRenderer/RenderTarget，没有增加阴影、HDRI、景深等效果。
 
-当前边界：采用随窗口尺寸调整的固定面板布局，尚无任意拖拽 Docking、撤销栈；狐狸显示默认骨骼姿态，暂不播放动画。材质支持基础色、金属度、粗糙度、法线、AO、自发光和 specular 贴图，使用近似工作室照明，尚非完整环境 IBL。选择依据几何，不穿透透明贴图区域；未支持的压缩扩展或 UV 通道会明确报错。
+当前边界：采用随窗口尺寸调整的固定面板布局，尚无任意拖拽 Docking；狐狸显示默认骨骼姿态，暂不播放动画。材质支持基础色、金属度、粗糙度、法线、AO、自发光和 specular 贴图，使用近似工作室照明，尚非完整环境 IBL。选择依据几何，不穿透透明贴图区域；未支持的压缩扩展或 UV 通道会明确报错。
 
 五个模型的来源与许可见 [model/README.md](model/README.md)。其中罗马士兵为 CC BY-NC-SA 4.0，使用和分发需遵守该许可。
 
@@ -129,6 +140,7 @@ renderer.render(scene, viewer.camera)
 & F:/gymenv/python.exe -B tests/photo_smoke.py
 & F:/gymenv/python.exe -B tests/file_dialog_smoke.py
 & F:/gymenv/python.exe -B tests/stl_render_smoke.py
+& F:/gymenv/python.exe -B tests/placement_smoke.py captures/placement-v1-validation
 ```
 
 单元测试覆盖投影、不同尺度的自动取景、层级包围盒、拖拽、预设、重置和 resize。第二条在隐藏 OpenGL 窗口中运行三个真实示例，注入导航事件并检查模型像素及 GL 错误；需本机图形驱动，可追加截图输出目录参数。

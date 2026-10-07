@@ -1,5 +1,7 @@
 {
   "05_roman_soldier": {
+    "placement_type": "character",
+    "keep_upright": true,
     "name": "Roman legionnaire",
     "status": "downloaded",
     "entry": "roman_legionnaire.glb",

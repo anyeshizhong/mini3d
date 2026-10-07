@@ -141,6 +141,7 @@ def run_smoke(path):
         if frame == 18:
             return [button(up)]
         if frame == 21:
+            state['inspector_history'] = app.commands.undo_count
             state['before_inspector'] = app.selection.pos.copy()
             x, y, w, h = state['items']['##pos']
             return [move((x + w / 6, y + h / 2)), button(down)]
@@ -196,6 +197,8 @@ def run_smoke(path):
             assert state['ui'].mouse_captured, 'Inspector drag must own mouse over viewport'
             assert app.gizmo.drag is None
         if frame == 25:
+            assert app.commands.undo_count == state['inspector_history'] + 1
+            assert not app.commands.active_transaction
             assert not np.allclose(app.selection.pos, state['before_inspector'])
             np.testing.assert_allclose(state['values']['##pos'], app.selection.pos, atol=1e-5)
         if frame == 30:

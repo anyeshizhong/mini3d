@@ -39,7 +39,7 @@ class TransformGizmo:
     def geometry(self, rect):
         entity = self.app.selection
         self.handles = []
-        if entity is None or not entity.visible or self.app.tool == "select":
+        if entity is None or entity.locked or not entity.visible or self.app.tool == "select":
             return None
         camera = self.app.viewer.camera
         origin = entity.pos.copy()
@@ -48,10 +48,11 @@ class TransformGizmo:
             return None
         distance = max(np.dot(origin - camera.position, camera.forward), camera.near)
         length = 95 * 2 * distance * math.tan(math.radians(camera.fov_y) / 2) / rect[3]
+        basis = rotation_xyz(entity.rot) if self.app.transform_space == "local" else np.eye(3)
         for axis in range(3):
-            direction = np.eye(3)[axis]
+            direction = basis[:, axis]
             if self.app.tool == "rotate":
-                u, v = np.eye(3)[(axis + 1) % 3], np.eye(3)[(axis + 2) % 3]
+                u, v = basis[:, (axis + 1) % 3], basis[:, (axis + 2) % 3]
                 points = [project_point(camera, origin + length * (u * math.cos(a) + v * math.sin(a)), rect)
                           for a in np.linspace(0, math.tau, 65)]
             else:
@@ -87,6 +88,8 @@ class TransformGizmo:
         draw_list.pop_clip_rect()
 
     def begin(self, position, rect):
+        if self.drag is not None or self.app.commands.active_transaction:
+            return False
         geometry = self.geometry(rect)
         if geometry is None:
             return False
@@ -104,9 +107,12 @@ class TransformGizmo:
         if choice is None:
             return False
         ent = self.app.selection
-        normal = self.app.viewer.camera.forward if choice == "free" else np.eye(3)[choice]
+        basis = rotation_xyz(ent.rot) if self.app.transform_space == "local" else np.eye(3)
+        normal = self.app.viewer.camera.forward if choice == "free" else basis[:, choice]
+        self.app.commands.begin_transaction("Gizmo " + self.app.tool)
         self.drag = dict(entity=ent, tool=self.app.tool, axis=choice, start=np.array(position),
                          origin=origin, center=center, length=length, rect=rect,
+                         basis=basis, space=self.app.transform_space,
                          pos=ent.pos.copy(), rot=ent.rot.copy(), scale=ent.scale.copy(),
                          plane_start=plane_point(screen_ray(self.app.viewer.camera, position, rect), origin, normal))
         return True
@@ -116,14 +122,17 @@ class TransformGizmo:
             return
         d = self.drag
         ent, axis, tool = d['entity'], d['axis'], d['tool']
+        if ent.locked:
+            self.finish(cancel=True)
+            return
         delta = np.asarray(position) - d['start']
         camera, rect = self.app.viewer.camera, d['rect']
         if tool == "move" and axis == "free":
             point = plane_point(screen_ray(camera, position, rect), d['origin'], camera.forward)
             if point is not None and d['plane_start'] is not None:
-                ent.pos = d['pos'] + point - d['plane_start']
+                self.app.commands.set_transform(ent, position=d['pos'] + point - d['plane_start'])
         elif tool == "rotate":
-            normal = np.eye(3)[axis]
+            normal = d['basis'][:, axis]
             point = plane_point(screen_ray(camera, position, rect), d['origin'], normal)
             if point is None or d['plane_start'] is None:
                 angle = (delta[0] - delta[1]) * .01
@@ -131,23 +140,34 @@ class TransformGizmo:
                 a, b = d['plane_start'] - d['origin'], point - d['origin']
                 angle = math.atan2(np.dot(normal, np.cross(a, b)), np.dot(a, b))
             angles = np.eye(3)[axis] * angle
-            ent.rot = euler_xyz(rotation_xyz(angles) @ rotation_xyz(d['rot']))
+            start_rotation = rotation_xyz(d['rot'])
+            rotation = (start_rotation @ rotation_xyz(angles) if d['space'] == "local"
+                        else rotation_xyz(angles) @ start_rotation)
+            self.app.commands.set_transform(ent, rotation=euler_xyz(rotation))
         elif axis == "free":
-            ent.scale = np.maximum(.001, d['scale'] * math.exp(float(np.clip((delta[0] - delta[1]) * .01, -8, 8))))
+            scale = np.maximum(.001, d['scale'] * math.exp(float(np.clip((delta[0] - delta[1]) * .01, -8, 8))))
+            self.app.commands.set_transform(ent, scale=scale)
         else:
-            end = project_point(camera, d['origin'] + np.eye(3)[axis] * d['length'], rect)
+            direction_world = d['basis'][:, axis]
+            end = project_point(camera, d['origin'] + direction_world * d['length'], rect)
             if end is None:
                 return
             direction = np.asarray(end) - d['center']
             amount = np.dot(delta, direction) / max(np.dot(direction, direction), 25)
             if tool == "move":
-                ent.pos = d['pos'] + np.eye(3)[axis] * amount * d['length']
+                self.app.commands.set_transform(ent, position=d['pos'] + direction_world * amount * d['length'])
             else:
-                ent.scale = d['scale'].copy()
-                ent.scale[axis] = max(.001, d['scale'][axis] * math.exp(float(np.clip(amount, -8, 8))))
+                # TRS cannot represent world-axis shear. Distribute the drag
+                # across local scale components using squared axis projections.
+                weights = (np.eye(3)[axis] if d['space'] == "local" else
+                           (rotation_xyz(d['rot']).T @ direction_world) ** 2)
+                scale = np.maximum(.001, d['scale'] * np.exp(np.clip(amount * weights, -8, 8)))
+                self.app.commands.set_transform(ent, scale=scale)
 
     def finish(self, cancel=False):
-        if cancel and self.drag is not None:
-            d = self.drag
-            d['entity'].pos, d['entity'].rot, d['entity'].scale = d['pos'], d['rot'], d['scale']
+        if self.drag is not None:
+            if cancel:
+                self.app.commands.cancel_transaction()
+            else:
+                self.app.commands.commit_transaction()
         self.drag = None

@@ -192,7 +192,7 @@ class EditorTests(unittest.TestCase):
         camera.position, camera.rotation = [0, 0, 10], np.eye(3)
         before = self.app.viewer.controller.distance
         dropped = self.app.drop_asset(self.box_index, self.center)
-        np.testing.assert_allclose(dropped.pos, [0, 0, 0])
+        np.testing.assert_allclose(dropped.pos, [0, 0, .5])  # Bounds Bottom, not pivot.
         self.assertEqual(self.app.viewer.controller.distance, before)
 
     def test_drop_on_existing_surface_uses_surface_hit(self):
@@ -200,7 +200,7 @@ class EditorTests(unittest.TestCase):
         camera = self.app.viewer.camera
         camera.position, camera.rotation = [0, 0, 10], np.eye(3)
         dropped = self.app.drop_asset(self.box_index, self.center)
-        np.testing.assert_allclose(dropped.pos, [0, 0, .5], atol=1e-6)
+        np.testing.assert_allclose(dropped.pos, [0, 0, 1], atol=1e-6)
 
     def test_drop_without_forward_ground_hit_uses_target(self):
         self.app.viewer.controller.target[:] = [3, 4, 5]
@@ -208,7 +208,7 @@ class EditorTests(unittest.TestCase):
         camera.position = [0, 0, 10]
         camera.look_at([0, 0, 20])
         dropped = self.app.drop_asset(self.box_index, self.center)
-        np.testing.assert_allclose(dropped.pos, [3, 4, 5])
+        np.testing.assert_allclose(dropped.pos, [3, 4, 5.5])
 
     def prepare_gizmo(self, tool):
         root = self.add_box()
@@ -240,6 +240,7 @@ class EditorTests(unittest.TestCase):
         self.assert_cancel_restored(root, before)
 
     def test_scale_axis_drag_changes_one_component_and_cancel_restores(self):
+        self.app.transform_space = 'local'
         root, before = self.prepare_gizmo('scale')
         _, points = self.app.gizmo.handles[1]
         center, end = map(np.asarray, points)

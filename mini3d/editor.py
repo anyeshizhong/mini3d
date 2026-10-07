@@ -10,7 +10,9 @@ import pygame
 from .scene import Scene
 from .viewer import Viewer, world_bounds
 from .gltf_loader import AssetCache
-from .picking import pick_entity, screen_ray, ground_hit
+from .picking import pick_entity
+from .commands import PlacementCommands
+from .placement import create_ground, raycast_surface, SurfaceHit
 from .editor_tools import TransformGizmo
 from .model_dialog import ModelFileDialog
 from .shot_camera import ShotCamera, render_shot, capture_png
@@ -22,7 +24,9 @@ PROJECT = Path(__file__).resolve().parents[1]
 class Editor:
     def __init__(self, width=1280, height=800):
         self.scene = Scene()
+        self.scene.ground = create_ground()
         self.cache = AssetCache()
+        self.commands = PlacementCommands(self.scene, self.cache)
         manifest = json.loads((PROJECT / "model/manifest.json").read_text(encoding="utf-8"))
         self.assets = [dict(info, path=str(PROJECT / "model" / key / info["entry"]))
                        for key, info in sorted(manifest.items())
@@ -34,6 +38,9 @@ class Editor:
         self.viewer.controller.update()
         self.selection = None
         self.tool = "move"
+        self.transform_space = "world"
+        self.placement_anchor = "bounds_bottom"
+        self.place_selected_mode = False
         self.render_mode = "Lit"
         self.show_grid = True
         self.status = "Double-click or drag an asset to add it. Middle drag orbits."
@@ -101,23 +108,31 @@ class Editor:
                 self.status = "Import failed: {}".format(exc)
         return None
 
-    def select(self, entity):
+    def finish_edit(self):
         self.gizmo.finish()
+        if self.commands.active_transaction:
+            self.commands.commit_transaction()
+
+    def select(self, entity):
+        self.finish_edit()
+        self.place_selected_mode = False
         self.selection = entity
         self.viewer.selected_entity = entity
         if entity is not None:
             self.status = "Selected: " + entity.name
 
     def add_asset(self, index, position=None):
+        self.finish_edit()
         record = self.assets[index]
-        asset = self.cache.load(record["path"])
-        root = asset.instantiate()
         self._instance_number += 1
-        root.name = "{}_{:03d}".format(record["name"], self._instance_number)
-        if position is not None:
-            root.pos = np.asarray(position, dtype=np.float64)
-        self.scene.add(root)
-        self.scene.update()
+        with self.commands.transaction("Add asset"):
+            root = self.commands.spawn(record["path"],
+                name="{}_{:03d}".format(record["name"], self._instance_number),
+                position=position, placement_type=record.get("placement_type"),
+                anchor=self.placement_anchor, keep_upright=record.get("keep_upright"))
+            if position is None:
+                self.commands.place_on_surface(root, SurfaceHit(
+                    np.zeros(3), np.array([0., 0., 1.]), self.scene.ground))
         self.select(root)
         if position is None:
             self.focus_selected()
@@ -127,13 +142,19 @@ class Editor:
         return root
 
     def drop_asset(self, index, screen_pos):
+        self.finish_edit()
         self.scene.update()
-        _, point = pick_entity(self.scene, self.viewer.camera, screen_pos, self.viewport_rect)
-        if point is None:
-            point = ground_hit(screen_ray(self.viewer.camera, screen_pos, self.viewport_rect))
-        if point is None:
-            point = self.viewer.controller.target.copy()
-        root = self.add_asset(index, point)
+        hit = raycast_surface(self.scene, self.viewer.camera, screen_pos, self.viewport_rect,
+                              fallback=self.viewer.controller.target)
+        record = self.assets[index]
+        self._instance_number += 1
+        with self.commands.transaction("Drop asset"):
+            root = self.commands.spawn(record["path"],
+                name="{}_{:03d}".format(record["name"], self._instance_number),
+                placement_type=record.get("placement_type"),
+                anchor=self.placement_anchor, keep_upright=record.get("keep_upright"))
+            self.commands.place_on_surface(root, hit)
+        self.select(root)
         # Dolly distance stays unchanged during a drop. Focus is explicit with F.
         return root
 
@@ -147,22 +168,62 @@ class Editor:
         return self.add_asset(existing)
 
     def duplicate_selected(self):
+        self.finish_edit()
         if self.selection is None:
             return None
-        duplicate = self.selection.clone()
-        self._instance_number += 1
-        duplicate.name = self.selection.name + " copy"
-        # Keep an exact transform copy; the move handle can place the new instance.
-        self.scene.add(duplicate)
-        self.scene.update()
+        duplicate = self.commands.duplicate(self.selection)
         self.select(duplicate)
         return duplicate
 
     def delete_selected(self):
+        self.finish_edit()
         if self.selection in self.scene.root_entities:
-            self.scene.root_entities.remove(self.selection)
+            self.commands.delete(self.selection)
             self.select(None)
             self.status = "Object removed from the scene"
+
+    def lock_selected(self):
+        self.finish_edit()
+        if self.selection is not None:
+            self.commands.lock(self.selection)
+            self.place_selected_mode = False
+            self.status = "Locked: " + self.selection.name
+
+    def unlock_selected(self):
+        self.finish_edit()
+        if self.selection is not None:
+            self.commands.unlock(self.selection)
+            self.status = "Unlocked: " + self.selection.name
+
+    def set_entity_metadata(self, entity, **kwargs):
+        self.finish_edit()
+        return self.commands.set_metadata(entity, **kwargs)
+
+    def toggle_ground(self):
+        self.scene.ground.visible = not self.scene.ground.visible
+
+    def _history_step(self, redo=False):
+        self.finish_edit()
+        selected_id = self.selection.entity_id if self.selection is not None else None
+        changed = self.commands.redo() if redo else self.commands.undo()
+        self.select(self.scene.find_by_id(selected_id))
+        self.status = ("Redo" if redo else "Undo") + (" complete" if changed else ": history is empty")
+        return changed
+
+    def undo(self):
+        return self._history_step()
+
+    def redo(self):
+        return self._history_step(redo=True)
+
+    def begin_surface_placement(self):
+        self.finish_edit()
+        if self.camera_view:
+            raise ValueError("Switch to Editor View to place objects")
+        if self.selection is None or self.selection.locked:
+            raise ValueError("Select an unlocked object first")
+        self.place_selected_mode = True
+        self.status = "Click a surface to place the selected object; Esc cancels"
 
     def focus_selected(self):
         if self.selection is not None and self.selection.visible:
@@ -181,6 +242,7 @@ class Editor:
         self.viewer.set_view(name)
 
     def save_scene(self, path=None):
+        self.finish_edit()
         path = Path(path) if path is not None else self.scene_path
         records = []
         for root in self.scene.root_entities:
@@ -189,12 +251,17 @@ class Editor:
                 source = source.relative_to(PROJECT)
             except ValueError:
                 pass
-            records.append(dict(asset=str(source), name=root.name, position=root.pos.tolist(),
-                                rotation=root.rot.tolist(), scale=root.scale.tolist(), visible=root.visible))
+            records.append(dict(asset=str(source), name=root.name, entity_id=root.entity_id,
+                                position=root.pos.tolist(), rotation=root.rot.tolist(),
+                                scale=root.scale.tolist(), visible=root.visible, locked=root.locked,
+                                placement_type=root.placement_type, placement_anchor=root.placement_anchor,
+                                keep_upright=root.keep_upright))
         snapshot = self.viewer.controller.snapshot()
         snapshot = {key: value.tolist() if isinstance(value, np.ndarray) else value for key, value in snapshot.items()}
-        document = dict(version=1, objects=records, camera=snapshot,
-                        render_mode=self.render_mode, show_grid=self.show_grid)
+        document = dict(version=2, objects=records, camera=snapshot,
+                        render_mode=self.render_mode, show_grid=self.show_grid,
+                        ground_visible=self.scene.ground.visible,
+                        next_entity_id=self.scene._next_entity_id)
         path.parent.mkdir(parents=True, exist_ok=True)
         temporary = path.with_suffix(path.suffix + ".tmp")
         temporary.write_text(json.dumps(document, ensure_ascii=False, indent=2), encoding="utf-8")
@@ -210,9 +277,9 @@ class Editor:
     def _load_scene(self, path=None):
         path = Path(path) if path is not None else self.scene_path
         document = json.loads(path.read_text(encoding="utf-8"))
-        if document.get("version") != 1:
+        if document.get("version") not in (1, 2):
             raise ValueError("Unsupported scene format")
-        roots = []
+        loaded = Scene()
         for record in document["objects"]:
             source = Path(record["asset"])
             if not source.is_absolute():
@@ -226,7 +293,20 @@ class Editor:
                     raise ValueError("Scale must be positive")
                 setattr(root, field, vector)
             root.name, root.visible = str(record["name"]), bool(record.get("visible", True))
-            roots.append(root)
+            if document["version"] == 2:
+                root.entity_id = record["entity_id"]
+                if root.entity_id is None:
+                    raise ValueError("Missing entity ID")
+            root.placement_type = record.get("placement_type",
+                "character" if source.stem == "roman_legionnaire" else "prop")
+            root.placement_anchor = record.get("placement_anchor", "bounds_bottom")
+            root.keep_upright = record.get("keep_upright", root.placement_type == "character")
+            root.locked = record.get("locked", False)
+            if (root.placement_type not in ("character", "prop") or
+                    root.placement_anchor not in ("pivot", "bounds_bottom") or
+                    not isinstance(root.keep_upright, bool) or not isinstance(root.locked, bool)):
+                raise ValueError("Invalid placement metadata")
+            loaded.add(root)
         # Validate camera data on a temporary Viewer before replacing the scene.
         probe = Viewer(Scene(), self.viewer.width, self.viewer.height)
         camera_state = document["camera"]
@@ -239,9 +319,16 @@ class Editor:
         mode = document.get("render_mode", "Lit")
         if mode not in ("Lit", "Wireframe", "Unlit"):
             raise ValueError("Unknown render mode")
-        self.scene.root_entities = roots
+        next_id = document.get("next_entity_id", loaded._next_entity_id)
+        if isinstance(next_id, bool) or not isinstance(next_id, int) or next_id < loaded._next_entity_id:
+            raise ValueError("Invalid next entity ID")
+        self.finish_edit()
+        self.scene.root_entities[:] = loaded.root_entities
+        self.scene._next_entity_id = max(self.scene._next_entity_id, loaded._next_entity_id, next_id)
+        self.scene.ground.visible = bool(document.get("ground_visible", True))
+        self.commands.clear_history()
         self.scene.update()
-        self.select(roots[0] if roots else None)
+        self.select(loaded.root_entities[0] if loaded.root_entities else None)
         self.viewer.controller.restore(document["camera"])
         self.viewer.save_camera()
         self.render_mode, self.show_grid = mode, bool(document.get("show_grid", True))
@@ -270,7 +357,7 @@ class Editor:
         """
         if event.type == pygame.WINDOWFOCUSLOST:
             self._orbiting = False
-            self.gizmo.finish()
+            self.finish_edit()
             return
         if event.type == pygame.MOUSEBUTTONUP:
             if event.button == 2:
@@ -309,16 +396,28 @@ class Editor:
                 return
             if event.button == 2 and self.gizmo.drag is None:
                 self._orbiting = True
-            elif event.button == 1 and not self._orbiting and not self.gizmo.begin(event.pos, self.viewport_rect):
-                entity, _ = pick_entity(self.scene, self.viewer.camera, event.pos, self.viewport_rect)
-                self.select(entity)
+            elif event.button == 1 and not self._orbiting:
+                if self.place_selected_mode:
+                    self.finish_edit()
+                    hit = raycast_surface(self.scene, self.viewer.camera, event.pos, self.viewport_rect,
+                        exclude=self.selection, fallback=self.viewer.controller.target)
+                    self.commands.place_on_surface(self.selection, hit)
+                    self.place_selected_mode = False
+                    self.status = "Placed: " + self.selection.name
+                elif not self.gizmo.begin(event.pos, self.viewport_rect):
+                    entity, _ = pick_entity(self.scene, self.viewer.camera, event.pos, self.viewport_rect)
+                    self.select(entity)
             return
         if event.type == pygame.MOUSEWHEEL and ui.viewport_hovered and self.gizmo.drag is None:
             self.viewer.controller.zoom(event.y)
         if event.type != pygame.KEYDOWN or ui.keyboard_captured:
             return
         control = bool(event.mod & pygame.KMOD_CTRL)
-        if control and event.key == pygame.K_s:
+        if control and event.key == pygame.K_z:
+            self.redo() if event.mod & pygame.KMOD_SHIFT else self.undo()
+        elif control and event.key == pygame.K_y:
+            self.redo()
+        elif control and event.key == pygame.K_s:
             self.save_scene()
         elif control and event.key == pygame.K_o:
             self.load_scene()
@@ -334,6 +433,7 @@ class Editor:
             self.tool = {pygame.K_q: "select", pygame.K_g: "move", pygame.K_r: "rotate", pygame.K_s: "scale"}[event.key]
         elif event.key == pygame.K_ESCAPE:
             self.gizmo.finish(cancel=True)
+            self.place_selected_mode = False
         elif event.key in (pygame.K_1, pygame.K_KP1, pygame.K_3, pygame.K_KP3, pygame.K_7, pygame.K_KP7):
             key = event.key
             pair = (("front", "back") if key in (pygame.K_1, pygame.K_KP1) else

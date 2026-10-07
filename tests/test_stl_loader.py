@@ -55,13 +55,13 @@ class StlTests(unittest.TestCase):
         app = Editor(800, 600)
         original = app.import_asset(self.path)
         # Look directly down at the center of the first triangle.
-        app.viewer.camera.position = [10.5, 20.5, 40]
+        app.viewer.camera.position = np.array([10.5, 20.5, 40]) + original.pos
         app.viewer.camera.rotation = np.eye(3)
         app.viewer.camera.near, app.viewer.camera.far = .01, 1000
         selected, _ = pick_entity(app.scene, app.viewer.camera, (400, 300), (0, 0, 800, 600))
         self.assertIs(selected, original)
         duplicate = app.duplicate_selected()
-        duplicate.pos[:] = [2, 3, 4]
+        app.commands.set_transform(duplicate, position=[2, 3, 4])
         scene_path = Path(self.temporary.name) / 'scene.json'
         app.save_scene(scene_path)
         restored = Editor()

@@ -1,4 +1,6 @@
 """Reusable scene instances; mesh/material resources are shared by clones."""
+import re
+
 import numpy as np
 
 
@@ -48,6 +50,12 @@ class Entity:
         self.visible = True
         self.isaxes = False
         self.asset_path = None
+        # Only scene roots receive IDs; imported templates/hierarchy nodes do not.
+        self.entity_id = None
+        self.locked = False
+        self.placement_type = "prop"
+        self.placement_anchor = "bounds_bottom"
+        self.keep_upright = False
 
     def add_child(self, child):
         if child.parent is not None:
@@ -69,6 +77,11 @@ class Entity:
         duplicate = Entity(self.model, self.name, self.extra_local)
         duplicate.pos, duplicate.rot, duplicate.scale = self.pos.copy(), self.rot.copy(), self.scale.copy()
         duplicate.visible, duplicate.asset_path = self.visible, self.asset_path
+        duplicate.isaxes = self.isaxes
+        duplicate.locked = self.locked
+        duplicate.placement_type = self.placement_type
+        duplicate.placement_anchor = self.placement_anchor
+        duplicate.keep_upright = self.keep_upright
         for child in self.children:
             duplicate.add_child(child.clone())
         return duplicate
@@ -77,6 +90,8 @@ class Entity:
 class Scene:
     def __init__(self):
         self.root_entities = []
+        self.ground = None
+        self._next_entity_id = 1
         self.light_dir = np.array([.4, -.5, .8], np.float32)
         self.light_dir /= np.linalg.norm(self.light_dir)
         self.ambient, self.diffuse = .3, .7
@@ -85,11 +100,31 @@ class Scene:
         self.render_mode = "Lit"
 
     def add(self, entity):
+        if entity.parent is not None:
+            raise ValueError("Only root entities can be added to a scene")
+        if entity in self.root_entities:
+            raise ValueError("Entity is already in the scene")
+        if entity.entity_id is None:
+            # Never rewind this counter on undo/delete, so IDs are never reused.
+            while self.find_by_id("ent_{:06d}".format(self._next_entity_id)) is not None:
+                self._next_entity_id += 1
+            entity.entity_id = "ent_{:06d}".format(self._next_entity_id)
+        if not isinstance(entity.entity_id, str) or not re.fullmatch(r"ent_\d{6,}", entity.entity_id):
+            raise ValueError("Invalid entity ID: {!r}".format(entity.entity_id))
+        if self.find_by_id(entity.entity_id) is not None:
+            raise ValueError("Duplicate entity ID: " + entity.entity_id)
+        self._next_entity_id = max(self._next_entity_id, int(entity.entity_id[4:]) + 1)
         self.root_entities.append(entity)
+        return entity
+
+    def find_by_id(self, entity_id):
+        return next((root for root in self.root_entities if root.entity_id == entity_id), None)
 
     def update(self):
         for entity in self.root_entities:
             entity.update_transform()
+        if self.ground is not None:
+            self.ground.update_transform()
 
     def get_flat_render_list(self):
         result = []
@@ -102,4 +137,6 @@ class Scene:
                 visit(child)
         for root in self.root_entities:
             visit(root)
+        if self.ground is not None:
+            visit(self.ground)
         return result
