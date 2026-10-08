@@ -1,0 +1,101 @@
+{
+  "asset": {
+    "version": "2.0",
+    "generator": "Mini3D original lighting fixture"
+  },
+  "scene": 0,
+  "scenes": [
+    {
+      "nodes": [
+        0
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "mesh": 0
+    }
+  ],
+  "meshes": [
+    {
+      "primitives": [
+        {
+          "attributes": {
+            "POSITION": 0,
+            "NORMAL": 1
+          },
+          "indices": 2,
+          "material": 0
+        }
+      ]
+    }
+  ],
+  "materials": [
+    {
+      "name": "Rough nonmetal PBR",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.55,
+          0.3,
+          0.12,
+          1
+        ],
+        "metallicFactor": 0,
+        "roughnessFactor": 1
+      }
+    }
+  ],
+  "buffers": [
+    {
+      "byteLength": 648,
+      "uri": "data:application/octet-stream;base64,MzMzvzMzM78zMzM/MzMzvzMzMz8zMzM/MzMzvzMzMz8zMzO/MzMzvzMzM78zMzO/MzMzPzMzM78zMzO/MzMzPzMzMz8zMzO/MzMzPzMzMz8zMzM/MzMzPzMzM78zMzM/MzMzPzMzM78zMzO/MzMzPzMzM78zMzM/MzMzvzMzM78zMzM/MzMzvzMzM78zMzO/MzMzvzMzMz8zMzO/MzMzvzMzMz8zMzM/MzMzPzMzMz8zMzM/MzMzPzMzMz8zMzO/MzMzvzMzMz8zMzO/MzMzPzMzMz8zMzO/MzMzPzMzM78zMzO/MzMzvzMzM78zMzO/MzMzvzMzM78zMzM/MzMzPzMzM78zMzM/MzMzPzMzMz8zMzM/MzMzvzMzMz8zMzM/AACAvwAAAIAAAACAAACAvwAAAIAAAACAAACAvwAAAIAAAACAAACAvwAAAIAAAACAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAAAAgAAAgL8AAACAAAAAgAAAgL8AAACAAAAAgAAAgL8AAACAAAAAgAAAgL8AAACAAAAAAAAAgD8AAAAAAAAAAAAAgD8AAAAAAAAAAAAAgD8AAAAAAAAAAAAAgD8AAAAAAAAAgAAAAIAAAIC/AAAAgAAAAIAAAIC/AAAAgAAAAIAAAIC/AAAAgAAAAIAAAIC/AAAAAAAAAAAAAIA/AAAAAAAAAAAAAIA/AAAAAAAAAAAAAIA/AAAAAAAAAAAAAIA/AAABAAIAAAACAAMABAAFAAYABAAGAAcACAAJAAoACAAKAAsADAANAA4ADAAOAA8AEAARABIAEAASABMAFAAVABYAFAAWABcA"
+    }
+  ],
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteOffset": 0,
+      "byteLength": 288
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 288,
+      "byteLength": 288
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 576,
+      "byteLength": 72
+    }
+  ],
+  "accessors": [
+    {
+      "bufferView": 0,
+      "componentType": 5126,
+      "count": 24,
+      "type": "VEC3",
+      "min": [
+        -0.699999988079071,
+        -0.699999988079071,
+        -0.699999988079071
+      ],
+      "max": [
+        0.699999988079071,
+        0.699999988079071,
+        0.699999988079071
+      ]
+    },
+    {
+      "bufferView": 1,
+      "componentType": 5126,
+      "count": 24,
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "componentType": 5123,
+      "count": 36,
+      "type": "SCALAR"
+    }
+  ]
+}

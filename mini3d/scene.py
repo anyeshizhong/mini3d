@@ -123,12 +123,14 @@ class Scene:
         self.selected_ids = []
         self.primary_selection_id = None
         self.selected_group_id = None
+        # World-space surface-to-light direction; independent of every camera.
         self.light_dir = np.array([.4, -.5, .8], np.float32)
         self.light_dir /= np.linalg.norm(self.light_dir)
         self.ambient, self.diffuse = .3, .7
         self.show_grid = True
         self.show_axes = False
         self.render_mode = "Lit"
+        self.lighting_mode = "Studio"  # Editor preview; render_shot forces Scene.
 
     def add(self, entity):
         if entity.parent is not None:

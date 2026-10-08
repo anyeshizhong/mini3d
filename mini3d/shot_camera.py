@@ -55,6 +55,7 @@ def render_shot(scene, camera, renderer, target):
     from OpenGL import GL as gl
     clean = copy.copy(scene)
     clean.show_grid, clean.show_axes, clean.render_mode = False, False, 'Lit'
+    clean.lighting_mode = 'Scene'
     target.resize(*camera.size)
     target.bind()
     gl.glDisable(gl.GL_SCISSOR_TEST)

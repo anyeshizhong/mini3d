@@ -1,8 +1,9 @@
 """Cached OpenGL glTF material renderer for Mini3D editor viewports.
 
-Lighting uses a GGX metallic/roughness BRDF, three studio lights and a simple
-analytic studio reflection approximation. It does not implement environment-map
-IBL, shadows, transmission or animation. Call ``close`` before destroying GL.
+Lighting uses the existing GGX metallic/roughness BRDF with either one world
+directional light or three studio lights and analytic studio reflections.
+It does not implement environment-map IBL, shadows, transmission or animation.
+Call ``close`` before destroying GL.
 """
 
 import ctypes
@@ -12,6 +13,7 @@ import numpy as np
 import pygame
 from OpenGL import GL as gl
 from OpenGL.GL.shaders import compileProgram, compileShader
+from .lighting import scene_light_direction
 
 
 VERTEX_SHADER = """#version 330 core
@@ -52,6 +54,7 @@ uniform float specularFactor, alphaCutoff;
 uniform int alphaMode, shadingMode;
 uniform vec3 eye, light0, light1, light2;
 uniform float lightIntensity, ambientIntensity;
+uniform bool sceneLighting;
 const float PI = 3.14159265359;
 
 vec3 linearize(vec3 c) {
@@ -126,17 +129,25 @@ void main() {
     vec3 f0 = mix(min(vec3(1.0), 0.04 * specColor) * specWeight, base.rgb, metal);
     vec3 n = mappedNormal();
     vec3 v = normalize(eye-worldPosition);
-    vec3 result = directLight(n,v,light0,base.rgb,f0,metal,rough,vec3(3.1,2.9,2.65));
-    result += directLight(n,v,light1,base.rgb,f0,metal,rough,vec3(1.3,1.5,1.9));
-    result += directLight(n,v,light2,base.rgb,f0,metal,rough,vec3(1.3));
-    result *= lightIntensity;
-    // Broad virtual studio panels keep metals legible without an HDR asset.
-    vec3 reflection = reflect(-v,n);
-    float panel = pow(max(dot(reflection,light0),0.0),mix(80.0,2.0,rough));
-    panel += 0.65 * pow(max(dot(reflection,light1),0.0),mix(45.0,2.0,rough));
-    vec3 reflected = fresnel(max(dot(n,v),0.0),f0) * (0.27 + panel * 0.9);
     float ao = hasAO ? mix(1.0,texture(aoMap,uv).r,aoStrength) : 1.0;
-    result += ((1.0-metal)*base.rgb*0.32 + reflected) * ao * ambientIntensity;
+    vec3 result;
+    if (sceneLighting) {
+        // light0 is surface-to-light in WORLD space, without distance falloff.
+        // Keep the existing BRDF; no studio fill lights or reflection panels.
+        result = directLight(n,v,light0,base.rgb,f0,metal,rough,vec3(lightIntensity));
+        result += (1.0-metal)*base.rgb * ao * ambientIntensity;
+    } else {
+        result = directLight(n,v,light0,base.rgb,f0,metal,rough,vec3(3.1,2.9,2.65));
+        result += directLight(n,v,light1,base.rgb,f0,metal,rough,vec3(1.3,1.5,1.9));
+        result += directLight(n,v,light2,base.rgb,f0,metal,rough,vec3(1.3));
+        result *= lightIntensity;
+        // Broad virtual studio panels keep metals legible without an HDR asset.
+        vec3 reflection = reflect(-v,n);
+        float panel = pow(max(dot(reflection,light0),0.0),mix(80.0,2.0,rough));
+        panel += 0.65 * pow(max(dot(reflection,light1),0.0),mix(45.0,2.0,rough));
+        vec3 reflected = fresnel(max(dot(n,v),0.0),f0) * (0.27 + panel * 0.9);
+        result += ((1.0-metal)*base.rgb*0.32 + reflected) * ao * ambientIntensity;
+    }
     vec3 emission = emissiveFactor;
     if (hasEmissive) emission *= linearize(texture(emissiveMap,uv).rgb);
     result += emission;
@@ -312,6 +323,24 @@ class MaterialRenderer:
             gl.glActiveTexture(gl.GL_TEXTURE0+unit)
             gl.glBindTexture(gl.GL_TEXTURE_2D,self._texture(texture) if texture is not None else 0)
 
+    def _lighting(self, scene, camera):
+        mode = getattr(scene, 'lighting_mode', 'Studio')
+        if mode not in ('Scene', 'Studio'):
+            raise ValueError('Unknown lighting mode: ' + str(mode))
+        self._int('sceneLighting', mode == 'Scene')
+        if mode == 'Scene':
+            self._vec3('light0', scene_light_direction(scene))
+            self._float('lightIntensity', scene.diffuse)
+            self._float('ambientIntensity', scene.ambient)
+        else:
+            right, up, back = camera.rotation[:,0],camera.rotation[:,1],camera.rotation[:,2]
+            for name, direction in (("light0",back+up*1.1-right*0.8),
+                                    ("light1",back*0.3+right+up*0.2),
+                                    ("light2",-back+up+right*0.2)):
+                self._vec3(name,direction/np.linalg.norm(direction))
+            self._float("lightIntensity",getattr(scene,"material_light_intensity",1.0))
+            self._float("ambientIntensity",getattr(scene,"material_ambient_intensity",1.0))
+
     def render(self, entities, camera, scene, width, height, mode="Lit"):
         """Draw into the caller's framebuffer without clearing or resizing it."""
         entities = [entity for entity in entities if self._entity_mesh(entity) is not None]
@@ -329,13 +358,7 @@ class MaterialRenderer:
             self._matrix("view",camera.view_matrix)
             self._matrix("projection",camera.projection_matrix(float(width)/height))
             self._vec3("eye",camera.position)
-            right, up, back = camera.rotation[:,0],camera.rotation[:,1],camera.rotation[:,2]
-            for name, direction in (("light0",back+up*1.1-right*0.8),
-                                    ("light1",back*0.3+right+up*0.2),
-                                    ("light2",-back+up+right*0.2)):
-                self._vec3(name,direction/np.linalg.norm(direction))
-            self._float("lightIntensity",getattr(scene,"material_light_intensity",1.0))
-            self._float("ambientIntensity",getattr(scene,"material_ambient_intensity",1.0))
+            self._lighting(scene, camera)
             records = []
             for entity in entities:
                 mesh = self._mesh(self._entity_mesh(entity))

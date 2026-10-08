@@ -355,6 +355,9 @@ class Editor:
         snapshot = {key: value.tolist() if isinstance(value, np.ndarray) else value for key, value in snapshot.items()}
         document = dict(version=3, objects=records, camera=snapshot,
                         render_mode=self.render_mode, show_grid=self.show_grid,
+                        lighting=dict(mode=self.scene.lighting_mode,
+                                      light_dir=np.asarray(self.scene.light_dir).tolist(),
+                                      ambient=float(self.scene.ambient), diffuse=float(self.scene.diffuse)),
                         placement_plane=self.scene.placement_plane.to_dict(),
                         next_entity_id=self.scene._next_entity_id,
                         groups=[dict(group_id=g.group_id, name=g.name, member_ids=list(g.member_ids))
@@ -381,6 +384,18 @@ class Editor:
         if document.get("version") not in (1, 2, 3):
             raise ValueError("Unsupported scene format")
         loaded = Scene()
+        lighting = document.get('lighting', {})
+        loaded.lighting_mode = lighting.get('mode', 'Studio')
+        if loaded.lighting_mode not in ('Studio', 'Scene'):
+            raise ValueError('Unknown lighting mode')
+        loaded.light_dir = np.asarray(lighting.get('light_dir', loaded.light_dir), dtype=float)
+        from .lighting import scene_light_direction
+        scene_light_direction(loaded)  # Validate before changing the live scene.
+        for name in ('ambient', 'diffuse'):
+            value = float(lighting.get(name, getattr(loaded, name)))
+            if not np.isfinite(value) or value < 0:
+                raise ValueError('Lighting strength must be finite and nonnegative')
+            setattr(loaded, name, value)
         loaded.placement_plane = PlacementPlane(**document.get('placement_plane', {}))
         for record in document["objects"]:
             source = record["asset"]
@@ -446,6 +461,9 @@ class Editor:
         # Ignore it; preserve only explicit objects and query-plane settings.
         self.scene.ground = None
         self.scene.placement_plane = loaded.placement_plane
+        self.scene.lighting_mode = loaded.lighting_mode
+        self.scene.light_dir = loaded.light_dir.copy()
+        self.scene.ambient, self.scene.diffuse = loaded.ambient, loaded.diffuse
         self.commands.clear_history()
         self.scene.update()
         self.commands.set_selection(loaded.selected_ids, primary_id=loaded.primary_selection_id,

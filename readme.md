@@ -72,6 +72,15 @@ Outliner 或 Inspector 的 **Lock / Unlock** 控制实例锁定。锁定模型�
 & F:/gymenv/python.exe -B tests/ai_api_smoke.py
 ```
 
+### 世界空间 Directional Light
+
+Editor 视口可选择 **Studio Lighting**（原工作室预览）或 **Scene Lighting**。
+Scene Lighting 复用 `scene.light_dir`（世界空间、表面指向光源）、`scene.diffuse` 和
+`scene.ambient`，让普通几何和 glTF PBR 使用同一光照方向；移动或旋转 Camera 不会带动场景光源。
+Shot Camera 的 Camera View、PNG 与 AI API 拍照始终使用 Scene Lighting。
+模式与方向随场景保存，旧场景兼容原默认值。实现来源、许可证、PBR 测试与前后截图见
+[方向光移植实验报告](docs/directional-light.md)。
+
 ### 最小拍照流程
 
 1. 在 **Editor View** 中摆放场景、调整浏览相机。
@@ -84,7 +93,7 @@ Camera View 使用与成片相同的 Lit 离屏渲染和画幅比例，并留黑
 
 Shot Camera 不接受鼠标导航；需要调整位置时，返回 Editor View 调整后再次 Create Camera From View。单纯切换视图或浏览 Editor Camera 不会改变 Shot Camera。当前 Shot Camera 仅保留在本次运行内，尚未加入场景 JSON 保存；渲染和写 PNG 为同步操作。`mini3d/shot_camera.py` 复用现有 GLRenderer/RenderTarget，没有增加阴影、HDRI、景深等效果。
 
-当前边界：采用随窗口尺寸调整的固定面板布局，尚无任意拖拽 Docking；狐狸显示默认骨骼姿态，暂不播放动画。材质支持基础色、金属度、粗糙度、法线、AO、自发光和 specular 贴图，使用近似工作室照明，尚非完整环境 IBL。选择依据几何，不穿透透明贴图区域；未支持的压缩扩展或 UV 通道会明确报错。
+当前边界：采用随窗口尺寸调整的固定面板布局，尚无任意拖拽 Docking；狐狸显示默认骨骼姿态，暂不播放动画。材质支持基础色、金属度、粗糙度、法线、AO、自发光和 specular 贴图，可使用工作室预览或世界空间方向光，尚无阴影、HDR 或环境 IBL。选择依据几何，不穿透透明贴图区域；未支持的压缩扩展或 UV 通道会明确报错。
 
 五个模型的来源与许可见 [model/README.md](model/README.md)。其中罗马士兵为 CC BY-NC-SA 4.0，使用和分发需遵守该许可。
 

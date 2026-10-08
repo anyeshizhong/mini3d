@@ -346,6 +346,17 @@ class EditorUI:
         imgui.same_line()
         _, self.app.show_grid = imgui.checkbox("Editor Grid", self.app.show_grid)
         imgui.same_line()
+        if self.app.camera_view:
+            imgui.text_disabled('Scene Lighting (Shot)')
+        else:
+            modes = ('Studio', 'Scene')
+            imgui.push_item_width(150)
+            changed, lighting = imgui.combo('##lighting_mode',
+                modes.index(self.app.scene.lighting_mode), ['Studio Lighting', 'Scene Lighting'])
+            if changed:
+                self.app.scene.lighting_mode = modes[lighting]
+            imgui.pop_item_width()
+        imgui.same_line()
         if imgui.button("Frame all"):
             self._call("frame_all")
         imgui.same_line()

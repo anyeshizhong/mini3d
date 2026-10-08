@@ -1938,7 +1938,8 @@ class GLRenderer:
         glUniformMatrix4fv(self.locProj, 1, GL_TRUE, P)
 
         # Set lighting
-        ldir = np.asarray(scene.light_dir, dtype=DTYPE)
+        from .lighting import scene_light_direction
+        ldir = scene_light_direction(scene)
         glUniform3f(self.locLdir, float(ldir[0]), float(ldir[1]), float(ldir[2]))
         glUniform1f(self.locAmb, float(scene.ambient))
         glUniform1f(self.locDif, float(scene.diffuse))
@@ -1976,7 +1977,8 @@ class GLRenderer:
         glUniformMatrix4fv(self.toon_locProj, 1, GL_TRUE, P)
 
         # Set lighting
-        ldir = np.asarray(scene.light_dir, dtype=DTYPE)
+        from .lighting import scene_light_direction
+        ldir = scene_light_direction(scene)
         glUniform3f(self.toon_locLdir, float(ldir[0]), float(ldir[1]), float(ldir[2]))
         glUniform1f(self.toon_locAmb, float(scene.ambient))
         glUniform1f(self.toon_locDif, float(scene.diffuse))
