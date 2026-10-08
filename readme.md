@@ -62,6 +62,16 @@ Outliner 或 Inspector 的 **Lock / Unlock** 控制实例锁定。锁定模型�
 
 间距使用模型原始单位，不自动换算。Roman 原始高度约 25.96；可显式将实例 Scale 设为 `0.06 / 0.06 / 0.06`，用 Surface Move 重新贴地后，再使用 1.2/1.4 间距。Scene v3 保存 Group、成员 ID 和选择状态，兼容没有 Group 的旧版场景。实际 40 人流程、Command API、性能数据及当前限制见 [Placement V2 验收报告](docs/placement-v2.md)。当前核显上 40/100 人已有明显卡顿，尚未做大场景性能优化。
 
+### Python / JSON API
+
+`mini3d.api.Mini3DAPI` 提供不操作 Editor UI 的场景查询、Placement Commands、事务、保存载入和 Shot Camera 拍照接口；返回普通 dict/list 和稳定 ID。JSON 命令由 `mini3d.api_dispatch` 的白名单 dispatcher 执行。
+
+接口、调用示例及限制见 [AI API V1 文档](docs/ai-api-v1.md)。建场景不需要窗口；Capture 需要调用方提供真实 OpenGL context 和 GLRenderer。实际验收已通过纯 API 完成 Roman 5×8 编队、变换、保存、重新载入，并输出 50mm、16:9 的 1920×1080 PNG。
+
+```powershell
+& F:/gymenv/python.exe -B tests/ai_api_smoke.py
+```
+
 ### 最小拍照流程
 
 1. 在 **Editor View** 中摆放场景、调整浏览相机。
