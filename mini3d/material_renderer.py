@@ -356,6 +356,14 @@ class MaterialRenderer:
                 else:
                     gl.glDisable(gl.GL_BLEND)
                 gl.glDepthMask(not transparent)
+                # The large built-in plane can numerically win depth tests
+                # against tiny terrain surfaces just above Z=0. Bias only its
+                # rasterized depth; placement geometry and glTF stay intact.
+                if entity is getattr(scene, "ground", None):
+                    gl.glEnable(gl.GL_POLYGON_OFFSET_FILL)
+                    gl.glPolygonOffset(1.0, 1.0)
+                else:
+                    gl.glDisable(gl.GL_POLYGON_OFFSET_FILL)
                 if material.get("doubleSided",False):
                     gl.glDisable(gl.GL_CULL_FACE)
                 else:
@@ -448,7 +456,9 @@ class MaterialRenderer:
         state = {name:int(gl.glGetIntegerv(getattr(gl,"GL_"+name))) for name in integer_names}
         state["enabled"] = {cap:bool(gl.glIsEnabled(cap)) for cap in
                             (gl.GL_DEPTH_TEST,gl.GL_CULL_FACE,gl.GL_BLEND,gl.GL_FRAMEBUFFER_SRGB,
-                             gl.GL_STENCIL_TEST,gl.GL_SCISSOR_TEST)}
+                             gl.GL_STENCIL_TEST,gl.GL_SCISSOR_TEST,gl.GL_POLYGON_OFFSET_FILL)}
+        state["polygon_offset"] = (float(gl.glGetFloatv(gl.GL_POLYGON_OFFSET_FACTOR)),
+                                   float(gl.glGetFloatv(gl.GL_POLYGON_OFFSET_UNITS)))
         state["depth_mask"] = bool(gl.glGetBooleanv(gl.GL_DEPTH_WRITEMASK))
         state["color_mask"] = np.asarray(gl.glGetBooleanv(gl.GL_COLOR_WRITEMASK)).reshape(-1)
         state["polygon"] = np.asarray(gl.glGetIntegerv(gl.GL_POLYGON_MODE)).reshape(-1)
@@ -463,6 +473,7 @@ class MaterialRenderer:
         for cap, enabled in state["enabled"].items():
             (gl.glEnable if enabled else gl.glDisable)(cap)
         gl.glDepthMask(state["depth_mask"])
+        gl.glPolygonOffset(*state["polygon_offset"])
         gl.glColorMask(*[bool(value) for value in state["color_mask"]])
         gl.glClearStencil(state["STENCIL_CLEAR_VALUE"])
         for face, prefix in ((gl.GL_FRONT,"STENCIL_"),(gl.GL_BACK,"STENCIL_BACK_")):
