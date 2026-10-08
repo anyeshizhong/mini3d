@@ -69,7 +69,9 @@ class Mini3DAPI:
             selected_ids=list(self._app.scene.selected_ids),
             primary_selection_id=self._app.scene.primary_selection_id,
             selected_group_id=self._app.scene.selected_group_id,
-            ground=dict(visible=bool(self._app.scene.ground.visible), z=0, size=2000),
+            ground=dict(visible=False, z=self._app.scene.placement_plane.z,
+                        size=self._app.scene.placement_plane.size),
+            placement_plane=self._app.scene.placement_plane.to_dict(),
             shot_camera=self.get_shot_camera(),
             history=dict(undo_count=self._commands.undo_count, redo_count=self._commands.redo_count,
                          active_transaction=self._commands.active_transaction))
@@ -108,11 +110,8 @@ class Mini3DAPI:
         bounds = geometry_bounds(entity) if resolved_anchor == 'bounds_bottom' else None
         center = entity.pos if bounds is None else (bounds[0] + bounds[1]) / 2
         x, y = float(center[0] if x is None else x), float(center[1] if y is None else y)
-        low, high = geometry_bounds(self._app.scene.ground)
-        if not (np.isfinite([x, y]).all() and low[0] <= x <= high[0] and low[1] <= y <= high[1]):
-            raise ValueError('Ground position must lie inside the finite Ground bounds')
-        self._commands.place_on_surface(entity, SurfaceHit([x, y, low[2]], [0, 0, 1],
-                                        self._app.scene.ground), anchor=anchor)
+        point = self._app.scene.placement_plane.point(x, y)
+        self._commands.place_on_surface(entity, SurfaceHit(point, [0, 0, 1]), anchor=anchor)
         return self.get_entity(entity_id)
 
     def lock(self, entity_id):

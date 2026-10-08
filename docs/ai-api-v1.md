@@ -13,6 +13,8 @@ API 内部复用 Editor **状态对象**及已有 v3 保存载入方法，不调
 
 ## API
 
+Ground 职责分离后，`place_on_ground` 的签名、Bounds Bottom 行为、有限范围和 Commands 路径保持兼容；目标改为数学 Placement Plane。`get_scene_state()['ground']` 保留 `visible/z/size` 字段，其中 `visible=False` 表示没有隐式实体地面，新增 `placement_plane` 描述查询平面。Grid 开关不影响放置或 Capture。需要实体地面可用 `spawn('builtin:ground')`，它拥有普通 Stable ID，并支持原有变换、复制、锁定、撤销和保存载入。照片不再自动带灰色地板。
+
 ```python
 from mini3d.api import Mini3DAPI
 api = Mini3DAPI()  # 建场景/查询/保存无需窗口或 GL；不能在此状态下 capture
@@ -27,7 +29,7 @@ api = Mini3DAPI()  # 建场景/查询/保存无需窗口或 GL；不能在此状
 | `delete(entity_id)` / `duplicate(entity_id, name=None)` | 删除结果 / 新实例 dict，共享资源，遵守 Locked 规则 |
 | `set_transform(entity_id, position=None, rotation=None, scale=None)` | 设置实例绝对 TRS |
 | `transform_many(entity_ids, translation=None, rotation=None, scale=None, pivot=None)` | 复用 V2 的整体世界增量变换，默认 Selection Center，跳过 Locked；返回实际修改的实例列表 |
-| `place_on_ground(entity_id, x=None, y=None, anchor=None)` | 锚点放到有限 Ground；默认保持当前锚点 XY，重复调用不漂移，越界报错 |
+| `place_on_ground(entity_id, x=None, y=None, anchor=None)` | 锚点放到有限数学 Placement Plane；默认保持当前锚点 XY，重复调用不漂移，越界报错 |
 | `place_at(entity_id, position, normal=(0,0,1), anchor=None, keep_upright=None)` | 将所选 anchor 对齐调用方提供的 surface 点；不是 root pivot 的绝对赋值，不做额外 raycast/碰撞 |
 | `lock(entity_id)` / `unlock(entity_id)` | 返回更新后的实例 dict |
 | `create_group(member_ids, name=None)` | 返回 SceneGroup dict |

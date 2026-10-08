@@ -172,8 +172,7 @@ def raycast_entities(roots, camera, screen_pos, rect, include_locked=True, exclu
         if any(item is root or (isinstance(item, str) and item == getattr(root, 'entity_id', None))
                for item in excluded):
             continue
-        if not include_locked and (getattr(root, 'locked', False) or
-                                   getattr(root, 'entity_id', None) == 'ground'):
+        if not include_locked and getattr(root, 'locked', False):
             continue
         root.update_transform()
         collect(root, root)
@@ -195,6 +194,6 @@ def raycast_entities(roots, camera, screen_pos, rect, include_locked=True, exclu
 
 
 def pick_entity(scene, camera, screen_pos, rect):
-    """Select an unlocked ordinary instance; Ground is never selectable."""
+    """Select an unlocked scene instance; placement planes are not entities."""
     hit = raycast_entities(scene.root_entities, camera, screen_pos, rect, include_locked=False)
     return (hit[0], hit[1]) if hit is not None else (None, None)

@@ -113,6 +113,9 @@ class Entity:
 class Scene:
     def __init__(self):
         self.root_entities = []
+        from .placement_plane import PlacementPlane
+        self.placement_plane = PlacementPlane()
+        # Legacy slot only; never traversed, rendered or queried implicitly.
         self.ground = None
         self._next_entity_id = 1
         self.groups = []
@@ -204,8 +207,6 @@ class Scene:
     def update(self):
         for entity in self.root_entities:
             entity.update_transform()
-        if self.ground is not None:
-            self.ground.update_transform()
 
     def get_flat_render_list(self):
         result = []
@@ -218,6 +219,4 @@ class Scene:
                 visit(child)
         for root in self.root_entities:
             visit(root)
-        if self.ground is not None:
-            visit(self.ground)
         return result

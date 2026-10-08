@@ -53,7 +53,11 @@ def run(output):
         picture = pygame.image.load(capture['path'])
         assert picture.get_size() == (1920, 1080)
         rgb = pygame.surfarray.array3d(picture).astype(float)
-        assert rgb.std() > 10, 'Expected scene geometry in capture'
+        # Default Ground no longer supplies a bright background. Check actual
+        # model pixels against the renderer clear color, not whole-frame std.
+        foreground = np.max(np.abs(rgb - [30,30,35]),axis=2) > 5
+        assert int(foreground.sum()) > 10000, 'Expected visible formation geometry'
+        assert rgb[foreground].std() > 10, 'Expected textured model detail'
         response = json.loads(dispatch_json(restored, '{"command":"get_scene_state"}'))
         assert response['ok'] and len(response['result']['entities']) == 40
         assert len(set(e['entity_id'] for e in response['result']['entities'])) == 40

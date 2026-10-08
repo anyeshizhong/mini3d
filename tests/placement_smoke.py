@@ -238,7 +238,7 @@ def run_smoke(output):
             # integer mouse pixel, not the maximum height of its entire AABB.
             support = raycast_surface(app.scene, app.viewer.camera,
                 tuple(map(int, screen(world))), app.viewport_rect)
-            assert support.entity is (app.scene.ground if index == 2 else table)
+            assert support.entity is (None if index == 2 else table)
             yield from asset_drag(index, world)
             prop = app.selection
             expected = support.position[2]

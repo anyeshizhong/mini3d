@@ -8,7 +8,7 @@ from dataclasses import dataclass
 
 import numpy as np
 
-from .picking import raycast_entities
+from .picking import raycast_entities, screen_ray
 from .scene import Entity, Mesh, rotation_xyz
 
 
@@ -36,11 +36,7 @@ def _vector(value, label):
 
 
 def create_ground(size=2000.0):
-    """Built-in finite, two-triangle ground, centred at world Z=0.
-
-    2000 native units per side accommodates the unscaled Roman scan (~26
-    units high). No asset is loaded and the ground is not a scene instance.
-    """
+    """Create a real, ordinary two-triangle Entity (never added implicitly)."""
     size = float(size)
     if not np.isfinite(size) or size <= 0:
         raise ValueError('Ground size must be positive and finite')
@@ -51,26 +47,28 @@ def create_ground(size=2000.0):
                                              'metallicFactor': 0.0, 'roughnessFactor': 1.0},
                     'doubleSided': True})
     ground = Entity(mesh, 'Ground')
-    ground.entity_id = 'ground'
-    ground.locked = True
     ground.update_transform()
     return ground
 
 
 def raycast_surface(scene, camera, screen_pos, rect, exclude=None, fallback=None):
-    """Hit visible model geometry first, then finite Ground, then fallback.
+    """Hit scene Mesh first, then mathematical PlacementPlane, then fallback.
 
     Locked instances remain placement surfaces. ``exclude`` prevents placing
     an instance on its own geometry when repositioning it.
     """
     hit = raycast_entities(scene.root_entities, camera, screen_pos, rect,
                            include_locked=True, exclude=exclude)
-    if hit is None and getattr(scene, 'ground', None) is not None:
-        hit = raycast_entities([scene.ground], camera, screen_pos, rect,
-                               include_locked=True, exclude=exclude)
     if hit is not None:
         entity, position, normal, distance = hit
         return SurfaceHit(position, normal, entity, distance)
+    plane = getattr(scene, 'placement_plane', None)
+    if plane is not None:
+        origin, direction = screen_ray(camera, screen_pos, rect)
+        intersection = plane.intersect(origin, direction)
+        if intersection is not None:
+            position, distance = intersection
+            return SurfaceHit(position, (0, 0, 1), distance=distance)
     if fallback is not None:
         return SurfaceHit(fallback, (0, 0, 1))
     return None

@@ -208,7 +208,7 @@ class _Document:
 class Asset:
     """Loaded template whose instances share mesh and material resources."""
     def __init__(self, path, root, animation_names=None, skin_count=0):
-        self.path = str(Path(path).resolve())
+        self.path = str(path) if str(path) == 'builtin:ground' else str(Path(path).resolve())
         self.name = Path(path).stem
         self.root = root
         self.animation_names = animation_names or []
@@ -225,6 +225,11 @@ class AssetCache:
         self._assets = {}
 
     def load(self, path):
+        if str(path) == 'builtin:ground':
+            if str(path) not in self._assets:
+                from .placement import create_ground
+                self._assets[str(path)] = Asset(str(path), create_ground(10))
+            return self._assets[str(path)]
         key = str(Path(path).resolve())
         if key not in self._assets:
             suffix = Path(key).suffix.lower()

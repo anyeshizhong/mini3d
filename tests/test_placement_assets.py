@@ -33,7 +33,6 @@ class ExistingAssetPlacementTests(unittest.TestCase):
 
     def scene(self):
         scene = Scene()
-        scene.ground = create_ground()
         return scene
 
     def assert_anchored(self, entity, hit):
@@ -49,7 +48,7 @@ class ExistingAssetPlacementTests(unittest.TestCase):
         roman = self.asset('roman')
         roman.placement_type = 'character'
         ground_hit = raycast_surface(scene, camera, CENTER, RECT)
-        self.assertIs(ground_hit.entity, scene.ground)
+        self.assertIsNone(ground_hit.entity)
         roman.pos, roman.rot = self.assert_anchored(roman, ground_hit)
         scene.add(roman)
         # Native assets use different units; enlarge the existing table for a

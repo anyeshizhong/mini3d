@@ -356,14 +356,6 @@ class MaterialRenderer:
                 else:
                     gl.glDisable(gl.GL_BLEND)
                 gl.glDepthMask(not transparent)
-                # The large built-in plane can numerically win depth tests
-                # against tiny terrain surfaces just above Z=0. Bias only its
-                # rasterized depth; placement geometry and glTF stay intact.
-                if entity is getattr(scene, "ground", None):
-                    gl.glEnable(gl.GL_POLYGON_OFFSET_FILL)
-                    gl.glPolygonOffset(1.0, 1.0)
-                else:
-                    gl.glDisable(gl.GL_POLYGON_OFFSET_FILL)
                 if material.get("doubleSided",False):
                     gl.glDisable(gl.GL_CULL_FACE)
                 else:

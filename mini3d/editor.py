@@ -12,7 +12,8 @@ from .viewer import Viewer, world_bounds
 from .gltf_loader import AssetCache
 from .picking import pick_entity
 from .commands import PlacementCommands
-from .placement import create_ground, raycast_surface, SurfaceHit
+from .placement import raycast_surface, SurfaceHit
+from .placement_plane import PlacementPlane
 from .editor_tools import TransformGizmo
 from .model_dialog import ModelFileDialog
 from .shot_camera import ShotCamera, render_shot, capture_png
@@ -24,7 +25,6 @@ PROJECT = Path(__file__).resolve().parents[1]
 class Editor:
     def __init__(self, width=1280, height=800):
         self.scene = Scene()
-        self.scene.ground = create_ground()
         self.cache = AssetCache()
         self.commands = PlacementCommands(self.scene, self.cache)
         manifest = json.loads((PROJECT / "model/manifest.json").read_text(encoding="utf-8"))
@@ -166,7 +166,7 @@ class Editor:
                 anchor=self.placement_anchor, keep_upright=record.get("keep_upright"))
             if position is None:
                 self.commands.place_on_surface(root, SurfaceHit(
-                    np.zeros(3), np.array([0., 0., 1.]), self.scene.ground))
+                    self.scene.placement_plane.point(0, 0), np.array([0., 0., 1.])))
             self.commands.set_selection([root.entity_id])
         self.select(root)
         if position is None:
@@ -254,8 +254,12 @@ class Editor:
             delta = dict(scale=value / primary.scale)
         return self.commands.transform_many(self.scene.selected_ids, **delta)
 
-    def toggle_ground(self):
-        self.scene.ground.visible = not self.scene.ground.visible
+    def add_ground_mesh(self):
+        self.finish_edit()
+        root = self.commands.spawn('builtin:ground', name='Ground Mesh')
+        self.select(root)
+        self.status = 'Added ordinary Ground Mesh (10 x 10); transform or lock in Inspector'
+        return root
 
     def _history_step(self, redo=False):
         self.finish_edit()
@@ -335,11 +339,13 @@ class Editor:
         path = Path(path) if path is not None else self.scene_path
         records = []
         for root in self.scene.root_entities:
-            source = Path(root.asset_path)
-            try:
-                source = source.relative_to(PROJECT)
-            except ValueError:
-                pass
+            source = root.asset_path
+            if source != 'builtin:ground':
+                source = Path(source)
+                try:
+                    source = source.relative_to(PROJECT)
+                except ValueError:
+                    pass
             records.append(dict(asset=str(source), name=root.name, entity_id=root.entity_id,
                                 position=root.pos.tolist(), rotation=root.rot.tolist(),
                                 scale=root.scale.tolist(), visible=root.visible, locked=root.locked,
@@ -349,7 +355,7 @@ class Editor:
         snapshot = {key: value.tolist() if isinstance(value, np.ndarray) else value for key, value in snapshot.items()}
         document = dict(version=3, objects=records, camera=snapshot,
                         render_mode=self.render_mode, show_grid=self.show_grid,
-                        ground_visible=self.scene.ground.visible,
+                        placement_plane=self.scene.placement_plane.to_dict(),
                         next_entity_id=self.scene._next_entity_id,
                         groups=[dict(group_id=g.group_id, name=g.name, member_ids=list(g.member_ids))
                                 for g in self.scene.groups],
@@ -375,10 +381,13 @@ class Editor:
         if document.get("version") not in (1, 2, 3):
             raise ValueError("Unsupported scene format")
         loaded = Scene()
+        loaded.placement_plane = PlacementPlane(**document.get('placement_plane', {}))
         for record in document["objects"]:
-            source = Path(record["asset"])
-            if not source.is_absolute():
-                source = PROJECT / source
+            source = record["asset"]
+            if source != 'builtin:ground':
+                source = Path(source)
+                if not source.is_absolute():
+                    source = PROJECT / source
             root = self.cache.load(source).instantiate()
             for key, field in (("position", "pos"), ("rotation", "rot"), ("scale", "scale")):
                 vector = np.asarray(record[key], dtype=float)
@@ -393,7 +402,7 @@ class Editor:
                 if root.entity_id is None:
                     raise ValueError("Missing entity ID")
             root.placement_type = record.get("placement_type",
-                "character" if source.stem == "roman_legionnaire" else "prop")
+                "character" if Path(source).stem == "roman_legionnaire" else "prop")
             root.placement_anchor = record.get("placement_anchor", "bounds_bottom")
             root.keep_upright = record.get("keep_upright", root.placement_type == "character")
             root.locked = record.get("locked", False)
@@ -433,7 +442,10 @@ class Editor:
         self.scene.groups[:] = loaded.groups
         self.scene._next_group_id = max(self.scene._next_group_id, loaded._next_group_id, next_group)
         self.scene._next_entity_id = max(self.scene._next_entity_id, loaded._next_entity_id, next_id)
-        self.scene.ground.visible = bool(document.get("ground_visible", True))
+        # Old ground_visible was an editor helper, never a serialized object.
+        # Ignore it; preserve only explicit objects and query-plane settings.
+        self.scene.ground = None
+        self.scene.placement_plane = loaded.placement_plane
         self.commands.clear_history()
         self.scene.update()
         self.commands.set_selection(loaded.selected_ids, primary_id=loaded.primary_selection_id,

@@ -1,8 +1,12 @@
 # Rome River Side 几何消失诊断
 
+本文保留首次诊断及偏移方案失败的历史证据。当前实现已移除默认 Ground Mesh 和它的深度偏移，见 [Ground 职责分离修复](ground-separation.md)。旧诊断脚本入口现转发到新的近/远景像素回归，原脚本可在 `bd41b2b` 查看。
+
 2026-10-08，Intel UHD Graphics 620，真实桌面 OpenGL / Editor。使用本地 `model/08_rome_river/rome_river_side.glb`，未改 GLB、材质或实例几何。
 
 ## 结论
+
+**后续近景复测：当前修复不完整。** 用户反馈近景中大面积地表被灰色 Ground 覆盖；将自动取景距离缩为 0.4 倍后已复现，`fixed_ground_occludes_model_pixels == 0` 回归断言失败。关闭 Ground 后同一姿态的道路、河面和桥恢复。`glPolygonOffset(1, 1)` 仅通过下述远景姿态，不能作为近景问题已解决的结论。证据：`captures/rome-close-diagnosis/view-00-H-fixed.png` 与 `view-00-D-no-ground.png`。此次复测未继续增大偏移或改动运行时代码。
 
 已复现**原始比例模型在部分俯视角度下河面消失**。根因是巨大内置 Ground 的深度精度误差，使它错误遮挡略高于 Z=0 的河面；不是 glTF doubleSided 丢失、winding 错误或 camera near/far 裁掉模型。
 

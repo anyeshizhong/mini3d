@@ -8,6 +8,7 @@ from mini3d.picking import pick_entity
 from mini3d.placement import (SurfaceHit, compute_placement, create_ground,
                              geometry_bounds, raycast_surface)
 from mini3d.scene import Entity, Mesh, Scene, rotation_xyz
+from mini3d.placement_plane import PlacementPlane
 
 
 RECT = (0, 0, 800, 600)
@@ -21,23 +22,25 @@ def triangle():
 class PlacementTests(unittest.TestCase):
     def setUp(self):
         self.scene = Scene()
-        self.scene.ground = create_ground(20)
+        self.scene.placement_plane = PlacementPlane(size=20)
         self.camera = Camera(position=(0, 0, 10), near=.1, far=100)
 
-    def test_ground_is_geometry_and_cannot_be_selected(self):
-        ground = self.scene.ground
+    def test_plane_is_not_geometry_and_explicit_ground_is_selectable(self):
+        ground = create_ground(20)
         self.assertEqual(len(ground.model.indices), 2)
-        self.assertEqual(ground.entity_id, 'ground')
-        self.assertTrue(ground.locked)
+        self.assertIsNone(ground.entity_id)
+        self.assertFalse(ground.locked)
         self.assertIsNone(ground.asset_path)
         self.assertIsNotNone(ground.model.material)
         hit = raycast_surface(self.scene, self.camera, CENTER, RECT)
-        self.assertIs(hit.entity, ground)
+        self.assertIsNone(hit.entity)
         np.testing.assert_allclose(hit.position, [0, 0, 0])
         np.testing.assert_allclose(hit.normal, [0, 0, 1])
-        # Even accidental inclusion in the ordinary root list cannot select it.
-        self.scene.root_entities.append(ground)
         self.assertEqual(pick_entity(self.scene, self.camera, CENTER, RECT), (None, None))
+        self.assertEqual(self.scene.get_flat_render_list(), [])
+        self.scene.add(ground)
+        self.assertIs(pick_entity(self.scene, self.camera, CENTER, RECT)[0], ground)
+        self.assertIs(raycast_surface(self.scene, self.camera, CENTER, RECT).entity, ground)
 
     def test_finite_ground_and_fallback(self):
         self.camera.position = [30, 0, 10]
@@ -45,7 +48,7 @@ class PlacementTests(unittest.TestCase):
         hit = raycast_surface(self.scene, self.camera, CENTER, RECT, fallback=[3, 4, 5])
         self.assertIsNone(hit.entity)
         np.testing.assert_allclose(hit.position, [3, 4, 5])
-        self.scene.ground.visible = False
+        self.scene.placement_plane.enabled = False
         self.camera.position = [0, 0, 10]
         self.assertIsNone(raycast_surface(self.scene, self.camera, CENTER, RECT))
 
@@ -68,8 +71,7 @@ class PlacementTests(unittest.TestCase):
         self.scene.add(root)
         self.assertIs(raycast_surface(self.scene, self.camera, CENTER, RECT).entity, root)
         for exclude in (root, root.entity_id, [root], [root.entity_id]):
-            self.assertIs(raycast_surface(self.scene, self.camera, CENTER, RECT, exclude).entity,
-                          self.scene.ground)
+            self.assertIsNone(raycast_surface(self.scene, self.camera, CENTER, RECT, exclude).entity)
 
     def test_world_normal_with_nonuniform_mirrored_slope(self):
         root = triangle()

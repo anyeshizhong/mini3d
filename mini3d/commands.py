@@ -3,7 +3,7 @@
 Angles are XYZ Euler radians and all coordinates are engine coordinates. Use
 ``transaction(label)`` to group many API calls, or begin/commit/cancel around a
 mouse gesture. History snapshots retain entity/mesh identities; they never copy
-mesh or texture data. The built-in ground is not an editable scene instance.
+mesh or texture data. The mathematical placement plane is not an instance.
 """
 from contextlib import contextmanager
 from pathlib import Path

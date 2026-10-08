@@ -44,9 +44,9 @@ File 菜单支持保存或载入默认场景。场景存为 `scenes/editor_scene
 
 ### Placement V1
 
-拖入资产默认使用 **Bounds Bottom**：模型当前旋转、缩放和完整层级的世界包围盒底部中心落到命中的表面。工具栏可将新资产的锚点改为 **Pivot**；已放置实例的锚点在 Inspector 中修改。选中实例后点击 **Place on Surface**，再点击视口中的表面即可重新摆放；射线忽略自身，先找模型几何，再找内置 Ground，最后使用观察目标作为 fallback。直接移动 Gizmo 不会自动吸附。
+拖入资产默认使用 **Bounds Bottom**：模型当前旋转、缩放和完整层级的世界包围盒底部中心落到命中的表面。工具栏可将新资产的锚点改为 **Pivot**；已放置实例的锚点在 Inspector 中修改。选中实例后点击 **Place on Surface**，再点击视口中的表面即可重新摆放；射线忽略自身，先找模型几何，再找数学 Placement Plane，最后使用观察目标作为 fallback。直接移动 Gizmo 不会自动吸附。
 
-Roman Legionnaire 默认 Character，重新表面放置时保留朝向角并清除前后、左右倾斜，保持世界 Z 向上。Prop 默认不纠正旋转。Ground 是 Z=0、边长 2000 的内置两三角形平面，不是 Asset；Ground 开关同时控制其显示与表面命中，Ground Grid 单独控制辅助线。Ground 是场景几何，开启时也会出现在照片中；辅助线不会进入照片。
+Roman Legionnaire 默认 Character，重新表面放置时保留朝向角并清除前后、左右倾斜，保持世界 Z 向上。Prop 默认不纠正旋转。默认场景没有实体 Ground：数学 Placement Plane 默认 Z=0，沿用边长 2000 的有限查询范围；**Editor Grid** 只控制独立辅助线，不写深度、不影响放置、不进入照片。需要真实地面时使用 **Add → Ground Mesh**（10×10，普通可选中、可变换、可锁定和可存档实例），或 API `spawn('builtin:ground')`。旧场景的 `ground_visible` 不会重新创建默认地面。调用链、前后截图与像素/深度验证见 [Ground 职责分离记录](docs/ground-separation.md)。
 
 Outliner 或 Inspector 的 **Lock / Unlock** 控制实例锁定。锁定模型继续显示并接收表面放置，但普通左键无法选中，Gizmo、变换和删除命令拒绝修改；通过 Outliner 选中后可以解锁。复制锁定对象得到可编辑的新实例，Mesh/Texture 仍共享。
 

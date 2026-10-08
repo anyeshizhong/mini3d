@@ -182,7 +182,7 @@ class CommandsTests(unittest.TestCase):
         self.assertEqual(self.scene.root_entities, [])
         self.assertEqual(self.commands.undo_count, 0)
         self.scene.update()
-        self.assertEqual(self.scene.get_flat_render_list(), [ground])
+        self.assertEqual(self.scene.get_flat_render_list(), [])  # Legacy helper is ignored.
         entity = self.spawn()
         self.commands.undo()
         self.assertIs(self.scene.ground, ground)

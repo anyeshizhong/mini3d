@@ -167,6 +167,8 @@ class EditorUI:
                     self._call("focus_selected")
                 imgui.end_menu()
             if imgui.begin_menu("Add").opened:
+                if imgui.menu_item("Ground Mesh")[0]:
+                    self._call("add_ground_mesh")
                 for index, asset in enumerate(self.app.assets):
                     if imgui.menu_item(f"{asset['name']}##add{index}")[0]:
                         self._call("add_asset", index)
@@ -342,14 +344,8 @@ class EditorUI:
             self.app.render_mode = self.MODES[mode_index]
         imgui.pop_item_width()
         imgui.same_line()
-        _, self.app.show_grid = imgui.checkbox("Ground Grid", self.app.show_grid)
+        _, self.app.show_grid = imgui.checkbox("Editor Grid", self.app.show_grid)
         imgui.same_line()
-        ground = self.app.scene.ground
-        if ground is not None:
-            changed, _ = imgui.checkbox("Ground", ground.visible)
-            if changed:
-                self._call("toggle_ground")
-            imgui.same_line()
         if imgui.button("Frame all"):
             self._call("frame_all")
         imgui.same_line()

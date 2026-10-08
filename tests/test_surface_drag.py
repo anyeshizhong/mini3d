@@ -6,6 +6,7 @@ import numpy as np
 from mini3d.camera import Camera
 from mini3d.commands import PlacementCommands
 from mini3d.placement import create_ground, geometry_bounds
+from mini3d.placement_plane import PlacementPlane
 from mini3d.scene import Entity, Mesh, Scene
 from mini3d.surface_drag import SurfaceDrag
 
@@ -16,7 +17,7 @@ RECT = (0, 0, 800, 600)
 class SurfaceDragTests(unittest.TestCase):
     def setUp(self):
         self.scene = Scene()
-        self.scene.ground = create_ground(20)
+        self.scene.placement_plane = PlacementPlane(size=20)
         self.entity = self.scene.add(Entity(Mesh(
             [[-1, -1, -2], [1, -1, -2], [0, 1, 1]], [[0, 1, 2]])))
         self.entity.pos[:] = [2, 3, 8]

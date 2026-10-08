@@ -1880,23 +1880,7 @@ class GLRenderer:
             self.material_renderer.render(imported, camera, scene, self.w, self.h,
                                           mode=getattr(scene, "render_mode", "Lit"))
 
-        # ==================== Render Grid ====================
-        glUseProgram(self.line_program)
-        grid_scale = getattr(scene, "grid_scale", 1.0)
-        grid_transform = np.diag([grid_scale, grid_scale, 1., 1.])
-        if getattr(scene, "ground", None) is not None:
-            # Bias only the editor guide lines above the built-in surface.
-            # Ground geometry and placement remain exactly at world Z=0.
-            grid_transform[2, 3] = grid_scale * .02
-        grid_view = V @ grid_transform
-        glUniformMatrix4fv(self.line_locView, 1, GL_TRUE, grid_view.astype(DTYPE))
-        glUniformMatrix4fv(self.line_locProj, 1, GL_TRUE, P)
-
-        glBindVertexArray(self.grid.vao)
-        glLineWidth(1.0)
-        if getattr(scene, "show_grid", True):
-            glDrawArrays(GL_LINES, 0, self.grid.count)
-        glBindVertexArray(0)
+        self.render_editor_grid(scene, camera)
 
         # ==================== Render Axes ====================
         glDisable(GL_DEPTH_TEST)
@@ -1912,6 +1896,39 @@ class GLRenderer:
         
         glEnable(GL_DEPTH_TEST)
     
+    def render_editor_grid(self, scene, camera):
+        """Finite editor guide lines: read scene depth, never write it."""
+        if not getattr(scene, "show_grid", True):
+            return
+        depth_mask = bool(glGetBooleanv(GL_DEPTH_WRITEMASK))
+        depth_test = bool(glIsEnabled(GL_DEPTH_TEST))
+        depth_func = int(glGetIntegerv(GL_DEPTH_FUNC))
+        program = int(glGetIntegerv(GL_CURRENT_PROGRAM))
+        vao = int(glGetIntegerv(GL_VERTEX_ARRAY_BINDING))
+        line_width = float(glGetFloatv(GL_LINE_WIDTH))
+        try:
+            glDepthMask(False)
+            glEnable(GL_DEPTH_TEST)
+            glDepthFunc(GL_LEQUAL)
+            glUseProgram(self.line_program)
+            scale = getattr(scene, "grid_scale", 1.0)
+            transform = np.diag([scale, scale, 1., 1.])
+            transform[2, 3] = getattr(getattr(scene, "placement_plane", None), "z", 0.)
+            glUniformMatrix4fv(self.line_locView, 1, GL_TRUE,
+                               (camera.view_matrix @ transform).astype(DTYPE))
+            glUniformMatrix4fv(self.line_locProj, 1, GL_TRUE,
+                               camera.projection_matrix(self.w / self.h).astype(DTYPE))
+            glBindVertexArray(self.grid.vao)
+            glLineWidth(1.0)
+            glDrawArrays(GL_LINES, 0, self.grid.count)
+        finally:
+            glDepthMask(depth_mask)
+            (glEnable if depth_test else glDisable)(GL_DEPTH_TEST)
+            glDepthFunc(depth_func)
+            glUseProgram(program)
+            glBindVertexArray(vao)
+            glLineWidth(line_width)
+
     def _render_realistic_pass(self, entities, V, P, scene):
         """Standard realistic rendering"""
         glUseProgram(self.program)
