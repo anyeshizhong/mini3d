@@ -67,7 +67,7 @@ class PlacementEditorTests(unittest.TestCase):
                                        placement_anchor="bounds_bottom", keep_upright=False)
         self.app.save_scene(self.path)
         document = self.read_document()
-        self.assertEqual(document["version"], 2)
+        self.assertEqual(document["version"], 3)
         self.assertEqual(len(document["objects"]), 2)
         first_id, second_id = first.entity_id, second.entity_id
         self.app.load_scene(self.path)

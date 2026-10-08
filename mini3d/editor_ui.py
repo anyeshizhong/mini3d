@@ -37,7 +37,7 @@ class EditorUI:
     PAYLOAD = "MINI3D_ASSET"
     MODES = ("Lit", "Wireframe", "Unlit")
     TOOLS = (("select", "Select [Q]"), ("move", "Move [G]"),
-             ("rotate", "Rotate [R]"), ("scale", "Scale [S]"))
+             ("rotate", "Rotate [R]"), ("scale", "Scale [S]"), ("surface", "Surface Move"))
 
     def __init__(self, app):
         self.app = app
@@ -55,6 +55,10 @@ class EditorUI:
         self._open_import = False
         self._open_help = False
         self._edit_item_key = None
+        self.formation_rows, self.formation_columns = 5, 8
+        self.formation_spacing_x, self.formation_spacing_y = 1.2, 1.4
+        self._group_name_id, self._group_name = None, ""
+        self._group_saved_name = ""
         self._configure_style()
 
     @staticmethod
@@ -143,6 +147,10 @@ class EditorUI:
                     self._call("undo")
                 if imgui.menu_item("Redo", "Ctrl+Y")[0]:
                     self._call("redo")
+                if imgui.menu_item("Group selected", enabled=bool(self.app.selected_entities))[0]:
+                    self._call("group_selected")
+                if imgui.menu_item("Ungroup", enabled=self.app.scene.selected_group_id is not None)[0]:
+                    self._call("ungroup_selected")
                 selected = self.app.selection is not None
                 if imgui.menu_item("Duplicate", "Ctrl+D", enabled=selected)[0]:
                     self._call("duplicate_selected")
@@ -325,6 +333,8 @@ class EditorUI:
             self._call("begin_surface_placement")
         if self.app.place_selected_mode:
             imgui.text_disabled("Click a surface to place the selection. Esc cancels.")
+        elif self.app.tool == "surface":
+            imgui.text_disabled("Drag one selected object on surfaces. Esc cancels.")
         imgui.push_item_width(100)
         mode_index = self.MODES.index(self.app.render_mode) if self.app.render_mode in self.MODES else 0
         changed, mode_index = imgui.combo("##render_mode", mode_index, list(self.MODES))
@@ -377,6 +387,18 @@ class EditorUI:
         self._panel("Scene Outliner", x, y, width, height)
         roots = list(self.app.scene.root_entities)
         imgui.text_disabled(f"{len(roots)} scene object{'s' if len(roots) != 1 else ''}")
+        if imgui.button("Group selected"):
+            self._call("group_selected")
+        imgui.same_line()
+        if imgui.button("Ungroup"):
+            self._call("ungroup_selected")
+        for group in self.app.scene.groups:
+            clicked, _ = imgui.selectable(group.name + "##group" + group.group_id,
+                self.app.scene.selected_group_id == group.group_id)
+            if clicked:
+                self._call("select_group", group.group_id)
+            if imgui.is_item_hovered():
+                imgui.set_tooltip("{} | {} members".format(group.group_id, len(group.member_ids)))
         imgui.separator()
         if not roots:
             imgui.text_wrapped("Add an asset to start building the scene.")
@@ -392,7 +414,7 @@ class EditorUI:
         imgui.push_id(str(id(entity)))
         children = getattr(entity, "children", ())
         flags = imgui.TREE_NODE_OPEN_ON_ARROW | imgui.TREE_NODE_SPAN_AVAILABLE_WIDTH
-        if entity is self.app.selection:
+        if entity.entity_id in self.app.scene.selected_ids:
             flags |= imgui.TREE_NODE_SELECTED
         if not children:
             flags |= imgui.TREE_NODE_LEAF
@@ -403,7 +425,7 @@ class EditorUI:
             name += " [Locked]"
         opened = imgui.tree_node(name + "##node", flags)
         if imgui.is_item_clicked() and not imgui.is_item_toggled_open():
-            self._call("select", root)
+            self._call("select", root, bool(imgui.get_io().key_shift))
         if imgui.is_item_hovered() and imgui.is_mouse_double_clicked(0):
             self._call("select", root)
             self._call("focus_selected")
@@ -438,6 +460,36 @@ class EditorUI:
             imgui.text_wrapped("Select an object in the viewport or outliner to edit its transform.")
             imgui.end()
             return
+        count = len(self.app.selected_entities)
+        if count == 1 and not entity.locked:
+            imgui.text("Formation")
+            imgui.push_item_width(120)
+            _, self.formation_rows = imgui.input_int("Rows", self.formation_rows)
+            _, self.formation_columns = imgui.input_int("Columns", self.formation_columns)
+            _, self.formation_spacing_x = imgui.input_float("Spacing X", self.formation_spacing_x, format="%.3f")
+            _, self.formation_spacing_y = imgui.input_float("Spacing Y", self.formation_spacing_y, format="%.3f")
+            imgui.pop_item_width()
+            if imgui.button("Create Formation"):
+                self._call("create_formation", self.formation_rows, self.formation_columns,
+                           self.formation_spacing_x, self.formation_spacing_y)
+            imgui.separator()
+        if count > 1:
+            imgui.text("{} selected | {} editable".format(count, len(self.app.editable_selection)))
+            imgui.text_wrapped("World axes / Selection Center. Inspector shows the primary; edits apply to all editable members.")
+        group = self.app.scene.find_group_by_id(self.app.scene.selected_group_id)
+        if group is not None:
+            if self._group_name_id != group.group_id or self._group_saved_name != group.name:
+                self._group_name_id, self._group_name = group.group_id, group.name
+                self._group_saved_name = group.name
+            imgui.text_disabled(group.group_id)
+            imgui.push_item_width(-1)
+            entered, self._group_name = imgui.input_text("##group_name", self._group_name, 256,
+                flags=imgui.INPUT_TEXT_ENTER_RETURNS_TRUE)
+            if entered:
+                self._call("rename_group", self._group_name)
+            imgui.pop_item_width()
+            if imgui.is_item_hovered():
+                imgui.set_tooltip("Group name: press Enter to apply")
         imgui.push_id(str(id(entity)))
         imgui.push_item_width(-1)
         changed, name = imgui.input_text("##name", entity.name, 256)
@@ -475,7 +527,7 @@ class EditorUI:
                 result = np.maximum(result, 0.001)
             command_attribute = {"pos": "position", "rot": "rotation", "scale": "scale"}[attribute]
             self._record_item_edit(entity, attribute, changed and np.all(np.isfinite(result)),
-                                   lambda: self.app.commands.set_transform(entity, **{command_attribute: result}))
+                                   lambda: self.app.apply_inspector_transform(entity, command_attribute, result))
             imgui.pop_item_width()
         imgui.push_text_wrap_pos(0)
         imgui.text_disabled("Ctrl+click a value to type precisely.")
@@ -578,6 +630,9 @@ class EditorUI:
                 "1 / 3 / 7: front / right / top",
                 "Ctrl+D: duplicate | Delete: remove selected",
                 "Ctrl+Z: undo | Ctrl+Y / Ctrl+Shift+Z: redo",
+                "Shift+click: toggle selection (viewport and outliner)",
+                "Surface Move: drag one object; Esc cancels; release commits.",
+                "Group selected / Ungroup: persistent flat ID sets, no reparenting.",
                 "Ctrl+S: save scene | Ctrl+O: load scene",
                 "Drag assets onto geometry or Ground; choose the placement anchor.",
                 "Place on Surface: reposition selection with its saved anchor.",

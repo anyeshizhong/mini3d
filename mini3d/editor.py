@@ -7,7 +7,7 @@ from pathlib import Path
 import numpy as np
 import pygame
 
-from .scene import Scene
+from .scene import Scene, SceneGroup, rotation_xyz, euler_xyz
 from .viewer import Viewer, world_bounds
 from .gltf_loader import AssetCache
 from .picking import pick_entity
@@ -36,7 +36,7 @@ class Editor:
         self.viewer.controller.yaw = -.9
         self.viewer.controller.pitch = .25
         self.viewer.controller.update()
-        self.selection = None
+        self.surface_drag = None
         self.tool = "move"
         self.transform_space = "world"
         self.placement_anchor = "bounds_bottom"
@@ -65,7 +65,7 @@ class Editor:
         if enabled and self.shot_camera is None:
             raise ValueError("Create Camera From View first")
         self._orbiting = False
-        self.gizmo.finish()
+        self.finish_edit()
         self.camera_view = enabled
 
     def set_shot_lens(self, focal_mm):
@@ -87,6 +87,7 @@ class Editor:
         if self.model_dialog.open():
             self._orbiting = False
             self.gizmo.finish(cancel=True)
+            self.finish_surface_drag(cancel=True)
             self.status = "Choose a GLB / glTF / STL file. The editor remains available."
 
     def cancel_model_dialog(self):
@@ -108,16 +109,49 @@ class Editor:
                 self.status = "Import failed: {}".format(exc)
         return None
 
+    @property
+    def selection(self):
+        """Compatibility alias: outline and Inspector use the primary instance."""
+        return self.commands.primary_selection
+
+    @property
+    def primary_selection(self):
+        return self.commands.primary_selection
+
+    @property
+    def selected_entities(self):
+        return self.commands.selected_entities
+
+    @property
+    def editable_selection(self):
+        return self.commands.editable_selection
+
+    def sync_selection(self):
+        self.scene.clean_selection()
+        self.viewer.selected_entity = self.selection
+
+    def finish_surface_drag(self, cancel=False):
+        if self.surface_drag is not None:
+            self.surface_drag.finish(cancel=cancel)
+            self.surface_drag = None
+
     def finish_edit(self):
+        self.finish_surface_drag()
         self.gizmo.finish()
         if self.commands.active_transaction:
             self.commands.commit_transaction()
 
-    def select(self, entity):
+    def select(self, entity, toggle=False):
         self.finish_edit()
         self.place_selected_mode = False
-        self.selection = entity
-        self.viewer.selected_entity = entity
+        ids = list(self.scene.selected_ids) if toggle and entity is not None else []
+        if entity is not None:
+            if entity.entity_id in ids:
+                ids.remove(entity.entity_id)
+            else:
+                ids.append(entity.entity_id)
+        self.commands.set_selection(ids, primary_id=ids[-1] if ids else None)
+        self.sync_selection()
         if entity is not None:
             self.status = "Selected: " + entity.name
 
@@ -133,6 +167,7 @@ class Editor:
             if position is None:
                 self.commands.place_on_surface(root, SurfaceHit(
                     np.zeros(3), np.array([0., 0., 1.]), self.scene.ground))
+            self.commands.set_selection([root.entity_id])
         self.select(root)
         if position is None:
             self.focus_selected()
@@ -154,6 +189,7 @@ class Editor:
                 placement_type=record.get("placement_type"),
                 anchor=self.placement_anchor, keep_upright=record.get("keep_upright"))
             self.commands.place_on_surface(root, hit)
+            self.commands.set_selection([root.entity_id])
         self.select(root)
         # Dolly distance stays unchanged during a drop. Focus is explicit with F.
         return root
@@ -171,42 +207,61 @@ class Editor:
         self.finish_edit()
         if self.selection is None:
             return None
-        duplicate = self.commands.duplicate(self.selection)
-        self.select(duplicate)
-        return duplicate
+        with self.commands.transaction("Duplicate selection"):
+            copies = [self.commands.duplicate(entity) for entity in self.selected_entities]
+            self.commands.set_selection([entity.entity_id for entity in copies])
+        self.sync_selection()
+        return self.selection
 
     def delete_selected(self):
         self.finish_edit()
-        if self.selection in self.scene.root_entities:
-            self.commands.delete(self.selection)
-            self.select(None)
+        if self.editable_selection:
+            with self.commands.transaction("Delete selection"):
+                for entity in list(self.editable_selection):
+                    self.commands.delete(entity)
+            self.sync_selection()
             self.status = "Object removed from the scene"
 
     def lock_selected(self):
         self.finish_edit()
         if self.selection is not None:
-            self.commands.lock(self.selection)
+            with self.commands.transaction("Lock selection"):
+                for entity in self.selected_entities:
+                    self.commands.lock(entity)
             self.place_selected_mode = False
             self.status = "Locked: " + self.selection.name
 
     def unlock_selected(self):
         self.finish_edit()
         if self.selection is not None:
-            self.commands.unlock(self.selection)
+            with self.commands.transaction("Unlock selection"):
+                for entity in self.selected_entities:
+                    self.commands.unlock(entity)
             self.status = "Unlocked: " + self.selection.name
 
     def set_entity_metadata(self, entity, **kwargs):
         self.finish_edit()
         return self.commands.set_metadata(entity, **kwargs)
 
+    def apply_inspector_transform(self, primary, attribute, value):
+        if len(self.selected_entities) <= 1:
+            return self.commands.set_transform(primary, **{attribute: value})
+        if attribute == "position":
+            delta = dict(translation=value - primary.pos)
+        elif attribute == "rotation":
+            delta = dict(rotation=euler_xyz(rotation_xyz(value) @ rotation_xyz(primary.rot).T))
+        else:
+            delta = dict(scale=value / primary.scale)
+        return self.commands.transform_many(self.scene.selected_ids, **delta)
+
     def toggle_ground(self):
         self.scene.ground.visible = not self.scene.ground.visible
 
     def _history_step(self, redo=False):
         self.finish_edit()
-        selected_id = self.selection.entity_id if self.selection is not None else None
         changed = self.commands.redo() if redo else self.commands.undo()
-        self.select(self.scene.find_by_id(selected_id))
+        self.place_selected_mode = False
+        self.sync_selection()
         self.status = ("Redo" if redo else "Undo") + (" complete" if changed else ": history is empty")
         return changed
 
@@ -216,18 +271,52 @@ class Editor:
     def redo(self):
         return self._history_step(redo=True)
 
+    def select_group(self, group_id):
+        self.finish_edit()
+        self.place_selected_mode = False
+        self.commands.select_group(group_id)
+        self.sync_selection()
+
+    def group_selected(self):
+        self.finish_edit()
+        group = self.commands.create_group(self.scene.selected_ids)
+        self.sync_selection()
+        return group
+
+    def ungroup_selected(self):
+        self.finish_edit()
+        if self.scene.selected_group_id is not None:
+            self.commands.ungroup(self.scene.selected_group_id)
+            self.sync_selection()
+
+    def rename_group(self, name):
+        self.finish_edit()
+        if self.scene.selected_group_id is not None:
+            self.commands.rename_group(self.scene.selected_group_id, name)
+
+    def create_formation(self, rows=5, columns=8, spacing_x=1.2, spacing_y=1.4):
+        self.finish_edit()
+        if len(self.selected_entities) != 1 or self.selection.locked:
+            raise ValueError("Select one unlocked source for Formation")
+        group = self.commands.create_rectangular_formation(self.selection.entity_id,
+            rows, columns, spacing_x, spacing_y)
+        self.sync_selection()
+        self.status = "Created {}: {} members".format(group.name, len(group.member_ids))
+        return group
+
     def begin_surface_placement(self):
         self.finish_edit()
         if self.camera_view:
             raise ValueError("Switch to Editor View to place objects")
-        if self.selection is None or self.selection.locked:
-            raise ValueError("Select an unlocked object first")
+        if len(self.selected_entities) != 1 or self.selection.locked:
+            raise ValueError("Select one unlocked object first")
         self.place_selected_mode = True
         self.status = "Click a surface to place the selected object; Esc cancels"
 
     def focus_selected(self):
-        if self.selection is not None and self.selection.visible:
-            self.viewer.focus(self.selection)
+        bounds = world_bounds([entity for entity in self.selected_entities if entity.visible])
+        if bounds is not None:
+            self.viewer.controller.focus_bounds(*bounds, aspect=self.viewer.aspect)
 
     def frame_all(self):
         self.scene.update()
@@ -258,10 +347,16 @@ class Editor:
                                 keep_upright=root.keep_upright))
         snapshot = self.viewer.controller.snapshot()
         snapshot = {key: value.tolist() if isinstance(value, np.ndarray) else value for key, value in snapshot.items()}
-        document = dict(version=2, objects=records, camera=snapshot,
+        document = dict(version=3, objects=records, camera=snapshot,
                         render_mode=self.render_mode, show_grid=self.show_grid,
                         ground_visible=self.scene.ground.visible,
-                        next_entity_id=self.scene._next_entity_id)
+                        next_entity_id=self.scene._next_entity_id,
+                        groups=[dict(group_id=g.group_id, name=g.name, member_ids=list(g.member_ids))
+                                for g in self.scene.groups],
+                        next_group_id=self.scene._next_group_id,
+                        selected_ids=list(self.scene.selected_ids),
+                        primary_selection_id=self.scene.primary_selection_id,
+                        selected_group_id=self.scene.selected_group_id)
         path.parent.mkdir(parents=True, exist_ok=True)
         temporary = path.with_suffix(path.suffix + ".tmp")
         temporary.write_text(json.dumps(document, ensure_ascii=False, indent=2), encoding="utf-8")
@@ -277,7 +372,7 @@ class Editor:
     def _load_scene(self, path=None):
         path = Path(path) if path is not None else self.scene_path
         document = json.loads(path.read_text(encoding="utf-8"))
-        if document.get("version") not in (1, 2):
+        if document.get("version") not in (1, 2, 3):
             raise ValueError("Unsupported scene format")
         loaded = Scene()
         for record in document["objects"]:
@@ -293,7 +388,7 @@ class Editor:
                     raise ValueError("Scale must be positive")
                 setattr(root, field, vector)
             root.name, root.visible = str(record["name"]), bool(record.get("visible", True))
-            if document["version"] == 2:
+            if document["version"] >= 2:
                 root.entity_id = record["entity_id"]
                 if root.entity_id is None:
                     raise ValueError("Missing entity ID")
@@ -307,6 +402,17 @@ class Editor:
                     not isinstance(root.keep_upright, bool) or not isinstance(root.locked, bool)):
                 raise ValueError("Invalid placement metadata")
             loaded.add(root)
+        for record in document.get("groups", []):
+            if record["group_id"] is None:
+                raise ValueError("Missing group ID")
+            loaded.add_group(SceneGroup(record["group_id"], record["name"], record["member_ids"]))
+        next_group = document.get("next_group_id", loaded._next_group_id)
+        if isinstance(next_group, bool) or not isinstance(next_group, int) or next_group < loaded._next_group_id:
+            raise ValueError("Invalid next group ID")
+        selected_ids = document.get("selected_ids", [loaded.root_entities[0].entity_id]
+                                   if loaded.root_entities else [])
+        PlacementCommands(loaded, self.cache).set_selection(selected_ids,
+            primary_id=document.get("primary_selection_id"), group_id=document.get("selected_group_id"))
         # Validate camera data on a temporary Viewer before replacing the scene.
         probe = Viewer(Scene(), self.viewer.width, self.viewer.height)
         camera_state = document["camera"]
@@ -324,11 +430,16 @@ class Editor:
             raise ValueError("Invalid next entity ID")
         self.finish_edit()
         self.scene.root_entities[:] = loaded.root_entities
+        self.scene.groups[:] = loaded.groups
+        self.scene._next_group_id = max(self.scene._next_group_id, loaded._next_group_id, next_group)
         self.scene._next_entity_id = max(self.scene._next_entity_id, loaded._next_entity_id, next_id)
         self.scene.ground.visible = bool(document.get("ground_visible", True))
         self.commands.clear_history()
         self.scene.update()
-        self.select(loaded.root_entities[0] if loaded.root_entities else None)
+        self.commands.set_selection(loaded.selected_ids, primary_id=loaded.primary_selection_id,
+                                    group_id=loaded.selected_group_id)
+        self.sync_selection()
+        self.place_selected_mode = False
         self.viewer.controller.restore(document["camera"])
         self.viewer.save_camera()
         self.render_mode, self.show_grid = mode, bool(document.get("show_grid", True))
@@ -364,6 +475,14 @@ class Editor:
                 self._orbiting = False
             if event.button == 1:
                 self.gizmo.finish()
+                self.finish_surface_drag()
+            return
+        if (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE and
+                (self.surface_drag is not None or self.gizmo.drag is not None)):
+            # A gesture still owns cancellation after crossing an ImGui panel.
+            self.gizmo.finish(cancel=True)
+            self.finish_surface_drag(cancel=True)
+            self.place_selected_mode = False
             return
         if self.camera_view:
             return  # Photo preview is fixed; scene placement/navigation uses Editor View.
@@ -371,9 +490,16 @@ class Editor:
         if ui.modal_open or (mouse_event and (ui.mouse_captured or ui.asset_dragging)):
             self._orbiting = False
             self.gizmo.finish()
+            # A Surface Drag owns one transaction until release/Esc, including
+            # excursions across a panel. Captured input must not move geometry.
             return
         if event.type == pygame.MOUSEMOTION:
-            if self.gizmo.drag is not None:
+            if self.surface_drag is not None:
+                if getattr(event, "buttons", (True, False, False))[0]:
+                    self.surface_drag.update(self.viewer.camera, event.pos, self.viewport_rect)
+                else:
+                    self.finish_surface_drag()
+            elif self.gizmo.drag is not None:
                 if getattr(event, "buttons", (True, False, False))[0]:
                     self.gizmo.update(event.pos)
                 else:
@@ -384,7 +510,7 @@ class Editor:
                     return
                 mods = getattr(event, "mod", None)
                 if mods is None:
-                    mods = pygame.key.get_mods()
+                    mods = pygame.key.get_mods() if pygame.display.get_init() else 0
                 if mods & pygame.KMOD_SHIFT:
                     self.viewer.controller.pan(*event.rel, self.viewer.height)
                 else:
@@ -394,10 +520,23 @@ class Editor:
             x, y, width, height = self.viewport_rect
             if not (x <= event.pos[0] < x + width and y <= event.pos[1] < y + height):
                 return
-            if event.button == 2 and self.gizmo.drag is None:
+            if event.button == 2 and self.gizmo.drag is None and self.surface_drag is None:
                 self._orbiting = True
             elif event.button == 1 and not self._orbiting:
-                if self.place_selected_mode:
+                mods = getattr(event, "mod", None)
+                if mods is None:
+                    mods = pygame.key.get_mods() if pygame.display.get_init() else 0
+                if mods & pygame.KMOD_SHIFT:
+                    entity, _ = pick_entity(self.scene, self.viewer.camera, event.pos, self.viewport_rect)
+                    self.select(entity, toggle=True)
+                elif self.tool == "surface" and not self.place_selected_mode:
+                    if len(self.selected_entities) != 1 or self.selection.locked:
+                        self.status = "Surface Move requires one unlocked selection"
+                    else:
+                        self.finish_edit()
+                        self.surface_drag = self.commands.begin_surface_drag(self.selection.entity_id)
+                        self.surface_drag.update(self.viewer.camera, event.pos, self.viewport_rect)
+                elif self.place_selected_mode:
                     self.finish_edit()
                     hit = raycast_surface(self.scene, self.viewer.camera, event.pos, self.viewport_rect,
                         exclude=self.selection, fallback=self.viewer.controller.target)
@@ -408,7 +547,8 @@ class Editor:
                     entity, _ = pick_entity(self.scene, self.viewer.camera, event.pos, self.viewport_rect)
                     self.select(entity)
             return
-        if event.type == pygame.MOUSEWHEEL and ui.viewport_hovered and self.gizmo.drag is None:
+        if (event.type == pygame.MOUSEWHEEL and ui.viewport_hovered and
+                self.gizmo.drag is None and self.surface_drag is None):
             self.viewer.controller.zoom(event.y)
         if event.type != pygame.KEYDOWN or ui.keyboard_captured:
             return
@@ -430,9 +570,11 @@ class Editor:
         elif event.key == pygame.K_HOME:
             self.frame_all()
         elif event.key in (pygame.K_q, pygame.K_g, pygame.K_r, pygame.K_s):
+            self.finish_edit()
             self.tool = {pygame.K_q: "select", pygame.K_g: "move", pygame.K_r: "rotate", pygame.K_s: "scale"}[event.key]
         elif event.key == pygame.K_ESCAPE:
             self.gizmo.finish(cancel=True)
+            self.finish_surface_drag(cancel=True)
             self.place_selected_mode = False
         elif event.key in (pygame.K_1, pygame.K_KP1, pygame.K_3, pygame.K_KP3, pygame.K_7, pygame.K_KP7):
             key = event.key

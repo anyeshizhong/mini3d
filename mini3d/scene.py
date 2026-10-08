@@ -1,5 +1,7 @@
 """Reusable scene instances; mesh/material resources are shared by clones."""
 import re
+from dataclasses import dataclass
+from typing import List, Optional
 
 import numpy as np
 
@@ -11,6 +13,27 @@ def rotation_xyz(angles):
     return (np.array([[cz, -sz, 0], [sz, cz, 0], [0, 0, 1]]) @
             np.array([[cy, 0, sy], [0, 1, 0], [-sy, 0, cy]]) @
             np.array([[1, 0, 0], [0, cx, -sx], [0, sx, cx]]))
+
+
+def euler_xyz(matrix):
+    """Convert an orthonormal world rotation to the engine's XYZ Euler angles."""
+    matrix = np.asarray(matrix, dtype=np.float64)
+    y = np.arcsin(np.clip(-matrix[2, 0], -1.0, 1.0))
+    if abs(np.cos(y)) > 1e-8:
+        x = np.arctan2(matrix[2, 1], matrix[2, 2])
+        z = np.arctan2(matrix[1, 0], matrix[0, 0])
+    else:
+        x = np.arctan2(-matrix[1, 2], matrix[1, 1])
+        z = 0.0
+    return np.array([x, y, z], dtype=np.float64)
+
+
+@dataclass
+class SceneGroup:
+    """Editor membership only; never reparents an imported mesh hierarchy."""
+    group_id: Optional[str]
+    name: str
+    member_ids: List[str]
 
 
 class Mesh:
@@ -92,6 +115,11 @@ class Scene:
         self.root_entities = []
         self.ground = None
         self._next_entity_id = 1
+        self.groups = []
+        self._next_group_id = 1
+        self.selected_ids = []
+        self.primary_selection_id = None
+        self.selected_group_id = None
         self.light_dir = np.array([.4, -.5, .8], np.float32)
         self.light_dir /= np.linalg.norm(self.light_dir)
         self.ambient, self.diffuse = .3, .7
@@ -119,6 +147,59 @@ class Scene:
 
     def find_by_id(self, entity_id):
         return next((root for root in self.root_entities if root.entity_id == entity_id), None)
+
+    def find_group_by_id(self, group_id):
+        return next((group for group in self.groups if group.group_id == group_id), None)
+
+    def add_group(self, group):
+        if not isinstance(group, SceneGroup):
+            raise ValueError("Expected a SceneGroup")
+        if not isinstance(group.name, str):
+            raise ValueError("Group name must be a string")
+        members = group.member_ids
+        if (not isinstance(members, list) or not members
+                or any(not isinstance(value, str) for value in members)
+                or len(set(members)) != len(members)):
+            raise ValueError("Group members must be nonempty, unique entity IDs")
+        if any(self.find_by_id(value) is None for value in members):
+            raise ValueError("Group members must refer to existing scene entities")
+        group_id = group.group_id
+        if group_id is None:
+            while self.find_group_by_id("grp_{:06d}".format(self._next_group_id)) is not None:
+                self._next_group_id += 1
+            group_id = "grp_{:06d}".format(self._next_group_id)
+        if not isinstance(group_id, str) or not re.fullmatch(r"grp_\d{6,}", group_id):
+            raise ValueError("Invalid group ID: {!r}".format(group_id))
+        if self.find_group_by_id(group_id) is not None:
+            raise ValueError("Duplicate group ID: " + group_id)
+        self._next_group_id = max(self._next_group_id, int(group_id[4:]) + 1)
+        group.group_id = group_id
+        group.member_ids = list(members)
+        self.groups.append(group)
+        return group
+
+    @property
+    def selected_entities(self):
+        return [entity for entity_id in self.selected_ids
+                for entity in [self.find_by_id(entity_id)] if entity is not None]
+
+    @property
+    def primary_selection(self):
+        return self.find_by_id(self.primary_selection_id)
+
+    @property
+    def editable_selection(self):
+        return [entity for entity in self.selected_entities if not entity.locked]
+
+    def clean_selection(self):
+        """Drop stale references after removal, load, and history restoration."""
+        self.selected_ids = list(dict.fromkeys(
+            value for value in self.selected_ids if self.find_by_id(value) is not None))
+        if self.primary_selection_id not in self.selected_ids:
+            self.primary_selection_id = self.selected_ids[-1] if self.selected_ids else None
+        group = self.find_group_by_id(self.selected_group_id)
+        if group is None or set(group.member_ids) != set(self.selected_ids):
+            self.selected_group_id = None
 
     def update(self):
         for entity in self.root_entities:

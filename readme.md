@@ -52,6 +52,16 @@ Outliner 或 Inspector 的 **Lock / Unlock** 控制实例锁定。锁定模型�
 
 每个实例拥有与名称无关的 `ent_000001` 式 ID。场景 JSON v2 保存 ID、变换、锁定、摆放类型、锚点、直立规则及 ID 计数器，兼容原 v1 场景。成功载入会清空操作历史，失败不会替换原场景。一次 Gizmo/Inspector 连续编辑或一次拖入只占一条 Undo；批量事务可供后续其他调用方使用。完整命令示例、验收结果与限制见 [Placement V1 记录](docs/placement-v1.md)。
 
+### Placement V2
+
+选择一个未锁定实例，点击 **Surface Move**，在视口中按住左键即可连续贴面拖动；没有有效表面时保持最后位置，松开提交一次 Undo，Esc 恢复拖动前状态。普通 Gizmo 和 V1 的一次点击 Place on Surface 仍可使用。
+
+**Shift+左键** 在 Viewport 或 Outliner 中增减选择。多选使用 World 轴和可编辑成员位置均值作为 Selection Center，Move/Rotate/Scale 整体生效；Locked 成员自动排除。Inspector 显示 primary 的数值，编辑变换时对可编辑成员应用同一个增量。**Group selected** 保存选中 ID 集合，点击组名可再次选中全组；**Ungroup** 只删除组定义，不删除模型。Group 名称可在 Inspector 输入后按 Enter 修改。
+
+单选实例时，Inspector 顶部显示 **Formation**：Rows、Columns、Spacing X/Y 和 **Create Formation**。默认 5×8、间距 1.2/1.4；以源实例位置为第一行第一列，阵型方向随源 yaw。生成后自动选择 Formation Group，整次操作一条 Undo；**40 人包含原士兵，Undo 后保留原士兵，Redo 恢复同样的实例 ID 和组关系**。
+
+间距使用模型原始单位，不自动换算。Roman 原始高度约 25.96；可显式将实例 Scale 设为 `0.06 / 0.06 / 0.06`，用 Surface Move 重新贴地后，再使用 1.2/1.4 间距。Scene v3 保存 Group、成员 ID 和选择状态，兼容没有 Group 的旧版场景。实际 40 人流程、Command API、性能数据及当前限制见 [Placement V2 验收报告](docs/placement-v2.md)。当前核显上 40/100 人已有明显卡顿，尚未做大场景性能优化。
+
 ### 最小拍照流程
 
 1. 在 **Editor View** 中摆放场景、调整浏览相机。
@@ -141,6 +151,8 @@ renderer.render(scene, viewer.camera)
 & F:/gymenv/python.exe -B tests/file_dialog_smoke.py
 & F:/gymenv/python.exe -B tests/stl_render_smoke.py
 & F:/gymenv/python.exe -B tests/placement_smoke.py captures/placement-v1-validation
+& F:/gymenv/python.exe -B tests/placement_v2_smoke.py captures/placement-v2-validation
+& F:/gymenv/python.exe -B tests/placement_v2_performance.py captures/placement-v2-validation/performance.json
 ```
 
 单元测试覆盖投影、不同尺度的自动取景、层级包围盒、拖拽、预设、重置和 resize。第二条在隐藏 OpenGL 窗口中运行三个真实示例，注入导航事件并检查模型像素及 GL 错误；需本机图形驱动，可追加截图输出目录参数。

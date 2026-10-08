@@ -36,19 +36,32 @@ class TransformGizmo:
         self.drag = None
         self.handles = []
 
+    def _entities(self):
+        entities = getattr(self.app, 'editable_selection', None)
+        if entities is None:
+            entity = self.app.selection
+            entities = [] if entity is None else [entity]
+        # Visibility is not a transform lock for an explicitly selected group.
+        multi = len(getattr(self.app, 'selected_entities', entities)) > 1
+        return [entity for entity in entities if not entity.locked and (multi or entity.visible)]
+
+    def _space(self, entities):
+        selected = getattr(self.app, 'selected_entities', entities)
+        return 'world' if len(selected) > 1 else self.app.transform_space
+
     def geometry(self, rect):
-        entity = self.app.selection
+        entities = self._entities()
         self.handles = []
-        if entity is None or entity.locked or not entity.visible or self.app.tool == "select":
+        if not entities or self.app.tool not in ('move', 'rotate', 'scale'):
             return None
         camera = self.app.viewer.camera
-        origin = entity.pos.copy()
+        origin = np.mean([entity.pos for entity in entities], axis=0)
         center = project_point(camera, origin, rect)
         if center is None:
             return None
         distance = max(np.dot(origin - camera.position, camera.forward), camera.near)
         length = 95 * 2 * distance * math.tan(math.radians(camera.fov_y) / 2) / rect[3]
-        basis = rotation_xyz(entity.rot) if self.app.transform_space == "local" else np.eye(3)
+        basis = rotation_xyz(entities[0].rot) if self._space(entities) == "local" else np.eye(3)
         for axis in range(3):
             direction = basis[:, axis]
             if self.app.tool == "rotate":
@@ -106,13 +119,18 @@ class TransformGizmo:
                             choice, best = axis, d
         if choice is None:
             return False
-        ent = self.app.selection
-        basis = rotation_xyz(ent.rot) if self.app.transform_space == "local" else np.eye(3)
+        entities = self._entities()
+        ent = entities[0]
+        space = self._space(entities)
+        basis = rotation_xyz(ent.rot) if space == "local" else np.eye(3)
         normal = self.app.viewer.camera.forward if choice == "free" else basis[:, choice]
         self.app.commands.begin_transaction("Gizmo " + self.app.tool)
         self.drag = dict(entity=ent, tool=self.app.tool, axis=choice, start=np.array(position),
                          origin=origin, center=center, length=length, rect=rect,
-                         basis=basis, space=self.app.transform_space,
+                         basis=basis, space=space, entities=entities,
+                         initial={e.entity_id: dict(position=e.pos.copy(), rotation=e.rot.copy(),
+                                                    scale=e.scale.copy()) for e in entities},
+                         transaction=self.app.commands._transaction,
                          pos=ent.pos.copy(), rot=ent.rot.copy(), scale=ent.scale.copy(),
                          plane_start=plane_point(screen_ray(self.app.viewer.camera, position, rect), origin, normal))
         return True
@@ -122,15 +140,29 @@ class TransformGizmo:
             return
         d = self.drag
         ent, axis, tool = d['entity'], d['axis'], d['tool']
-        if ent.locked:
-            self.finish(cancel=True)
+        if self.app.commands._transaction is not d['transaction']:
+            self.drag = None
+            return
+        if not any(not e.locked and e in self.app.commands.scene.root_entities for e in d['entities']):
+            self.finish()
             return
         delta = np.asarray(position) - d['start']
         camera, rect = self.app.viewer.camera, d['rect']
+        multi = len(d['entities']) > 1
+
+        def apply_many(**delta):
+            self.app.commands.transform_many([e.entity_id for e in d['entities']
+                                              if e in self.app.commands.scene.root_entities],
+                                             pivot=d['origin'], initial=d['initial'], **delta)
+
         if tool == "move" and axis == "free":
             point = plane_point(screen_ray(camera, position, rect), d['origin'], camera.forward)
             if point is not None and d['plane_start'] is not None:
-                self.app.commands.set_transform(ent, position=d['pos'] + point - d['plane_start'])
+                offset = point - d['plane_start']
+                if multi:
+                    apply_many(translation=offset)
+                else:
+                    self.app.commands.set_transform(ent, position=d['pos'] + offset)
         elif tool == "rotate":
             normal = d['basis'][:, axis]
             point = plane_point(screen_ray(camera, position, rect), d['origin'], normal)
@@ -140,13 +172,19 @@ class TransformGizmo:
                 a, b = d['plane_start'] - d['origin'], point - d['origin']
                 angle = math.atan2(np.dot(normal, np.cross(a, b)), np.dot(a, b))
             angles = np.eye(3)[axis] * angle
+            if multi:
+                apply_many(rotation=angles)
+                return
             start_rotation = rotation_xyz(d['rot'])
             rotation = (start_rotation @ rotation_xyz(angles) if d['space'] == "local"
                         else rotation_xyz(angles) @ start_rotation)
             self.app.commands.set_transform(ent, rotation=euler_xyz(rotation))
         elif axis == "free":
-            scale = np.maximum(.001, d['scale'] * math.exp(float(np.clip((delta[0] - delta[1]) * .01, -8, 8))))
-            self.app.commands.set_transform(ent, scale=scale)
+            factor = math.exp(float(np.clip((delta[0] - delta[1]) * .01, -8, 8)))
+            if multi:
+                apply_many(scale=np.full(3, factor))
+            else:
+                self.app.commands.set_transform(ent, scale=np.maximum(.001, d['scale'] * factor))
         else:
             direction_world = d['basis'][:, axis]
             end = project_point(camera, d['origin'] + direction_world * d['length'], rect)
@@ -155,8 +193,15 @@ class TransformGizmo:
             direction = np.asarray(end) - d['center']
             amount = np.dot(delta, direction) / max(np.dot(direction, direction), 25)
             if tool == "move":
-                self.app.commands.set_transform(ent, position=d['pos'] + direction_world * amount * d['length'])
+                offset = direction_world * amount * d['length']
+                if multi:
+                    apply_many(translation=offset)
+                else:
+                    self.app.commands.set_transform(ent, position=d['pos'] + offset)
             else:
+                if multi:
+                    apply_many(scale=np.exp(np.clip(amount * np.eye(3)[axis], -8, 8)))
+                    return
                 # TRS cannot represent world-axis shear. Distribute the drag
                 # across local scale components using squared axis projections.
                 weights = (np.eye(3)[axis] if d['space'] == "local" else
@@ -165,8 +210,10 @@ class TransformGizmo:
                 self.app.commands.set_transform(ent, scale=scale)
 
     def finish(self, cancel=False):
-        if self.drag is not None:
-            if cancel:
+        if self.drag is not None and self.app.commands._transaction is self.drag['transaction']:
+            unchanged_members = all(not e.locked and e in self.app.commands.scene.root_entities
+                                    for e in self.drag['entities'])
+            if cancel and unchanged_members:
                 self.app.commands.cancel_transaction()
             else:
                 self.app.commands.commit_transaction()
