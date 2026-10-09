@@ -6,9 +6,10 @@ import json
 METHODS = frozenset(('list_entities', 'get_entity', 'list_groups', 'get_group', 'get_scene_state',
     'spawn', 'delete', 'duplicate', 'set_transform', 'transform_many', 'place_on_ground', 'place_at',
     'lock', 'unlock', 'create_group', 'create_rectangular_formation', 'undo', 'redo',
-    'save_scene', 'load_scene', 'create_shot_camera', 'get_shot_camera', 'set_lens', 'set_aspect', 'capture'))
+    'save_scene', 'load_scene', 'create_shot_camera', 'get_shot_camera', 'set_lens', 'set_aspect', 'capture',
+    'get_lighting', 'set_lighting'))
 BATCH_METHODS = METHODS - {'undo', 'redo', 'save_scene', 'load_scene', 'create_shot_camera',
-                         'set_lens', 'set_aspect', 'capture', 'create_rectangular_formation'}
+                         'set_lens', 'set_aspect', 'capture', 'create_rectangular_formation', 'set_lighting'}
 
 
 def _validate(api, command, allowed=METHODS):
@@ -28,7 +29,7 @@ def dispatch(api, command):
     """Return JSON-safe {ok,result} or {ok,error:{type,message}}.
 
     transaction takes a list of placement commands with explicit stable IDs.
-    No variable substitution; file/camera operations and self-transactional
+    No variable substitution; file/camera/lighting operations and self-transactional
     Formation cannot be mixed into a placement-only atomic batch.
     """
     try:

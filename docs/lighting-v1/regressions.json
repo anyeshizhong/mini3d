@@ -1,0 +1,62 @@
+[
+  {
+    "test": "unit",
+    "command": [
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "tests",
+      "-v"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "lighting",
+    "command": [
+      "tests/lighting_smoke.py",
+      "captures/lighting-v1-regression/lighting"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "ground",
+    "command": [
+      "tests/ground_separation_smoke.py",
+      "captures/lighting-v1-regression/ground"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "placement",
+    "command": [
+      "tests/placement_smoke.py",
+      "captures/lighting-v1-regression/placement"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "placement-v2",
+    "command": [
+      "tests/placement_v2_smoke.py",
+      "captures/lighting-v1-regression/placement-v2"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "photography",
+    "command": [
+      "tests/photo_smoke.py",
+      "captures/lighting-v1-regression/photography"
+    ],
+    "exit_code": 0
+  },
+  {
+    "test": "ai-api",
+    "command": [
+      "tests/ai_api_smoke.py",
+      "captures/lighting-v1-regression/ai-api"
+    ],
+    "exit_code": 0
+  }
+]

@@ -1,0 +1,7 @@
+Renderer initialized in OUTLINE mode
+PASS: A: actual Roman drag -> Ground -> continuous Surface Move -> one Undo -> Redo
+PASS: B: three Box duplicates -> actual Shift multi selection -> Move/Rotate -> Group -> Save/Load
+PASS: C: Create Formation 5x8 -> 40 unique IDs, shared Mesh/Material/Texture; Undo preserves source; Redo restores IDs
+PASS: 40-member formation moves and rotates as one selection about Selection Center
+PASS: 40 soldiers remain navigable with Orbit/Pan/Zoom; final Scene saves/loads formation IDs and transforms
+PASS: Placement V2 visible Editor workflow; output: captures\lighting-v1-regression\placement-v2

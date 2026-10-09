@@ -15,6 +15,7 @@ from .orbit_controller import OrbitController
 from .placement import SurfaceHit, geometry_bounds
 from .shot_camera import ShotCamera, capture_png
 from .viewer import world_bounds
+from .lighting import lighting_state
 
 
 class Mini3DAPI:
@@ -64,6 +65,19 @@ class Mini3DAPI:
     def list_groups(self):
         return [self.get_group(g.group_id) for g in self._app.scene.groups]
 
+    def get_lighting(self):
+        """Return mode, world surface-to-light direction, diffuse and ambient."""
+        return lighting_state(self._app.scene)
+
+    def set_lighting(self, mode=None, direction=None, diffuse=None, ambient=None):
+        """Atomic partial update outside placement transactions; None preserves.
+
+        Mode is Studio or Scene; direction is any finite nonzero numeric 3-vector.
+        Strengths are finite and nonnegative. Returns the resulting snapshot.
+        Shot Camera always uses Scene lighting, regardless of preview mode.
+        """
+        return self._app.set_lighting(mode, direction, diffuse, ambient)
+
     def get_scene_state(self, include_bounds=False):
         return dict(entities=self.list_entities(include_bounds), groups=self.list_groups(),
             selected_ids=list(self._app.scene.selected_ids),
@@ -73,6 +87,7 @@ class Mini3DAPI:
                         size=self._app.scene.placement_plane.size),
             placement_plane=self._app.scene.placement_plane.to_dict(),
             shot_camera=self.get_shot_camera(),
+            lighting=self.get_lighting(),
             history=dict(undo_count=self._commands.undo_count, redo_count=self._commands.redo_count,
                          active_transaction=self._commands.active_transaction))
 

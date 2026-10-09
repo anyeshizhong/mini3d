@@ -317,6 +317,12 @@ class Editor:
         self.place_selected_mode = True
         self.status = "Click a surface to place the selected object; Esc cancels"
 
+    def set_lighting(self, mode=None, direction=None, diffuse=None, ambient=None):
+        from .lighting import update_lighting
+        if self.commands.active_transaction:
+            raise ValueError('Lighting changes require a completed placement transaction')
+        return update_lighting(self.scene, mode, direction, diffuse, ambient)
+
     def focus_selected(self):
         bounds = world_bounds([entity for entity in self.selected_entities if entity.visible])
         if bounds is not None:
@@ -385,17 +391,12 @@ class Editor:
             raise ValueError("Unsupported scene format")
         loaded = Scene()
         lighting = document.get('lighting', {})
-        loaded.lighting_mode = lighting.get('mode', 'Studio')
-        if loaded.lighting_mode not in ('Studio', 'Scene'):
-            raise ValueError('Unknown lighting mode')
-        loaded.light_dir = np.asarray(lighting.get('light_dir', loaded.light_dir), dtype=float)
-        from .lighting import scene_light_direction
-        scene_light_direction(loaded)  # Validate before changing the live scene.
-        for name in ('ambient', 'diffuse'):
-            value = float(lighting.get(name, getattr(loaded, name)))
-            if not np.isfinite(value) or value < 0:
-                raise ValueError('Lighting strength must be finite and nonnegative')
-            setattr(loaded, name, value)
+        # JSON null is invalid in saved parameters (API None means "unchanged").
+        if not isinstance(lighting, dict) or any(value is None for value in lighting.values()):
+            raise ValueError('Invalid lighting document')
+        from .lighting import update_lighting
+        update_lighting(loaded, lighting.get('mode'), lighting.get('light_dir'),
+                        lighting.get('diffuse'), lighting.get('ambient'))
         loaded.placement_plane = PlacementPlane(**document.get('placement_plane', {}))
         for record in document["objects"]:
             source = record["asset"]

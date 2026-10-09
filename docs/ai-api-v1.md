@@ -13,6 +13,10 @@ API 内部复用 Editor **状态对象**及已有 v3 保存载入方法，不调
 
 ## API
 
+Lighting V1 新增 `get_lighting()`、`set_lighting(mode=None, direction=None, diffuse=None, ambient=None)`，
+并在 `get_scene_state()` 中增加 `lighting`。JSON dispatcher 支持两方法；光照写入禁止放入 Placement
+事务。完整验证规则、返回值及摄影示例见 [Lighting V1](lighting-v1.md)。
+
 Ground 职责分离后，`place_on_ground` 的签名、Bounds Bottom 行为、有限范围和 Commands 路径保持兼容；目标改为数学 Placement Plane。`get_scene_state()['ground']` 保留 `visible/z/size` 字段，其中 `visible=False` 表示没有隐式实体地面，新增 `placement_plane` 描述查询平面。Grid 开关不影响放置或 Capture。需要实体地面可用 `spawn('builtin:ground')`，它拥有普通 Stable ID，并支持原有变换、复制、锁定、撤销和保存载入。照片不再自动带灰色地板。
 
 ```python

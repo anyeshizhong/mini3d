@@ -74,6 +74,10 @@ Outliner 或 Inspector 的 **Lock / Unlock** 控制实例锁定。锁定模型�
 
 ### 世界空间 Directional Light
 
+Lighting V1 已提供 **Lighting...** 控件及 AI API `get_lighting()` / `set_lighting()`，
+可设置世界方向、直射强度和环境强度。详见 [操作接口、示例与验收](docs/lighting-v1.md)
+和 [开发进度](docs/development-progress.md)。
+
 Editor 视口可选择 **Studio Lighting**（原工作室预览）或 **Scene Lighting**。
 Scene Lighting 复用 `scene.light_dir`（世界空间、表面指向光源）、`scene.diffuse` 和
 `scene.ambient`，让普通几何和 glTF PBR 使用同一光照方向；移动或旋转 Camera 不会带动场景光源。

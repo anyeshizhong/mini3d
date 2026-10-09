@@ -54,6 +54,8 @@ class EditorUI:
         self.import_error = ""
         self._open_import = False
         self._open_help = False
+        self._show_lighting = False
+        self.lighting_error = ''
         self._edit_item_key = None
         self.formation_rows, self.formation_columns = 5, 8
         self.formation_spacing_x, self.formation_spacing_y = 1.2, 1.4
@@ -117,6 +119,7 @@ class EditorUI:
                         right, available_height - outliner_height)
         self._status(width, height, status_height)
         self._popups()
+        self._lighting_window()
         io = imgui.get_io()
         # ImGui can keep keyboard capture for one frame after a viewport click.
         # Text fields, active widgets and menus still own keyboard input.
@@ -186,6 +189,8 @@ class EditorUI:
                 for mode in self.MODES:
                     if imgui.menu_item(mode, selected=self.app.render_mode == mode)[0]:
                         self.app.render_mode = mode
+                if imgui.menu_item('Lighting settings')[0]:
+                    self._show_lighting = True
                 imgui.end_menu()
             if imgui.begin_menu("Help").opened:
                 if imgui.menu_item("Controls")[0]:
@@ -354,8 +359,11 @@ class EditorUI:
             changed, lighting = imgui.combo('##lighting_mode',
                 modes.index(self.app.scene.lighting_mode), ['Studio Lighting', 'Scene Lighting'])
             if changed:
-                self.app.scene.lighting_mode = modes[lighting]
+                self._apply_lighting(mode=modes[lighting])
             imgui.pop_item_width()
+        imgui.same_line()
+        if imgui.button('Lighting...'):
+            self._show_lighting = True
         imgui.same_line()
         if imgui.button("Frame all"):
             self._call("frame_all")
@@ -388,6 +396,50 @@ class EditorUI:
             if payload is not None:
                 self._call("drop_asset", int(payload.decode("ascii")), tuple(imgui.get_mouse_pos()))
             imgui.end_drag_drop_target()
+        imgui.end()
+
+    def _apply_lighting(self, **changes):
+        try:
+            self.app.set_lighting(**changes)
+        except ValueError as exc:
+            self.lighting_error = str(exc)
+            self.app.status = 'Lighting: ' + self.lighting_error
+        else:
+            self.lighting_error = ''
+            self.app.status = 'Lighting updated'
+
+    def _lighting_window(self):
+        if not self._show_lighting:
+            return
+        imgui.set_next_window_size(370, 0, condition=imgui.APPEARING)
+        opened, self._show_lighting = imgui.begin('Scene Lighting settings', closable=True,
+            flags=imgui.WINDOW_ALWAYS_AUTO_RESIZE | imgui.WINDOW_NO_SAVED_SETTINGS)
+        if opened:
+            scene = self.app.scene
+            modes = ('Studio', 'Scene')
+            imgui.push_item_width(220)
+            changed, mode = imgui.combo('Editor preview', modes.index(scene.lighting_mode),
+                                         ['Studio Lighting', 'Scene Lighting'])
+            if changed:
+                self._apply_lighting(mode=modes[mode])
+            imgui.text_unformatted('World direction: X / Y / Z (toward light)')
+            changed, direction = imgui.input_float3('##light_direction', *map(float, scene.light_dir),
+                                                    format='%.4g')
+            if changed:
+                self._apply_lighting(mode='Scene', direction=direction)
+            changed, diffuse = imgui.input_float('Direct strength', scene.diffuse, step=.05, format='%.4g')
+            if changed:
+                self._apply_lighting(mode='Scene', diffuse=diffuse)
+            changed, ambient = imgui.input_float('Ambient strength', scene.ambient, step=.05, format='%.4g')
+            if changed:
+                self._apply_lighting(mode='Scene', ambient=ambient)
+            imgui.pop_item_width()
+            imgui.text_wrapped('Editing values previews Scene Lighting. No manual normalization needed.')
+            imgui.text_wrapped('Shot Camera always uses Scene Lighting.')
+            if self.lighting_error:
+                imgui.text_wrapped('Invalid lighting: ' + self.lighting_error)
+        if imgui.is_window_hovered():
+            self.viewport_hovered = False
         imgui.end()
 
     def _outliner(self, x, y, width, height):
