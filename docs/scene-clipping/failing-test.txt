@@ -1,0 +1,24 @@
+python.exe : test_focus_small_preserves_framing_but_covers_distant_geometry (test_scene_clipping.SceneClippingTests) ..
+. FAIL
+所在位置 行:2 字符: 69
++ ... | Out-Null; & F:/gymenv/python.exe -B -m unittest discover -s tests - ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (test_focus_smal...Tests) ... FAIL:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+
+pygame 2.6.1 (SDL 2.28.4, Python 3.8.20)
+Hello from the pygame community. https://www.pygame.org/contribute.html
+
+======================================================================
+FAIL: test_focus_small_preserves_framing_but_covers_distant_geometry (test_scene_clipping.SceneClippingTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "F:\python_project\mini3d\tests\test_scene_clipping.py", line 33, in test_focus_small_preserves_framing_but_cove
+rs_distant_geometry
+    self.assertGreater(camera.far, depth, 'Focus small incorrectly clips the distant model')
+AssertionError: 0.05369357383449028 not greater than 20.0190525584574 : Focus small incorrectly clips the distant model
+
+----------------------------------------------------------------------
+Ran 1 test in 0.271s
+
+FAILED (failures=1)

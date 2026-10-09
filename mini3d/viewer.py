@@ -8,7 +8,30 @@ from .camera import Camera
 from .orbit_controller import OrbitController
 
 
-def world_bounds(entities):
+def _world_boxes(entities, visible_only=False):
+    """Eight corners per instance, reusing immutable mesh-local AABBs."""
+    pending = list(entities)
+    while pending:
+        entity = pending.pop()
+        if visible_only and not getattr(entity, 'visible', True):
+            continue
+        pending.extend(getattr(entity, 'children', ()))
+        model = getattr(entity, 'model', None)
+        if model is None:
+            continue
+        if not hasattr(model, 'bounds'):
+            # Compatibility with old demo meshes. Scan ONCE, not each frame.
+            # Geometry edits must refresh bounds, like the renderer's GPU cache.
+            points = np.asarray(model.vertices)[:, :3]
+            model.bounds = (points.min(axis=0), points.max(axis=0)) if len(points) else None
+        if model.bounds is None:
+            continue
+        corners = np.array(list(product(*zip(*model.bounds))), dtype=np.float64)
+        transform = np.asarray(entity.world_matrix, dtype=np.float64)
+        yield corners @ transform[:3, :3].T + transform[:3, 3]
+
+
+def world_bounds(entities, visible_only=False):
     """World AABB of complete entity subtrees, including URDF visual children.
 
     The scene must update world matrices before calling this function. Transform
@@ -16,20 +39,7 @@ def world_bounds(entities):
     Empty containers and meshes contribute no bounds.
     """
     lower = upper = None
-    pending = list(entities)
-    while pending:
-        entity = pending.pop()
-        pending.extend(getattr(entity, "children", ()))
-        model = getattr(entity, "model", None)
-        if model is None:
-            continue
-        vertices = np.asarray(model.vertices)[:, :3]
-        if not len(vertices):
-            continue
-        lo, hi = vertices.min(axis=0), vertices.max(axis=0)
-        corners = np.array(list(product(*zip(lo, hi))), dtype=np.float64)
-        transform = np.asarray(entity.world_matrix, dtype=np.float64)
-        points = corners @ transform[:3, :3].T + transform[:3, 3]
+    for points in _world_boxes(entities, visible_only):
         lo, hi = points.min(axis=0), points.max(axis=0)
         lower = lo if lower is None else np.minimum(lower, lo)
         upper = hi if upper is None else np.maximum(upper, hi)
@@ -51,7 +61,7 @@ class Viewer:
         # Standalone demos opt into these bindings; the editor owns arbitration.
         self.input_enabled = input_enabled
         self.camera = camera if camera is not None else Camera()
-        self.controller = OrbitController(self.camera)
+        self.controller = OrbitController(self.camera, clip_depth_provider=self._clip_depth_range)
         self.selected_entity = None
         self._drag_button = None
         self.resize(width, height)
@@ -66,12 +76,34 @@ class Viewer:
         self.width = max(1, int(width))
         self.height = max(1, int(height))
 
+    def _clip_depth_range(self):
+        """Current visible geometry depths; separate from the focus bounds.
+
+        Project each transformed box before unioning depths to avoid widening a
+        rotated scene's range unnecessarily. Entirely rearward boxes are ignored.
+        """
+        self.scene.update()
+        minimum = maximum = None
+        eye, forward = self.camera.position, self.camera.forward
+        for points in _world_boxes(self.scene.root_entities, visible_only=True):
+            depths = (points-eye) @ forward
+            lo, hi = float(depths.min()), float(depths.max())
+            if hi <= 0:
+                continue
+            minimum = lo if minimum is None else min(minimum, lo)
+            maximum = hi if maximum is None else max(maximum, hi)
+        return None if maximum is None else (minimum, maximum)
+
+    def update_clipping(self):
+        """Refresh before rendering after scene edits, without moving the camera."""
+        self.controller.update_clipping()
+
     def focus(self, entity):
         """Frame an entity and all its descendants at their current pose."""
         if entity is None:
             return False
         self.scene.update()
-        bounds = world_bounds([entity])
+        bounds = world_bounds([entity], visible_only=True)
         if bounds is None:
             return False
         self.controller.focus_bounds(*bounds, aspect=self.aspect)
@@ -79,7 +111,7 @@ class Viewer:
 
     def frame_all(self):
         self.scene.update()
-        bounds = world_bounds(self.scene.root_entities)
+        bounds = world_bounds(self.scene.root_entities, visible_only=True)
         if bounds is None:
             return False
         self.controller.focus_bounds(*bounds, aspect=self.aspect)

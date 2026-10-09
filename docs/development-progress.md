@@ -12,5 +12,5 @@ Lighting V1 已打通 UI → Scene、Python/JSON API → Scene → Shot PNG → 
 216 项单测及 Ground、Placement V1/V2、Photography、AI API、Lighting GPU 回归通过。
 新增实际 UI 键盘输入和 API 完整摄影流程验证通过。
 
-另行诊断的“放士兵后放小凳子导致远裁剪过近”尚未修复，不属于 Lighting V1 范围。
-本轮没有自动启动其他移植任务；不合并到 main。
+Issue #3“放士兵后放小凳子导致远裁剪过近”已在 `fix/editor-scene-clipping` 修复；224 项单测与 GPU 回归通过，实际缺失像素从 1373 降为 0。
+修改、前后 PNG、裁剪深度和测试记录见 [场景裁剪报告](scene-clipping.md)。未执行 Issue #2；不合并到 main。

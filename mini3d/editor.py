@@ -58,6 +58,7 @@ class Editor:
         self.last_capture = None
 
     def create_camera_from_view(self):
+        self.viewer.update_clipping()
         self.shot_camera = ShotCamera(self.viewer.camera)
         self.status = "Shot Camera created from Editor View"
 
@@ -324,13 +325,14 @@ class Editor:
         return update_lighting(self.scene, mode, direction, diffuse, ambient)
 
     def focus_selected(self):
-        bounds = world_bounds([entity for entity in self.selected_entities if entity.visible])
+        self.scene.update()
+        bounds = world_bounds(self.selected_entities, visible_only=True)
         if bounds is not None:
             self.viewer.controller.focus_bounds(*bounds, aspect=self.viewer.aspect)
 
     def frame_all(self):
         self.scene.update()
-        bounds = world_bounds([root for root in self.scene.root_entities if root.visible])
+        bounds = world_bounds(self.scene.root_entities, visible_only=True)
         if bounds is not None:
             self.viewer.controller.focus_bounds(*bounds, aspect=self.viewer.aspect)
 
@@ -718,6 +720,7 @@ def run(initial_asset="auto", frames=None, screenshot=None, hidden=False):
                 except (ValueError, OSError) as exc:
                     app.status = str(exc)
             app.scene.update()
+            app.viewer.update_clipping()
             app.scene.render_mode, app.scene.show_grid = app.render_mode, app.show_grid
             app.scene.grid_scale = 10 ** math.floor(math.log10(max(app.viewer.controller.distance / 10, 1e-9))) / 20
             if app.capture_requested:

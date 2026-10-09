@@ -1,0 +1,90 @@
+{
+  "baseline": true,
+  "gpu": "Intel(R) UHD Graphics 620",
+  "views": [
+    {
+      "view": "auto-add",
+      "scale": 1.0,
+      "near": 0.4244072199438652,
+      "far": 44.310734889222665,
+      "reference_far": 47.45364531658338,
+      "geometry_depth": [
+        35.84992665253718,
+        46.523181682924886
+      ],
+      "framing_radius": 0.4675032237090357,
+      "target": [
+        -0.9037674064288083,
+        0.0,
+        11.65355757551836
+      ],
+      "distance": 42.44072199438652,
+      "reference_pixels": 28860,
+      "missing_pixels": 1373,
+      "changed_pixels": 1373
+    },
+    {
+      "view": "focus-selected",
+      "scale": 1.0,
+      "near": 0.4244072199438652,
+      "far": 44.310734889222665,
+      "reference_far": 47.45364531658338,
+      "geometry_depth": [
+        35.84992665253718,
+        46.523181682924886
+      ],
+      "framing_radius": 0.4675032237090357,
+      "target": [
+        -0.9037674064288083,
+        0.0,
+        11.65355757551836
+      ],
+      "distance": 42.44072199438652,
+      "reference_pixels": 28860,
+      "missing_pixels": 1373,
+      "changed_pixels": 1373
+    },
+    {
+      "view": "tiny",
+      "scale": 0.0001,
+      "near": 4.2440721994386484e-05,
+      "far": 0.004431073488922263,
+      "reference_far": 0.004745364531658335,
+      "geometry_depth": [
+        0.003584992665253714,
+        0.004652318168292485
+      ],
+      "framing_radius": 4.675032237090357e-05,
+      "target": [
+        -9.037674064288074e-05,
+        0.0,
+        0.001165355757551835
+      ],
+      "distance": 0.0042440721994386485,
+      "reference_pixels": 28860,
+      "missing_pixels": 1373,
+      "changed_pixels": 1373
+    },
+    {
+      "view": "large",
+      "scale": 100.0,
+      "near": 42.44072199438651,
+      "far": 4431.073488922265,
+      "reference_far": 4745.364531658337,
+      "geometry_depth": [
+        3584.9926652537156,
+        4652.318168292487
+      ],
+      "framing_radius": 46.75032237090357,
+      "target": [
+        -90.3767406428808,
+        0.0,
+        1165.3557575518357
+      ],
+      "distance": 4244.07219943865,
+      "reference_pixels": 28860,
+      "missing_pixels": 1373,
+      "changed_pixels": 1373
+    }
+  ]
+}

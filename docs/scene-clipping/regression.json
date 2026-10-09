@@ -1,0 +1,38 @@
+[
+  {
+    "test": "unit",
+    "exit_code": 0
+  },
+  {
+    "test": "ground",
+    "exit_code": 0
+  },
+  {
+    "test": "placement",
+    "exit_code": 0
+  },
+  {
+    "test": "placement-v2",
+    "exit_code": 0
+  },
+  {
+    "test": "photography",
+    "exit_code": 0
+  },
+  {
+    "test": "ai-api",
+    "exit_code": 0
+  },
+  {
+    "test": "lighting",
+    "exit_code": 0
+  },
+  {
+    "test": "lighting-api",
+    "exit_code": 0
+  },
+  {
+    "test": "lighting-ui",
+    "exit_code": 0
+  }
+]

@@ -13,7 +13,7 @@ class OrbitController:
     """
 
     def __init__(self, camera, target=(0, 0, 0), distance=10.0,
-                 yaw=0.0, pitch=0.35):
+                 yaw=0.0, pitch=0.35, clip_depth_provider=None):
         self.camera = camera
         self.target = _vector3(target, "target")
         self.distance = float(distance)
@@ -26,6 +26,9 @@ class OrbitController:
         self.max_distance = 1e8
         self._bounds_center = self.target.copy()
         self._bounds_radius = 1.0
+        # Optional Viewer-owned live geometry query, never serialized. Unbound
+        # controllers (including automatic Shot framing) retain legacy behavior.
+        self._clip_depth_provider = clip_depth_provider
         self.update()
 
     def update(self):
@@ -57,6 +60,24 @@ class OrbitController:
         self.camera.near = max(near, 1e-12)
         self.camera.far = max(self.distance + 4 * radius, depth + 2 * radius,
                               self.camera.near * 2)
+        if self._clip_depth_provider is not None:
+            interval = self._clip_depth_provider()
+            if interval is not None:
+                low, high = interval
+                # Keep the scale-aware legacy near unless foreground geometry
+                # requires a closer plane. A box crossing the eye needs a small
+                # positive near; no finite near can include the eye plane itself.
+                if low > 0:
+                    self.camera.near = min(self.camera.near, low * .5)
+                else:
+                    self.camera.near = min(self.camera.near,
+                        max(min(self.distance, radius) * 1e-4, 1e-12))
+                margin = max(high * .01, (high-low) * .01, 1e-12)
+                self.camera.far = max(high + margin, self.camera.near * 2)
+
+    def update_clipping(self):
+        """Refresh geometry clipping while preserving pose, target and distance."""
+        self._update_clipping()
 
     def orbit(self, dx, dy):
         """Drag the scene: rightward drag decreases yaw; down increases pitch."""

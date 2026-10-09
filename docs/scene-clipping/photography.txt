@@ -1,0 +1,8 @@
+Renderer initialized in OUTLINE mode
+PASS: real photo buttons, 4 lenses/aspects, 6 PNGs, clean preview equality, grid exclusion and independent cameras
+captures\scene-clipping-regression\photography\shot_20261009_102427_229250.png
+captures\scene-clipping-regression\photography\shot_20261009_102427_848645.png
+captures\scene-clipping-regression\photography\shot_20261009_102428_301141.png
+captures\scene-clipping-regression\photography\shot_20261009_102428_761681.png
+captures\scene-clipping-regression\photography\shot_20261009_102429_601106.png
+captures\scene-clipping-regression\photography\shot_20261009_102430_555094.png
