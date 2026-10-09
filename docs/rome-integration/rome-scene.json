@@ -1,0 +1,1127 @@
+{
+  "shadows": {
+    "enabled": true,
+    "resolution": 1024,
+    "bias": 0.0005,
+    "pcf": true
+  },
+  "version": 3,
+  "objects": [
+    {
+      "asset": "model\\08_rome_river\\rome_river_side.glb",
+      "name": "Rome River Side (original Unlit)",
+      "entity_id": "ent_000001",
+      "position": [
+        2.2144348096446045,
+        -8.094630355869683,
+        1.3661720412858196
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        100.0,
+        100.0,
+        100.0
+      ],
+      "visible": true,
+      "locked": true,
+      "placement_type": "prop",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": false
+    },
+    {
+      "asset": "model\\05_roman_soldier\\roman_legionnaire.glb",
+      "name": "Roman original scan",
+      "entity_id": "ent_000002",
+      "position": [
+        -8.507689955609854,
+        -12.940400395953567,
+        2.7869276752188687
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.07,
+        0.07,
+        0.07
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    },
+    {
+      "asset": "model\\05_roman_soldier\\roman_legionnaire.glb",
+      "name": "Roman original scan copy",
+      "entity_id": "ent_000005",
+      "position": [
+        -7.0076899556098535,
+        -12.940400395953567,
+        2.794504355171454
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.07,
+        0.07,
+        0.07
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    },
+    {
+      "asset": "model\\05_roman_soldier\\roman_legionnaire.glb",
+      "name": "Roman original scan copy",
+      "entity_id": "ent_000006",
+      "position": [
+        -5.5076899556098535,
+        -12.940400395953567,
+        3.026243948307971
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.07,
+        0.07,
+        0.07
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    },
+    {
+      "asset": "model\\05_roman_soldier\\roman_legionnaire.glb",
+      "name": "Roman original scan copy",
+      "entity_id": "ent_000007",
+      "position": [
+        -4.0076899556098535,
+        -12.940400395953567,
+        3.0293902301053697
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.07,
+        0.07,
+        0.07
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    },
+    {
+      "asset": "model\\05_roman_soldier\\roman_legionnaire.glb",
+      "name": "Roman original scan copy",
+      "entity_id": "ent_000008",
+      "position": [
+        -2.5076899556098535,
+        -12.940400395953567,
+        3.0283767802904356
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.07,
+        0.07,
+        0.07
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    },
+    {
+      "asset": "model\\05_roman_soldier\\roman_legionnaire.glb",
+      "name": "Roman original scan copy",
+      "entity_id": "ent_000009",
+      "position": [
+        -1.0076899556098537,
+        -12.940400395953567,
+        3.035621918735969
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.07,
+        0.07,
+        0.07
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    },
+    {
+      "asset": "model\\05_roman_soldier\\roman_legionnaire.glb",
+      "name": "Roman original scan copy",
+      "entity_id": "ent_000010",
+      "position": [
+        0.4923100443901463,
+        -12.940400395953567,
+        2.8026773758811663
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.07,
+        0.07,
+        0.07
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    },
+    {
+      "asset": "model\\05_roman_soldier\\roman_legionnaire.glb",
+      "name": "Roman original scan copy",
+      "entity_id": "ent_000011",
+      "position": [
+        1.9923100443901463,
+        -12.940400395953567,
+        2.7801303278040015
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.07,
+        0.07,
+        0.07
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    },
+    {
+      "asset": "model\\05_roman_soldier\\roman_legionnaire.glb",
+      "name": "Roman original scan copy",
+      "entity_id": "ent_000012",
+      "position": [
+        -8.507689955609854,
+        -11.140400395953568,
+        2.791116112217643
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.07,
+        0.07,
+        0.07
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    },
+    {
+      "asset": "model\\05_roman_soldier\\roman_legionnaire.glb",
+      "name": "Roman original scan copy",
+      "entity_id": "ent_000013",
+      "position": [
+        -7.0076899556098535,
+        -11.140400395953568,
+        3.025970430742716
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.07,
+        0.07,
+        0.07
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    },
+    {
+      "asset": "model\\05_roman_soldier\\roman_legionnaire.glb",
+      "name": "Roman original scan copy",
+      "entity_id": "ent_000014",
+      "position": [
+        -5.5076899556098535,
+        -11.140400395953568,
+        3.037793430365645
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.07,
+        0.07,
+        0.07
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    },
+    {
+      "asset": "model\\05_roman_soldier\\roman_legionnaire.glb",
+      "name": "Roman original scan copy",
+      "entity_id": "ent_000015",
+      "position": [
+        -4.0076899556098535,
+        -11.140400395953568,
+        3.0699943281814717
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.07,
+        0.07,
+        0.07
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    },
+    {
+      "asset": "model\\05_roman_soldier\\roman_legionnaire.glb",
+      "name": "Roman original scan copy",
+      "entity_id": "ent_000016",
+      "position": [
+        -2.5076899556098535,
+        -11.140400395953568,
+        3.3535168201606416
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.07,
+        0.07,
+        0.07
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    },
+    {
+      "asset": "model\\05_roman_soldier\\roman_legionnaire.glb",
+      "name": "Roman original scan copy",
+      "entity_id": "ent_000017",
+      "position": [
+        -1.0076899556098537,
+        -11.140400395953568,
+        3.036517773483758
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.07,
+        0.07,
+        0.07
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    },
+    {
+      "asset": "model\\05_roman_soldier\\roman_legionnaire.glb",
+      "name": "Roman original scan copy",
+      "entity_id": "ent_000018",
+      "position": [
+        0.4923100443901463,
+        -11.140400395953568,
+        3.028532536532601
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.07,
+        0.07,
+        0.07
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    },
+    {
+      "asset": "model\\05_roman_soldier\\roman_legionnaire.glb",
+      "name": "Roman original scan copy",
+      "entity_id": "ent_000019",
+      "position": [
+        1.9923100443901463,
+        -11.140400395953568,
+        3.028455927742619
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.07,
+        0.07,
+        0.07
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    },
+    {
+      "asset": "model\\05_roman_soldier\\roman_legionnaire.glb",
+      "name": "Roman original scan copy",
+      "entity_id": "ent_000020",
+      "position": [
+        -8.507689955609854,
+        -9.340400395953568,
+        3.026181809948276
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.07,
+        0.07,
+        0.07
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    },
+    {
+      "asset": "model\\05_roman_soldier\\roman_legionnaire.glb",
+      "name": "Roman original scan copy",
+      "entity_id": "ent_000021",
+      "position": [
+        -7.0076899556098535,
+        -9.340400395953568,
+        3.0425908136903734
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.07,
+        0.07,
+        0.07
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    },
+    {
+      "asset": "model\\05_roman_soldier\\roman_legionnaire.glb",
+      "name": "Roman original scan copy",
+      "entity_id": "ent_000022",
+      "position": [
+        -5.5076899556098535,
+        -9.340400395953568,
+        3.6272956233620937
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.07,
+        0.07,
+        0.07
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    },
+    {
+      "asset": "model\\05_roman_soldier\\roman_legionnaire.glb",
+      "name": "Roman original scan copy",
+      "entity_id": "ent_000023",
+      "position": [
+        -4.0076899556098535,
+        -9.340400395953568,
+        3.6092668102115786
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.07,
+        0.07,
+        0.07
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    },
+    {
+      "asset": "model\\05_roman_soldier\\roman_legionnaire.glb",
+      "name": "Roman original scan copy",
+      "entity_id": "ent_000024",
+      "position": [
+        -2.5076899556098535,
+        -9.340400395953568,
+        3.5974539932259963
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.07,
+        0.07,
+        0.07
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    },
+    {
+      "asset": "model\\05_roman_soldier\\roman_legionnaire.glb",
+      "name": "Roman original scan copy",
+      "entity_id": "ent_000025",
+      "position": [
+        -1.0076899556098537,
+        -9.340400395953568,
+        3.6173409460396178
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.07,
+        0.07,
+        0.07
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    },
+    {
+      "asset": "model\\05_roman_soldier\\roman_legionnaire.glb",
+      "name": "Roman original scan copy",
+      "entity_id": "ent_000026",
+      "position": [
+        0.4923100443901463,
+        -9.340400395953568,
+        4.086647261463077
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.07,
+        0.07,
+        0.07
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    },
+    {
+      "asset": "model\\05_roman_soldier\\roman_legionnaire.glb",
+      "name": "Roman original scan copy",
+      "entity_id": "ent_000027",
+      "position": [
+        1.9923100443901463,
+        -9.340400395953568,
+        3.0271426667625
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.07,
+        0.07,
+        0.07
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    },
+    {
+      "asset": "model\\05_roman_soldier\\roman_legionnaire.glb",
+      "name": "Roman original scan copy",
+      "entity_id": "ent_000028",
+      "position": [
+        -8.507689955609854,
+        -7.540400395953569,
+        3.0377104319160244
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.07,
+        0.07,
+        0.07
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    },
+    {
+      "asset": "model\\05_roman_soldier\\roman_legionnaire.glb",
+      "name": "Roman original scan copy",
+      "entity_id": "ent_000029",
+      "position": [
+        -7.0076899556098535,
+        -7.540400395953569,
+        4.114465359301312
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.07,
+        0.07,
+        0.07
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    },
+    {
+      "asset": "model\\05_roman_soldier\\roman_legionnaire.glb",
+      "name": "Roman original scan copy",
+      "entity_id": "ent_000030",
+      "position": [
+        -5.5076899556098535,
+        -7.540400395953569,
+        3.5853625392986066
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.07,
+        0.07,
+        0.07
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    },
+    {
+      "asset": "model\\05_roman_soldier\\roman_legionnaire.glb",
+      "name": "Roman original scan copy",
+      "entity_id": "ent_000031",
+      "position": [
+        -4.0076899556098535,
+        -7.540400395953569,
+        3.5960671093575334
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.07,
+        0.07,
+        0.07
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    },
+    {
+      "asset": "model\\05_roman_soldier\\roman_legionnaire.glb",
+      "name": "Roman original scan copy",
+      "entity_id": "ent_000032",
+      "position": [
+        -2.5076899556098535,
+        -7.540400395953569,
+        4.684430430194225
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.07,
+        0.07,
+        0.07
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    },
+    {
+      "asset": "model\\05_roman_soldier\\roman_legionnaire.glb",
+      "name": "Roman original scan copy",
+      "entity_id": "ent_000033",
+      "position": [
+        -1.0076899556098537,
+        -7.540400395953569,
+        3.611722839962737
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.07,
+        0.07,
+        0.07
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    },
+    {
+      "asset": "model\\05_roman_soldier\\roman_legionnaire.glb",
+      "name": "Roman original scan copy",
+      "entity_id": "ent_000034",
+      "position": [
+        0.4923100443901463,
+        -7.540400395953569,
+        3.6066910468129327
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.07,
+        0.07,
+        0.07
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    },
+    {
+      "asset": "model\\05_roman_soldier\\roman_legionnaire.glb",
+      "name": "Roman original scan copy",
+      "entity_id": "ent_000035",
+      "position": [
+        1.9923100443901463,
+        -7.540400395953569,
+        3.048762281375331
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.07,
+        0.07,
+        0.07
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    },
+    {
+      "asset": "model\\05_roman_soldier\\roman_legionnaire.glb",
+      "name": "Roman original scan copy",
+      "entity_id": "ent_000036",
+      "position": [
+        -8.507689955609854,
+        -5.740400395953569,
+        3.0433266172545705
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.07,
+        0.07,
+        0.07
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    },
+    {
+      "asset": "model\\05_roman_soldier\\roman_legionnaire.glb",
+      "name": "Roman original scan copy",
+      "entity_id": "ent_000037",
+      "position": [
+        -7.0076899556098535,
+        -5.740400395953569,
+        4.1172784589548845
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.07,
+        0.07,
+        0.07
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    },
+    {
+      "asset": "model\\05_roman_soldier\\roman_legionnaire.glb",
+      "name": "Roman original scan copy",
+      "entity_id": "ent_000038",
+      "position": [
+        -5.5076899556098535,
+        -5.740400395953569,
+        3.611027950470386
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.07,
+        0.07,
+        0.07
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    },
+    {
+      "asset": "model\\05_roman_soldier\\roman_legionnaire.glb",
+      "name": "Roman original scan copy",
+      "entity_id": "ent_000039",
+      "position": [
+        -4.0076899556098535,
+        -5.740400395953569,
+        3.60830830817899
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.07,
+        0.07,
+        0.07
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    },
+    {
+      "asset": "model\\05_roman_soldier\\roman_legionnaire.glb",
+      "name": "Roman original scan copy",
+      "entity_id": "ent_000040",
+      "position": [
+        -2.5076899556098535,
+        -5.740400395953569,
+        4.684779262049644
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.07,
+        0.07,
+        0.07
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    },
+    {
+      "asset": "model\\05_roman_soldier\\roman_legionnaire.glb",
+      "name": "Roman original scan copy",
+      "entity_id": "ent_000041",
+      "position": [
+        -1.0076899556098537,
+        -5.740400395953569,
+        3.584257332691954
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.07,
+        0.07,
+        0.07
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    },
+    {
+      "asset": "model\\05_roman_soldier\\roman_legionnaire.glb",
+      "name": "Roman original scan copy",
+      "entity_id": "ent_000042",
+      "position": [
+        0.4923100443901463,
+        -5.740400395953569,
+        3.617206813556556
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.07,
+        0.07,
+        0.07
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    },
+    {
+      "asset": "model\\05_roman_soldier\\roman_legionnaire.glb",
+      "name": "Roman original scan copy",
+      "entity_id": "ent_000043",
+      "position": [
+        1.9923100443901463,
+        -5.740400395953569,
+        3.0339913701809555
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.07,
+        0.07,
+        0.07
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    }
+  ],
+  "camera": {
+    "target": [
+      -4.399934962544407,
+      -0.9297552485248692,
+      17.941678021031386
+    ],
+    "distance": 219.1376669107888,
+    "yaw": -1.3,
+    "pitch": 0.35,
+    "fov_y": 60.0,
+    "bounds_center": [
+      -0.45759195205866376,
+      -0.7480447994779666,
+      15.532322150896217
+    ],
+    "bounds_radius": 88.34439783531622,
+    "min_distance": 0.008834439783531623,
+    "max_distance": 88344397.83531621
+  },
+  "render_mode": "Lit",
+  "show_grid": true,
+  "lighting": {
+    "mode": "Scene",
+    "light_dir": [
+      1.0,
+      -1.0,
+      1.6
+    ],
+    "ambient": 0.22,
+    "diffuse": 2.5
+  },
+  "placement_plane": {
+    "z": 0.0,
+    "size": 2000.0,
+    "enabled": true
+  },
+  "next_entity_id": 44,
+  "groups": [
+    {
+      "group_id": "grp_000002",
+      "name": "Legion_Formation_001",
+      "member_ids": [
+        "ent_000002",
+        "ent_000005",
+        "ent_000006",
+        "ent_000007",
+        "ent_000008",
+        "ent_000009",
+        "ent_000010",
+        "ent_000011",
+        "ent_000012",
+        "ent_000013",
+        "ent_000014",
+        "ent_000015",
+        "ent_000016",
+        "ent_000017",
+        "ent_000018",
+        "ent_000019",
+        "ent_000020",
+        "ent_000021",
+        "ent_000022",
+        "ent_000023",
+        "ent_000024",
+        "ent_000025",
+        "ent_000026",
+        "ent_000027",
+        "ent_000028",
+        "ent_000029",
+        "ent_000030",
+        "ent_000031",
+        "ent_000032",
+        "ent_000033",
+        "ent_000034",
+        "ent_000035",
+        "ent_000036",
+        "ent_000037",
+        "ent_000038",
+        "ent_000039",
+        "ent_000040",
+        "ent_000041",
+        "ent_000042",
+        "ent_000043"
+      ]
+    }
+  ],
+  "next_group_id": 3,
+  "selected_ids": [
+    "ent_000002"
+  ],
+  "primary_selection_id": "ent_000002",
+  "selected_group_id": null
+}

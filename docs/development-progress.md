@@ -18,3 +18,7 @@ Issue #3“放士兵后放小凳子导致远裁剪过近”已在 `fix/editor-sc
 
 收到明确启动指令后完成 Issue #2：世界平行光正交 ShadowMap、3×3 PCF、普通/PBR 互投影、Editor/API 开关、v3 持久化、Shot 输出、深度 PNG。
 229 项单测、全部既有 GPU 回归及新增 Shadow GPU/UI 验收通过。Camera 裁剪实现未改动。不合并 main，本轮结束停止。
+
+Issue #4: real Rome 3+1 integration experiments completed on test/rome-integration-v1. 229 unit tests and existing GPU regressions pass. Photographic layout quality is NOT accepted: fountain/stall intersections, Unlit receivers and coarse shadow sampling are documented. Evidence delivered; further material/architecture work awaits review. [Report and captures](rome-integration.md).
+
+Complex library shadow supplement: soldier, table, bottle, Fox, Rome and eight soldiers. [Tests and timings](shadow-assets.md). Production renderer and Camera unchanged.

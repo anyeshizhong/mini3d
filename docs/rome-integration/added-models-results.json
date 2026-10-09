@@ -1,0 +1,52 @@
+{
+  "stage_2048": {
+    "enabled": true,
+    "resolution": 2048,
+    "bias": 0.0005,
+    "pcf": true
+  },
+  "model/09_other_roman_soldier/roman_soldier_-_t_pose_-_free_download.glb": {
+    "scale": 0.009518295607559901,
+    "target_height": 1.8,
+    "entity_id": "ent_000003"
+  },
+  "model/10_pantheon/agrippa_pantheon.glb": {
+    "scale": 0.2306461402460522,
+    "target_height": 6,
+    "entity_id": "ent_000004"
+  },
+  "camera": {
+    "camera_id": "shot",
+    "position": [
+      -10.0,
+      -16.0,
+      10.0
+    ],
+    "rotation": [
+      [
+        0.8849182223819825,
+        0.16261472633227866,
+        -0.4364357804719848
+      ],
+      [
+        -0.4657464328326223,
+        0.3089679800313295,
+        -0.8292279828967711
+      ],
+      [
+        0.0,
+        0.9370673604897559,
+        0.3491486243775878
+      ]
+    ],
+    "focal_mm": 34.99999999999999,
+    "aspect": "16:9",
+    "width": 1920,
+    "height": 1080,
+    "fov_y": 32.26880217111643,
+    "near": 0.05,
+    "far": 100.0
+  },
+  "depth_equal": true,
+  "materials_note": "New T-pose soldier: normal PBR; Pantheon: original KHR_materials_unlit retained. Explicit built-in PBR floor."
+}

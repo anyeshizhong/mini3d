@@ -1,0 +1,8 @@
+Renderer initialized in OUTLINE mode
+PASS: real photo buttons, 4 lenses/aspects, 6 PNGs, clean preview equality, grid exclusion and independent cameras
+captures\rome-regression\photography\shot_20261009_154715_781191.png
+captures\rome-regression\photography\shot_20261009_154716_416152.png
+captures\rome-regression\photography\shot_20261009_154716_816567.png
+captures\rome-regression\photography\shot_20261009_154717_200371.png
+captures\rome-regression\photography\shot_20261009_154717_611193.png
+captures\rome-regression\photography\shot_20261009_154718_224896.png

@@ -1,0 +1,4 @@
+pygame 2.6.1 (SDL 2.28.4, Python 3.8.20)
+Hello from the pygame community. https://www.pygame.org/contribute.html
+Renderer initialized in OUTLINE mode
+PASS: supplied T-pose Roman + original Unlit Pantheon + explicit PBR floor, on/off depth equal; existing 2048 setting comparison

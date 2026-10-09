@@ -116,3 +116,7 @@ F:/gymenv/python.exe -B tests/shadow_ui_smoke.py docs/shadows
 ```
 
 `--baseline` 仅渲染旧版本对照，不启用阴影。阴影图与测试 PBR 模型均为本项目原创测试场景的实际 GPU 输出。
+
+## Complex asset and Rome acceptance evidence
+
+[Real model-library supplement](shadow-assets.md) covers soldier, table, bottle, Fox, Rome and eight soldiers. [Issue #4 integration](rome-integration.md) records a full city with forty soldiers, actual GPU screenshots, regressions and unresolved photographic quality findings. These additions change tests and documentation only.

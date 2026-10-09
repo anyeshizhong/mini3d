@@ -1,0 +1,6 @@
+# Generated captures: keep only the review selection in Git.
+*.png
+!composed-shot.png
+!eight-soldiers-on.png
+!rome_river-on.png
+!side_table-on.png
