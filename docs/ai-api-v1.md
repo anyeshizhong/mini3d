@@ -140,7 +140,7 @@ text = dispatch_json(api, '{"command":"get_scene_state"}')
 
 - API 是同进程、单线程的薄包装，内部复用 Editor 状态类，所以运行环境仍使用现有依赖和资产 manifest；没有启动 UI，也未抽取或重构现有 serializer。
 - Placement transaction 不包含文件 I/O 或 Camera 状态。活动事务内拒绝 save/load、相机编辑及 capture，避免文件或相机操作破坏回滚语义。Formation 自带事务，按 V2 规则不嵌套到另一个事务；Undo/Redo 也必须在事务结束后调用。
-- Shot Camera 只有一台，重复创建覆盖；原 Photo 系统尚未将 Shot Camera 保存到 Scene JSON，reload 后应重新创建。显式相机 pose 使用调用方的 near/far；自动取景由既有 OrbitController 计算裁剪范围。
+- Shot Camera 只有一台，重复创建覆盖；Scene v3 现在保存并恢复 Shot Camera，reload 后可直接 get_shot_camera/capture，无需重新创建。旧场景缺少该字段或值为 null 时清除已有摄影相机；非法数据在替换当前场景前拒绝。显式相机 pose 使用调用方的 near/far；自动取景由既有 OrbitController 计算裁剪范围。详见 [持久化格式与验收](shot-camera-persistence.md)。
 - Ground 是有限平面；`place_at` 信任调用方给定的点，不寻找最近表面。仍无地形跟随、碰撞、多点接触、更多 Formation 或单位自动换算。
 - 截图同步进行，需要桌面 OpenGL、正确线程和有效的 caller-owned renderer；没有 HTTP/WebSocket/MCP、异步队列或 headless backend。输出是本地 PNG 路径，不是 base64 图像。
 - 大模型场景性能保持 V2 现状；没有增加 Instancing、阴影、物理、动画或 Renderer 优化。

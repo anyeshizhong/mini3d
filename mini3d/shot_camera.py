@@ -1,7 +1,10 @@
 """Independent photo camera and a clean offscreen PNG pass using GLRenderer."""
 import copy
 import math
+from numbers import Real
 from pathlib import Path
+
+import numpy as np
 
 from .camera import Camera
 
@@ -42,6 +45,51 @@ class ShotCamera(Camera):
         focal = self.focal_mm
         self.aspect_name = name
         self._set_focal(focal)
+
+    def to_dict(self):
+        """Detached Scene v3/API parameters; FOV preserves the exact projection."""
+        return dict(position=self.position.tolist(), rotation=self.rotation.tolist(),
+                    focal_mm=self.focal_mm, aspect=self.aspect_name, fov_y=self.fov_y,
+                    near=self.near, far=self.far)
+
+    @classmethod
+    def from_dict(cls, data):
+        """Validate a saved camera without changing any live editor state.
+
+        Keep the original FOV (including non-preset Editor View lenses), and
+        check the redundant focal length against the 36 mm horizontal gate.
+        Camera owns pose, handedness and clipping validation.
+        """
+        if not isinstance(data, dict):
+            raise ValueError('shot_camera must be an object')
+        try:
+            aspect = data['aspect']
+            if not isinstance(aspect, str) or aspect not in cls.ASPECTS:
+                raise ValueError('Unknown shot aspect ratio')
+            values = {}
+            for name, shape in (('position', (3,)), ('rotation', (3, 3)),
+                                ('focal_mm', ()), ('fov_y', ()), ('near', ()), ('far', ())):
+                raw = np.asarray(data[name], dtype=object)
+                if raw.shape != shape or any(isinstance(v, (bool, np.bool_)) or
+                                             not isinstance(v, Real) for v in raw.flat):
+                    raise ValueError(name + ' must contain numeric values of the correct shape')
+                value = np.asarray(raw, dtype=float)
+                if not np.isfinite(value).all():
+                    raise ValueError(name + ' must be finite')
+                values[name] = float(value) if shape == () else value
+            with np.errstate(over='raise', invalid='raise', divide='raise'):
+                shot = cls(Camera(values['position'], values['rotation'], values['fov_y'],
+                                  values['near'], values['far']))
+                shot.aspect_name = aspect
+                if (values['focal_mm'] <= 0 or not math.isfinite(shot.focal_mm) or
+                        not math.isclose(values['focal_mm'], shot.focal_mm, rel_tol=1e-12)):
+                    raise ValueError('focal_mm must be positive and match fov_y/aspect')
+                if not (np.isfinite(shot.projection_matrix(shot.aspect)).all() and
+                        np.isfinite(shot.view_matrix).all()):
+                    raise ValueError('Shot camera matrices must be finite')
+            return shot
+        except (KeyError, TypeError, OverflowError, FloatingPointError) as exc:
+            raise ValueError('Invalid shot_camera: {}'.format(exc)) from exc
 
     def fit_rect(self, rect):
         x, y, width, height = rect

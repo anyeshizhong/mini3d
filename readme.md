@@ -95,7 +95,7 @@ Shot Camera 的 Camera View、PNG 与 AI API 拍照始终使用 Scene Lighting�
 
 Camera View 使用与成片相同的 Lit 离屏渲染和画幅比例，并留黑边适配窗口；不显示选中轮廓、Gizmo、地面网格。九宫格仅在 UI 上叠加，PNG 不包含它。即使 Editor View 处于 Wireframe 或打开地面网格，Capture 也始终输出 Shot Camera 的干净 Lit 画面。
 
-Shot Camera 不接受鼠标导航；需要调整位置时，返回 Editor View 调整后再次 Create Camera From View。单纯切换视图或浏览 Editor Camera 不会改变 Shot Camera。当前 Shot Camera 仅保留在本次运行内，尚未加入场景 JSON 保存；渲染和写 PNG 为同步操作。`mini3d/shot_camera.py` 复用现有 GLRenderer/RenderTarget，没有增加阴影、HDRI、景深等效果。
+Shot Camera 不接受鼠标导航；需要调整位置时，返回 Editor View 调整后再次 Create Camera From View。单纯切换视图或浏览 Editor Camera 不会改变 Shot Camera。Scene v3 JSON 现在保存 Shot Camera 的位置、旋转、镜头、画幅及裁剪面；重新打开场景后可直接切换 Camera View 或 Capture。加载没有 Shot Camera 的旧场景会清除上一场景的摄影相机。渲染和写 PNG 为同步操作；`mini3d/shot_camera.py` 复用现有 GLRenderer/RenderTarget。格式和验收见 [Shot Camera 持久化](docs/shot-camera-persistence.md)。
 
 当前边界：采用随窗口尺寸调整的固定面板布局，尚无任意拖拽 Docking；狐狸显示默认骨骼姿态，暂不播放动画。材质支持基础色、金属度、粗糙度、法线、AO、自发光和 specular 贴图，可使用工作室预览或世界空间方向光，尚无阴影、HDR 或环境 IBL。选择依据几何，不穿透透明贴图区域；未支持的压缩扩展或 UV 通道会明确报错。
 

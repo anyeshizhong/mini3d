@@ -369,6 +369,7 @@ class Editor:
         snapshot = {key: value.tolist() if isinstance(value, np.ndarray) else value for key, value in snapshot.items()}
         from .lighting import shadow_state
         document = dict(shadows=shadow_state(self.scene), version=3, objects=records, camera=snapshot,
+                        shot_camera=None if self.shot_camera is None else self.shot_camera.to_dict(),
                         render_mode=self.render_mode, show_grid=self.show_grid,
                         lighting=dict(mode=self.scene.lighting_mode,
                                       light_dir=np.asarray(self.scene.light_dir).tolist(),
@@ -398,6 +399,10 @@ class Editor:
         document = json.loads(path.read_text(encoding="utf-8"))
         if document.get("version") not in (1, 2, 3):
             raise ValueError("Unsupported scene format")
+        # Missing/null means this project has no Shot Camera, even if the
+        # previously open project had one. Validate before any live mutation.
+        shot_data = document.get('shot_camera')
+        shot = None if shot_data is None else ShotCamera.from_dict(shot_data)
         loaded = Scene()
         lighting = document.get('lighting', {})
         # JSON null is invalid in saved parameters (API None means "unchanged").
@@ -489,6 +494,10 @@ class Editor:
         self.place_selected_mode = False
         self.viewer.controller.restore(document["camera"])
         self.viewer.save_camera()
+        self.shot_camera = shot
+        self.camera_view = self.camera_view and shot is not None
+        self.capture_requested = False
+        self.last_capture = None
         self.render_mode, self.show_grid = mode, bool(document.get("show_grid", True))
         self.status = "Loaded: " + str(path)
 

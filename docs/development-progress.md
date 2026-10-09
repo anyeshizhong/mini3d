@@ -2,6 +2,8 @@
 
 更新：2026-10-09。
 
+Shot Camera 持久化已在 `feature/shot-camera-persistence` 工作树完成实现与验证：239 项单测通过，跨进程保存/加载后 PNG 差异像素为 0，原摄影 UI 回归通过。见 [格式、兼容性和验收记录](shot-camera-persistence.md)。
+
 | 阶段 | 状态 | 记录 |
 | --- | --- | --- |
 | Placement V1 / V2、Ground 分离、Photography、AI API V1 | 既有基线，本轮全部回归通过 | 对应 docs 下专题报告 |

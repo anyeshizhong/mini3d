@@ -203,9 +203,7 @@ class Mini3DAPI:
         camera = self._app.shot_camera
         if camera is None:
             return None
-        return dict(camera_id='shot', position=camera.position.tolist(), rotation=camera.rotation.tolist(),
-            focal_mm=camera.focal_mm, aspect=camera.aspect_name, width=camera.size[0], height=camera.size[1],
-            fov_y=camera.fov_y, near=camera.near, far=camera.far)
+        return dict(camera.to_dict(), camera_id='shot', width=camera.size[0], height=camera.size[1])
 
     def set_lens(self, focal_mm):
         self._outside_transaction()
