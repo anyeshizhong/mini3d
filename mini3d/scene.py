@@ -127,6 +127,10 @@ class Scene:
         self.light_dir = np.array([.4, -.5, .8], np.float32)
         self.light_dir /= np.linalg.norm(self.light_dir)
         self.ambient, self.diffuse = .3, .7
+        self.shadows_enabled = False
+        self.shadow_resolution = 1024
+        self.shadow_bias = .0005
+        self.shadow_pcf = True
         self.show_grid = True
         self.show_axes = False
         self.render_mode = "Lit"

@@ -62,3 +62,29 @@ def scene_light_direction(scene):
     scale = np.max(np.abs(direction))
     direction = direction / scale
     return np.asarray(direction / np.linalg.norm(direction), dtype=np.float32)
+
+
+def shadow_state(scene):
+    return dict(enabled=scene.shadows_enabled, resolution=scene.shadow_resolution,
+                bias=scene.shadow_bias, pcf=scene.shadow_pcf)
+
+
+def update_shadows(scene, enabled=None, resolution=None, bias=None, pcf=None):
+    """Validate atomically. Bias is measured in normalized shadow depth units."""
+    candidate = shadow_state(scene)
+    for name, value in (('enabled', enabled), ('resolution', resolution), ('bias', bias), ('pcf', pcf)):
+        if value is not None:
+            candidate[name] = value
+    for key in ('enabled','pcf'):
+        if not isinstance(candidate[key], bool):
+            raise ValueError(key + ' must be boolean')
+    size = candidate['resolution']
+    if isinstance(size, bool) or not isinstance(size, int) or size not in (256,512,1024,2048,4096):
+        raise ValueError('resolution must be 256, 512, 1024, 2048 or 4096')
+    value = candidate['bias']
+    if isinstance(value, bool) or not isinstance(value, Real) or not np.isfinite(value) or not 0 <= value <= .05:
+        raise ValueError('bias must be finite and between 0 and 0.05')
+    candidate['bias'] = float(value)
+    scene.shadows_enabled, scene.shadow_resolution = candidate['enabled'], size
+    scene.shadow_bias, scene.shadow_pcf = candidate['bias'], candidate['pcf']
+    return shadow_state(scene)

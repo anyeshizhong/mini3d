@@ -2,7 +2,7 @@
 
 Lighting uses the existing GGX metallic/roughness BRDF with either one world
 directional light or three studio lights and analytic studio reflections.
-It does not implement environment-map IBL, shadows, transmission or animation.
+It does not implement environment-map IBL, transmission or animation.
 Call ``close`` before destroying GL.
 """
 
@@ -14,6 +14,7 @@ import pygame
 from OpenGL import GL as gl
 from OpenGL.GL.shaders import compileProgram, compileShader
 from .lighting import scene_light_direction
+from .shadow_map import SHADOW_GLSL, ShadowMap
 
 
 VERTEX_SHADER = """#version 330 core
@@ -55,6 +56,7 @@ uniform int alphaMode, shadingMode;
 uniform vec3 eye, light0, light1, light2;
 uniform float lightIntensity, ambientIntensity;
 uniform bool sceneLighting;
+""" + SHADOW_GLSL + """
 const float PI = 3.14159265359;
 
 vec3 linearize(vec3 c) {
@@ -134,7 +136,7 @@ void main() {
     if (sceneLighting) {
         // light0 is surface-to-light in WORLD space, without distance falloff.
         // Keep the existing BRDF; no studio fill lights or reflection panels.
-        result = directLight(n,v,light0,base.rgb,f0,metal,rough,vec3(lightIntensity));
+        result = directLight(n,v,light0,base.rgb,f0,metal,rough,vec3(lightIntensity)) * shadowVisibility(worldPosition,n,light0);
         result += (1.0-metal)*base.rgb * ao * ambientIntensity;
     } else {
         result = directLight(n,v,light0,base.rgb,f0,metal,rough,vec3(3.1,2.9,2.65));
@@ -341,7 +343,7 @@ class MaterialRenderer:
             self._float("lightIntensity",getattr(scene,"material_light_intensity",1.0))
             self._float("ambientIntensity",getattr(scene,"material_ambient_intensity",1.0))
 
-    def render(self, entities, camera, scene, width, height, mode="Lit"):
+    def render(self, entities, camera, scene, width, height, mode="Lit", shadow=None):
         """Draw into the caller's framebuffer without clearing or resizing it."""
         entities = [entity for entity in entities if self._entity_mesh(entity) is not None]
         if not entities or width <= 0 or height <= 0:
@@ -359,6 +361,7 @@ class MaterialRenderer:
             self._matrix("projection",camera.projection_matrix(float(width)/height))
             self._vec3("eye",camera.position)
             self._lighting(scene, camera)
+            ShadowMap.bind(self.program, shadow, scene)
             records = []
             for entity in entities:
                 mesh = self._mesh(self._entity_mesh(entity))
@@ -471,14 +474,14 @@ class MaterialRenderer:
         state = {name:int(gl.glGetIntegerv(getattr(gl,"GL_"+name))) for name in integer_names}
         state["enabled"] = {cap:bool(gl.glIsEnabled(cap)) for cap in
                             (gl.GL_DEPTH_TEST,gl.GL_CULL_FACE,gl.GL_BLEND,gl.GL_FRAMEBUFFER_SRGB,
-                             gl.GL_STENCIL_TEST,gl.GL_SCISSOR_TEST,gl.GL_POLYGON_OFFSET_FILL)}
+                             gl.GL_STENCIL_TEST,gl.GL_SCISSOR_TEST,gl.GL_POLYGON_OFFSET_FILL,gl.GL_RASTERIZER_DISCARD)}
         state["polygon_offset"] = (float(gl.glGetFloatv(gl.GL_POLYGON_OFFSET_FACTOR)),
                                    float(gl.glGetFloatv(gl.GL_POLYGON_OFFSET_UNITS)))
         state["depth_mask"] = bool(gl.glGetBooleanv(gl.GL_DEPTH_WRITEMASK))
         state["color_mask"] = np.asarray(gl.glGetBooleanv(gl.GL_COLOR_WRITEMASK)).reshape(-1)
         state["polygon"] = np.asarray(gl.glGetIntegerv(gl.GL_POLYGON_MODE)).reshape(-1)
         state["textures"] = []
-        for unit in range(len(MaterialRenderer._slots)):
+        for unit in range(len(MaterialRenderer._slots)+1):
             gl.glActiveTexture(gl.GL_TEXTURE0+unit)
             state["textures"].append(int(gl.glGetIntegerv(gl.GL_TEXTURE_BINDING_2D)))
         return state

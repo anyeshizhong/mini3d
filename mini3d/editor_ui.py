@@ -435,6 +435,14 @@ class EditorUI:
                 self._apply_lighting(mode='Scene', ambient=ambient)
             imgui.pop_item_width()
             imgui.text_wrapped('Editing values previews Scene Lighting. No manual normalization needed.')
+            changed, enabled = imgui.checkbox('Scene shadows', scene.shadows_enabled)
+            if changed:
+                try:
+                    self.app.set_shadows(enabled=enabled)
+                    self.lighting_error = ''
+                except ValueError as exc:
+                    self.lighting_error = str(exc)
+            imgui.text_wrapped('Shadows apply in Scene Lighting and Shot Camera.')
             imgui.text_wrapped('Shot Camera always uses Scene Lighting.')
             if self.lighting_error:
                 imgui.text_wrapped('Invalid lighting: ' + self.lighting_error)

@@ -65,6 +65,13 @@ class Mini3DAPI:
     def list_groups(self):
         return [self.get_group(g.group_id) for g in self._app.scene.groups]
 
+    def get_shadows(self):
+        from .lighting import shadow_state
+        return shadow_state(self._app.scene)
+
+    def set_shadows(self, enabled=None, resolution=None, bias=None, pcf=None):
+        return self._app.set_shadows(enabled, resolution, bias, pcf)
+
     def get_lighting(self):
         """Return mode, world surface-to-light direction, diffuse and ambient."""
         return lighting_state(self._app.scene)
@@ -87,7 +94,7 @@ class Mini3DAPI:
                         size=self._app.scene.placement_plane.size),
             placement_plane=self._app.scene.placement_plane.to_dict(),
             shot_camera=self.get_shot_camera(),
-            lighting=self.get_lighting(),
+            lighting=self.get_lighting(), shadows=self.get_shadows(),
             history=dict(undo_count=self._commands.undo_count, redo_count=self._commands.redo_count,
                          active_transaction=self._commands.active_transaction))
 

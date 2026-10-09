@@ -318,6 +318,12 @@ class Editor:
         self.place_selected_mode = True
         self.status = "Click a surface to place the selected object; Esc cancels"
 
+    def set_shadows(self, enabled=None, resolution=None, bias=None, pcf=None):
+        from .lighting import update_shadows
+        if self.commands.active_transaction:
+            raise ValueError('Shadow changes require a completed placement transaction')
+        return update_shadows(self.scene, enabled, resolution, bias, pcf)
+
     def set_lighting(self, mode=None, direction=None, diffuse=None, ambient=None):
         from .lighting import update_lighting
         if self.commands.active_transaction:
@@ -361,7 +367,8 @@ class Editor:
                                 keep_upright=root.keep_upright))
         snapshot = self.viewer.controller.snapshot()
         snapshot = {key: value.tolist() if isinstance(value, np.ndarray) else value for key, value in snapshot.items()}
-        document = dict(version=3, objects=records, camera=snapshot,
+        from .lighting import shadow_state
+        document = dict(shadows=shadow_state(self.scene), version=3, objects=records, camera=snapshot,
                         render_mode=self.render_mode, show_grid=self.show_grid,
                         lighting=dict(mode=self.scene.lighting_mode,
                                       light_dir=np.asarray(self.scene.light_dir).tolist(),
@@ -399,6 +406,11 @@ class Editor:
         from .lighting import update_lighting
         update_lighting(loaded, lighting.get('mode'), lighting.get('light_dir'),
                         lighting.get('diffuse'), lighting.get('ambient'))
+        from .lighting import update_shadows
+        shadows = document.get('shadows', {})
+        if not isinstance(shadows, dict) or any(v is None for v in shadows.values()):
+            raise ValueError('Invalid shadows document')
+        update_shadows(loaded, **shadows)
         loaded.placement_plane = PlacementPlane(**document.get('placement_plane', {}))
         for record in document["objects"]:
             source = record["asset"]
@@ -464,6 +476,8 @@ class Editor:
         # Ignore it; preserve only explicit objects and query-plane settings.
         self.scene.ground = None
         self.scene.placement_plane = loaded.placement_plane
+        from .lighting import shadow_state, update_shadows
+        update_shadows(self.scene, **shadow_state(loaded))
         self.scene.lighting_mode = loaded.lighting_mode
         self.scene.light_dir = loaded.light_dir.copy()
         self.scene.ambient, self.scene.diffuse = loaded.ambient, loaded.diffuse
@@ -762,8 +776,7 @@ def run(initial_asset="auto", frames=None, screenshot=None, hidden=False):
                 running = False
     finally:
         app.model_dialog.close()
-        if hasattr(renderer, "material_renderer"):
-            renderer.material_renderer.close()
+        renderer.close()
         if previews:
             gl.glDeleteTextures(previews)
         target.close()

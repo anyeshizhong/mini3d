@@ -1,0 +1,8 @@
+Renderer initialized in OUTLINE mode
+PASS: real photo buttons, 4 lenses/aspects, 6 PNGs, clean preview equality, grid exclusion and independent cameras
+captures\shadow-regression\photography\shot_20261009_105021_430788.png
+captures\shadow-regression\photography\shot_20261009_105021_948573.png
+captures\shadow-regression\photography\shot_20261009_105022_346092.png
+captures\shadow-regression\photography\shot_20261009_105022_736248.png
+captures\shadow-regression\photography\shot_20261009_105023_143781.png
+captures\shadow-regression\photography\shot_20261009_105023_738363.png

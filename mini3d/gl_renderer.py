@@ -1348,6 +1348,7 @@ import numpy as np
 from OpenGL.GL import *
 from OpenGL.GL.shaders import compileShader, compileProgram
 import ctypes
+from .shadow_map import ShadowMap, SHADOW_GLSL
 
 
 DTYPE = np.float32
@@ -1444,6 +1445,7 @@ uniform float uDiffuse;
 
 out vec4 FragColor;
 
+""" + SHADOW_GLSL + """
 void main(){
     vec3 N = normalize(vNormalW);
     vec3 L = normalize(uLightDirW);
@@ -1452,7 +1454,7 @@ void main(){
     float ndl = max(dot(N, L), 0.0);
     
     // Combined lighting
-    float intensity = uAmbient + uDiffuse * ndl;
+    float intensity = uAmbient + uDiffuse * ndl * shadowVisibility(vPosW, N, L);
     intensity = clamp(intensity, 0.0, 1.0);
     
     vec3 col = uBaseColor * intensity;
@@ -1475,6 +1477,7 @@ uniform vec3 uCameraPos;
 
 out vec4 FragColor;
 
+""" + SHADOW_GLSL + """
 void main(){
     vec3 N = normalize(vNormalW);
     vec3 L = normalize(uLightDirW);
@@ -1487,7 +1490,7 @@ void main(){
     float toonIntensity = floor(ndl * toonLevels) / toonLevels;
     
     // Add ambient
-    float intensity = uAmbient + uDiffuse * toonIntensity;
+    float intensity = uAmbient + uDiffuse * toonIntensity * shadowVisibility(vPosW, N, L);
     intensity = clamp(intensity, 0.0, 1.0);
     
     // Specular highlight (toon style)
@@ -1510,7 +1513,7 @@ void main(){
     
     // Combine
     vec3 col = uBaseColor * intensity;
-    col += vec3(0.3) * specular; // White specular highlight
+    col += vec3(0.3) * specular * shadowVisibility(vPosW, N, L); // White specular highlight
     col += uBaseColor * 0.5 * rimIntensity; // Rim light
     
     FragColor = vec4(col, 1.0);
@@ -1821,6 +1824,8 @@ class GLRenderer:
 
         # GPU cache
         self.gpu_cache = {}
+        self.shadow_map = ShadowMap()
+        self._active_shadow = None
 
         # Grid
         self.grid = GLGrid(grid_size=200, step=20, z0=0.0)
@@ -1847,6 +1852,54 @@ class GLRenderer:
         return self.gpu_cache[key]
 
     def render(self, scene, camera):
+        active = int(glGetIntegerv(GL_ACTIVE_TEXTURE))
+        glActiveTexture(GL_TEXTURE0+ShadowMap.UNIT)
+        binding = int(glGetIntegerv(GL_TEXTURE_BINDING_2D))
+        glActiveTexture(active)
+        try:
+            self._active_shadow = None
+            if getattr(scene, 'shadows_enabled', False) and getattr(scene, 'lighting_mode', 'Studio') == 'Scene' and getattr(scene, 'render_mode', 'Lit').lower() == 'lit':
+                entities = scene.get_flat_render_list()
+                if any(getattr(e.model, 'material', None) is not None for e in entities) and not hasattr(self, 'material_renderer'):
+                    from .material_renderer import MaterialRenderer
+                    self.material_renderer = MaterialRenderer()
+                self.shadow_map.render(entities, scene, self)
+                self._active_shadow = self.shadow_map
+            self._render_scene(scene, camera)
+        finally:
+            glActiveTexture(GL_TEXTURE0+ShadowMap.UNIT)
+            glBindTexture(GL_TEXTURE_2D,binding)
+            glActiveTexture(active)
+
+    def close(self):
+        self.shadow_map.close()
+        if hasattr(self, 'material_renderer'):
+            self.material_renderer.close()
+        for gpu in self.gpu_cache.values():
+            glDeleteVertexArrays(1,[gpu.vao])
+            glDeleteBuffers(2,[gpu.vbo,gpu.ebo])
+        self.gpu_cache.clear()
+        for name in ('program','toon_program','outline_program','line_program','screen_line_program'):
+            program = getattr(self,name,0)
+            if program:
+                glDeleteProgram(program)
+                setattr(self,name,0)
+        for name in ('screen_line_vao','axes_vao'):
+            value = getattr(self,name,0)
+            if value:
+                glDeleteVertexArrays(1,[value])
+                setattr(self,name,0)
+        for name in ('screen_line_vbo','axes_vbo'):
+            value = getattr(self,name,0)
+            if value:
+                glDeleteBuffers(1,[value])
+                setattr(self,name,0)
+        if self.grid.vao:
+            glDeleteVertexArrays(1,[self.grid.vao])
+            glDeleteBuffers(1,[self.grid.vbo])
+            self.grid.vao = 0
+
+    def _render_scene(self, scene, camera):
         # Clear
         glClearColor(30/255, 30/255, 35/255, 1.0)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
@@ -1878,7 +1931,7 @@ class GLRenderer:
                 from .material_renderer import MaterialRenderer
                 self.material_renderer = MaterialRenderer()
             self.material_renderer.render(imported, camera, scene, self.w, self.h,
-                                          mode=getattr(scene, "render_mode", "Lit"))
+                                          mode=getattr(scene, "render_mode", "Lit"), shadow=self._active_shadow)
 
         self.render_editor_grid(scene, camera)
 
@@ -1932,6 +1985,8 @@ class GLRenderer:
     def _render_realistic_pass(self, entities, V, P, scene):
         """Standard realistic rendering"""
         glUseProgram(self.program)
+        if hasattr(self, "_active_shadow"):
+            ShadowMap.bind(self.program, self._active_shadow, scene)
         
         # Set view and projection
         glUniformMatrix4fv(self.locView, 1, GL_TRUE, V)
@@ -1971,6 +2026,8 @@ class GLRenderer:
     def _render_toon_pass(self, entities, V, P, scene, cam_pos):
         """Toon/cel-shading rendering"""
         glUseProgram(self.toon_program)
+        if hasattr(self, "_active_shadow"):
+            ShadowMap.bind(self.toon_program, self._active_shadow, scene)
         
         # Set view and projection
         glUniformMatrix4fv(self.toon_locView, 1, GL_TRUE, V)
