@@ -2,7 +2,7 @@
 
 Copyright (c) 2021, Jiang Ye. See third_party/shadowMapping/LICENSE and
 docs/shadow-mapping-v1.md for the pinned source and adaptation mapping.
-No Camera near/far dependency; input consists only of real scene entities.
+Editor fits all real entities; Shot Camera fits conservative receiver/caster bounds.
 """
 from itertools import product
 
@@ -66,8 +66,14 @@ void main() {
 """
 
 
-def light_matrix(entities, direction):
-    """Fit orthographic clip space to cached local AABBs, independent of Camera."""
+def light_matrix(entities, direction, camera=None, resolution=1024):
+    """Cached AABBs; optional Shot receiver fit with whole-scene fallback."""
+    if camera is not None:
+        from .shadow_fit import receiver_matrix
+        entities = list(entities)
+        fitted = receiver_matrix(entities, direction, camera, resolution)
+        if fitted is not None:
+            return fitted
     light = np.array(direction, dtype=np.float64, copy=True)
     light /= np.max(np.abs(light))
     light /= np.linalg.norm(light)
@@ -141,9 +147,9 @@ class ShadowMap:
             self.close()
             raise
 
-    def render(self, entities, scene, renderer):
+    def render(self, entities, scene, renderer, camera=None):
         from .material_renderer import MaterialRenderer
-        matrix = light_matrix(entities, scene_light_direction(scene))
+        matrix = light_matrix(entities, scene_light_direction(scene), camera, scene.shadow_resolution)
         if matrix is None:
             self.matrix = None
             return

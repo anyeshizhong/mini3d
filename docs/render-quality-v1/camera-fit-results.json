@@ -1,0 +1,3119 @@
+{
+  "label": "camera-fit",
+  "gpu": "Intel(R) UHD Graphics 620",
+  "gl": "4.6.0 - Build 27.20.100.8682",
+  "runs": [
+    {
+      "name": "ground-10-1024",
+      "category": "controlled-ground",
+      "camera": {
+        "position": [
+          7.0,
+          9.0,
+          13.0
+        ],
+        "rotation": [
+          [
+            -0.7988707691396074,
+            -0.46547325417234653,
+            0.3809726287602537
+          ],
+          [
+            0.6015026967639397,
+            -0.6182066656976477,
+            0.5059792725722119
+          ],
+          [
+            0.0,
+            0.6333681142410018,
+            0.7738506521692652
+          ]
+        ],
+        "focal_mm": 50.0,
+        "aspect": "4:3",
+        "fov_y": 30.219150244680932,
+        "near": 0.05,
+        "far": 400.0,
+        "camera_id": "shot",
+        "width": 1920,
+        "height": 1440
+      },
+      "lighting": {
+        "mode": "Scene",
+        "direction": [
+          -3.0,
+          -2.0,
+          3.0
+        ],
+        "diffuse": 3.0,
+        "ambient": 0.3
+      },
+      "shadows": {
+        "enabled": true,
+        "resolution": 1024,
+        "bias": 0.0003,
+        "pcf": true
+      },
+      "entities": [
+        {
+          "entity_id": "ent_000001",
+          "name": "Ground",
+          "asset_path": "F:\\python_project\\mini3d\\.worktrees\\stabilization-v1\\captures\\render-quality-v1\\assets\\quality-floor.gltf",
+          "position": [
+            0.0,
+            0.0,
+            -0.1
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            10.0,
+            10.0,
+            0.2
+          ],
+          "visible": true,
+          "locked": false,
+          "placement_type": "prop",
+          "placement_anchor": "bounds_bottom",
+          "keep_upright": false
+        },
+        {
+          "entity_id": "ent_000002",
+          "name": "Subject",
+          "asset_path": "F:\\python_project\\mini3d\\.worktrees\\stabilization-v1\\captures\\render-quality-v1\\assets\\quality-box.gltf",
+          "position": [
+            0.0,
+            0.0,
+            1.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            2.0
+          ],
+          "visible": true,
+          "locked": false,
+          "placement_type": "prop",
+          "placement_anchor": "bounds_bottom",
+          "keep_upright": false
+        }
+      ],
+      "gl_error": 0,
+      "camera_depth_sha256": "874265f4af2ec264a85e55c45cf6c570cd289e9e9ad2f2eb8b2aec3aa0201e24",
+      "png_sha256": "e5bfa0681e66f0f106d6c4485416cb1b8099049c2685971ddf59b38bad2a69e1",
+      "light_space_extent": [
+        7.671589803382161,
+        11.936616517263792,
+        11.265421015572803
+      ],
+      "world_units_per_texel": [
+        0.007491786917365391,
+        0.011656852067640422
+      ],
+      "normalized_bias_world_depth": 0.003379626304671841,
+      "shadow_gpu_ms": 0.320214,
+      "shadow_cpu_gpu_ms": 3.743000000000052
+    },
+    {
+      "name": "ground-10-4096",
+      "category": "controlled-ground",
+      "camera": {
+        "position": [
+          7.0,
+          9.0,
+          13.0
+        ],
+        "rotation": [
+          [
+            -0.7988707691396074,
+            -0.46547325417234653,
+            0.3809726287602537
+          ],
+          [
+            0.6015026967639397,
+            -0.6182066656976477,
+            0.5059792725722119
+          ],
+          [
+            0.0,
+            0.6333681142410018,
+            0.7738506521692652
+          ]
+        ],
+        "focal_mm": 50.0,
+        "aspect": "4:3",
+        "fov_y": 30.219150244680932,
+        "near": 0.05,
+        "far": 400.0,
+        "camera_id": "shot",
+        "width": 1920,
+        "height": 1440
+      },
+      "lighting": {
+        "mode": "Scene",
+        "direction": [
+          -3.0,
+          -2.0,
+          3.0
+        ],
+        "diffuse": 3.0,
+        "ambient": 0.3
+      },
+      "shadows": {
+        "enabled": true,
+        "resolution": 4096,
+        "bias": 0.0003,
+        "pcf": true
+      },
+      "entities": [
+        {
+          "entity_id": "ent_000001",
+          "name": "Ground",
+          "asset_path": "F:\\python_project\\mini3d\\.worktrees\\stabilization-v1\\captures\\render-quality-v1\\assets\\quality-floor.gltf",
+          "position": [
+            0.0,
+            0.0,
+            -0.1
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            10.0,
+            10.0,
+            0.2
+          ],
+          "visible": true,
+          "locked": false,
+          "placement_type": "prop",
+          "placement_anchor": "bounds_bottom",
+          "keep_upright": false
+        },
+        {
+          "entity_id": "ent_000002",
+          "name": "Subject",
+          "asset_path": "F:\\python_project\\mini3d\\.worktrees\\stabilization-v1\\captures\\render-quality-v1\\assets\\quality-box.gltf",
+          "position": [
+            0.0,
+            0.0,
+            1.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            2.0
+          ],
+          "visible": true,
+          "locked": false,
+          "placement_type": "prop",
+          "placement_anchor": "bounds_bottom",
+          "keep_upright": false
+        }
+      ],
+      "gl_error": 0,
+      "camera_depth_sha256": "874265f4af2ec264a85e55c45cf6c570cd289e9e9ad2f2eb8b2aec3aa0201e24",
+      "png_sha256": "e9cbdb2124daec769caebf77598649cbbf1b1131fa3ab8bdedca9d37330f3d07",
+      "light_space_extent": [
+        7.671589803382161,
+        11.936616517263792,
+        11.265421015572803
+      ],
+      "world_units_per_texel": [
+        0.0018729467293413478,
+        0.0029142130169101054
+      ],
+      "normalized_bias_world_depth": 0.003379626304671841,
+      "shadow_gpu_ms": 7.5696,
+      "shadow_cpu_gpu_ms": 11.295799999999634
+    },
+    {
+      "name": "ground-32-1024",
+      "category": "controlled-ground",
+      "camera": {
+        "position": [
+          7.0,
+          9.0,
+          13.0
+        ],
+        "rotation": [
+          [
+            -0.7988707691396074,
+            -0.46547325417234653,
+            0.3809726287602537
+          ],
+          [
+            0.6015026967639397,
+            -0.6182066656976477,
+            0.5059792725722119
+          ],
+          [
+            0.0,
+            0.6333681142410018,
+            0.7738506521692652
+          ]
+        ],
+        "focal_mm": 50.0,
+        "aspect": "4:3",
+        "fov_y": 30.219150244680932,
+        "near": 0.05,
+        "far": 400.0,
+        "camera_id": "shot",
+        "width": 1920,
+        "height": 1440
+      },
+      "lighting": {
+        "mode": "Scene",
+        "direction": [
+          -3.0,
+          -2.0,
+          3.0
+        ],
+        "diffuse": 3.0,
+        "ambient": 0.3
+      },
+      "shadows": {
+        "enabled": true,
+        "resolution": 1024,
+        "bias": 0.0003,
+        "pcf": true
+      },
+      "entities": [
+        {
+          "entity_id": "ent_000001",
+          "name": "Ground",
+          "asset_path": "F:\\python_project\\mini3d\\.worktrees\\stabilization-v1\\captures\\render-quality-v1\\assets\\quality-floor.gltf",
+          "position": [
+            0.0,
+            0.0,
+            -0.1
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            32.0,
+            32.0,
+            0.2
+          ],
+          "visible": true,
+          "locked": false,
+          "placement_type": "prop",
+          "placement_anchor": "bounds_bottom",
+          "keep_upright": false
+        },
+        {
+          "entity_id": "ent_000002",
+          "name": "Subject",
+          "asset_path": "F:\\python_project\\mini3d\\.worktrees\\stabilization-v1\\captures\\render-quality-v1\\assets\\quality-box.gltf",
+          "position": [
+            0.0,
+            0.0,
+            1.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            2.0
+          ],
+          "visible": true,
+          "locked": false,
+          "placement_type": "prop",
+          "placement_anchor": "bounds_bottom",
+          "keep_upright": false
+        }
+      ],
+      "gl_error": 0,
+      "camera_depth_sha256": "0faae8d1d420d3ad1b3e52a5dbfe9df2ffb04be373262ae3f428ae617d9330e6",
+      "png_sha256": "8f2a232b2191e183d3ad7796f6f15475fcca66987cc27767769aa22792b73b9b",
+      "light_space_extent": [
+        13.431252474967915,
+        17.635825042543438,
+        24.414115295172
+      ],
+      "world_units_per_texel": [
+        0.013116457495085854,
+        0.017222485393108826
+      ],
+      "normalized_bias_world_depth": 0.0073242345885516,
+      "shadow_gpu_ms": 0.411929,
+      "shadow_cpu_gpu_ms": 4.955900000000124
+    },
+    {
+      "name": "ground-32-4096",
+      "category": "controlled-ground",
+      "camera": {
+        "position": [
+          7.0,
+          9.0,
+          13.0
+        ],
+        "rotation": [
+          [
+            -0.7988707691396074,
+            -0.46547325417234653,
+            0.3809726287602537
+          ],
+          [
+            0.6015026967639397,
+            -0.6182066656976477,
+            0.5059792725722119
+          ],
+          [
+            0.0,
+            0.6333681142410018,
+            0.7738506521692652
+          ]
+        ],
+        "focal_mm": 50.0,
+        "aspect": "4:3",
+        "fov_y": 30.219150244680932,
+        "near": 0.05,
+        "far": 400.0,
+        "camera_id": "shot",
+        "width": 1920,
+        "height": 1440
+      },
+      "lighting": {
+        "mode": "Scene",
+        "direction": [
+          -3.0,
+          -2.0,
+          3.0
+        ],
+        "diffuse": 3.0,
+        "ambient": 0.3
+      },
+      "shadows": {
+        "enabled": true,
+        "resolution": 4096,
+        "bias": 0.0003,
+        "pcf": true
+      },
+      "entities": [
+        {
+          "entity_id": "ent_000001",
+          "name": "Ground",
+          "asset_path": "F:\\python_project\\mini3d\\.worktrees\\stabilization-v1\\captures\\render-quality-v1\\assets\\quality-floor.gltf",
+          "position": [
+            0.0,
+            0.0,
+            -0.1
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            32.0,
+            32.0,
+            0.2
+          ],
+          "visible": true,
+          "locked": false,
+          "placement_type": "prop",
+          "placement_anchor": "bounds_bottom",
+          "keep_upright": false
+        },
+        {
+          "entity_id": "ent_000002",
+          "name": "Subject",
+          "asset_path": "F:\\python_project\\mini3d\\.worktrees\\stabilization-v1\\captures\\render-quality-v1\\assets\\quality-box.gltf",
+          "position": [
+            0.0,
+            0.0,
+            1.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            2.0
+          ],
+          "visible": true,
+          "locked": false,
+          "placement_type": "prop",
+          "placement_anchor": "bounds_bottom",
+          "keep_upright": false
+        }
+      ],
+      "gl_error": 0,
+      "camera_depth_sha256": "0faae8d1d420d3ad1b3e52a5dbfe9df2ffb04be373262ae3f428ae617d9330e6",
+      "png_sha256": "7d80bc0348aed2c3450fab70cf9df5cfe5a07b3642c545f65463dedcebe7ef8a",
+      "light_space_extent": [
+        13.431252474967915,
+        17.635825042543438,
+        24.414115295172
+      ],
+      "world_units_per_texel": [
+        0.0032791143737714635,
+        0.0043056213482772065
+      ],
+      "normalized_bias_world_depth": 0.0073242345885516,
+      "shadow_gpu_ms": 10.067817,
+      "shadow_cpu_gpu_ms": 14.428399999999897
+    },
+    {
+      "name": "ground-200-1024",
+      "category": "controlled-ground",
+      "camera": {
+        "position": [
+          7.0,
+          9.0,
+          13.0
+        ],
+        "rotation": [
+          [
+            -0.7988707691396074,
+            -0.46547325417234653,
+            0.3809726287602537
+          ],
+          [
+            0.6015026967639397,
+            -0.6182066656976477,
+            0.5059792725722119
+          ],
+          [
+            0.0,
+            0.6333681142410018,
+            0.7738506521692652
+          ]
+        ],
+        "focal_mm": 50.0,
+        "aspect": "4:3",
+        "fov_y": 30.219150244680932,
+        "near": 0.05,
+        "far": 400.0,
+        "camera_id": "shot",
+        "width": 1920,
+        "height": 1440
+      },
+      "lighting": {
+        "mode": "Scene",
+        "direction": [
+          -3.0,
+          -2.0,
+          3.0
+        ],
+        "diffuse": 3.0,
+        "ambient": 0.3
+      },
+      "shadows": {
+        "enabled": true,
+        "resolution": 1024,
+        "bias": 0.0003,
+        "pcf": true
+      },
+      "entities": [
+        {
+          "entity_id": "ent_000001",
+          "name": "Ground",
+          "asset_path": "F:\\python_project\\mini3d\\.worktrees\\stabilization-v1\\captures\\render-quality-v1\\assets\\quality-floor.gltf",
+          "position": [
+            0.0,
+            0.0,
+            -0.1
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            200.0,
+            200.0,
+            0.2
+          ],
+          "visible": true,
+          "locked": false,
+          "placement_type": "prop",
+          "placement_anchor": "bounds_bottom",
+          "keep_upright": false
+        },
+        {
+          "entity_id": "ent_000002",
+          "name": "Subject",
+          "asset_path": "F:\\python_project\\mini3d\\.worktrees\\stabilization-v1\\captures\\render-quality-v1\\assets\\quality-box.gltf",
+          "position": [
+            0.0,
+            0.0,
+            1.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            2.0
+          ],
+          "visible": true,
+          "locked": false,
+          "placement_type": "prop",
+          "placement_anchor": "bounds_bottom",
+          "keep_upright": false
+        }
+      ],
+      "gl_error": 0,
+      "camera_depth_sha256": "e3f6946b35c2537c352272f5af78946152ef8fe0585854236e05b9395aa5a753",
+      "png_sha256": "de0ae10ee06096b61d90a31e8c9304ab021dfa2bba35af2f8b47795a3882d319",
+      "light_space_extent": [
+        13.431252474967915,
+        17.635825042543438,
+        24.414115295172
+      ],
+      "world_units_per_texel": [
+        0.013116457495085854,
+        0.017222485393108826
+      ],
+      "normalized_bias_world_depth": 0.0073242345885516,
+      "shadow_gpu_ms": 0.408941,
+      "shadow_cpu_gpu_ms": 3.846700000000425
+    },
+    {
+      "name": "ground-200-4096",
+      "category": "controlled-ground",
+      "camera": {
+        "position": [
+          7.0,
+          9.0,
+          13.0
+        ],
+        "rotation": [
+          [
+            -0.7988707691396074,
+            -0.46547325417234653,
+            0.3809726287602537
+          ],
+          [
+            0.6015026967639397,
+            -0.6182066656976477,
+            0.5059792725722119
+          ],
+          [
+            0.0,
+            0.6333681142410018,
+            0.7738506521692652
+          ]
+        ],
+        "focal_mm": 50.0,
+        "aspect": "4:3",
+        "fov_y": 30.219150244680932,
+        "near": 0.05,
+        "far": 400.0,
+        "camera_id": "shot",
+        "width": 1920,
+        "height": 1440
+      },
+      "lighting": {
+        "mode": "Scene",
+        "direction": [
+          -3.0,
+          -2.0,
+          3.0
+        ],
+        "diffuse": 3.0,
+        "ambient": 0.3
+      },
+      "shadows": {
+        "enabled": true,
+        "resolution": 4096,
+        "bias": 0.0003,
+        "pcf": true
+      },
+      "entities": [
+        {
+          "entity_id": "ent_000001",
+          "name": "Ground",
+          "asset_path": "F:\\python_project\\mini3d\\.worktrees\\stabilization-v1\\captures\\render-quality-v1\\assets\\quality-floor.gltf",
+          "position": [
+            0.0,
+            0.0,
+            -0.1
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            200.0,
+            200.0,
+            0.2
+          ],
+          "visible": true,
+          "locked": false,
+          "placement_type": "prop",
+          "placement_anchor": "bounds_bottom",
+          "keep_upright": false
+        },
+        {
+          "entity_id": "ent_000002",
+          "name": "Subject",
+          "asset_path": "F:\\python_project\\mini3d\\.worktrees\\stabilization-v1\\captures\\render-quality-v1\\assets\\quality-box.gltf",
+          "position": [
+            0.0,
+            0.0,
+            1.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            2.0
+          ],
+          "visible": true,
+          "locked": false,
+          "placement_type": "prop",
+          "placement_anchor": "bounds_bottom",
+          "keep_upright": false
+        }
+      ],
+      "gl_error": 0,
+      "camera_depth_sha256": "e3f6946b35c2537c352272f5af78946152ef8fe0585854236e05b9395aa5a753",
+      "png_sha256": "a1f41bb63c24cf180a62044791dbaa7d556eca03432547e92cfb0fea020ebe7c",
+      "light_space_extent": [
+        13.431252474967915,
+        17.635825042543438,
+        24.414115295172
+      ],
+      "world_units_per_texel": [
+        0.0032791143737714635,
+        0.0043056213482772065
+      ],
+      "normalized_bias_world_depth": 0.0073242345885516,
+      "shadow_gpu_ms": 10.436171,
+      "shadow_cpu_gpu_ms": 13.600300000000232
+    },
+    {
+      "name": "ground-200-off",
+      "category": "controlled-ground",
+      "camera": {
+        "position": [
+          7.0,
+          9.0,
+          13.0
+        ],
+        "rotation": [
+          [
+            -0.7988707691396074,
+            -0.46547325417234653,
+            0.3809726287602537
+          ],
+          [
+            0.6015026967639397,
+            -0.6182066656976477,
+            0.5059792725722119
+          ],
+          [
+            0.0,
+            0.6333681142410018,
+            0.7738506521692652
+          ]
+        ],
+        "focal_mm": 50.0,
+        "aspect": "4:3",
+        "fov_y": 30.219150244680932,
+        "near": 0.05,
+        "far": 400.0,
+        "camera_id": "shot",
+        "width": 1920,
+        "height": 1440
+      },
+      "lighting": {
+        "mode": "Scene",
+        "direction": [
+          -3.0,
+          -2.0,
+          3.0
+        ],
+        "diffuse": 3.0,
+        "ambient": 0.3
+      },
+      "shadows": {
+        "enabled": false,
+        "resolution": 4096,
+        "bias": 0.0003,
+        "pcf": true
+      },
+      "entities": [
+        {
+          "entity_id": "ent_000001",
+          "name": "Ground",
+          "asset_path": "F:\\python_project\\mini3d\\.worktrees\\stabilization-v1\\captures\\render-quality-v1\\assets\\quality-floor.gltf",
+          "position": [
+            0.0,
+            0.0,
+            -0.1
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            200.0,
+            200.0,
+            0.2
+          ],
+          "visible": true,
+          "locked": false,
+          "placement_type": "prop",
+          "placement_anchor": "bounds_bottom",
+          "keep_upright": false
+        },
+        {
+          "entity_id": "ent_000002",
+          "name": "Subject",
+          "asset_path": "F:\\python_project\\mini3d\\.worktrees\\stabilization-v1\\captures\\render-quality-v1\\assets\\quality-box.gltf",
+          "position": [
+            0.0,
+            0.0,
+            1.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            2.0
+          ],
+          "visible": true,
+          "locked": false,
+          "placement_type": "prop",
+          "placement_anchor": "bounds_bottom",
+          "keep_upright": false
+        }
+      ],
+      "gl_error": 0,
+      "camera_depth_sha256": "e3f6946b35c2537c352272f5af78946152ef8fe0585854236e05b9395aa5a753",
+      "png_sha256": "10e2fa8096b0faa22caca4b2e5510cb8e99d191fa5727da2b73c094b6260bcd6"
+    },
+    {
+      "name": "geometry-front",
+      "category": "geometry",
+      "camera": {
+        "position": [
+          7.0,
+          -10.0,
+          6.5
+        ],
+        "rotation": [
+          [
+            0.8192319205190405,
+            -0.23557978068281205,
+            0.5228395808812898
+          ],
+          [
+            0.5734623443633283,
+            0.33654254383258864,
+            -0.7469136869732711
+          ],
+          [
+            -0.0,
+            0.9117243460191948,
+            0.4108025278352991
+          ]
+        ],
+        "focal_mm": 49.999999999999986,
+        "aspect": "16:9",
+        "fov_y": 22.89519252737121,
+        "near": 0.03,
+        "far": 200.0,
+        "camera_id": "shot",
+        "width": 1920,
+        "height": 1080
+      },
+      "lighting": {
+        "mode": "Scene",
+        "direction": [
+          -3.0,
+          -4.0,
+          6.0
+        ],
+        "diffuse": 3.0,
+        "ambient": 0.3
+      },
+      "shadows": {
+        "enabled": true,
+        "resolution": 1024,
+        "bias": 0.0003,
+        "pcf": true
+      },
+      "entities": [
+        {
+          "entity_id": "ent_000001",
+          "name": "Ground",
+          "asset_path": "F:\\python_project\\mini3d\\.worktrees\\stabilization-v1\\captures\\render-quality-v1\\assets\\quality-floor.gltf",
+          "position": [
+            0.0,
+            0.0,
+            -0.1
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            32.0,
+            32.0,
+            0.2
+          ],
+          "visible": true,
+          "locked": false,
+          "placement_type": "prop",
+          "placement_anchor": "bounds_bottom",
+          "keep_upright": false
+        },
+        {
+          "entity_id": "ent_000002",
+          "name": "Box",
+          "asset_path": "F:\\python_project\\mini3d\\.worktrees\\stabilization-v1\\captures\\render-quality-v1\\assets\\quality-box.gltf",
+          "position": [
+            -1.5,
+            0.0,
+            0.8
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.6
+          ],
+          "visible": true,
+          "locked": false,
+          "placement_type": "prop",
+          "placement_anchor": "bounds_bottom",
+          "keep_upright": false
+        },
+        {
+          "entity_id": "ent_000003",
+          "name": "Metal sphere",
+          "asset_path": "F:\\python_project\\mini3d\\.worktrees\\stabilization-v1\\captures\\render-quality-v1\\assets\\quality-metal.gltf",
+          "position": [
+            0.0,
+            0.0,
+            0.7
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "visible": true,
+          "locked": false,
+          "placement_type": "prop",
+          "placement_anchor": "bounds_bottom",
+          "keep_upright": false
+        },
+        {
+          "entity_id": "ent_000004",
+          "name": "Cylinder",
+          "asset_path": "F:\\python_project\\mini3d\\.worktrees\\stabilization-v1\\captures\\render-quality-v1\\assets\\quality-cylinder.gltf",
+          "position": [
+            1.5,
+            0.2,
+            1.2
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            2.4
+          ],
+          "visible": true,
+          "locked": false,
+          "placement_type": "prop",
+          "placement_anchor": "bounds_bottom",
+          "keep_upright": false
+        },
+        {
+          "entity_id": "ent_000005",
+          "name": "Unlit marker",
+          "asset_path": "F:\\python_project\\mini3d\\.worktrees\\stabilization-v1\\captures\\render-quality-v1\\assets\\quality-unlit.gltf",
+          "position": [
+            -2.0,
+            2.0,
+            0.5
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "visible": true,
+          "locked": false,
+          "placement_type": "prop",
+          "placement_anchor": "bounds_bottom",
+          "keep_upright": false
+        }
+      ],
+      "gl_error": 0,
+      "camera_depth_sha256": "6f26a2173df2a223c077ae7694d4066f85ccee386b94ca76a2531d72d899f7d8",
+      "png_sha256": "2555dee03330a3ccd8ee36abb503701ed5339343b70555b819078dc30948da07",
+      "light_space_extent": [
+        18.209552384524944,
+        22.52526490203405,
+        21.730237187340972
+      ],
+      "world_units_per_texel": [
+        0.01778276600051264,
+        0.021997329005892626
+      ],
+      "normalized_bias_world_depth": 0.006519071156202291,
+      "shadow_gpu_ms": 0.383958,
+      "shadow_cpu_gpu_ms": 4.308299999999932
+    },
+    {
+      "name": "geometry-reverse",
+      "category": "geometry",
+      "camera": {
+        "position": [
+          -7.0,
+          10.0,
+          5.0
+        ],
+        "rotation": [
+          [
+            -0.8192319205190404,
+            0.17857593184129708,
+            -0.5449492609130661
+          ],
+          [
+            -0.5734623443633282,
+            -0.25510847405899584,
+            0.778498944161523
+          ],
+          [
+            0.0,
+            0.9502790658697595,
+            0.3113995776646092
+          ]
+        ],
+        "focal_mm": 49.999999999999986,
+        "aspect": "16:9",
+        "fov_y": 22.89519252737121,
+        "near": 0.03,
+        "far": 200.0,
+        "camera_id": "shot",
+        "width": 1920,
+        "height": 1080
+      },
+      "lighting": {
+        "mode": "Scene",
+        "direction": [
+          3.0,
+          4.0,
+          3.0
+        ],
+        "diffuse": 3.0,
+        "ambient": 0.3
+      },
+      "shadows": {
+        "enabled": true,
+        "resolution": 1024,
+        "bias": 0.0003,
+        "pcf": true
+      },
+      "entities": [
+        {
+          "entity_id": "ent_000001",
+          "name": "Ground",
+          "asset_path": "F:\\python_project\\mini3d\\.worktrees\\stabilization-v1\\captures\\render-quality-v1\\assets\\quality-floor.gltf",
+          "position": [
+            0.0,
+            0.0,
+            -0.1
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            32.0,
+            32.0,
+            0.2
+          ],
+          "visible": true,
+          "locked": false,
+          "placement_type": "prop",
+          "placement_anchor": "bounds_bottom",
+          "keep_upright": false
+        },
+        {
+          "entity_id": "ent_000002",
+          "name": "Box",
+          "asset_path": "F:\\python_project\\mini3d\\.worktrees\\stabilization-v1\\captures\\render-quality-v1\\assets\\quality-box.gltf",
+          "position": [
+            -1.5,
+            0.0,
+            0.8
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.6
+          ],
+          "visible": true,
+          "locked": false,
+          "placement_type": "prop",
+          "placement_anchor": "bounds_bottom",
+          "keep_upright": false
+        },
+        {
+          "entity_id": "ent_000003",
+          "name": "Metal sphere",
+          "asset_path": "F:\\python_project\\mini3d\\.worktrees\\stabilization-v1\\captures\\render-quality-v1\\assets\\quality-metal.gltf",
+          "position": [
+            0.0,
+            0.0,
+            0.7
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "visible": true,
+          "locked": false,
+          "placement_type": "prop",
+          "placement_anchor": "bounds_bottom",
+          "keep_upright": false
+        },
+        {
+          "entity_id": "ent_000004",
+          "name": "Cylinder",
+          "asset_path": "F:\\python_project\\mini3d\\.worktrees\\stabilization-v1\\captures\\render-quality-v1\\assets\\quality-cylinder.gltf",
+          "position": [
+            1.5,
+            0.2,
+            1.2
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            2.4
+          ],
+          "visible": true,
+          "locked": false,
+          "placement_type": "prop",
+          "placement_anchor": "bounds_bottom",
+          "keep_upright": false
+        },
+        {
+          "entity_id": "ent_000005",
+          "name": "Unlit marker",
+          "asset_path": "F:\\python_project\\mini3d\\.worktrees\\stabilization-v1\\captures\\render-quality-v1\\assets\\quality-unlit.gltf",
+          "position": [
+            -2.0,
+            2.0,
+            0.5
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "visible": true,
+          "locked": false,
+          "placement_type": "prop",
+          "placement_anchor": "bounds_bottom",
+          "keep_upright": false
+        }
+      ],
+      "gl_error": 0,
+      "camera_depth_sha256": "a45bb504921170e87db81dd94811ac97c520fa92daede0ba5c76de7fef5d437c",
+      "png_sha256": "79a2238539d67ff7e9b42a33a1a6490e391ecea232a3fe72b9493251fa48b90b",
+      "light_space_extent": [
+        13.531579051691992,
+        25.84763953987914,
+        31.42454312169912
+      ],
+      "world_units_per_texel": [
+        0.01321443266766796,
+        0.025241835488163222
+      ],
+      "normalized_bias_world_depth": 0.009427362936509736,
+      "shadow_gpu_ms": 0.339636,
+      "shadow_cpu_gpu_ms": 5.3280000000004435
+    },
+    {
+      "name": "geometry-close",
+      "category": "geometry",
+      "camera": {
+        "position": [
+          0.2,
+          -4.0,
+          1.8
+        ],
+        "rotation": [
+          [
+            0.9987523388778446,
+            -0.013225921757093828,
+            0.04815434123430768
+          ],
+          [
+            0.04993761694389224,
+            0.2645184351418765,
+            -0.9630868246861536
+          ],
+          [
+            -0.0,
+            0.9642899317444769,
+            0.2648488767886923
+          ]
+        ],
+        "focal_mm": 85.00000000000001,
+        "aspect": "16:9",
+        "fov_y": 13.585861564471854,
+        "near": 0.03,
+        "far": 200.0,
+        "camera_id": "shot",
+        "width": 1920,
+        "height": 1080
+      },
+      "lighting": {
+        "mode": "Scene",
+        "direction": [
+          -3.0,
+          -4.0,
+          6.0
+        ],
+        "diffuse": 3.0,
+        "ambient": 0.3
+      },
+      "shadows": {
+        "enabled": true,
+        "resolution": 1024,
+        "bias": 0.0003,
+        "pcf": true
+      },
+      "entities": [
+        {
+          "entity_id": "ent_000001",
+          "name": "Ground",
+          "asset_path": "F:\\python_project\\mini3d\\.worktrees\\stabilization-v1\\captures\\render-quality-v1\\assets\\quality-floor.gltf",
+          "position": [
+            0.0,
+            0.0,
+            -0.1
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            32.0,
+            32.0,
+            0.2
+          ],
+          "visible": true,
+          "locked": false,
+          "placement_type": "prop",
+          "placement_anchor": "bounds_bottom",
+          "keep_upright": false
+        },
+        {
+          "entity_id": "ent_000002",
+          "name": "Box",
+          "asset_path": "F:\\python_project\\mini3d\\.worktrees\\stabilization-v1\\captures\\render-quality-v1\\assets\\quality-box.gltf",
+          "position": [
+            -1.5,
+            0.0,
+            0.8
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.6
+          ],
+          "visible": true,
+          "locked": false,
+          "placement_type": "prop",
+          "placement_anchor": "bounds_bottom",
+          "keep_upright": false
+        },
+        {
+          "entity_id": "ent_000003",
+          "name": "Metal sphere",
+          "asset_path": "F:\\python_project\\mini3d\\.worktrees\\stabilization-v1\\captures\\render-quality-v1\\assets\\quality-metal.gltf",
+          "position": [
+            0.0,
+            0.0,
+            0.7
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "visible": true,
+          "locked": false,
+          "placement_type": "prop",
+          "placement_anchor": "bounds_bottom",
+          "keep_upright": false
+        },
+        {
+          "entity_id": "ent_000004",
+          "name": "Cylinder",
+          "asset_path": "F:\\python_project\\mini3d\\.worktrees\\stabilization-v1\\captures\\render-quality-v1\\assets\\quality-cylinder.gltf",
+          "position": [
+            1.5,
+            0.2,
+            1.2
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            2.4
+          ],
+          "visible": true,
+          "locked": false,
+          "placement_type": "prop",
+          "placement_anchor": "bounds_bottom",
+          "keep_upright": false
+        },
+        {
+          "entity_id": "ent_000005",
+          "name": "Unlit marker",
+          "asset_path": "F:\\python_project\\mini3d\\.worktrees\\stabilization-v1\\captures\\render-quality-v1\\assets\\quality-unlit.gltf",
+          "position": [
+            -2.0,
+            2.0,
+            0.5
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "visible": true,
+          "locked": false,
+          "placement_type": "prop",
+          "placement_anchor": "bounds_bottom",
+          "keep_upright": false
+        }
+      ],
+      "gl_error": 0,
+      "camera_depth_sha256": "9eeda30f1facacfb1056439cce040e8b4ecb07d14952507bf064056f5122c133",
+      "png_sha256": "43d0858e2606afef35c8b4b1b774d59f0ba406c10b0ae5900d2e17cab11b579c",
+      "light_space_extent": [
+        8.37378118870673,
+        6.573785499342336,
+        9.403218722803269
+      ],
+      "world_units_per_texel": [
+        0.008177520692096416,
+        0.0064197124017015
+      ],
+      "normalized_bias_world_depth": 0.00282096561684098,
+      "shadow_gpu_ms": 0.466294,
+      "shadow_cpu_gpu_ms": 8.553599999999939
+    },
+    {
+      "name": "geometry-far",
+      "category": "geometry",
+      "camera": {
+        "position": [
+          14.0,
+          -20.0,
+          13.0
+        ],
+        "rotation": [
+          [
+            0.8192319205190405,
+            -0.2529707404776681,
+            0.5146502354656654
+          ],
+          [
+            0.5734623443633283,
+            0.3613867721109544,
+            -0.7352146220938077
+          ],
+          [
+            -0.0,
+            0.89744381740887,
+            0.44112877325628463
+          ]
+        ],
+        "focal_mm": 49.999999999999986,
+        "aspect": "16:9",
+        "fov_y": 22.89519252737121,
+        "near": 0.03,
+        "far": 200.0,
+        "camera_id": "shot",
+        "width": 1920,
+        "height": 1080
+      },
+      "lighting": {
+        "mode": "Scene",
+        "direction": [
+          -3.0,
+          -4.0,
+          6.0
+        ],
+        "diffuse": 3.0,
+        "ambient": 0.3
+      },
+      "shadows": {
+        "enabled": true,
+        "resolution": 1024,
+        "bias": 0.0003,
+        "pcf": true
+      },
+      "entities": [
+        {
+          "entity_id": "ent_000001",
+          "name": "Ground",
+          "asset_path": "F:\\python_project\\mini3d\\.worktrees\\stabilization-v1\\captures\\render-quality-v1\\assets\\quality-floor.gltf",
+          "position": [
+            0.0,
+            0.0,
+            -0.1
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            32.0,
+            32.0,
+            0.2
+          ],
+          "visible": true,
+          "locked": false,
+          "placement_type": "prop",
+          "placement_anchor": "bounds_bottom",
+          "keep_upright": false
+        },
+        {
+          "entity_id": "ent_000002",
+          "name": "Box",
+          "asset_path": "F:\\python_project\\mini3d\\.worktrees\\stabilization-v1\\captures\\render-quality-v1\\assets\\quality-box.gltf",
+          "position": [
+            -1.5,
+            0.0,
+            0.8
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.6
+          ],
+          "visible": true,
+          "locked": false,
+          "placement_type": "prop",
+          "placement_anchor": "bounds_bottom",
+          "keep_upright": false
+        },
+        {
+          "entity_id": "ent_000003",
+          "name": "Metal sphere",
+          "asset_path": "F:\\python_project\\mini3d\\.worktrees\\stabilization-v1\\captures\\render-quality-v1\\assets\\quality-metal.gltf",
+          "position": [
+            0.0,
+            0.0,
+            0.7
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "visible": true,
+          "locked": false,
+          "placement_type": "prop",
+          "placement_anchor": "bounds_bottom",
+          "keep_upright": false
+        },
+        {
+          "entity_id": "ent_000004",
+          "name": "Cylinder",
+          "asset_path": "F:\\python_project\\mini3d\\.worktrees\\stabilization-v1\\captures\\render-quality-v1\\assets\\quality-cylinder.gltf",
+          "position": [
+            1.5,
+            0.2,
+            1.2
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            2.4
+          ],
+          "visible": true,
+          "locked": false,
+          "placement_type": "prop",
+          "placement_anchor": "bounds_bottom",
+          "keep_upright": false
+        },
+        {
+          "entity_id": "ent_000005",
+          "name": "Unlit marker",
+          "asset_path": "F:\\python_project\\mini3d\\.worktrees\\stabilization-v1\\captures\\render-quality-v1\\assets\\quality-unlit.gltf",
+          "position": [
+            -2.0,
+            2.0,
+            0.5
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "visible": true,
+          "locked": false,
+          "placement_type": "prop",
+          "placement_anchor": "bounds_bottom",
+          "keep_upright": false
+        }
+      ],
+      "gl_error": 0,
+      "camera_depth_sha256": "f151f764afd673aabc03438ead2fd8b97fee68630c079f8a3c75396a4839d78a",
+      "png_sha256": "07db88c9f2fea56f0879837ba98ba96231501a9cd0145346e3420f802950c3c4",
+      "light_space_extent": [
+        23.174995016094076,
+        29.456686446682582,
+        27.26707011453513
+      ],
+      "world_units_per_texel": [
+        0.02263183107040437,
+        0.02876629535808846
+      ],
+      "normalized_bias_world_depth": 0.008180121034360539,
+      "shadow_gpu_ms": 0.343288,
+      "shadow_cpu_gpu_ms": 4.074499999999759
+    },
+    {
+      "name": "geometry-off",
+      "category": "geometry",
+      "camera": {
+        "position": [
+          7.0,
+          -10.0,
+          6.5
+        ],
+        "rotation": [
+          [
+            0.8192319205190405,
+            -0.23557978068281205,
+            0.5228395808812898
+          ],
+          [
+            0.5734623443633283,
+            0.33654254383258864,
+            -0.7469136869732711
+          ],
+          [
+            -0.0,
+            0.9117243460191948,
+            0.4108025278352991
+          ]
+        ],
+        "focal_mm": 49.999999999999986,
+        "aspect": "16:9",
+        "fov_y": 22.89519252737121,
+        "near": 0.03,
+        "far": 200.0,
+        "camera_id": "shot",
+        "width": 1920,
+        "height": 1080
+      },
+      "lighting": {
+        "mode": "Scene",
+        "direction": [
+          -3.0,
+          -4.0,
+          6.0
+        ],
+        "diffuse": 3.0,
+        "ambient": 0.3
+      },
+      "shadows": {
+        "enabled": false,
+        "resolution": 1024,
+        "bias": 0.0003,
+        "pcf": true
+      },
+      "entities": [
+        {
+          "entity_id": "ent_000001",
+          "name": "Ground",
+          "asset_path": "F:\\python_project\\mini3d\\.worktrees\\stabilization-v1\\captures\\render-quality-v1\\assets\\quality-floor.gltf",
+          "position": [
+            0.0,
+            0.0,
+            -0.1
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            32.0,
+            32.0,
+            0.2
+          ],
+          "visible": true,
+          "locked": false,
+          "placement_type": "prop",
+          "placement_anchor": "bounds_bottom",
+          "keep_upright": false
+        },
+        {
+          "entity_id": "ent_000002",
+          "name": "Box",
+          "asset_path": "F:\\python_project\\mini3d\\.worktrees\\stabilization-v1\\captures\\render-quality-v1\\assets\\quality-box.gltf",
+          "position": [
+            -1.5,
+            0.0,
+            0.8
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.6
+          ],
+          "visible": true,
+          "locked": false,
+          "placement_type": "prop",
+          "placement_anchor": "bounds_bottom",
+          "keep_upright": false
+        },
+        {
+          "entity_id": "ent_000003",
+          "name": "Metal sphere",
+          "asset_path": "F:\\python_project\\mini3d\\.worktrees\\stabilization-v1\\captures\\render-quality-v1\\assets\\quality-metal.gltf",
+          "position": [
+            0.0,
+            0.0,
+            0.7
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "visible": true,
+          "locked": false,
+          "placement_type": "prop",
+          "placement_anchor": "bounds_bottom",
+          "keep_upright": false
+        },
+        {
+          "entity_id": "ent_000004",
+          "name": "Cylinder",
+          "asset_path": "F:\\python_project\\mini3d\\.worktrees\\stabilization-v1\\captures\\render-quality-v1\\assets\\quality-cylinder.gltf",
+          "position": [
+            1.5,
+            0.2,
+            1.2
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            2.4
+          ],
+          "visible": true,
+          "locked": false,
+          "placement_type": "prop",
+          "placement_anchor": "bounds_bottom",
+          "keep_upright": false
+        },
+        {
+          "entity_id": "ent_000005",
+          "name": "Unlit marker",
+          "asset_path": "F:\\python_project\\mini3d\\.worktrees\\stabilization-v1\\captures\\render-quality-v1\\assets\\quality-unlit.gltf",
+          "position": [
+            -2.0,
+            2.0,
+            0.5
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "visible": true,
+          "locked": false,
+          "placement_type": "prop",
+          "placement_anchor": "bounds_bottom",
+          "keep_upright": false
+        }
+      ],
+      "gl_error": 0,
+      "camera_depth_sha256": "6f26a2173df2a223c077ae7694d4066f85ccee386b94ca76a2531d72d899f7d8",
+      "png_sha256": "1cfb94b415e8a467530b6f70b1d94c5ade546bc5958938dd6a41c4b9802ff0b4"
+    },
+    {
+      "name": "offscreen",
+      "category": "offscreen-caster",
+      "camera": {
+        "position": [
+          0.0,
+          0.0,
+          8.0
+        ],
+        "rotation": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "focal_mm": 85.0,
+        "aspect": "1:1",
+        "fov_y": 23.913168486298265,
+        "near": 0.01,
+        "far": 100.0,
+        "camera_id": "shot",
+        "width": 1920,
+        "height": 1920
+      },
+      "lighting": {
+        "mode": "Scene",
+        "direction": [
+          1.0,
+          0.0,
+          1.0
+        ],
+        "diffuse": 3.0,
+        "ambient": 0.3
+      },
+      "shadows": {
+        "enabled": true,
+        "resolution": 1024,
+        "bias": 0.0003,
+        "pcf": true
+      },
+      "entities": [
+        {
+          "entity_id": "ent_000001",
+          "name": "Ground",
+          "asset_path": "F:\\python_project\\mini3d\\.worktrees\\stabilization-v1\\captures\\render-quality-v1\\assets\\quality-floor.gltf",
+          "position": [
+            0.0,
+            0.0,
+            -0.1
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            200.0,
+            200.0,
+            0.2
+          ],
+          "visible": true,
+          "locked": false,
+          "placement_type": "prop",
+          "placement_anchor": "bounds_bottom",
+          "keep_upright": false
+        },
+        {
+          "entity_id": "ent_000002",
+          "name": "Offscreen caster",
+          "asset_path": "F:\\python_project\\mini3d\\.worktrees\\stabilization-v1\\captures\\render-quality-v1\\assets\\quality-box.gltf",
+          "position": [
+            4.0,
+            0.0,
+            4.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "visible": true,
+          "locked": false,
+          "placement_type": "prop",
+          "placement_anchor": "bounds_bottom",
+          "keep_upright": false
+        }
+      ],
+      "gl_error": 0,
+      "camera_depth_sha256": "0793c6c9ab34900c6211a62b950ced8c87bf80b2658b8aa2aa83e6fac53fabbf",
+      "png_sha256": "1a83bae7405b920480fd7a280d3119701fbf60b2d838d2f4580e176ed7d0c3f7",
+      "light_space_extent": [
+        2.706131207931395,
+        3.6118588235294116,
+        8.230752028767899
+      ],
+      "world_units_per_texel": [
+        0.0026427062577455028,
+        0.003527205882352941
+      ],
+      "normalized_bias_world_depth": 0.0024692256086303694,
+      "shadow_gpu_ms": 0.418984,
+      "shadow_cpu_gpu_ms": 4.029499999999686
+    },
+    {
+      "name": "offscreen-off",
+      "category": "offscreen-caster",
+      "camera": {
+        "position": [
+          0.0,
+          0.0,
+          8.0
+        ],
+        "rotation": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "focal_mm": 85.0,
+        "aspect": "1:1",
+        "fov_y": 23.913168486298265,
+        "near": 0.01,
+        "far": 100.0,
+        "camera_id": "shot",
+        "width": 1920,
+        "height": 1920
+      },
+      "lighting": {
+        "mode": "Scene",
+        "direction": [
+          1.0,
+          0.0,
+          1.0
+        ],
+        "diffuse": 3.0,
+        "ambient": 0.3
+      },
+      "shadows": {
+        "enabled": false,
+        "resolution": 1024,
+        "bias": 0.0003,
+        "pcf": true
+      },
+      "entities": [
+        {
+          "entity_id": "ent_000001",
+          "name": "Ground",
+          "asset_path": "F:\\python_project\\mini3d\\.worktrees\\stabilization-v1\\captures\\render-quality-v1\\assets\\quality-floor.gltf",
+          "position": [
+            0.0,
+            0.0,
+            -0.1
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            200.0,
+            200.0,
+            0.2
+          ],
+          "visible": true,
+          "locked": false,
+          "placement_type": "prop",
+          "placement_anchor": "bounds_bottom",
+          "keep_upright": false
+        },
+        {
+          "entity_id": "ent_000002",
+          "name": "Offscreen caster",
+          "asset_path": "F:\\python_project\\mini3d\\.worktrees\\stabilization-v1\\captures\\render-quality-v1\\assets\\quality-box.gltf",
+          "position": [
+            4.0,
+            0.0,
+            4.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "visible": true,
+          "locked": false,
+          "placement_type": "prop",
+          "placement_anchor": "bounds_bottom",
+          "keep_upright": false
+        }
+      ],
+      "gl_error": 0,
+      "camera_depth_sha256": "0793c6c9ab34900c6211a62b950ced8c87bf80b2658b8aa2aa83e6fac53fabbf",
+      "png_sha256": "7990670ff0c00578d7ab03e59edc02d8abf2ad983ac14c7921645bace469a8de"
+    },
+    {
+      "name": "offscreen-low-sun",
+      "category": "offscreen-caster",
+      "camera": {
+        "position": [
+          0.0,
+          0.0,
+          8.0
+        ],
+        "rotation": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "focal_mm": 85.0,
+        "aspect": "1:1",
+        "fov_y": 23.913168486298265,
+        "near": 0.01,
+        "far": 100.0,
+        "camera_id": "shot",
+        "width": 1920,
+        "height": 1920
+      },
+      "lighting": {
+        "mode": "Scene",
+        "direction": [
+          1.0,
+          0.0,
+          0.2
+        ],
+        "diffuse": 3.0,
+        "ambient": 0.3
+      },
+      "shadows": {
+        "enabled": true,
+        "resolution": 1024,
+        "bias": 0.0003,
+        "pcf": true
+      },
+      "entities": [
+        {
+          "entity_id": "ent_000001",
+          "name": "Ground",
+          "asset_path": "F:\\python_project\\mini3d\\.worktrees\\stabilization-v1\\captures\\render-quality-v1\\assets\\quality-floor.gltf",
+          "position": [
+            0.0,
+            0.0,
+            -0.1
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            200.0,
+            200.0,
+            0.2
+          ],
+          "visible": true,
+          "locked": false,
+          "placement_type": "prop",
+          "placement_anchor": "bounds_bottom",
+          "keep_upright": false
+        },
+        {
+          "entity_id": "ent_000002",
+          "name": "Offscreen caster",
+          "asset_path": "F:\\python_project\\mini3d\\.worktrees\\stabilization-v1\\captures\\render-quality-v1\\assets\\quality-box.gltf",
+          "position": [
+            20.0,
+            0.0,
+            4.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "visible": true,
+          "locked": false,
+          "placement_type": "prop",
+          "placement_anchor": "bounds_bottom",
+          "keep_upright": false
+        }
+      ],
+      "gl_error": 0,
+      "camera_depth_sha256": "0793c6c9ab34900c6211a62b950ced8c87bf80b2658b8aa2aa83e6fac53fabbf",
+      "png_sha256": "0d8a6a7dfa76d80ad5dbed638c07c17378ea1fdd1b623e77b2a8f26f03773899",
+      "light_space_extent": [
+        1.0078274784373167,
+        3.6118588235294116,
+        24.973253268295892
+      ],
+      "world_units_per_texel": [
+        0.000984206521911442,
+        0.003527205882352941
+      ],
+      "normalized_bias_world_depth": 0.007491975980488767,
+      "shadow_gpu_ms": 0.435667,
+      "shadow_cpu_gpu_ms": 3.4591000000006034
+    },
+    {
+      "name": "offscreen-low-sun-off",
+      "category": "offscreen-caster",
+      "camera": {
+        "position": [
+          0.0,
+          0.0,
+          8.0
+        ],
+        "rotation": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "focal_mm": 85.0,
+        "aspect": "1:1",
+        "fov_y": 23.913168486298265,
+        "near": 0.01,
+        "far": 100.0,
+        "camera_id": "shot",
+        "width": 1920,
+        "height": 1920
+      },
+      "lighting": {
+        "mode": "Scene",
+        "direction": [
+          1.0,
+          0.0,
+          0.2
+        ],
+        "diffuse": 3.0,
+        "ambient": 0.3
+      },
+      "shadows": {
+        "enabled": false,
+        "resolution": 1024,
+        "bias": 0.0003,
+        "pcf": true
+      },
+      "entities": [
+        {
+          "entity_id": "ent_000001",
+          "name": "Ground",
+          "asset_path": "F:\\python_project\\mini3d\\.worktrees\\stabilization-v1\\captures\\render-quality-v1\\assets\\quality-floor.gltf",
+          "position": [
+            0.0,
+            0.0,
+            -0.1
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            200.0,
+            200.0,
+            0.2
+          ],
+          "visible": true,
+          "locked": false,
+          "placement_type": "prop",
+          "placement_anchor": "bounds_bottom",
+          "keep_upright": false
+        },
+        {
+          "entity_id": "ent_000002",
+          "name": "Offscreen caster",
+          "asset_path": "F:\\python_project\\mini3d\\.worktrees\\stabilization-v1\\captures\\render-quality-v1\\assets\\quality-box.gltf",
+          "position": [
+            20.0,
+            0.0,
+            4.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "visible": true,
+          "locked": false,
+          "placement_type": "prop",
+          "placement_anchor": "bounds_bottom",
+          "keep_upright": false
+        }
+      ],
+      "gl_error": 0,
+      "camera_depth_sha256": "0793c6c9ab34900c6211a62b950ced8c87bf80b2658b8aa2aa83e6fac53fabbf",
+      "png_sha256": "57586982e7e7f7a2d904e9fd89816ed4cdcd6864b5686ad8ad0a91d69580a9b4"
+    },
+    {
+      "name": "DamagedHelmet-front",
+      "category": "pbr-model",
+      "camera": {
+        "position": [
+          4.0,
+          -6.0,
+          3.5
+        ],
+        "rotation": [
+          [
+            0.8320502943378436,
+            -0.18169809053571495,
+            0.5240974256643347
+          ],
+          [
+            0.5547001962252291,
+            0.27254713580357237,
+            -0.7861461384965021
+          ],
+          [
+            -0.0,
+            0.9448300707857176,
+            0.3275608910402092
+          ]
+        ],
+        "focal_mm": 49.999999999999986,
+        "aspect": "16:9",
+        "fov_y": 22.89519252737121,
+        "near": 0.03,
+        "far": 200.0,
+        "camera_id": "shot",
+        "width": 1920,
+        "height": 1080
+      },
+      "lighting": {
+        "mode": "Scene",
+        "direction": [
+          -3.0,
+          -4.0,
+          6.0
+        ],
+        "diffuse": 3.0,
+        "ambient": 0.3
+      },
+      "shadows": {
+        "enabled": true,
+        "resolution": 1024,
+        "bias": 0.0003,
+        "pcf": true
+      },
+      "entities": [
+        {
+          "entity_id": "ent_000001",
+          "name": "Ground",
+          "asset_path": "F:\\python_project\\mini3d\\.worktrees\\stabilization-v1\\captures\\render-quality-v1\\assets\\quality-floor.gltf",
+          "position": [
+            0.0,
+            0.0,
+            -0.1
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            200.0,
+            200.0,
+            0.2
+          ],
+          "visible": true,
+          "locked": false,
+          "placement_type": "prop",
+          "placement_anchor": "bounds_bottom",
+          "keep_upright": false
+        },
+        {
+          "entity_id": "ent_000002",
+          "name": "DamagedHelmet",
+          "asset_path": "F:\\python_project\\mini3d\\.worktrees\\shot-camera-persistence\\model\\11_benchmark_round01\\DamagedHelmet\\DamagedHelmet.glb",
+          "position": [
+            0.002754298166172881,
+            -0.20772273213226466,
+            0.9999883236387008
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.10989708560999,
+            1.10989708560999,
+            1.10989708560999
+          ],
+          "visible": true,
+          "locked": false,
+          "placement_type": "prop",
+          "placement_anchor": "bounds_bottom",
+          "keep_upright": false
+        }
+      ],
+      "gl_error": 0,
+      "camera_depth_sha256": "9561520b5ce8f833fd3d7088c3cc99d070ea3c979c7a8fbec063f8762d3afddb",
+      "png_sha256": "2d9036cdf3b63b91f4887dc2c05db041c74486f00a3a2e06b5cbe888c2eea05c",
+      "light_space_extent": [
+        21.34643352504143,
+        23.76000600839653,
+        26.580800690626496
+      ],
+      "world_units_per_texel": [
+        0.02084612648929827,
+        0.023203130867574737
+      ],
+      "normalized_bias_world_depth": 0.007974240207187948,
+      "shadow_gpu_ms": 0.43492,
+      "shadow_cpu_gpu_ms": 4.655400000000753
+    },
+    {
+      "name": "DamagedHelmet-reverse",
+      "category": "pbr-model",
+      "camera": {
+        "position": [
+          -4.0,
+          6.0,
+          3.5
+        ],
+        "rotation": [
+          [
+            -0.8320502943378436,
+            0.18169809053571495,
+            -0.5240974256643347
+          ],
+          [
+            -0.5547001962252291,
+            -0.27254713580357237,
+            0.7861461384965021
+          ],
+          [
+            0.0,
+            0.9448300707857176,
+            0.3275608910402092
+          ]
+        ],
+        "focal_mm": 49.999999999999986,
+        "aspect": "16:9",
+        "fov_y": 22.89519252737121,
+        "near": 0.03,
+        "far": 200.0,
+        "camera_id": "shot",
+        "width": 1920,
+        "height": 1080
+      },
+      "lighting": {
+        "mode": "Scene",
+        "direction": [
+          3.0,
+          4.0,
+          3.0
+        ],
+        "diffuse": 3.0,
+        "ambient": 0.3
+      },
+      "shadows": {
+        "enabled": true,
+        "resolution": 1024,
+        "bias": 0.0003,
+        "pcf": true
+      },
+      "entities": [
+        {
+          "entity_id": "ent_000001",
+          "name": "Ground",
+          "asset_path": "F:\\python_project\\mini3d\\.worktrees\\stabilization-v1\\captures\\render-quality-v1\\assets\\quality-floor.gltf",
+          "position": [
+            0.0,
+            0.0,
+            -0.1
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            200.0,
+            200.0,
+            0.2
+          ],
+          "visible": true,
+          "locked": false,
+          "placement_type": "prop",
+          "placement_anchor": "bounds_bottom",
+          "keep_upright": false
+        },
+        {
+          "entity_id": "ent_000002",
+          "name": "DamagedHelmet",
+          "asset_path": "F:\\python_project\\mini3d\\.worktrees\\shot-camera-persistence\\model\\11_benchmark_round01\\DamagedHelmet\\DamagedHelmet.glb",
+          "position": [
+            0.002754298166172881,
+            -0.20772273213226466,
+            0.9999883236387008
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.10989708560999,
+            1.10989708560999,
+            1.10989708560999
+          ],
+          "visible": true,
+          "locked": false,
+          "placement_type": "prop",
+          "placement_anchor": "bounds_bottom",
+          "keep_upright": false
+        }
+      ],
+      "gl_error": 0,
+      "camera_depth_sha256": "c9578ed21b4124bdcd25829818fc91a8285c1ca5bfd57f9e5669ecae331d7fd7",
+      "png_sha256": "262ac2747f56b26aeecb6013070e4640bc9ea133c19357071e38484f8bf556aa",
+      "light_space_extent": [
+        15.635416743604978,
+        24.547386588423315,
+        41.00615219992965
+      ],
+      "world_units_per_texel": [
+        0.015268961663676736,
+        0.023972057215257143
+      ],
+      "normalized_bias_world_depth": 0.012301845659978895,
+      "shadow_gpu_ms": 0.413921,
+      "shadow_cpu_gpu_ms": 3.777400000000597
+    },
+    {
+      "name": "Lantern-front",
+      "category": "pbr-model",
+      "camera": {
+        "position": [
+          4.0,
+          -6.0,
+          3.5
+        ],
+        "rotation": [
+          [
+            0.8320502943378436,
+            -0.18169809053571495,
+            0.5240974256643347
+          ],
+          [
+            0.5547001962252291,
+            0.27254713580357237,
+            -0.7861461384965021
+          ],
+          [
+            -0.0,
+            0.9448300707857176,
+            0.3275608910402092
+          ]
+        ],
+        "focal_mm": 49.999999999999986,
+        "aspect": "16:9",
+        "fov_y": 22.89519252737121,
+        "near": 0.03,
+        "far": 200.0,
+        "camera_id": "shot",
+        "width": 1920,
+        "height": 1080
+      },
+      "lighting": {
+        "mode": "Scene",
+        "direction": [
+          -3.0,
+          -4.0,
+          6.0
+        ],
+        "diffuse": 3.0,
+        "ambient": 0.3
+      },
+      "shadows": {
+        "enabled": true,
+        "resolution": 1024,
+        "bias": 0.0003,
+        "pcf": true
+      },
+      "entities": [
+        {
+          "entity_id": "ent_000001",
+          "name": "Ground",
+          "asset_path": "F:\\python_project\\mini3d\\.worktrees\\stabilization-v1\\captures\\render-quality-v1\\assets\\quality-floor.gltf",
+          "position": [
+            0.0,
+            0.0,
+            -0.1
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            200.0,
+            200.0,
+            0.2
+          ],
+          "visible": true,
+          "locked": false,
+          "placement_type": "prop",
+          "placement_anchor": "bounds_bottom",
+          "keep_upright": false
+        },
+        {
+          "entity_id": "ent_000002",
+          "name": "Lantern",
+          "asset_path": "F:\\python_project\\mini3d\\.worktrees\\shot-camera-persistence\\model\\11_benchmark_round01\\Lantern\\Lantern.glb",
+          "position": [
+            -0.2979365337017513,
+            -0.0,
+            -0.014332838213713133
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            0.07792950985928221,
+            0.07792950985928221,
+            0.07792950985928221
+          ],
+          "visible": true,
+          "locked": false,
+          "placement_type": "prop",
+          "placement_anchor": "bounds_bottom",
+          "keep_upright": false
+        }
+      ],
+      "gl_error": 0,
+      "camera_depth_sha256": "1195463c1c72e1fc6701bc25eb6a6ff8ae18f1ab557fd80e35e3e230a10c2051",
+      "png_sha256": "19c016ab4eaa5e4958c99aa3e5c9d022d050732fd321a808cf7630a9788e1af7",
+      "light_space_extent": [
+        21.34643352504143,
+        23.76000600839653,
+        26.580800690626496
+      ],
+      "world_units_per_texel": [
+        0.02084612648929827,
+        0.023203130867574737
+      ],
+      "normalized_bias_world_depth": 0.007974240207187948,
+      "shadow_gpu_ms": 0.384041,
+      "shadow_cpu_gpu_ms": 4.109700000000771
+    },
+    {
+      "name": "Lantern-reverse",
+      "category": "pbr-model",
+      "camera": {
+        "position": [
+          -4.0,
+          6.0,
+          3.5
+        ],
+        "rotation": [
+          [
+            -0.8320502943378436,
+            0.18169809053571495,
+            -0.5240974256643347
+          ],
+          [
+            -0.5547001962252291,
+            -0.27254713580357237,
+            0.7861461384965021
+          ],
+          [
+            0.0,
+            0.9448300707857176,
+            0.3275608910402092
+          ]
+        ],
+        "focal_mm": 49.999999999999986,
+        "aspect": "16:9",
+        "fov_y": 22.89519252737121,
+        "near": 0.03,
+        "far": 200.0,
+        "camera_id": "shot",
+        "width": 1920,
+        "height": 1080
+      },
+      "lighting": {
+        "mode": "Scene",
+        "direction": [
+          3.0,
+          4.0,
+          3.0
+        ],
+        "diffuse": 3.0,
+        "ambient": 0.3
+      },
+      "shadows": {
+        "enabled": true,
+        "resolution": 1024,
+        "bias": 0.0003,
+        "pcf": true
+      },
+      "entities": [
+        {
+          "entity_id": "ent_000001",
+          "name": "Ground",
+          "asset_path": "F:\\python_project\\mini3d\\.worktrees\\stabilization-v1\\captures\\render-quality-v1\\assets\\quality-floor.gltf",
+          "position": [
+            0.0,
+            0.0,
+            -0.1
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            200.0,
+            200.0,
+            0.2
+          ],
+          "visible": true,
+          "locked": false,
+          "placement_type": "prop",
+          "placement_anchor": "bounds_bottom",
+          "keep_upright": false
+        },
+        {
+          "entity_id": "ent_000002",
+          "name": "Lantern",
+          "asset_path": "F:\\python_project\\mini3d\\.worktrees\\shot-camera-persistence\\model\\11_benchmark_round01\\Lantern\\Lantern.glb",
+          "position": [
+            -0.2979365337017513,
+            -0.0,
+            -0.014332838213713133
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            0.07792950985928221,
+            0.07792950985928221,
+            0.07792950985928221
+          ],
+          "visible": true,
+          "locked": false,
+          "placement_type": "prop",
+          "placement_anchor": "bounds_bottom",
+          "keep_upright": false
+        }
+      ],
+      "gl_error": 0,
+      "camera_depth_sha256": "63c94157a7117628b998a32fa045e49f47c85317b03304a2f01c6acfa81e4ef7",
+      "png_sha256": "d8544b497d262e93969ec46b279f075ba040186115e919775038be22ae491e78",
+      "light_space_extent": [
+        15.635416743604978,
+        24.547386588423315,
+        41.00615219992965
+      ],
+      "world_units_per_texel": [
+        0.015268961663676736,
+        0.023972057215257143
+      ],
+      "normalized_bias_world_depth": 0.012301845659978895,
+      "shadow_gpu_ms": 0.365615,
+      "shadow_cpu_gpu_ms": 5.906299999999476
+    },
+    {
+      "name": "Avocado-front",
+      "category": "pbr-model",
+      "camera": {
+        "position": [
+          4.0,
+          -6.0,
+          3.5
+        ],
+        "rotation": [
+          [
+            0.8320502943378436,
+            -0.18169809053571495,
+            0.5240974256643347
+          ],
+          [
+            0.5547001962252291,
+            0.27254713580357237,
+            -0.7861461384965021
+          ],
+          [
+            -0.0,
+            0.9448300707857176,
+            0.3275608910402092
+          ]
+        ],
+        "focal_mm": 49.999999999999986,
+        "aspect": "16:9",
+        "fov_y": 22.89519252737121,
+        "near": 0.03,
+        "far": 200.0,
+        "camera_id": "shot",
+        "width": 1920,
+        "height": 1080
+      },
+      "lighting": {
+        "mode": "Scene",
+        "direction": [
+          -3.0,
+          -4.0,
+          6.0
+        ],
+        "diffuse": 3.0,
+        "ambient": 0.3
+      },
+      "shadows": {
+        "enabled": true,
+        "resolution": 1024,
+        "bias": 0.0003,
+        "pcf": true
+      },
+      "entities": [
+        {
+          "entity_id": "ent_000001",
+          "name": "Ground",
+          "asset_path": "F:\\python_project\\mini3d\\.worktrees\\stabilization-v1\\captures\\render-quality-v1\\assets\\quality-floor.gltf",
+          "position": [
+            0.0,
+            0.0,
+            -0.1
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            200.0,
+            200.0,
+            0.2
+          ],
+          "visible": true,
+          "locked": false,
+          "placement_type": "prop",
+          "placement_anchor": "bounds_bottom",
+          "keep_upright": false
+        },
+        {
+          "entity_id": "ent_000002",
+          "name": "Avocado",
+          "asset_path": "F:\\python_project\\mini3d\\.worktrees\\shot-camera-persistence\\model\\11_benchmark_round01\\Avocado\\Avocado.glb",
+          "position": [
+            -0.0,
+            -1.480738899064237e-08,
+            0.0015180203183781534
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            31.798625726979715,
+            31.798625726979715,
+            31.798625726979715
+          ],
+          "visible": true,
+          "locked": false,
+          "placement_type": "prop",
+          "placement_anchor": "bounds_bottom",
+          "keep_upright": false
+        }
+      ],
+      "gl_error": 0,
+      "camera_depth_sha256": "70c9ba9cd287a0c9b0886f65d1a212cd57a92f0dc77fe374edff2bb43515d02b",
+      "png_sha256": "c275571babe0ba551201d270a3591a859c508c88e4292c17c2f6e573455dda75",
+      "light_space_extent": [
+        21.34643352504143,
+        23.76000600839653,
+        26.580800690626496
+      ],
+      "world_units_per_texel": [
+        0.02084612648929827,
+        0.023203130867574737
+      ],
+      "normalized_bias_world_depth": 0.007974240207187948,
+      "shadow_gpu_ms": 0.399562,
+      "shadow_cpu_gpu_ms": 3.4808000000001726
+    },
+    {
+      "name": "Avocado-reverse",
+      "category": "pbr-model",
+      "camera": {
+        "position": [
+          -4.0,
+          6.0,
+          3.5
+        ],
+        "rotation": [
+          [
+            -0.8320502943378436,
+            0.18169809053571495,
+            -0.5240974256643347
+          ],
+          [
+            -0.5547001962252291,
+            -0.27254713580357237,
+            0.7861461384965021
+          ],
+          [
+            0.0,
+            0.9448300707857176,
+            0.3275608910402092
+          ]
+        ],
+        "focal_mm": 49.999999999999986,
+        "aspect": "16:9",
+        "fov_y": 22.89519252737121,
+        "near": 0.03,
+        "far": 200.0,
+        "camera_id": "shot",
+        "width": 1920,
+        "height": 1080
+      },
+      "lighting": {
+        "mode": "Scene",
+        "direction": [
+          3.0,
+          4.0,
+          3.0
+        ],
+        "diffuse": 3.0,
+        "ambient": 0.3
+      },
+      "shadows": {
+        "enabled": true,
+        "resolution": 1024,
+        "bias": 0.0003,
+        "pcf": true
+      },
+      "entities": [
+        {
+          "entity_id": "ent_000001",
+          "name": "Ground",
+          "asset_path": "F:\\python_project\\mini3d\\.worktrees\\stabilization-v1\\captures\\render-quality-v1\\assets\\quality-floor.gltf",
+          "position": [
+            0.0,
+            0.0,
+            -0.1
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            200.0,
+            200.0,
+            0.2
+          ],
+          "visible": true,
+          "locked": false,
+          "placement_type": "prop",
+          "placement_anchor": "bounds_bottom",
+          "keep_upright": false
+        },
+        {
+          "entity_id": "ent_000002",
+          "name": "Avocado",
+          "asset_path": "F:\\python_project\\mini3d\\.worktrees\\shot-camera-persistence\\model\\11_benchmark_round01\\Avocado\\Avocado.glb",
+          "position": [
+            -0.0,
+            -1.480738899064237e-08,
+            0.0015180203183781534
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            31.798625726979715,
+            31.798625726979715,
+            31.798625726979715
+          ],
+          "visible": true,
+          "locked": false,
+          "placement_type": "prop",
+          "placement_anchor": "bounds_bottom",
+          "keep_upright": false
+        }
+      ],
+      "gl_error": 0,
+      "camera_depth_sha256": "0c6ca85169fe3a3cdea800170e11f7f95cf8be6243e53da84277b9e1c7c8cd6c",
+      "png_sha256": "321b0c8283ec8bba26c321c06effbdf21fa3a4b3ad14fdeb0897db6e9b002c0d",
+      "light_space_extent": [
+        15.635416743604978,
+        24.547386588423315,
+        41.00615219992965
+      ],
+      "world_units_per_texel": [
+        0.015268961663676736,
+        0.023972057215257143
+      ],
+      "normalized_bias_world_depth": 0.012301845659978895,
+      "shadow_gpu_ms": 0.3818,
+      "shadow_cpu_gpu_ms": 4.954599999999587
+    }
+  ],
+  "assets": [
+    {
+      "path": "model/11_benchmark_round01/DamagedHelmet/DamagedHelmet.glb",
+      "bytes": 3773916,
+      "sha256": "a1e3b04de97b11de564ce6e53b95f02954a297f0008183ac63a4f5974f6b32d8",
+      "asset": {
+        "generator": "Khronos Blender glTF 2.0 exporter",
+        "version": "2.0"
+      },
+      "extensions_required": [],
+      "extensions_used": [],
+      "materials": [
+        {
+          "emissiveFactor": [
+            1,
+            1,
+            1
+          ],
+          "emissiveTexture": {
+            "index": 2
+          },
+          "name": "Material_MR",
+          "normalTexture": {
+            "index": 4
+          },
+          "occlusionTexture": {
+            "index": 3
+          },
+          "pbrMetallicRoughness": {
+            "baseColorTexture": {
+              "index": 0
+            },
+            "metallicRoughnessTexture": {
+              "index": 1
+            }
+          }
+        }
+      ],
+      "textures": 5,
+      "loaded_textures": [
+        [
+          "baseColor",
+          "emissive",
+          "metallicRoughness",
+          "normal",
+          "occlusion"
+        ]
+      ]
+    },
+    {
+      "path": "model/11_benchmark_round01/Lantern/Lantern.glb",
+      "bytes": 9564264,
+      "sha256": "a79458c4b02d695187a952f23a63b8bf278e7bc3d316a3c2a314f2d6974181f1",
+      "asset": {
+        "generator": "glTF Tools for Unity",
+        "version": "2.0"
+      },
+      "extensions_required": [],
+      "extensions_used": [],
+      "materials": [
+        {
+          "pbrMetallicRoughness": {
+            "baseColorTexture": {
+              "index": 0
+            },
+            "metallicRoughnessTexture": {
+              "index": 1
+            }
+          },
+          "normalTexture": {
+            "index": 2
+          },
+          "emissiveFactor": [
+            1,
+            1,
+            1
+          ],
+          "emissiveTexture": {
+            "index": 3
+          },
+          "name": "LanternPost_Mat"
+        }
+      ],
+      "textures": 4,
+      "loaded_textures": [
+        [
+          "baseColor",
+          "emissive",
+          "metallicRoughness",
+          "normal"
+        ],
+        [
+          "baseColor",
+          "emissive",
+          "metallicRoughness",
+          "normal"
+        ],
+        [
+          "baseColor",
+          "emissive",
+          "metallicRoughness",
+          "normal"
+        ]
+      ]
+    },
+    {
+      "path": "model/11_benchmark_round01/Avocado/Avocado.glb",
+      "bytes": 8110040,
+      "sha256": "ccc9c3ce56423720b09399c2351537207cd5a65f859f9e6e2f30922762f3abd4",
+      "asset": {
+        "generator": "glTF Tools for Unity",
+        "version": "2.0"
+      },
+      "extensions_required": [],
+      "extensions_used": [],
+      "materials": [
+        {
+          "pbrMetallicRoughness": {
+            "baseColorTexture": {
+              "index": 0
+            },
+            "metallicRoughnessTexture": {
+              "index": 1
+            }
+          },
+          "normalTexture": {
+            "index": 2
+          },
+          "name": "2256_Avocado_d"
+        }
+      ],
+      "textures": 3,
+      "loaded_textures": [
+        [
+          "baseColor",
+          "metallicRoughness",
+          "normal"
+        ]
+      ]
+    }
+  ],
+  "checks": {
+    "ground_off_on_camera_depth_identical": true,
+    "geometry_off_on_depth_and_unlit_preserved": true,
+    "offscreen": {
+      "origin_shadow_drop": 53.0,
+      "caster_position": [
+        4.0,
+        0.0,
+        4.0
+      ],
+      "depth_identical": true
+    },
+    "offscreen-low-sun": {
+      "origin_shadow_drop": 20.0,
+      "caster_position": [
+        20.0,
+        0.0,
+        4.0
+      ],
+      "depth_identical": true
+    },
+    "DamagedHelmet_reload_identical": true,
+    "Lantern_reload_identical": true,
+    "Avocado_reload_identical": true,
+    "all_gl_errors_zero": true
+  }
+}

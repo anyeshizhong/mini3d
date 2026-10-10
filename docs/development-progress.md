@@ -24,3 +24,5 @@ Issue #3“放士兵后放小凳子导致远裁剪过近”已在 `fix/editor-sc
 
 收到明确启动指令后完成 Issue #2：世界平行光正交 ShadowMap、3×3 PCF、普通/PBR 互投影、Editor/API 开关、v3 持久化、Shot 输出、深度 PNG。
 229 项单测、全部既有 GPU 回归及新增 Shadow GPU/UI 验收通过。Camera 裁剪实现未改动。不合并 main，本轮结束停止。
+
+Shadow 摄影区域拟合 V1：同分辨率下改善大地面近景阴影；保留画外投影物，Editor Camera 维持原算法。251 单测、22 组摄影及既有 GPU 回归通过；CPU 与高分辨率 pass 耗时增加，详见 [质量、性能和边界](render-quality-v1/shadow-camera-fit.md)。

@@ -1863,7 +1863,9 @@ class GLRenderer:
                 if any(getattr(e.model, 'material', None) is not None for e in entities) and not hasattr(self, 'material_renderer'):
                     from .material_renderer import MaterialRenderer
                     self.material_renderer = MaterialRenderer()
-                self.shadow_map.render(entities, scene, self)
+                from .shot_camera import ShotCamera
+                self.shadow_map.render(entities, scene, self,
+                                       camera=camera if isinstance(camera, ShotCamera) else None)
                 self._active_shadow = self.shadow_map
             self._render_scene(scene, camera)
         finally:

@@ -1,0 +1,11 @@
+Renderer initialized in OUTLINE mode
+PASS: Real Roman asset drag -> Ground -> feet at Z=0
+PASS: Place on Surface -> actual Side Table triangles -> Bounds Bottom at tabletop
+PASS: Rotation then surface replacement preserves upright character
+PASS: Local axis visibly differs; real Gizmo gesture -> one history entry -> Inspector sync
+PASS: Ctrl+D gives new stable ID while retaining shared meshes/materials/textures
+PASS: Locked Table still raycasts as surface, ordinary left click cannot select it
+PASS: Undo/Redo restores lock reliably
+PASS: Box drops to Ground; Water Bottle drops onto locked tabletop
+PASS: Ctrl+S / Ctrl+O round trip restores stable IDs, transforms, locks and placement metadata
+PASS: Placement V1 visible Editor workflow; output: F:\python_project\mini3d\.worktrees\stabilization-v1\captures\stabilization-regressions\placement
