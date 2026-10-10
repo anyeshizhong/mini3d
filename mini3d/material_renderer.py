@@ -345,6 +345,7 @@ class MaterialRenderer:
 
     def render(self, entities, camera, scene, width, height, mode="Lit", shadow=None):
         """Draw into the caller's framebuffer without clearing or resizing it."""
+        self.draw_calls = self.triangles = 0
         entities = [entity for entity in entities if self._entity_mesh(entity) is not None]
         if not entities or width <= 0 or height <= 0:
             return
@@ -395,6 +396,8 @@ class MaterialRenderer:
                 self._material(material,mode)
                 gl.glBindVertexArray(mesh[1])
                 gl.glDrawElements(gl.GL_TRIANGLES,mesh[4],gl.GL_UNSIGNED_INT,None)
+                self.draw_calls += 1
+                self.triangles += mesh[4] // 3
         finally:
             self._restore_state(state)
 

@@ -1349,6 +1349,7 @@ from OpenGL.GL import *
 from OpenGL.GL.shaders import compileShader, compileProgram
 import ctypes
 from .shadow_map import ShadowMap, SHADOW_GLSL
+from .render_plan import build_render_plan
 
 
 DTYPE = np.float32
@@ -1825,6 +1826,9 @@ class GLRenderer:
         # GPU cache
         self.gpu_cache = {}
         self.shadow_map = ShadowMap()
+        self.frustum_culling = True
+        self.last_render_plan = None
+        self.render_stats = {}
         self._active_shadow = None
 
         # Grid
@@ -1856,10 +1860,14 @@ class GLRenderer:
         glActiveTexture(GL_TEXTURE0+ShadowMap.UNIT)
         binding = int(glGetIntegerv(GL_TEXTURE_BINDING_2D))
         glActiveTexture(active)
+        plan = build_render_plan(scene, camera, self.w, self.h,
+                                 self.frustum_culling, self.render_mode)
+        self.last_render_plan = plan
+        self.render_stats = plan.stats
         try:
             self._active_shadow = None
             if getattr(scene, 'shadows_enabled', False) and getattr(scene, 'lighting_mode', 'Studio') == 'Scene' and getattr(scene, 'render_mode', 'Lit').lower() == 'lit':
-                entities = scene.get_flat_render_list()
+                entities = plan.shadow_candidates
                 if any(getattr(e.model, 'material', None) is not None for e in entities) and not hasattr(self, 'material_renderer'):
                     from .material_renderer import MaterialRenderer
                     self.material_renderer = MaterialRenderer()
@@ -1867,13 +1875,20 @@ class GLRenderer:
                 self.shadow_map.render(entities, scene, self,
                                        camera=camera if isinstance(camera, ShotCamera) else None)
                 self._active_shadow = self.shadow_map
-            self._render_scene(scene, camera)
+                self.render_stats.update(shadow_draw_calls=self.shadow_map.draw_calls,
+                                         shadow_triangles=self.shadow_map.triangles)
+            self._render_scene(scene, camera, plan)
+            self.render_stats["draw_calls"] = (self.render_stats["color_draw_calls"] +
+                                               self.render_stats["shadow_draw_calls"])
+            self.render_stats["submitted_triangles"] = (self.render_stats["color_triangles"] +
+                                                        self.render_stats["shadow_triangles"])
         finally:
             glActiveTexture(GL_TEXTURE0+ShadowMap.UNIT)
             glBindTexture(GL_TEXTURE_2D,binding)
             glActiveTexture(active)
 
     def close(self):
+        self.last_render_plan = None
         self.shadow_map.close()
         if hasattr(self, 'material_renderer'):
             self.material_renderer.close()
@@ -1901,21 +1916,22 @@ class GLRenderer:
             glDeleteBuffers(1,[self.grid.vbo])
             self.grid.vao = 0
 
-    def _render_scene(self, scene, camera):
+    def _render_scene(self, scene, camera, plan=None):
         # Clear
         glClearColor(30/255, 30/255, 35/255, 1.0)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
         # Camera owns a standard OpenGL view/projection (Y-up, -Z forward).
         # Read viewport aspect every frame, including after a window resize.
-        V = camera.view_matrix.astype(DTYPE)
-        P = camera.projection_matrix(self.w / self.h).astype(DTYPE)
+        if plan is None:
+            plan = build_render_plan(scene, camera, self.w, self.h,
+                                     self.frustum_culling, self.render_mode)
+            self.render_stats = plan.stats
+        V, P = plan.view, plan.projection
         cam_pos = camera.position
 
         # ==================== Render Based on Mode ====================
-        entities = scene.get_flat_render_list()
-        imported = [e for e in entities if getattr(e.model, "material", None) is not None]
-        entities = [e for e in entities if getattr(e.model, "material", None) is None]
+        entities, imported = plan.legacy, plan.imported
         
         if self.render_mode == "OUTLINE":
             # Two-pass rendering: outline + toon shading
@@ -1934,6 +1950,8 @@ class GLRenderer:
                 self.material_renderer = MaterialRenderer()
             self.material_renderer.render(imported, camera, scene, self.w, self.h,
                                           mode=getattr(scene, "render_mode", "Lit"), shadow=self._active_shadow)
+            self.render_stats["color_draw_calls"] += self.material_renderer.draw_calls
+            self.render_stats["color_triangles"] += self.material_renderer.triangles
 
         self.render_editor_grid(scene, camera)
 
@@ -2023,6 +2041,8 @@ class GLRenderer:
             # Draw
             glBindVertexArray(gpu.vao)
             glDrawElements(GL_TRIANGLES, gpu.count, GL_UNSIGNED_INT, None)
+            self.render_stats["color_draw_calls"] += 1
+            self.render_stats["color_triangles"] += gpu.count // 3
             glBindVertexArray(0)
     
     def _render_toon_pass(self, entities, V, P, scene, cam_pos):
@@ -2067,6 +2087,8 @@ class GLRenderer:
             # Draw
             glBindVertexArray(gpu.vao)
             glDrawElements(GL_TRIANGLES, gpu.count, GL_UNSIGNED_INT, None)
+            self.render_stats["color_draw_calls"] += 1
+            self.render_stats["color_triangles"] += gpu.count // 3
             glBindVertexArray(0)
     
     def _render_outline_pass(self, entities, V, P, scene):
@@ -2108,6 +2130,8 @@ class GLRenderer:
             # Draw
             glBindVertexArray(gpu.vao)
             glDrawElements(GL_TRIANGLES, gpu.count, GL_UNSIGNED_INT, None)
+            self.render_stats["color_draw_calls"] += 1
+            self.render_stats["color_triangles"] += gpu.count // 3
             glBindVertexArray(0)
         
         # Restore normal state

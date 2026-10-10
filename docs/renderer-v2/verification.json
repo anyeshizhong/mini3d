@@ -1,0 +1,136 @@
+{
+  "unit_tests": {
+    "command": "F:/gymenv/python.exe -B -m unittest discover -s tests -p 'test_*.py'",
+    "run": 262,
+    "skipped": 0,
+    "failures": 0,
+    "errors": 0,
+    "seconds": 5.748
+  },
+  "gpu_regressions": [
+    {
+      "name": "photo",
+      "exit_code": 0,
+      "seconds": 7.0305794
+    },
+    {
+      "name": "shot_camera_persistence",
+      "exit_code": 0,
+      "seconds": 13.3638892
+    },
+    {
+      "name": "lighting",
+      "exit_code": 0,
+      "seconds": 3.556944399999999
+    },
+    {
+      "name": "shadow",
+      "exit_code": 0,
+      "initial_exit_code": 1,
+      "initial_reason": "Missing historical baseline PNGs in isolated output directory",
+      "retry": "Passed after copying existing baseline-off.png and baseline-studio.png from main workspace captures/stabilization-regressions/shadow; GPU checks recorded in shadow/results.json"
+    },
+    {
+      "name": "scene_clipping",
+      "exit_code": 0,
+      "seconds": 6.380489799999996
+    },
+    {
+      "name": "editor_integration",
+      "exit_code": 0,
+      "checks": "GLB drag/drop, picking, gizmo, Inspector, input arbitration"
+    }
+  ],
+  "renderer_v2_checks": {
+    "editor_modes_and_actual_gl_counts": [
+      {
+        "legacy": "REALISTIC",
+        "material": "Wireframe",
+        "stats": {
+          "entities_before": 46,
+          "entities_after": 6,
+          "entities_culled": 40,
+          "bounds_tested": 46,
+          "shadow_candidates": 46,
+          "opaque_entities": 4,
+          "transparent_entities": 2,
+          "color_draw_calls": 6,
+          "shadow_draw_calls": 0,
+          "color_triangles": 72,
+          "shadow_triangles": 0,
+          "render_plan_cpu_ms": 5.106699999998909,
+          "draw_calls": 6,
+          "submitted_triangles": 72
+        },
+        "changed_pixels": 0
+      },
+      {
+        "legacy": "REALISTIC",
+        "material": "Unlit",
+        "stats": {
+          "entities_before": 46,
+          "entities_after": 6,
+          "entities_culled": 40,
+          "bounds_tested": 46,
+          "shadow_candidates": 46,
+          "opaque_entities": 4,
+          "transparent_entities": 2,
+          "color_draw_calls": 6,
+          "shadow_draw_calls": 0,
+          "color_triangles": 72,
+          "shadow_triangles": 0,
+          "render_plan_cpu_ms": 4.732600000000531,
+          "draw_calls": 6,
+          "submitted_triangles": 72
+        },
+        "changed_pixels": 0
+      },
+      {
+        "legacy": "OUTLINE",
+        "material": "Lit",
+        "stats": {
+          "entities_before": 46,
+          "entities_after": 6,
+          "entities_culled": 40,
+          "bounds_tested": 45,
+          "shadow_candidates": 46,
+          "opaque_entities": 4,
+          "transparent_entities": 2,
+          "color_draw_calls": 7,
+          "shadow_draw_calls": 44,
+          "color_triangles": 84,
+          "shadow_triangles": 528,
+          "render_plan_cpu_ms": 5.972700000000941,
+          "draw_calls": 51,
+          "submitted_triangles": 612
+        },
+        "changed_pixels": 0
+      },
+      {
+        "legacy": "TOON",
+        "material": "Lit",
+        "stats": {
+          "entities_before": 46,
+          "entities_after": 6,
+          "entities_culled": 40,
+          "bounds_tested": 46,
+          "shadow_candidates": 46,
+          "opaque_entities": 4,
+          "transparent_entities": 2,
+          "color_draw_calls": 6,
+          "shadow_draw_calls": 44,
+          "color_triangles": 72,
+          "shadow_triangles": 528,
+          "render_plan_cpu_ms": 9.325399999999817,
+          "draw_calls": 50,
+          "submitted_triangles": 600
+        },
+        "changed_pixels": 0
+      }
+    ],
+    "pixel_identical_to_pinned_v1": true,
+    "offscreen_caster_shadow_pixels": 1280000,
+    "gl_error": 0
+  },
+  "baseline_commit": "6d725b4d537eeee7f11bc2c1d23333260f032a15"
+}

@@ -148,6 +148,7 @@ class ShadowMap:
             raise
 
     def render(self, entities, scene, renderer, camera=None):
+        self.draw_calls = self.triangles = 0
         from .material_renderer import MaterialRenderer
         matrix = light_matrix(entities, scene_light_direction(scene), camera, scene.shadow_resolution)
         if matrix is None:
@@ -204,6 +205,8 @@ class ShadowMap:
                 gl.glUniformMatrix4fv(loc('model'),1,gl.GL_TRUE,np.asarray(entity.world_matrix,np.float32))
                 gl.glBindVertexArray(vao)
                 gl.glDrawElements(gl.GL_TRIANGLES,count,gl.GL_UNSIGNED_INT,None)
+                self.draw_calls += 1
+                self.triangles += count // 3
         finally:
             gl.glBindFramebuffer(gl.GL_DRAW_FRAMEBUFFER,draw)
             gl.glBindFramebuffer(gl.GL_READ_FRAMEBUFFER,read)
