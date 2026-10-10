@@ -1,0 +1,493 @@
+{
+  "objects": [
+    {
+      "id": "ent_000001",
+      "name": "Plinth_001",
+      "position": [
+        0.0,
+        0.0,
+        0.25
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        12.0,
+        8.0,
+        0.5
+      ],
+      "locked": true,
+      "visible": true
+    },
+    {
+      "id": "ent_000002",
+      "name": "Column block_002",
+      "position": [
+        -4.0,
+        -2.5,
+        2.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.6,
+        0.6,
+        3.0
+      ],
+      "locked": false,
+      "visible": true
+    },
+    {
+      "id": "ent_000003",
+      "name": "Column block_002 copy",
+      "position": [
+        -2.0,
+        -2.5,
+        2.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.6,
+        0.6,
+        3.0
+      ],
+      "locked": false,
+      "visible": true
+    },
+    {
+      "id": "ent_000004",
+      "name": "Column block_002 copy",
+      "position": [
+        0.0,
+        -2.5,
+        2.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.6,
+        0.6,
+        3.0
+      ],
+      "locked": false,
+      "visible": true
+    },
+    {
+      "id": "ent_000005",
+      "name": "Column block_002 copy",
+      "position": [
+        2.0,
+        -2.5,
+        2.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.6,
+        0.6,
+        3.0
+      ],
+      "locked": false,
+      "visible": true
+    },
+    {
+      "id": "ent_000006",
+      "name": "Column block_002 copy",
+      "position": [
+        4.0,
+        -2.5,
+        2.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.6,
+        0.6,
+        3.0
+      ],
+      "locked": false,
+      "visible": true
+    },
+    {
+      "id": "ent_000007",
+      "name": "Column block_002 copy",
+      "position": [
+        -4.0,
+        2.5,
+        2.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.6,
+        0.6,
+        3.0
+      ],
+      "locked": false,
+      "visible": true
+    },
+    {
+      "id": "ent_000008",
+      "name": "Column block_002 copy",
+      "position": [
+        -2.0,
+        2.5,
+        2.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.6,
+        0.6,
+        3.0
+      ],
+      "locked": false,
+      "visible": true
+    },
+    {
+      "id": "ent_000009",
+      "name": "Column block_002 copy",
+      "position": [
+        0.0,
+        2.5,
+        2.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.6,
+        0.6,
+        3.0
+      ],
+      "locked": false,
+      "visible": true
+    },
+    {
+      "id": "ent_000010",
+      "name": "Column block_002 copy",
+      "position": [
+        2.0,
+        2.5,
+        2.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.6,
+        0.6,
+        3.0
+      ],
+      "locked": false,
+      "visible": true
+    },
+    {
+      "id": "ent_000011",
+      "name": "Column block_002 copy",
+      "position": [
+        4.0,
+        2.5,
+        2.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.6,
+        0.6,
+        3.0
+      ],
+      "locked": false,
+      "visible": true
+    },
+    {
+      "id": "ent_000012",
+      "name": "Column block_002 copy",
+      "position": [
+        2.4999999999999996,
+        6.0,
+        2.0
+      ],
+      "rotation": [
+        0.0,
+        -0.0,
+        1.5707963267948966
+      ],
+      "scale": [
+        0.6,
+        0.6,
+        3.0
+      ],
+      "locked": false,
+      "visible": true
+    },
+    {
+      "id": "ent_000013",
+      "name": "Column block_002 copy copy",
+      "position": [
+        2.5,
+        8.0,
+        2.0
+      ],
+      "rotation": [
+        0.0,
+        -0.0,
+        1.5707963267948966
+      ],
+      "scale": [
+        0.6,
+        0.6,
+        3.0
+      ],
+      "locked": false,
+      "visible": true
+    },
+    {
+      "id": "ent_000014",
+      "name": "Column block_002 copy copy",
+      "position": [
+        2.5,
+        10.0,
+        2.0
+      ],
+      "rotation": [
+        0.0,
+        -0.0,
+        1.5707963267948966
+      ],
+      "scale": [
+        0.6,
+        0.6,
+        3.0
+      ],
+      "locked": false,
+      "visible": true
+    },
+    {
+      "id": "ent_000015",
+      "name": "Column block_002 copy copy",
+      "position": [
+        2.5,
+        12.0,
+        2.0
+      ],
+      "rotation": [
+        0.0,
+        -0.0,
+        1.5707963267948966
+      ],
+      "scale": [
+        0.6,
+        0.6,
+        3.0
+      ],
+      "locked": false,
+      "visible": true
+    },
+    {
+      "id": "ent_000016",
+      "name": "Column block_002 copy copy",
+      "position": [
+        2.5000000000000004,
+        14.0,
+        2.0
+      ],
+      "rotation": [
+        0.0,
+        -0.0,
+        1.5707963267948966
+      ],
+      "scale": [
+        0.6,
+        0.6,
+        3.0
+      ],
+      "locked": false,
+      "visible": true
+    },
+    {
+      "id": "ent_000017",
+      "name": "Column block_002 copy copy",
+      "position": [
+        -2.5000000000000004,
+        6.0,
+        2.0
+      ],
+      "rotation": [
+        0.0,
+        -0.0,
+        1.5707963267948966
+      ],
+      "scale": [
+        0.6,
+        0.6,
+        3.0
+      ],
+      "locked": false,
+      "visible": true
+    },
+    {
+      "id": "ent_000018",
+      "name": "Column block_002 copy copy",
+      "position": [
+        -2.5,
+        8.0,
+        2.0
+      ],
+      "rotation": [
+        0.0,
+        -0.0,
+        1.5707963267948966
+      ],
+      "scale": [
+        0.6,
+        0.6,
+        3.0
+      ],
+      "locked": false,
+      "visible": true
+    },
+    {
+      "id": "ent_000019",
+      "name": "Column block_002 copy copy",
+      "position": [
+        -2.5,
+        10.0,
+        2.0
+      ],
+      "rotation": [
+        0.0,
+        -0.0,
+        1.5707963267948966
+      ],
+      "scale": [
+        0.6,
+        0.6,
+        3.0
+      ],
+      "locked": false,
+      "visible": true
+    },
+    {
+      "id": "ent_000020",
+      "name": "Column block_002 copy copy",
+      "position": [
+        -2.5,
+        12.0,
+        2.0
+      ],
+      "rotation": [
+        0.0,
+        -0.0,
+        1.5707963267948966
+      ],
+      "scale": [
+        0.6,
+        0.6,
+        3.0
+      ],
+      "locked": false,
+      "visible": true
+    },
+    {
+      "id": "ent_000021",
+      "name": "Column block_002 copy copy",
+      "position": [
+        -2.4999999999999996,
+        14.0,
+        2.0
+      ],
+      "rotation": [
+        0.0,
+        -0.0,
+        1.5707963267948966
+      ],
+      "scale": [
+        0.6,
+        0.6,
+        3.0
+      ],
+      "locked": false,
+      "visible": true
+    }
+  ],
+  "groups": [
+    {
+      "id": "grp_000001",
+      "name": "Portico columns",
+      "members": [
+        "ent_000002",
+        "ent_000003",
+        "ent_000004",
+        "ent_000005",
+        "ent_000006",
+        "ent_000007",
+        "ent_000008",
+        "ent_000009",
+        "ent_000010",
+        "ent_000011"
+      ]
+    },
+    {
+      "id": "grp_000002",
+      "name": "Second portico columns",
+      "members": [
+        "ent_000012",
+        "ent_000013",
+        "ent_000014",
+        "ent_000015",
+        "ent_000016",
+        "ent_000017",
+        "ent_000018",
+        "ent_000019",
+        "ent_000020",
+        "ent_000021"
+      ]
+    }
+  ],
+  "selection": [
+    "ent_000012",
+    "ent_000013",
+    "ent_000014",
+    "ent_000015",
+    "ent_000016",
+    "ent_000017",
+    "ent_000018",
+    "ent_000019",
+    "ent_000020",
+    "ent_000021"
+  ],
+  "primary": "ent_000021",
+  "selected_group": "grp_000002"
+}

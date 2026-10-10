@@ -1,0 +1,145 @@
+{
+  "commit": "7cb7719",
+  "gpu": "llvmpipe (LLVM 20.1.2, 256 bits)",
+  "opengl": "4.5 (Compatibility Profile) Mesa 25.2.8-0ubuntu0.24.04.2",
+  "shots": [
+    {
+      "name": "01_colonnade",
+      "position": [
+        9,
+        -18,
+        13
+      ],
+      "target": [
+        0,
+        0,
+        1.8
+      ],
+      "focal_mm": 35,
+      "aspect": "16:9",
+      "light": [
+        -3,
+        -4,
+        5
+      ],
+      "ambient": 0.38,
+      "diffuse": 3.4,
+      "capture_seconds": 0.17890686400005507,
+      "gl_error": 0
+    },
+    {
+      "name": "02_sanctuary",
+      "position": [
+        0,
+        -15,
+        3.0
+      ],
+      "target": [
+        0,
+        1,
+        2.4
+      ],
+      "focal_mm": 35,
+      "aspect": "3:2",
+      "light": [
+        -0.8,
+        -3,
+        5
+      ],
+      "ambient": 0.35,
+      "diffuse": 3.5,
+      "capture_seconds": 0.14630219399987254,
+      "gl_error": 0
+    },
+    {
+      "name": "03_golden_sun",
+      "position": [
+        0.8,
+        -8,
+        3.7
+      ],
+      "target": [
+        0,
+        2,
+        2.35
+      ],
+      "focal_mm": 85,
+      "aspect": "1:1",
+      "light": [
+        -1,
+        -3,
+        5
+      ],
+      "ambient": 0.35,
+      "diffuse": 3.5,
+      "capture_seconds": 0.23770140200008427,
+      "gl_error": 0
+    },
+    {
+      "name": "04_long_shadows",
+      "position": [
+        10,
+        -13,
+        17
+      ],
+      "target": [
+        0,
+        0,
+        0
+      ],
+      "focal_mm": 35,
+      "aspect": "4:3",
+      "light": [
+        -4,
+        -2,
+        2
+      ],
+      "ambient": 0.3,
+      "diffuse": 3.5,
+      "capture_seconds": 0.16688851799995064,
+      "gl_error": 0
+    }
+  ],
+  "reopen_changed_pixels": 0,
+  "entities": 38,
+  "groups": [
+    {
+      "group_id": "grp_000001",
+      "name": "Colonnade",
+      "member_ids": [
+        "ent_000004",
+        "ent_000005",
+        "ent_000006",
+        "ent_000007",
+        "ent_000008",
+        "ent_000009",
+        "ent_000010",
+        "ent_000011",
+        "ent_000012",
+        "ent_000013",
+        "ent_000014",
+        "ent_000015",
+        "ent_000016",
+        "ent_000017",
+        "ent_000018",
+        "ent_000019",
+        "ent_000020",
+        "ent_000021",
+        "ent_000022",
+        "ent_000023",
+        "ent_000024",
+        "ent_000025",
+        "ent_000026",
+        "ent_000027",
+        "ent_000028",
+        "ent_000029",
+        "ent_000030",
+        "ent_000031",
+        "ent_000032",
+        "ent_000033",
+        "ent_000034",
+        "ent_000035"
+      ]
+    }
+  ]
+}

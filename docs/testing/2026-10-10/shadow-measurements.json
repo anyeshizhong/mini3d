@@ -1,0 +1,140 @@
+{
+  "gpu": "llvmpipe (LLVM 20.1.2, 256 bits)",
+  "camera": {
+    "position": [
+      7.0,
+      9.0,
+      13.0
+    ],
+    "rotation": [
+      [
+        -0.7988707691396074,
+        -0.46547325417234653,
+        0.3809726287602537
+      ],
+      [
+        0.6015026967639397,
+        -0.6182066656976477,
+        0.5059792725722119
+      ],
+      [
+        0.0,
+        0.6333681142410018,
+        0.7738506521692652
+      ]
+    ],
+    "focal_mm": 50.0,
+    "aspect": "4:3",
+    "fov_y": 30.219150244680932,
+    "near": 0.05,
+    "far": 400.0,
+    "camera_id": "shot",
+    "width": 1920,
+    "height": 1440
+  },
+  "light": [
+    -3,
+    -2,
+    3
+  ],
+  "bias": 0.0003,
+  "pcf": true,
+  "runs": [
+    {
+      "ground_span": 10,
+      "resolution": 1024,
+      "light_space_extent": [
+        7.697319411808397,
+        12.605586336345944,
+        11.272786598587864
+      ],
+      "world_units_per_shadow_texel": [
+        0.007516913488094138,
+        0.012310142906587836
+      ],
+      "normalized_bias_world_depth": 0.003381835979576359,
+      "gl_error": 0,
+      "image": "ground_10_shadow_1024.png"
+    },
+    {
+      "ground_span": 10,
+      "resolution": 4096,
+      "light_space_extent": [
+        7.697319411808397,
+        12.605586336345944,
+        11.272786598587864
+      ],
+      "world_units_per_shadow_texel": [
+        0.0018792283720235345,
+        0.003077535726646959
+      ],
+      "normalized_bias_world_depth": 0.003381835979576359,
+      "gl_error": 0,
+      "image": "ground_10_shadow_4096.png"
+    },
+    {
+      "ground_span": 32,
+      "resolution": 1024,
+      "light_space_extent": [
+        24.314988534197923,
+        40.199904679768316,
+        35.78618557240907
+      ],
+      "world_units_per_shadow_texel": [
+        0.02374510599042766,
+        0.039257719413836246
+      ],
+      "normalized_bias_world_depth": 0.01073585567172272,
+      "gl_error": 0,
+      "image": "ground_32_shadow_1024.png"
+    },
+    {
+      "ground_span": 32,
+      "resolution": 4096,
+      "light_space_extent": [
+        24.314988534197923,
+        40.199904679768316,
+        35.78618557240907
+      ],
+      "world_units_per_shadow_texel": [
+        0.005936276497606915,
+        0.009814429853459062
+      ],
+      "normalized_bias_world_depth": 0.01073585567172272,
+      "gl_error": 0,
+      "image": "ground_32_shadow_4096.png"
+    },
+    {
+      "ground_span": 200,
+      "resolution": 1024,
+      "light_space_extent": [
+        151.21355274153606,
+        250.92015384772094,
+        222.97941409977102
+      ],
+      "world_units_per_shadow_texel": [
+        0.1476694850991563,
+        0.24503921274191498
+      ],
+      "normalized_bias_world_depth": 0.0668938242299313,
+      "gl_error": 0,
+      "image": "ground_200_shadow_1024.png"
+    },
+    {
+      "ground_span": 200,
+      "resolution": 4096,
+      "light_space_extent": [
+        151.21355274153606,
+        250.92015384772094,
+        222.97941409977102
+      ],
+      "world_units_per_shadow_texel": [
+        0.03691737127478908,
+        0.061259803185478745
+      ],
+      "normalized_bias_world_depth": 0.0668938242299313,
+      "gl_error": 0,
+      "image": "ground_200_shadow_4096.png"
+    }
+  ]
+}

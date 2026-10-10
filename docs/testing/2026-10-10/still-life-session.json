@@ -1,0 +1,121 @@
+{
+  "gpu": "llvmpipe (LLVM 20.1.2, 256 bits)",
+  "shots": [
+    {
+      "name": "01_geometry",
+      "position": [
+        7,
+        -10,
+        6.5
+      ],
+      "target": [
+        0,
+        0,
+        1.1
+      ],
+      "focal_mm": 50,
+      "aspect": "3:2",
+      "light": [
+        -3,
+        -4,
+        6
+      ],
+      "ambient": 0.35,
+      "diffuse": 3.8,
+      "seconds": 1.0423948320000136
+    },
+    {
+      "name": "02_low_sun",
+      "position": [
+        7,
+        -10,
+        6.5
+      ],
+      "target": [
+        0,
+        0,
+        1.1
+      ],
+      "focal_mm": 50,
+      "aspect": "3:2",
+      "light": [
+        -5,
+        -1,
+        1.5
+      ],
+      "ambient": 0.2,
+      "diffuse": 4.0,
+      "seconds": 0.324503070999981
+    },
+    {
+      "name": "03_copper",
+      "position": [
+        0.2,
+        -7,
+        3.1
+      ],
+      "target": [
+        -0.8,
+        0.55,
+        1.6
+      ],
+      "focal_mm": 85,
+      "aspect": "1:1",
+      "light": [
+        -2,
+        -4,
+        5
+      ],
+      "ambient": 0.3,
+      "diffuse": 4.0,
+      "seconds": 0.4760959879999973
+    },
+    {
+      "name": "04_silhouette",
+      "position": [
+        5,
+        -9,
+        2.8
+      ],
+      "target": [
+        0,
+        0,
+        1.35
+      ],
+      "focal_mm": 50,
+      "aspect": "16:9",
+      "light": [
+        -1,
+        4,
+        3
+      ],
+      "ambient": 0.05,
+      "diffuse": 3.8,
+      "seconds": 0.2716179120000106
+    }
+  ],
+  "checks": {
+    "reopen_identical": true,
+    "delete_and_undo_photo_identical": true,
+    "mirror_request": {
+      "supported": false,
+      "message": "scale must be positive"
+    }
+  },
+  "scale_comparisons": [
+    {
+      "scale": 0.01,
+      "changed_pixels": 51,
+      "pixels_difference_over_8": 32,
+      "mean_abs": 0.0010606553819444444,
+      "max_abs": 127
+    },
+    {
+      "scale": 100,
+      "changed_pixels": 49,
+      "pixels_difference_over_8": 30,
+      "mean_abs": 0.001043701171875,
+      "max_abs": 127
+    }
+  ]
+}
