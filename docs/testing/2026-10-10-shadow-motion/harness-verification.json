@@ -1,0 +1,32 @@
+{
+  "status": "COMPLETED_FIXTURE_SMOKE_NOT_ROME",
+  "counts": {
+    "roots": 41,
+    "hierarchy_nodes": 123,
+    "render_entities": 41,
+    "submitted_triangles": 492,
+    "shared_meshes": 2
+  },
+  "all_gl_errors_zero": true,
+  "view_resolution_checks": [
+    {
+      "view": "overview",
+      "resolution": 1024,
+      "modes": [
+        "off",
+        "whole-scene",
+        "camera-fit"
+      ]
+    },
+    {
+      "view": "legion-close",
+      "resolution": 1024,
+      "modes": [
+        "off",
+        "whole-scene",
+        "camera-fit"
+      ]
+    }
+  ],
+  "note": "Only verifies real-mode measurement plumbing with generated basic glTF. This is not real Rome performance."
+}

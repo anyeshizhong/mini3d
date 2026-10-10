@@ -1,0 +1,31 @@
+pygame 2.6.1 (SDL 2.28.4, Python 3.12.14)
+Hello from the pygame community. https://www.pygame.org/contribute.html
+Renderer initialized in OUTLINE mode
+lateral-1024 0 / 121
+lateral-1024 30 / 121
+lateral-1024 60 / 121
+lateral-1024 90 / 121
+lateral-1024 120 / 121
+RESULT lateral-1024 {"probes": 73728, "frames": 121, "variable_probes": 2230, "variable_fraction": 0.030246310763888888, "changes_per_step_median": 389, "changes_per_step_max": 598, "max_visibility_step": 0.444444477558136, "max_visibility_span": 0.5555555820465088, "shadow_boundary_probes": 2230, "variable_boundary_fraction": 1.0, "boundary_step_mean": 0.028782179579138756, "full_half_threshold_flips": 6831}
+lateral-4096 0 / 121
+lateral-4096 30 / 121
+lateral-4096 60 / 121
+lateral-4096 90 / 121
+lateral-4096 120 / 121
+RESULT lateral-4096 {"probes": 73728, "frames": 121, "variable_probes": 613, "variable_fraction": 0.008314344618055556, "changes_per_step_median": 284, "changes_per_step_max": 341, "max_visibility_step": 0.444444477558136, "max_visibility_span": 0.444444477558136, "shadow_boundary_probes": 613, "variable_boundary_fraction": 1.0, "boundary_step_mean": 0.08104192465543747, "full_half_threshold_flips": 4950}
+dolly-1024 0 / 61
+dolly-1024 30 / 61
+dolly-1024 60 / 61
+RESULT dolly-1024 {"probes": 73689, "frames": 61, "variable_probes": 2082, "variable_fraction": 0.028253877783658347, "changes_per_step_median": 966, "changes_per_step_max": 1254, "max_visibility_step": 0.5555555820465088, "max_visibility_span": 0.6666666865348816, "shadow_boundary_probes": 2094, "variable_boundary_fraction": 0.994269340974212, "boundary_step_mean": 0.07736743986606598, "full_half_threshold_flips": 9860}
+dolly-4096 0 / 61
+dolly-4096 30 / 61
+dolly-4096 60 / 61
+RESULT dolly-4096 {"probes": 73689, "frames": 61, "variable_probes": 580, "variable_fraction": 0.007870916961826053, "changes_per_step_median": 249, "changes_per_step_max": 338, "max_visibility_step": 0.444444477558136, "max_visibility_span": 0.5555555820465088, "shadow_boundary_probes": 580, "variable_boundary_fraction": 1.0, "boundary_step_mean": 0.07852490991353989, "full_half_threshold_flips": 2695}
+low-sun-1024 0 / 61
+low-sun-1024 30 / 61
+low-sun-1024 60 / 61
+RESULT low-sun-1024 {"probes": 73728, "frames": 61, "variable_probes": 1994, "variable_fraction": 0.027045355902777776, "changes_per_step_median": 309, "changes_per_step_max": 1123, "max_visibility_step": 0.3333333432674408, "max_visibility_span": 0.6666666269302368, "shadow_boundary_probes": 2107, "variable_boundary_fraction": 0.9463692453725676, "boundary_step_mean": 0.0693332627415657, "full_half_threshold_flips": 8301}
+low-sun-4096 0 / 61
+low-sun-4096 30 / 61
+low-sun-4096 60 / 61
+RESULT low-sun-4096 {"probes": 73728, "frames": 61, "variable_probes": 443, "variable_fraction": 0.006008572048611111, "changes_per_step_median": 231, "changes_per_step_max": 240, "max_visibility_step": 0.3333333432674408, "max_visibility_span": 0.3333333432674408, "shadow_boundary_probes": 457, "variable_boundary_fraction": 0.9693654266958425, "boundary_step_mean": 0.16671527922153473, "full_half_threshold_flips": 4573}

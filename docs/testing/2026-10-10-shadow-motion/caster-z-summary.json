@@ -1,0 +1,23 @@
+{
+  "method": "CPU-only caster-prism depth transition; no visible-artifact claim",
+  "before": {
+    "camera_x": 0.044,
+    "extent": [
+      3.611858823529411,
+      3.6118588235294116,
+      2.3444743529411767
+    ],
+    "world_bias": 0.0007033423058823529
+  },
+  "after": {
+    "camera_x": 0.0445,
+    "extent": [
+      3.611858823529411,
+      3.6118588235294133,
+      22.048
+    ],
+    "world_bias": 0.006614399999999999
+  },
+  "z_extent_jump": 19.70352564705882,
+  "ratio": 9.404240218000451
+}
