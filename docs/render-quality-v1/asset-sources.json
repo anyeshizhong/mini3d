@@ -1,0 +1,93 @@
+[
+  {
+    "name": "DamagedHelmet",
+    "revision": "edc7c9e67c639d230715049ee31f9a96a6babbbe",
+    "download": "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/edc7c9e67c639d230715049ee31f9a96a6babbbe/Models/DamagedHelmet/glTF-Binary/DamagedHelmet.glb",
+    "source": "https://github.com/KhronosGroup/glTF-Sample-Assets/tree/edc7c9e67c639d230715049ee31f9a96a6babbbe/Models/DamagedHelmet",
+    "metadata_url": "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/edc7c9e67c639d230715049ee31f9a96a6babbbe/Models/DamagedHelmet/metadata.json",
+    "legal": [
+      {
+        "license": "CC-BY-4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/4.0/legalcode",
+        "artist": "ctxwing",
+        "year": "2018",
+        "owner": "ctxwing",
+        "what": "Rebuild and conversion to glTF",
+        "text": "Creative Commons Attribution 4.0 International",
+        "spdx": "CC-BY-4.0",
+        "icon": "https://licensebuttons.net/l/by/4.0/88x31.png"
+      },
+      {
+        "license": "CC-BY-NC-4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-nc/4.0/legalcode",
+        "artist": "theblueturtle_",
+        "year": "2016",
+        "owner": "theblueturtle_",
+        "what": "Earlier version of model",
+        "text": "Creative Commons Attribution Non Commercial 4.0 International",
+        "spdx": "CC-BY-NC-4.0",
+        "icon": "https://licensebuttons.net/l/by-nc/4.0/88x31.png"
+      }
+    ],
+    "path": "model/11_benchmark_round01/DamagedHelmet/DamagedHelmet.glb",
+    "bytes": 3773916,
+    "sha256": "a1e3b04de97b11de564ce6e53b95f02954a297f0008183ac63a4f5974f6b32d8"
+  },
+  {
+    "name": "Lantern",
+    "revision": "edc7c9e67c639d230715049ee31f9a96a6babbbe",
+    "download": "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/edc7c9e67c639d230715049ee31f9a96a6babbbe/Models/Lantern/glTF-Binary/Lantern.glb",
+    "source": "https://github.com/KhronosGroup/glTF-Sample-Assets/tree/edc7c9e67c639d230715049ee31f9a96a6babbbe/Models/Lantern",
+    "metadata_url": "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/edc7c9e67c639d230715049ee31f9a96a6babbbe/Models/Lantern/metadata.json",
+    "legal": [
+      {
+        "license": "CC0-1.0",
+        "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/legalcode",
+        "artist": "sbtron",
+        "year": "2017",
+        "owner": "Microsoft",
+        "what": "Initial version",
+        "text": "Creative Commons Zero v1.0 Universal",
+        "spdx": "CC0-1.0",
+        "icon": "https://licensebuttons.net/p/zero/1.0/88x31.png"
+      },
+      {
+        "license": "CC0-1.0",
+        "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/legalcode",
+        "artist": "Frank Galligan",
+        "year": "2018",
+        "owner": "Frank Galligan",
+        "what": "Draco compression",
+        "text": "Creative Commons Zero v1.0 Universal",
+        "spdx": "CC0-1.0",
+        "icon": "https://licensebuttons.net/p/zero/1.0/88x31.png"
+      }
+    ],
+    "path": "model/11_benchmark_round01/Lantern/Lantern.glb",
+    "bytes": 9564264,
+    "sha256": "a79458c4b02d695187a952f23a63b8bf278e7bc3d316a3c2a314f2d6974181f1"
+  },
+  {
+    "name": "Avocado",
+    "revision": "edc7c9e67c639d230715049ee31f9a96a6babbbe",
+    "download": "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/edc7c9e67c639d230715049ee31f9a96a6babbbe/Models/Avocado/glTF-Binary/Avocado.glb",
+    "source": "https://github.com/KhronosGroup/glTF-Sample-Assets/tree/edc7c9e67c639d230715049ee31f9a96a6babbbe/Models/Avocado",
+    "metadata_url": "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/edc7c9e67c639d230715049ee31f9a96a6babbbe/Models/Avocado/metadata.json",
+    "legal": [
+      {
+        "license": "CC0-1.0",
+        "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/legalcode",
+        "artist": "Microsoft",
+        "year": "2017",
+        "owner": "Public",
+        "what": "Everything",
+        "text": "Creative Commons Zero v1.0 Universal",
+        "spdx": "CC0-1.0",
+        "icon": "https://licensebuttons.net/p/zero/1.0/88x31.png"
+      }
+    ],
+    "path": "model/11_benchmark_round01/Avocado/Avocado.glb",
+    "bytes": 8110040,
+    "sha256": "ccc9c3ce56423720b09399c2351537207cd5a65f859f9e6e2f30922762f3abd4"
+  }
+]

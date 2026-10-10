@@ -1,0 +1,132 @@
+{
+  "shadows": {
+    "enabled": true,
+    "resolution": 4096,
+    "bias": 0.0003,
+    "pcf": true
+  },
+  "version": 3,
+  "objects": [
+    {
+      "asset": "captures\\render-quality-v1\\assets\\quality-floor.gltf",
+      "name": "Ground",
+      "entity_id": "ent_000001",
+      "position": [
+        0.0,
+        0.0,
+        -0.1
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        32.0,
+        32.0,
+        0.2
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": false
+    },
+    {
+      "asset": "captures\\render-quality-v1\\assets\\quality-box.gltf",
+      "name": "Subject",
+      "entity_id": "ent_000002",
+      "position": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        2.0
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": false
+    }
+  ],
+  "camera": {
+    "target": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "distance": 10.0,
+    "yaw": -0.9,
+    "pitch": 0.25,
+    "fov_y": 60.0,
+    "bounds_center": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "bounds_radius": 1.0,
+    "min_distance": 0.0001,
+    "max_distance": 100000000.0
+  },
+  "shot_camera": {
+    "position": [
+      7.0,
+      9.0,
+      13.0
+    ],
+    "rotation": [
+      [
+        -0.7988707691396074,
+        -0.46547325417234653,
+        0.3809726287602537
+      ],
+      [
+        0.6015026967639397,
+        -0.6182066656976477,
+        0.5059792725722119
+      ],
+      [
+        0.0,
+        0.6333681142410018,
+        0.7738506521692652
+      ]
+    ],
+    "focal_mm": 50.0,
+    "aspect": "4:3",
+    "fov_y": 30.219150244680932,
+    "near": 0.05,
+    "far": 400.0
+  },
+  "render_mode": "Lit",
+  "show_grid": true,
+  "lighting": {
+    "mode": "Scene",
+    "light_dir": [
+      -3.0,
+      -2.0,
+      3.0
+    ],
+    "ambient": 0.3,
+    "diffuse": 3.0
+  },
+  "placement_plane": {
+    "z": 0.0,
+    "size": 2000.0,
+    "enabled": true
+  },
+  "next_entity_id": 3,
+  "groups": [],
+  "next_group_id": 1,
+  "selected_ids": [],
+  "primary_selection_id": null,
+  "selected_group_id": null
+}

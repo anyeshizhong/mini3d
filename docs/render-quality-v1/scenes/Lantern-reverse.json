@@ -1,0 +1,132 @@
+{
+  "shadows": {
+    "enabled": true,
+    "resolution": 1024,
+    "bias": 0.0003,
+    "pcf": true
+  },
+  "version": 3,
+  "objects": [
+    {
+      "asset": "captures\\render-quality-v1\\assets\\quality-floor.gltf",
+      "name": "Ground",
+      "entity_id": "ent_000001",
+      "position": [
+        0.0,
+        0.0,
+        -0.1
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        200.0,
+        200.0,
+        0.2
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": false
+    },
+    {
+      "asset": "F:\\python_project\\mini3d\\.worktrees\\shot-camera-persistence\\model\\11_benchmark_round01\\Lantern\\Lantern.glb",
+      "name": "Lantern",
+      "entity_id": "ent_000002",
+      "position": [
+        -0.2979365337017513,
+        -0.0,
+        -0.014332838213713133
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.07792950985928221,
+        0.07792950985928221,
+        0.07792950985928221
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": false
+    }
+  ],
+  "camera": {
+    "target": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "distance": 10.0,
+    "yaw": -0.9,
+    "pitch": 0.25,
+    "fov_y": 60.0,
+    "bounds_center": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "bounds_radius": 1.0,
+    "min_distance": 0.0001,
+    "max_distance": 100000000.0
+  },
+  "shot_camera": {
+    "position": [
+      -4.0,
+      6.0,
+      3.5
+    ],
+    "rotation": [
+      [
+        -0.8320502943378436,
+        0.18169809053571495,
+        -0.5240974256643347
+      ],
+      [
+        -0.5547001962252291,
+        -0.27254713580357237,
+        0.7861461384965021
+      ],
+      [
+        0.0,
+        0.9448300707857176,
+        0.3275608910402092
+      ]
+    ],
+    "focal_mm": 49.999999999999986,
+    "aspect": "16:9",
+    "fov_y": 22.89519252737121,
+    "near": 0.03,
+    "far": 200.0
+  },
+  "render_mode": "Lit",
+  "show_grid": true,
+  "lighting": {
+    "mode": "Scene",
+    "light_dir": [
+      3.0,
+      4.0,
+      3.0
+    ],
+    "ambient": 0.3,
+    "diffuse": 3.0
+  },
+  "placement_plane": {
+    "z": 0.0,
+    "size": 2000.0,
+    "enabled": true
+  },
+  "next_entity_id": 3,
+  "groups": [],
+  "next_group_id": 1,
+  "selected_ids": [],
+  "primary_selection_id": null,
+  "selected_group_id": null
+}
