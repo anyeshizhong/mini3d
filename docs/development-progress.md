@@ -1,6 +1,8 @@
 # Mini3D 开发进度
 
-更新：2026-10-09。
+更新：2026-10-10。
+
+稳定化 V1 第一阶段：Issue #5 的 Gizmo 跨 Assets 面板提前提交问题已修复。原始实际 UI 65/65、追加松开旅程 81/81、243 项单测和现有 GPU 回归通过；详见 [修复前后与验收](stabilization-v1/issue-5.md)。渲染质量、阴影范围及后续摄影功能的评估进入独立阶段。
 
 Shot Camera 持久化已在 `feature/shot-camera-persistence` 工作树完成实现与验证：239 项单测通过，跨进程保存/加载后 PNG 差异像素为 0，原摄影 UI 回归通过。见 [格式、兼容性和验收记录](shot-camera-persistence.md)。
 

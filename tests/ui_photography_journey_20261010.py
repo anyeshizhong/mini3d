@@ -1,4 +1,5 @@
 """Actual ImGui/GL event-loop journeys: drag ownership, photo isolation, scene changes."""
+import argparse
 import json
 from pathlib import Path
 import sys
@@ -12,7 +13,11 @@ from mini3d import editor
 from mini3d.editor_ui import EditorUI
 from mini3d.placement import geometry_bounds
 
-OUT = ROOT / 'captures/second-session/ui-study'
+parser = argparse.ArgumentParser()
+parser.add_argument('--output', type=Path, default=ROOT / 'captures/second-session/ui-study')
+parser.add_argument('--panel-release', action='store_true', help='Add cross-panel release/Undo/Redo journey')
+args = parser.parse_args()
+OUT = args.output
 OUT.mkdir(parents=True, exist_ok=True)
 state = {'frame': 0, 'mouse': (0, 0), 'checks': [], 'trace': []}
 real_get, real_flip, real_capture = pygame.event.get, pygame.display.flip, editor.capture_png
@@ -154,6 +159,22 @@ def events():
     if f == 35: return [move(state['gizmo_start']+[60,0], (1,0,0))]
     if f == 36: return [escape()]
     if f == 37: return [escape(pygame.KEYUP), button(pygame.MOUSEBUTTONUP)]
+    if args.panel_release:
+        if f == 40:
+            prepare('move')
+            app.focus_selected()
+            state['gizmo_start'] = app.gizmo.geometry(app.viewport_rect)[1]
+            return [move(state['gizmo_start'])]
+        if f == 41:
+            state['gizmo_start'] = app.gizmo.geometry(app.viewport_rect)[1]
+            return [move(state['gizmo_start']), button(pygame.MOUSEBUTTONDOWN)]
+        if f == 42: return [move(state['gizmo_start']+[60,0], (1,0,0))]
+        if f == 43: return [move((30,500), (1,0,0))]
+        if f == 44: return [button(pygame.MOUSEBUTTONUP)]
+        if f == 45:
+            app.undo()
+            return [button(pygame.MOUSEBUTTONUP)]
+        if f == 46: app.redo()
     return []
 
 def inspect():
@@ -193,7 +214,22 @@ def inspect():
     if f == 36:
         check('Control: in-viewport Gizmo Escape restores pose', np.allclose(box.pos,state['initial']))
         check('Control: in-viewport Gizmo Escape leaves no history', app.commands.undo_count==0)
-    if f in (3,4,5,11,12,19,27,28,34,35):
+    if args.panel_release:
+        if f == 41: check('Gizmo release journey starts', app.gizmo.drag is not None)
+        if f == 42:
+            state['release_position'] = box.pos.copy()
+            check('Gizmo release journey moves', not np.allclose(box.pos,state['initial']))
+        if f == 43:
+            check('Gizmo held over panel retains transaction', ui.mouse_captured and app.gizmo.drag is not None and app.commands.active_transaction)
+            check('Gizmo panel crossing pauses geometry', np.array_equal(box.pos,state['release_position']))
+            check('Gizmo panel crossing has no early Undo', app.commands.undo_count==0)
+        if f == 44:
+            check('Gizmo release over panel commits exactly once', app.gizmo.drag is None and not app.commands.active_transaction and app.commands.undo_count==1)
+        if f == 45:
+            check('Gizmo duplicate release creates no Undo and Undo restores', app.commands.undo_count==0 and np.array_equal(box.pos,state['initial']))
+        if f == 46:
+            check('Gizmo Redo restores committed panel-release pose', app.commands.undo_count==1 and np.array_equal(box.pos,state['release_position']))
+    if f in (3,4,5,11,12,19,27,28,34,35,43,44):
         size=pygame.display.get_window_size()
         rgb=gl.glReadPixels(0,0,*size,gl.GL_RGB,gl.GL_UNSIGNED_BYTE)
         pygame.image.save(pygame.image.fromstring(rgb,size,'RGB',True),str(OUT/('ui-frame-%02d.png'%f)))
@@ -204,7 +240,7 @@ def inspect():
 with patch.object(editor,'Editor',App), patch('mini3d.editor_ui.EditorUI',UI), \
      patch.object(pygame.event,'get',events), patch.object(pygame.display,'flip',inspect), \
      patch.object(pygame.key,'get_mods',return_value=0), patch.object(editor,'capture_png',capture_wrapper):
-    editor.run(initial_asset=None,frames=39,hidden=True)
+    editor.run(initial_asset=None,frames=47 if args.panel_release else 39,hidden=True)
 
 def pixels(name):
     return pygame.surfarray.array3d(pygame.image.load(str(OUT/(name+'.png'))))

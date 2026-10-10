@@ -1,0 +1,146 @@
+[
+  {
+    "name": "ground_separation",
+    "exit_code": 0,
+    "seconds": 12.764,
+    "command": [
+      "python",
+      "-B",
+      "tests/ground_separation_smoke.py",
+      "captures/stabilization-regressions/ground_separation"
+    ]
+  },
+  {
+    "name": "placement",
+    "exit_code": 0,
+    "seconds": 6.668,
+    "command": [
+      "python",
+      "-B",
+      "tests/placement_smoke.py",
+      "captures/stabilization-regressions/placement"
+    ]
+  },
+  {
+    "name": "placement_v2",
+    "exit_code": 0,
+    "seconds": 17.262,
+    "command": [
+      "python",
+      "-B",
+      "tests/placement_v2_smoke.py",
+      "captures/stabilization-regressions/placement_v2"
+    ]
+  },
+  {
+    "name": "photo",
+    "exit_code": 0,
+    "seconds": 5.712,
+    "command": [
+      "python",
+      "-B",
+      "tests/photo_smoke.py",
+      "captures/stabilization-regressions/photo"
+    ]
+  },
+  {
+    "name": "ai_api",
+    "exit_code": 0,
+    "seconds": 6.545,
+    "command": [
+      "python",
+      "-B",
+      "tests/ai_api_smoke.py",
+      "captures/stabilization-regressions/ai_api"
+    ]
+  },
+  {
+    "name": "lighting",
+    "exit_code": 0,
+    "seconds": 2.138,
+    "command": [
+      "python",
+      "-B",
+      "tests/lighting_smoke.py",
+      "captures/stabilization-regressions/lighting"
+    ]
+  },
+  {
+    "name": "lighting_api",
+    "exit_code": 0,
+    "seconds": 4.111,
+    "command": [
+      "python",
+      "-B",
+      "tests/lighting_api_smoke.py",
+      "captures/stabilization-regressions/lighting_api"
+    ]
+  },
+  {
+    "name": "lighting_ui",
+    "exit_code": 0,
+    "seconds": 3.278,
+    "command": [
+      "python",
+      "-B",
+      "tests/lighting_ui_smoke.py",
+      "captures/stabilization-regressions/lighting_ui"
+    ]
+  },
+  {
+    "name": "scene_clipping",
+    "exit_code": 0,
+    "seconds": 4.699,
+    "command": [
+      "python",
+      "-B",
+      "tests/scene_clipping_smoke.py",
+      "captures/stabilization-regressions/scene_clipping"
+    ]
+  },
+  {
+    "name": "shadow",
+    "exit_code": 1,
+    "seconds": 2.291,
+    "command": [
+      "python",
+      "-B",
+      "tests/shadow_smoke.py",
+      "captures/stabilization-regressions/shadow"
+    ]
+  },
+  {
+    "name": "shadow_ui",
+    "exit_code": 0,
+    "seconds": 2.573,
+    "command": [
+      "python",
+      "-B",
+      "tests/shadow_ui_smoke.py",
+      "captures/stabilization-regressions/shadow_ui"
+    ]
+  },
+  {
+    "name": "shot_camera_persistence",
+    "exit_code": 0,
+    "seconds": 10.642,
+    "command": [
+      "python",
+      "-B",
+      "tests/shot_camera_persistence_smoke.py",
+      "captures/stabilization-regressions/shot_camera_persistence"
+    ]
+  },
+  {
+    "name": "shadow_baseline",
+    "exit_code": 0,
+    "log": "shadow-baseline.log",
+    "prerequisite": "isolated 1033e5e"
+  },
+  {
+    "name": "shadow_retry",
+    "exit_code": 0,
+    "log": "shadow-retry.log",
+    "supersedes_initial_missing_fixture": true
+  }
+]

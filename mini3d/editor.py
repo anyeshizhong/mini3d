@@ -543,11 +543,18 @@ class Editor:
         if self.camera_view:
             return  # Photo preview is fixed; scene placement/navigation uses Editor View.
         mouse_event = event.type in (pygame.MOUSEMOTION, pygame.MOUSEBUTTONDOWN, pygame.MOUSEWHEEL)
-        if ui.modal_open or (mouse_event and (ui.mouse_captured or ui.asset_dragging)):
+        if ui.modal_open:
             self._orbiting = False
             self.gizmo.finish()
-            # A Surface Drag owns one transaction until release/Esc, including
-            # excursions across a panel. Captured input must not move geometry.
+            return
+        if mouse_event and (ui.mouse_captured or ui.asset_dragging):
+            self._orbiting = False
+            # Both placement gestures retain ownership across ordinary panels.
+            # Pause geometry updates until return, release or Escape. Recover
+            # a missed release even when its next motion is over captured UI.
+            if event.type == pygame.MOUSEMOTION and not getattr(event, 'buttons', (True,))[0]:
+                self.gizmo.finish()
+                self.finish_surface_drag()
             return
         if event.type == pygame.MOUSEMOTION:
             if self.surface_drag is not None:

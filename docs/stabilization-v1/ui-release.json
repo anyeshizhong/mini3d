@@ -1,0 +1,1078 @@
+{
+  "checks": [
+    {
+      "name": "GL frame 00",
+      "passed": true,
+      "frame": 0
+    },
+    {
+      "name": "GL frame 01",
+      "passed": true,
+      "frame": 1
+    },
+    {
+      "name": "Gizmo starts through actual mouse click",
+      "passed": true,
+      "frame": 2
+    },
+    {
+      "name": "GL frame 02",
+      "passed": true,
+      "frame": 2
+    },
+    {
+      "name": "Gizmo moves subject in viewport",
+      "passed": true,
+      "frame": 3
+    },
+    {
+      "name": "GL frame 03",
+      "passed": true,
+      "frame": 3
+    },
+    {
+      "name": "Gizmo crossing panel is captured by real ImGui",
+      "passed": true,
+      "frame": 4
+    },
+    {
+      "name": "GL frame 04",
+      "passed": true,
+      "frame": 4
+    },
+    {
+      "name": "Gizmo Escape after panel crossing restores position",
+      "passed": true,
+      "frame": 5
+    },
+    {
+      "name": "Gizmo Escape after panel crossing leaves no history",
+      "passed": true,
+      "frame": 5
+    },
+    {
+      "name": "GL frame 05",
+      "passed": true,
+      "frame": 5
+    },
+    {
+      "name": "GL frame 06",
+      "passed": true,
+      "frame": 6
+    },
+    {
+      "name": "GL frame 07",
+      "passed": true,
+      "frame": 7
+    },
+    {
+      "name": "GL frame 08",
+      "passed": true,
+      "frame": 8
+    },
+    {
+      "name": "Surface drag starts through mouse click",
+      "passed": true,
+      "frame": 9
+    },
+    {
+      "name": "GL frame 09",
+      "passed": true,
+      "frame": 9
+    },
+    {
+      "name": "Surface drag moves subject",
+      "passed": true,
+      "frame": 10
+    },
+    {
+      "name": "GL frame 10",
+      "passed": true,
+      "frame": 10
+    },
+    {
+      "name": "Surface crossing panel retains transaction",
+      "passed": true,
+      "frame": 11
+    },
+    {
+      "name": "GL frame 11",
+      "passed": true,
+      "frame": 11
+    },
+    {
+      "name": "Surface Escape after panel crossing restores pose",
+      "passed": true,
+      "frame": 12
+    },
+    {
+      "name": "Surface Escape leaves no history/transaction",
+      "passed": true,
+      "frame": 12
+    },
+    {
+      "name": "GL frame 12",
+      "passed": true,
+      "frame": 12
+    },
+    {
+      "name": "GL frame 13",
+      "passed": true,
+      "frame": 13
+    },
+    {
+      "name": "GL frame 14",
+      "passed": true,
+      "frame": 14
+    },
+    {
+      "name": "GL frame 15",
+      "passed": true,
+      "frame": 15
+    },
+    {
+      "name": "GL frame 16",
+      "passed": true,
+      "frame": 16
+    },
+    {
+      "name": "GL frame 17",
+      "passed": true,
+      "frame": 17
+    },
+    {
+      "name": "GL frame 18",
+      "passed": true,
+      "frame": 18
+    },
+    {
+      "name": "Surface release over panel commits once",
+      "passed": true,
+      "frame": 19
+    },
+    {
+      "name": "GL frame 19",
+      "passed": true,
+      "frame": 19
+    },
+    {
+      "name": "GL frame 20",
+      "passed": true,
+      "frame": 20
+    },
+    {
+      "name": "GL frame 21",
+      "passed": true,
+      "frame": 21
+    },
+    {
+      "name": "GL frame 22",
+      "passed": true,
+      "frame": 22
+    },
+    {
+      "name": "GL frame 23",
+      "passed": true,
+      "frame": 23
+    },
+    {
+      "name": "GL frame 24",
+      "passed": true,
+      "frame": 24
+    },
+    {
+      "name": "Shot pose/lens isolate wheel and middle drag",
+      "passed": true,
+      "frame": 25
+    },
+    {
+      "name": "Editor pose unchanged during Camera View events",
+      "passed": true,
+      "frame": 25
+    },
+    {
+      "name": "GL frame 25",
+      "passed": true,
+      "frame": 25
+    },
+    {
+      "name": "GL frame 26",
+      "passed": true,
+      "frame": 26
+    },
+    {
+      "name": "Legacy scene clears old shot and exits Camera View",
+      "passed": true,
+      "frame": 27
+    },
+    {
+      "name": "Legacy ground flag creates no phantom floor",
+      "passed": true,
+      "frame": 27
+    },
+    {
+      "name": "Legacy scene restores Grid Off",
+      "passed": true,
+      "frame": 27
+    },
+    {
+      "name": "GL frame 27",
+      "passed": true,
+      "frame": 27
+    },
+    {
+      "name": "Returning scene restores exact shot",
+      "passed": true,
+      "frame": 28
+    },
+    {
+      "name": "Returning scene restores explicit floor and Grid On",
+      "passed": true,
+      "frame": 28
+    },
+    {
+      "name": "GL frame 28",
+      "passed": true,
+      "frame": 28
+    },
+    {
+      "name": "GL frame 29",
+      "passed": true,
+      "frame": 29
+    },
+    {
+      "name": "GL frame 30",
+      "passed": true,
+      "frame": 30
+    },
+    {
+      "name": "Wheel works again after returning to Editor View",
+      "passed": true,
+      "frame": 31
+    },
+    {
+      "name": "GL frame 31",
+      "passed": true,
+      "frame": 31
+    },
+    {
+      "name": "GL frame 32",
+      "passed": true,
+      "frame": 32
+    },
+    {
+      "name": "GL frame 33",
+      "passed": true,
+      "frame": 33
+    },
+    {
+      "name": "Control: in-viewport Gizmo starts",
+      "passed": true,
+      "frame": 34
+    },
+    {
+      "name": "GL frame 34",
+      "passed": true,
+      "frame": 34
+    },
+    {
+      "name": "Control: in-viewport Gizmo moves",
+      "passed": true,
+      "frame": 35
+    },
+    {
+      "name": "GL frame 35",
+      "passed": true,
+      "frame": 35
+    },
+    {
+      "name": "Control: in-viewport Gizmo Escape restores pose",
+      "passed": true,
+      "frame": 36
+    },
+    {
+      "name": "Control: in-viewport Gizmo Escape leaves no history",
+      "passed": true,
+      "frame": 36
+    },
+    {
+      "name": "GL frame 36",
+      "passed": true,
+      "frame": 36
+    },
+    {
+      "name": "GL frame 37",
+      "passed": true,
+      "frame": 37
+    },
+    {
+      "name": "GL frame 38",
+      "passed": true,
+      "frame": 38
+    },
+    {
+      "name": "GL frame 39",
+      "passed": true,
+      "frame": 39
+    },
+    {
+      "name": "GL frame 40",
+      "passed": true,
+      "frame": 40
+    },
+    {
+      "name": "Gizmo release journey starts",
+      "passed": true,
+      "frame": 41
+    },
+    {
+      "name": "GL frame 41",
+      "passed": true,
+      "frame": 41
+    },
+    {
+      "name": "Gizmo release journey moves",
+      "passed": true,
+      "frame": 42
+    },
+    {
+      "name": "GL frame 42",
+      "passed": true,
+      "frame": 42
+    },
+    {
+      "name": "Gizmo held over panel retains transaction",
+      "passed": true,
+      "frame": 43
+    },
+    {
+      "name": "Gizmo panel crossing pauses geometry",
+      "passed": true,
+      "frame": 43
+    },
+    {
+      "name": "Gizmo panel crossing has no early Undo",
+      "passed": true,
+      "frame": 43
+    },
+    {
+      "name": "GL frame 43",
+      "passed": true,
+      "frame": 43
+    },
+    {
+      "name": "Gizmo release over panel commits exactly once",
+      "passed": true,
+      "frame": 44
+    },
+    {
+      "name": "GL frame 44",
+      "passed": true,
+      "frame": 44
+    },
+    {
+      "name": "Gizmo duplicate release creates no Undo and Undo restores",
+      "passed": true,
+      "frame": 45
+    },
+    {
+      "name": "GL frame 45",
+      "passed": true,
+      "frame": 45
+    },
+    {
+      "name": "Gizmo Redo restores committed panel-release pose",
+      "passed": true,
+      "frame": 46
+    },
+    {
+      "name": "GL frame 46",
+      "passed": true,
+      "frame": 46
+    },
+    {
+      "name": "Photo pixel identity: photo-after-events",
+      "passed": true,
+      "frame": 47
+    },
+    {
+      "name": "Photo pixel identity: photo-grid-off",
+      "passed": true,
+      "frame": 47
+    },
+    {
+      "name": "Photo pixel identity: photo-after-scene-switch",
+      "passed": true,
+      "frame": 47
+    }
+  ],
+  "trace": [
+    {
+      "frame": 0,
+      "pos": [
+        -0.5,
+        -0.5,
+        0.0
+      ],
+      "gizmo": false,
+      "surface": false,
+      "transaction": false,
+      "undo": 0,
+      "mouse_captured": false,
+      "viewport_hovered": false
+    },
+    {
+      "frame": 1,
+      "pos": [
+        -0.5,
+        -0.5,
+        0.0
+      ],
+      "gizmo": false,
+      "surface": false,
+      "transaction": false,
+      "undo": 0,
+      "mouse_captured": false,
+      "viewport_hovered": true
+    },
+    {
+      "frame": 2,
+      "pos": [
+        -0.5,
+        -0.5,
+        0.0
+      ],
+      "gizmo": true,
+      "surface": false,
+      "transaction": true,
+      "undo": 0,
+      "mouse_captured": false,
+      "viewport_hovered": true,
+      "drag_axis": "free"
+    },
+    {
+      "frame": 3,
+      "pos": [
+        -0.5,
+        -0.20401240470448034,
+        0.0
+      ],
+      "gizmo": true,
+      "surface": false,
+      "transaction": true,
+      "undo": 0,
+      "mouse_captured": false,
+      "viewport_hovered": true,
+      "drag_axis": "free"
+    },
+    {
+      "frame": 4,
+      "pos": [
+        -0.5,
+        -0.20401240470448034,
+        0.0
+      ],
+      "gizmo": true,
+      "surface": false,
+      "transaction": true,
+      "undo": 0,
+      "mouse_captured": true,
+      "viewport_hovered": false,
+      "drag_axis": "free"
+    },
+    {
+      "frame": 5,
+      "pos": [
+        -0.5,
+        -0.5,
+        0.0
+      ],
+      "gizmo": false,
+      "surface": false,
+      "transaction": false,
+      "undo": 0,
+      "mouse_captured": true,
+      "viewport_hovered": false
+    },
+    {
+      "frame": 6,
+      "pos": [
+        -0.5,
+        -0.5,
+        0.0
+      ],
+      "gizmo": false,
+      "surface": false,
+      "transaction": false,
+      "undo": 0,
+      "mouse_captured": true,
+      "viewport_hovered": false
+    },
+    {
+      "frame": 7,
+      "pos": [
+        -0.5,
+        -0.5,
+        0.0
+      ],
+      "gizmo": false,
+      "surface": false,
+      "transaction": false,
+      "undo": 0,
+      "mouse_captured": true,
+      "viewport_hovered": false
+    },
+    {
+      "frame": 8,
+      "pos": [
+        -0.5,
+        -0.5,
+        0.0
+      ],
+      "gizmo": false,
+      "surface": false,
+      "transaction": false,
+      "undo": 0,
+      "mouse_captured": false,
+      "viewport_hovered": true
+    },
+    {
+      "frame": 9,
+      "pos": [
+        -0.5617188948708806,
+        -0.5,
+        0.0
+      ],
+      "gizmo": false,
+      "surface": true,
+      "transaction": true,
+      "undo": 0,
+      "mouse_captured": false,
+      "viewport_hovered": true
+    },
+    {
+      "frame": 10,
+      "pos": [
+        -0.5,
+        -0.24283793803799741,
+        0.0
+      ],
+      "gizmo": false,
+      "surface": true,
+      "transaction": true,
+      "undo": 0,
+      "mouse_captured": false,
+      "viewport_hovered": true
+    },
+    {
+      "frame": 11,
+      "pos": [
+        -0.5,
+        -0.24283793803799741,
+        0.0
+      ],
+      "gizmo": false,
+      "surface": true,
+      "transaction": true,
+      "undo": 0,
+      "mouse_captured": true,
+      "viewport_hovered": false
+    },
+    {
+      "frame": 12,
+      "pos": [
+        -0.5,
+        -0.5,
+        0.0
+      ],
+      "gizmo": false,
+      "surface": false,
+      "transaction": false,
+      "undo": 0,
+      "mouse_captured": true,
+      "viewport_hovered": false
+    },
+    {
+      "frame": 13,
+      "pos": [
+        -0.5,
+        -0.5,
+        0.0
+      ],
+      "gizmo": false,
+      "surface": false,
+      "transaction": false,
+      "undo": 0,
+      "mouse_captured": true,
+      "viewport_hovered": false
+    },
+    {
+      "frame": 14,
+      "pos": [
+        -0.5,
+        -0.5,
+        0.0
+      ],
+      "gizmo": false,
+      "surface": false,
+      "transaction": false,
+      "undo": 0,
+      "mouse_captured": true,
+      "viewport_hovered": false
+    },
+    {
+      "frame": 15,
+      "pos": [
+        -0.5,
+        -0.5,
+        0.0
+      ],
+      "gizmo": false,
+      "surface": false,
+      "transaction": false,
+      "undo": 0,
+      "mouse_captured": false,
+      "viewport_hovered": true
+    },
+    {
+      "frame": 16,
+      "pos": [
+        -0.5,
+        -0.5,
+        0.0
+      ],
+      "gizmo": false,
+      "surface": true,
+      "transaction": true,
+      "undo": 0,
+      "mouse_captured": false,
+      "viewport_hovered": true
+    },
+    {
+      "frame": 17,
+      "pos": [
+        -0.5,
+        -0.24283793803799741,
+        0.0
+      ],
+      "gizmo": false,
+      "surface": true,
+      "transaction": true,
+      "undo": 0,
+      "mouse_captured": false,
+      "viewport_hovered": true
+    },
+    {
+      "frame": 18,
+      "pos": [
+        -0.5,
+        -0.24283793803799741,
+        0.0
+      ],
+      "gizmo": false,
+      "surface": true,
+      "transaction": true,
+      "undo": 0,
+      "mouse_captured": true,
+      "viewport_hovered": false
+    },
+    {
+      "frame": 19,
+      "pos": [
+        -0.5,
+        -0.24283793803799741,
+        0.0
+      ],
+      "gizmo": false,
+      "surface": false,
+      "transaction": false,
+      "undo": 1,
+      "mouse_captured": true,
+      "viewport_hovered": false
+    },
+    {
+      "frame": 20,
+      "pos": [
+        -0.5,
+        -0.24283793803799741,
+        0.0
+      ],
+      "gizmo": false,
+      "surface": false,
+      "transaction": false,
+      "undo": 1,
+      "mouse_captured": true,
+      "viewport_hovered": false
+    },
+    {
+      "frame": 21,
+      "pos": [
+        -0.5,
+        -0.24283793803799741,
+        0.0
+      ],
+      "gizmo": false,
+      "surface": false,
+      "transaction": false,
+      "undo": 2,
+      "mouse_captured": true,
+      "viewport_hovered": false
+    },
+    {
+      "frame": 22,
+      "pos": [
+        -0.5,
+        -0.24283793803799741,
+        0.0
+      ],
+      "gizmo": false,
+      "surface": false,
+      "transaction": false,
+      "undo": 2,
+      "mouse_captured": false,
+      "viewport_hovered": true
+    },
+    {
+      "frame": 23,
+      "pos": [
+        -0.5,
+        -0.24283793803799741,
+        0.0
+      ],
+      "gizmo": false,
+      "surface": false,
+      "transaction": false,
+      "undo": 2,
+      "mouse_captured": false,
+      "viewport_hovered": true
+    },
+    {
+      "frame": 24,
+      "pos": [
+        -0.5,
+        -0.24283793803799741,
+        0.0
+      ],
+      "gizmo": false,
+      "surface": false,
+      "transaction": false,
+      "undo": 2,
+      "mouse_captured": false,
+      "viewport_hovered": true
+    },
+    {
+      "frame": 25,
+      "pos": [
+        -0.5,
+        -0.24283793803799741,
+        0.0
+      ],
+      "gizmo": false,
+      "surface": false,
+      "transaction": false,
+      "undo": 2,
+      "mouse_captured": false,
+      "viewport_hovered": true
+    },
+    {
+      "frame": 26,
+      "pos": [
+        -0.5,
+        -0.24283793803799741,
+        0.0
+      ],
+      "gizmo": false,
+      "surface": false,
+      "transaction": false,
+      "undo": 2,
+      "mouse_captured": false,
+      "viewport_hovered": true
+    },
+    {
+      "frame": 27,
+      "pos": [
+        -0.5,
+        -0.24283793803799741,
+        0.0
+      ],
+      "gizmo": false,
+      "surface": false,
+      "transaction": false,
+      "undo": 0,
+      "mouse_captured": false,
+      "viewport_hovered": true
+    },
+    {
+      "frame": 28,
+      "pos": [
+        -0.5,
+        -0.24283793803799741,
+        0.0
+      ],
+      "gizmo": false,
+      "surface": false,
+      "transaction": false,
+      "undo": 0,
+      "mouse_captured": false,
+      "viewport_hovered": true
+    },
+    {
+      "frame": 29,
+      "pos": [
+        -0.5,
+        -0.24283793803799741,
+        0.0
+      ],
+      "gizmo": false,
+      "surface": false,
+      "transaction": false,
+      "undo": 0,
+      "mouse_captured": false,
+      "viewport_hovered": true
+    },
+    {
+      "frame": 30,
+      "pos": [
+        -0.5,
+        -0.24283793803799741,
+        0.0
+      ],
+      "gizmo": false,
+      "surface": false,
+      "transaction": false,
+      "undo": 0,
+      "mouse_captured": false,
+      "viewport_hovered": true
+    },
+    {
+      "frame": 31,
+      "pos": [
+        -0.5,
+        -0.24283793803799741,
+        0.0
+      ],
+      "gizmo": false,
+      "surface": false,
+      "transaction": false,
+      "undo": 0,
+      "mouse_captured": false,
+      "viewport_hovered": true
+    },
+    {
+      "frame": 32,
+      "pos": [
+        -0.5,
+        -0.24283793803799741,
+        0.0
+      ],
+      "gizmo": false,
+      "surface": false,
+      "transaction": false,
+      "undo": 0,
+      "mouse_captured": false,
+      "viewport_hovered": true
+    },
+    {
+      "frame": 33,
+      "pos": [
+        -0.5,
+        -0.5,
+        0.0
+      ],
+      "gizmo": false,
+      "surface": false,
+      "transaction": false,
+      "undo": 0,
+      "mouse_captured": false,
+      "viewport_hovered": true
+    },
+    {
+      "frame": 34,
+      "pos": [
+        -0.5,
+        -0.5,
+        0.0
+      ],
+      "gizmo": true,
+      "surface": false,
+      "transaction": true,
+      "undo": 0,
+      "mouse_captured": false,
+      "viewport_hovered": true,
+      "drag_axis": "free"
+    },
+    {
+      "frame": 35,
+      "pos": [
+        -0.5,
+        -0.20401240470448034,
+        0.0
+      ],
+      "gizmo": true,
+      "surface": false,
+      "transaction": true,
+      "undo": 0,
+      "mouse_captured": false,
+      "viewport_hovered": true,
+      "drag_axis": "free"
+    },
+    {
+      "frame": 36,
+      "pos": [
+        -0.5,
+        -0.5,
+        0.0
+      ],
+      "gizmo": false,
+      "surface": false,
+      "transaction": false,
+      "undo": 0,
+      "mouse_captured": false,
+      "viewport_hovered": true
+    },
+    {
+      "frame": 37,
+      "pos": [
+        -0.5,
+        -0.5,
+        0.0
+      ],
+      "gizmo": false,
+      "surface": false,
+      "transaction": false,
+      "undo": 0,
+      "mouse_captured": false,
+      "viewport_hovered": true
+    },
+    {
+      "frame": 38,
+      "pos": [
+        -0.5,
+        -0.5,
+        0.0
+      ],
+      "gizmo": false,
+      "surface": false,
+      "transaction": false,
+      "undo": 0,
+      "mouse_captured": false,
+      "viewport_hovered": true
+    },
+    {
+      "frame": 39,
+      "pos": [
+        -0.5,
+        -0.5,
+        0.0
+      ],
+      "gizmo": false,
+      "surface": false,
+      "transaction": false,
+      "undo": 0,
+      "mouse_captured": false,
+      "viewport_hovered": true
+    },
+    {
+      "frame": 40,
+      "pos": [
+        -0.5,
+        -0.5,
+        0.0
+      ],
+      "gizmo": false,
+      "surface": false,
+      "transaction": false,
+      "undo": 0,
+      "mouse_captured": false,
+      "viewport_hovered": true
+    },
+    {
+      "frame": 41,
+      "pos": [
+        -0.5,
+        -0.5,
+        0.0
+      ],
+      "gizmo": true,
+      "surface": false,
+      "transaction": true,
+      "undo": 0,
+      "mouse_captured": false,
+      "viewport_hovered": true,
+      "drag_axis": "free"
+    },
+    {
+      "frame": 42,
+      "pos": [
+        -0.5,
+        -0.20401240470448034,
+        0.0
+      ],
+      "gizmo": true,
+      "surface": false,
+      "transaction": true,
+      "undo": 0,
+      "mouse_captured": false,
+      "viewport_hovered": true,
+      "drag_axis": "free"
+    },
+    {
+      "frame": 43,
+      "pos": [
+        -0.5,
+        -0.20401240470448034,
+        0.0
+      ],
+      "gizmo": true,
+      "surface": false,
+      "transaction": true,
+      "undo": 0,
+      "mouse_captured": true,
+      "viewport_hovered": false,
+      "drag_axis": "free"
+    },
+    {
+      "frame": 44,
+      "pos": [
+        -0.5,
+        -0.20401240470448034,
+        0.0
+      ],
+      "gizmo": false,
+      "surface": false,
+      "transaction": false,
+      "undo": 1,
+      "mouse_captured": true,
+      "viewport_hovered": false
+    },
+    {
+      "frame": 45,
+      "pos": [
+        -0.5,
+        -0.5,
+        0.0
+      ],
+      "gizmo": false,
+      "surface": false,
+      "transaction": false,
+      "undo": 0,
+      "mouse_captured": true,
+      "viewport_hovered": false
+    },
+    {
+      "frame": 46,
+      "pos": [
+        -0.5,
+        -0.20401240470448034,
+        0.0
+      ],
+      "gizmo": false,
+      "surface": false,
+      "transaction": false,
+      "undo": 1,
+      "mouse_captured": true,
+      "viewport_hovered": false
+    }
+  ],
+  "failed": []
+}

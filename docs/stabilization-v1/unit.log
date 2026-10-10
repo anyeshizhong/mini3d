@@ -1,0 +1,15 @@
+pygame 2.6.1 (SDL 2.28.4, Python 3.8.20)
+Hello from the pygame community. https://www.pygame.org/contribute.html
+python.exe : ..........................................................................................................
+.......................................................................................................................
+..................
+所在位置 行:2 字符: 351
++ ... t-Null } }; & F:/gymenv/python.exe -B -m unittest discover -s tests * ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (.................................:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+----------------------------------------------------------------------
+Ran 243 tests in 7.427s
+
+OK

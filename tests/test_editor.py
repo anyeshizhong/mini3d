@@ -310,7 +310,72 @@ class EditorTests(unittest.TestCase):
         self.ui.mouse_captured = True
         self.app.handle_event(pygame.event.Event(pygame.MOUSEMOTION, pos=start + (40, 0), rel=(20, 0), buttons=(1, 0, 0)), self.ui)
         np.testing.assert_allclose(root.pos, position)
+        self.assertIsNotNone(self.app.gizmo.drag)
+
+    def begin_moved_gizmo(self):
+        root, before = self.prepare_gizmo('move')
+        self.app.commands.clear_history()
+        _, points = self.app.gizmo.handles[0]
+        center, end = map(np.asarray, points)
+        start = center + .8 * (end - center)
+        self.app.handle_event(pygame.event.Event(pygame.MOUSEBUTTONDOWN, button=1, pos=start), self.ui)
+        self.app.handle_event(pygame.event.Event(pygame.MOUSEMOTION, pos=start + (20, 0),
+                             rel=(20, 0), buttons=(1, 0, 0)), self.ui)
+        self.assertFalse(np.allclose(root.pos, before[0]))
+        self.ui.mouse_captured = True
+        self.ui.viewport_hovered = False
+        self.app.handle_event(pygame.event.Event(pygame.MOUSEMOTION, pos=(20, 20),
+                             rel=(-100, 0), buttons=(1, 0, 0)), self.ui)
+        self.assertIsNotNone(self.app.gizmo.drag)
+        self.assertEqual(self.app.commands.undo_count, 0)
+        return root, before
+
+    def test_gizmo_cross_panel_escape_restores_pose_and_history(self):
+        root, before = self.begin_moved_gizmo()
+        self.ui.keyboard_captured = True
+        self.app.handle_event(pygame.event.Event(pygame.KEYDOWN, key=pygame.K_ESCAPE, mod=0), self.ui)
+        for actual, expected in zip((root.pos, root.rot, root.scale), before):
+            np.testing.assert_array_equal(actual, expected)
+        self.assertFalse(self.app.commands.active_transaction)
+        self.assertEqual(self.app.commands.undo_count, 0)
+
+    def test_gizmo_cross_panel_release_commits_once_and_undo_redo_restore(self):
+        root, before = self.begin_moved_gizmo()
+        moved = root.pos.copy()
+        for _ in range(2):
+            self.app.handle_event(pygame.event.Event(pygame.MOUSEBUTTONUP, button=1, pos=(20, 20)), self.ui)
         self.assertIsNone(self.app.gizmo.drag)
+        self.assertFalse(self.app.commands.active_transaction)
+        self.assertEqual(self.app.commands.undo_count, 1)
+        self.app.undo()
+        np.testing.assert_array_equal(root.pos, before[0])
+        self.app.redo()
+        np.testing.assert_array_equal(root.pos, moved)
+
+    def test_gizmo_missing_release_over_panel_ends_gesture(self):
+        self.begin_moved_gizmo()
+        self.app.handle_event(pygame.event.Event(pygame.MOUSEMOTION, pos=(20, 20),
+                             rel=(0, 0), buttons=(0, 0, 0)), self.ui)
+        self.assertIsNone(self.app.gizmo.drag)
+        self.assertFalse(self.app.commands.active_transaction)
+        self.assertEqual(self.app.commands.undo_count, 1)
+
+    def test_gizmo_modal_and_focus_loss_keep_existing_commit_policy(self):
+        for mode in ('modal', 'focus'):
+            with self.subTest(mode=mode):
+                self.ui.modal_open = False
+                self.ui.mouse_captured = False
+                self.ui.viewport_hovered = True
+                self.begin_moved_gizmo()
+                if mode == 'modal':
+                    self.ui.modal_open = True
+                    event = pygame.event.Event(pygame.MOUSEWHEEL, y=1)
+                else:
+                    event = pygame.event.Event(pygame.WINDOWFOCUSLOST)
+                self.app.handle_event(event, self.ui)
+                self.assertIsNone(self.app.gizmo.drag)
+                self.assertFalse(self.app.commands.active_transaction)
+                self.assertEqual(self.app.commands.undo_count, 1)
 
     def test_middle_shift_pan_and_wheel_have_separate_effects(self):
         before = self.app.viewer.controller.snapshot()
