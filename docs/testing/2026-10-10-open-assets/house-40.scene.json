@@ -1,0 +1,1220 @@
+{
+  "shadows": {
+    "enabled": true,
+    "resolution": 4096,
+    "bias": 0.0003,
+    "pcf": true
+  },
+  "version": 3,
+  "objects": [
+    {
+      "asset": "captures/open-assets-20261010/assets/house_core.gltf",
+      "name": "Victorian House",
+      "entity_id": "ent_000001",
+      "position": [
+        2.0791332681173906,
+        6.094443703237607,
+        0.7089814436944663
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.6050956149126302,
+        0.6050956149126302,
+        0.6050956149126302
+      ],
+      "visible": true,
+      "locked": true,
+      "placement_type": "prop",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:ground",
+      "name": "Photo Ground",
+      "entity_id": "ent_000002",
+      "position": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        10.0,
+        10.0,
+        10.0
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": false
+    },
+    {
+      "asset": "captures/open-assets-20261010/assets/CesiumMan.glb",
+      "name": "CesiumMan",
+      "entity_id": "ent_000003",
+      "position": [
+        -4.199999924251614,
+        -16.97181579516959,
+        1.3305973576465888e-07
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.1284056385981516,
+        1.1284056385981516,
+        1.1284056385981516
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    },
+    {
+      "asset": "captures/open-assets-20261010/assets/CesiumMan.glb",
+      "name": "CesiumMan copy",
+      "entity_id": "ent_000004",
+      "position": [
+        -2.9999999242516138,
+        -16.97181579516959,
+        1.3305973576465888e-07
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.1284056385981516,
+        1.1284056385981516,
+        1.1284056385981516
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    },
+    {
+      "asset": "captures/open-assets-20261010/assets/CesiumMan.glb",
+      "name": "CesiumMan copy",
+      "entity_id": "ent_000005",
+      "position": [
+        -1.799999924251614,
+        -16.97181579516959,
+        1.3305973576465888e-07
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.1284056385981516,
+        1.1284056385981516,
+        1.1284056385981516
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    },
+    {
+      "asset": "captures/open-assets-20261010/assets/CesiumMan.glb",
+      "name": "CesiumMan copy",
+      "entity_id": "ent_000006",
+      "position": [
+        -0.5999999242516143,
+        -16.97181579516959,
+        1.3305973576465888e-07
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.1284056385981516,
+        1.1284056385981516,
+        1.1284056385981516
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    },
+    {
+      "asset": "captures/open-assets-20261010/assets/CesiumMan.glb",
+      "name": "CesiumMan copy",
+      "entity_id": "ent_000007",
+      "position": [
+        0.6000000757483859,
+        -16.97181579516959,
+        1.3305973576465888e-07
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.1284056385981516,
+        1.1284056385981516,
+        1.1284056385981516
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    },
+    {
+      "asset": "captures/open-assets-20261010/assets/CesiumMan.glb",
+      "name": "CesiumMan copy",
+      "entity_id": "ent_000008",
+      "position": [
+        1.800000075748386,
+        -16.97181579516959,
+        1.3305973576465888e-07
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.1284056385981516,
+        1.1284056385981516,
+        1.1284056385981516
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    },
+    {
+      "asset": "captures/open-assets-20261010/assets/CesiumMan.glb",
+      "name": "CesiumMan copy",
+      "entity_id": "ent_000009",
+      "position": [
+        3.0000000757483853,
+        -16.97181579516959,
+        1.3305973576465888e-07
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.1284056385981516,
+        1.1284056385981516,
+        1.1284056385981516
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    },
+    {
+      "asset": "captures/open-assets-20261010/assets/CesiumMan.glb",
+      "name": "CesiumMan copy",
+      "entity_id": "ent_000010",
+      "position": [
+        4.200000075748386,
+        -16.97181579516959,
+        1.3305973576465888e-07
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.1284056385981516,
+        1.1284056385981516,
+        1.1284056385981516
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    },
+    {
+      "asset": "captures/open-assets-20261010/assets/CesiumMan.glb",
+      "name": "CesiumMan copy",
+      "entity_id": "ent_000011",
+      "position": [
+        -4.199999924251614,
+        -15.57181579516959,
+        1.3305973576465888e-07
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.1284056385981516,
+        1.1284056385981516,
+        1.1284056385981516
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    },
+    {
+      "asset": "captures/open-assets-20261010/assets/CesiumMan.glb",
+      "name": "CesiumMan copy",
+      "entity_id": "ent_000012",
+      "position": [
+        -2.9999999242516138,
+        -15.57181579516959,
+        1.3305973576465888e-07
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.1284056385981516,
+        1.1284056385981516,
+        1.1284056385981516
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    },
+    {
+      "asset": "captures/open-assets-20261010/assets/CesiumMan.glb",
+      "name": "CesiumMan copy",
+      "entity_id": "ent_000013",
+      "position": [
+        -1.799999924251614,
+        -15.57181579516959,
+        1.3305973576465888e-07
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.1284056385981516,
+        1.1284056385981516,
+        1.1284056385981516
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    },
+    {
+      "asset": "captures/open-assets-20261010/assets/CesiumMan.glb",
+      "name": "CesiumMan copy",
+      "entity_id": "ent_000014",
+      "position": [
+        -0.5999999242516143,
+        -15.57181579516959,
+        1.3305973576465888e-07
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.1284056385981516,
+        1.1284056385981516,
+        1.1284056385981516
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    },
+    {
+      "asset": "captures/open-assets-20261010/assets/CesiumMan.glb",
+      "name": "CesiumMan copy",
+      "entity_id": "ent_000015",
+      "position": [
+        0.6000000757483859,
+        -15.57181579516959,
+        1.3305973576465888e-07
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.1284056385981516,
+        1.1284056385981516,
+        1.1284056385981516
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    },
+    {
+      "asset": "captures/open-assets-20261010/assets/CesiumMan.glb",
+      "name": "CesiumMan copy",
+      "entity_id": "ent_000016",
+      "position": [
+        1.800000075748386,
+        -15.57181579516959,
+        1.3305973576465888e-07
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.1284056385981516,
+        1.1284056385981516,
+        1.1284056385981516
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    },
+    {
+      "asset": "captures/open-assets-20261010/assets/CesiumMan.glb",
+      "name": "CesiumMan copy",
+      "entity_id": "ent_000017",
+      "position": [
+        3.0000000757483853,
+        -15.57181579516959,
+        1.3305973576465888e-07
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.1284056385981516,
+        1.1284056385981516,
+        1.1284056385981516
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    },
+    {
+      "asset": "captures/open-assets-20261010/assets/CesiumMan.glb",
+      "name": "CesiumMan copy",
+      "entity_id": "ent_000018",
+      "position": [
+        4.200000075748386,
+        -15.57181579516959,
+        1.3305973576465888e-07
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.1284056385981516,
+        1.1284056385981516,
+        1.1284056385981516
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    },
+    {
+      "asset": "captures/open-assets-20261010/assets/CesiumMan.glb",
+      "name": "CesiumMan copy",
+      "entity_id": "ent_000019",
+      "position": [
+        -4.199999924251614,
+        -14.17181579516959,
+        1.3305973576465888e-07
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.1284056385981516,
+        1.1284056385981516,
+        1.1284056385981516
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    },
+    {
+      "asset": "captures/open-assets-20261010/assets/CesiumMan.glb",
+      "name": "CesiumMan copy",
+      "entity_id": "ent_000020",
+      "position": [
+        -2.9999999242516138,
+        -14.17181579516959,
+        1.3305973576465888e-07
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.1284056385981516,
+        1.1284056385981516,
+        1.1284056385981516
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    },
+    {
+      "asset": "captures/open-assets-20261010/assets/CesiumMan.glb",
+      "name": "CesiumMan copy",
+      "entity_id": "ent_000021",
+      "position": [
+        -1.799999924251614,
+        -14.17181579516959,
+        1.3305973576465888e-07
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.1284056385981516,
+        1.1284056385981516,
+        1.1284056385981516
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    },
+    {
+      "asset": "captures/open-assets-20261010/assets/CesiumMan.glb",
+      "name": "CesiumMan copy",
+      "entity_id": "ent_000022",
+      "position": [
+        -0.5999999242516143,
+        -14.17181579516959,
+        1.3305973576465888e-07
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.1284056385981516,
+        1.1284056385981516,
+        1.1284056385981516
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    },
+    {
+      "asset": "captures/open-assets-20261010/assets/CesiumMan.glb",
+      "name": "CesiumMan copy",
+      "entity_id": "ent_000023",
+      "position": [
+        0.6000000757483859,
+        -14.17181579516959,
+        1.3305973576465888e-07
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.1284056385981516,
+        1.1284056385981516,
+        1.1284056385981516
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    },
+    {
+      "asset": "captures/open-assets-20261010/assets/CesiumMan.glb",
+      "name": "CesiumMan copy",
+      "entity_id": "ent_000024",
+      "position": [
+        1.800000075748386,
+        -14.17181579516959,
+        1.3305973576465888e-07
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.1284056385981516,
+        1.1284056385981516,
+        1.1284056385981516
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    },
+    {
+      "asset": "captures/open-assets-20261010/assets/CesiumMan.glb",
+      "name": "CesiumMan copy",
+      "entity_id": "ent_000025",
+      "position": [
+        3.0000000757483853,
+        -14.17181579516959,
+        1.3305973576465888e-07
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.1284056385981516,
+        1.1284056385981516,
+        1.1284056385981516
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    },
+    {
+      "asset": "captures/open-assets-20261010/assets/CesiumMan.glb",
+      "name": "CesiumMan copy",
+      "entity_id": "ent_000026",
+      "position": [
+        4.200000075748386,
+        -14.17181579516959,
+        1.3305973576465888e-07
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.1284056385981516,
+        1.1284056385981516,
+        1.1284056385981516
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    },
+    {
+      "asset": "captures/open-assets-20261010/assets/CesiumMan.glb",
+      "name": "CesiumMan copy",
+      "entity_id": "ent_000027",
+      "position": [
+        -4.199999924251614,
+        -12.77181579516959,
+        1.3305973576465888e-07
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.1284056385981516,
+        1.1284056385981516,
+        1.1284056385981516
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    },
+    {
+      "asset": "captures/open-assets-20261010/assets/CesiumMan.glb",
+      "name": "CesiumMan copy",
+      "entity_id": "ent_000028",
+      "position": [
+        -2.9999999242516138,
+        -12.77181579516959,
+        1.3305973576465888e-07
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.1284056385981516,
+        1.1284056385981516,
+        1.1284056385981516
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    },
+    {
+      "asset": "captures/open-assets-20261010/assets/CesiumMan.glb",
+      "name": "CesiumMan copy",
+      "entity_id": "ent_000029",
+      "position": [
+        -1.799999924251614,
+        -12.77181579516959,
+        1.3305973576465888e-07
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.1284056385981516,
+        1.1284056385981516,
+        1.1284056385981516
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    },
+    {
+      "asset": "captures/open-assets-20261010/assets/CesiumMan.glb",
+      "name": "CesiumMan copy",
+      "entity_id": "ent_000030",
+      "position": [
+        -0.5999999242516143,
+        -12.77181579516959,
+        1.3305973576465888e-07
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.1284056385981516,
+        1.1284056385981516,
+        1.1284056385981516
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    },
+    {
+      "asset": "captures/open-assets-20261010/assets/CesiumMan.glb",
+      "name": "CesiumMan copy",
+      "entity_id": "ent_000031",
+      "position": [
+        0.6000000757483859,
+        -12.77181579516959,
+        1.3305973576465888e-07
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.1284056385981516,
+        1.1284056385981516,
+        1.1284056385981516
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    },
+    {
+      "asset": "captures/open-assets-20261010/assets/CesiumMan.glb",
+      "name": "CesiumMan copy",
+      "entity_id": "ent_000032",
+      "position": [
+        1.800000075748386,
+        -12.77181579516959,
+        1.3305973576465888e-07
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.1284056385981516,
+        1.1284056385981516,
+        1.1284056385981516
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    },
+    {
+      "asset": "captures/open-assets-20261010/assets/CesiumMan.glb",
+      "name": "CesiumMan copy",
+      "entity_id": "ent_000033",
+      "position": [
+        3.0000000757483853,
+        -12.77181579516959,
+        1.3305973576465888e-07
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.1284056385981516,
+        1.1284056385981516,
+        1.1284056385981516
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    },
+    {
+      "asset": "captures/open-assets-20261010/assets/CesiumMan.glb",
+      "name": "CesiumMan copy",
+      "entity_id": "ent_000034",
+      "position": [
+        4.200000075748386,
+        -12.77181579516959,
+        1.3305973576465888e-07
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.1284056385981516,
+        1.1284056385981516,
+        1.1284056385981516
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    },
+    {
+      "asset": "captures/open-assets-20261010/assets/CesiumMan.glb",
+      "name": "CesiumMan copy",
+      "entity_id": "ent_000035",
+      "position": [
+        -4.199999924251614,
+        -11.37181579516959,
+        1.3305973576465888e-07
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.1284056385981516,
+        1.1284056385981516,
+        1.1284056385981516
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    },
+    {
+      "asset": "captures/open-assets-20261010/assets/CesiumMan.glb",
+      "name": "CesiumMan copy",
+      "entity_id": "ent_000036",
+      "position": [
+        -2.9999999242516138,
+        -11.37181579516959,
+        1.3305973576465888e-07
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.1284056385981516,
+        1.1284056385981516,
+        1.1284056385981516
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    },
+    {
+      "asset": "captures/open-assets-20261010/assets/CesiumMan.glb",
+      "name": "CesiumMan copy",
+      "entity_id": "ent_000037",
+      "position": [
+        -1.799999924251614,
+        -11.37181579516959,
+        1.3305973576465888e-07
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.1284056385981516,
+        1.1284056385981516,
+        1.1284056385981516
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    },
+    {
+      "asset": "captures/open-assets-20261010/assets/CesiumMan.glb",
+      "name": "CesiumMan copy",
+      "entity_id": "ent_000038",
+      "position": [
+        -0.5999999242516143,
+        -11.37181579516959,
+        1.3305973576465888e-07
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.1284056385981516,
+        1.1284056385981516,
+        1.1284056385981516
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    },
+    {
+      "asset": "captures/open-assets-20261010/assets/CesiumMan.glb",
+      "name": "CesiumMan copy",
+      "entity_id": "ent_000039",
+      "position": [
+        0.6000000757483859,
+        -11.37181579516959,
+        1.3305973576465888e-07
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.1284056385981516,
+        1.1284056385981516,
+        1.1284056385981516
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    },
+    {
+      "asset": "captures/open-assets-20261010/assets/CesiumMan.glb",
+      "name": "CesiumMan copy",
+      "entity_id": "ent_000040",
+      "position": [
+        1.800000075748386,
+        -11.37181579516959,
+        1.3305973576465888e-07
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.1284056385981516,
+        1.1284056385981516,
+        1.1284056385981516
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    },
+    {
+      "asset": "captures/open-assets-20261010/assets/CesiumMan.glb",
+      "name": "CesiumMan copy",
+      "entity_id": "ent_000041",
+      "position": [
+        3.0000000757483853,
+        -11.37181579516959,
+        1.3305973576465888e-07
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.1284056385981516,
+        1.1284056385981516,
+        1.1284056385981516
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    },
+    {
+      "asset": "captures/open-assets-20261010/assets/CesiumMan.glb",
+      "name": "CesiumMan copy",
+      "entity_id": "ent_000042",
+      "position": [
+        4.200000075748386,
+        -11.37181579516959,
+        1.3305973576465888e-07
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.1284056385981516,
+        1.1284056385981516,
+        1.1284056385981516
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    }
+  ],
+  "camera": {
+    "target": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "distance": 10.0,
+    "yaw": -0.9,
+    "pitch": 0.25,
+    "fov_y": 60.0,
+    "bounds_center": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "bounds_radius": 1.0,
+    "min_distance": 0.0001,
+    "max_distance": 100000000.0
+  },
+  "shot_camera": {
+    "position": [
+      10.0,
+      -26.0,
+      5.0
+    ],
+    "rotation": [
+      [
+        0.7682212795973757,
+        -0.15881020420107103,
+        0.6201736729460423
+      ],
+      [
+        0.6401843996644798,
+        0.19057224504128523,
+        -0.7442084075352507
+      ],
+      [
+        -0.0,
+        0.9687422456265331,
+        0.24806946917841693
+      ]
+    ],
+    "focal_mm": 49.999999999999986,
+    "aspect": "16:9",
+    "fov_y": 22.89519252737121,
+    "near": 0.05,
+    "far": 400.0
+  },
+  "render_mode": "Lit",
+  "show_grid": true,
+  "lighting": {
+    "mode": "Scene",
+    "light_dir": [
+      -3.0,
+      -2.0,
+      3.0
+    ],
+    "ambient": 0.3,
+    "diffuse": 3.0
+  },
+  "placement_plane": {
+    "z": 0.0,
+    "size": 2000.0,
+    "enabled": true
+  },
+  "next_entity_id": 43,
+  "groups": [
+    {
+      "group_id": "grp_000001",
+      "name": "Legion_Formation_001",
+      "member_ids": [
+        "ent_000003",
+        "ent_000004",
+        "ent_000005",
+        "ent_000006",
+        "ent_000007",
+        "ent_000008",
+        "ent_000009",
+        "ent_000010",
+        "ent_000011",
+        "ent_000012",
+        "ent_000013",
+        "ent_000014",
+        "ent_000015",
+        "ent_000016",
+        "ent_000017",
+        "ent_000018",
+        "ent_000019",
+        "ent_000020",
+        "ent_000021",
+        "ent_000022",
+        "ent_000023",
+        "ent_000024",
+        "ent_000025",
+        "ent_000026",
+        "ent_000027",
+        "ent_000028",
+        "ent_000029",
+        "ent_000030",
+        "ent_000031",
+        "ent_000032",
+        "ent_000033",
+        "ent_000034",
+        "ent_000035",
+        "ent_000036",
+        "ent_000037",
+        "ent_000038",
+        "ent_000039",
+        "ent_000040",
+        "ent_000041",
+        "ent_000042"
+      ]
+    }
+  ],
+  "next_group_id": 2,
+  "selected_ids": [
+    "ent_000003",
+    "ent_000004",
+    "ent_000005",
+    "ent_000006",
+    "ent_000007",
+    "ent_000008",
+    "ent_000009",
+    "ent_000010",
+    "ent_000011",
+    "ent_000012",
+    "ent_000013",
+    "ent_000014",
+    "ent_000015",
+    "ent_000016",
+    "ent_000017",
+    "ent_000018",
+    "ent_000019",
+    "ent_000020",
+    "ent_000021",
+    "ent_000022",
+    "ent_000023",
+    "ent_000024",
+    "ent_000025",
+    "ent_000026",
+    "ent_000027",
+    "ent_000028",
+    "ent_000029",
+    "ent_000030",
+    "ent_000031",
+    "ent_000032",
+    "ent_000033",
+    "ent_000034",
+    "ent_000035",
+    "ent_000036",
+    "ent_000037",
+    "ent_000038",
+    "ent_000039",
+    "ent_000040",
+    "ent_000041",
+    "ent_000042"
+  ],
+  "primary_selection_id": "ent_000003",
+  "selected_group_id": "grp_000001"
+}
