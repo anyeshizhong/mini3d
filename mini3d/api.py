@@ -19,7 +19,7 @@ from .lighting import lighting_state
 
 
 class Mini3DAPI:
-    def __init__(self, renderer=None, editor=None):
+    def __init__(self, renderer=None, editor=None, screenshot=None):
         """Use an existing Editor, or create the original windowless state.
 
         The renderer is borrowed. Binding the running editor shares its Scene,
@@ -28,6 +28,7 @@ class Mini3DAPI:
         self._app = Editor() if editor is None else editor
         self._commands = self._app.commands
         self._renderer = renderer
+        self._screenshot = screenshot
 
     def _entity(self, entity_id):
         if not isinstance(entity_id, str):
@@ -116,6 +117,22 @@ class Mini3DAPI:
             environment=self.get_environment(),
             history=dict(undo_count=self._commands.undo_count, redo_count=self._commands.redo_count,
                          active_transaction=self._commands.active_transaction))
+
+    def get_editor_camera(self):
+        """Live navigation camera, separate from the persisted Shot Camera."""
+        camera = self._app.viewer.camera
+        return dict(position=camera.position.tolist(), rotation=camera.rotation.tolist(),
+                    fov_y=camera.fov_y, near=camera.near, far=camera.far,
+                    viewport=list(self._app.viewport_rect), camera_view=bool(self._app.camera_view))
+
+    def screenshot(self, path):
+        """Read the current editor frame via its runtime; no extra GL context."""
+        if self._screenshot is None:
+            raise RuntimeError('Screenshot requires the running Editor runtime')
+        destination = Path(path).expanduser().resolve()
+        if destination.suffix.lower() != '.png':
+            raise ValueError('Screenshot output must have a .png extension')
+        return self._screenshot(destination)
 
     def spawn(self, asset_path, name=None, position=None, rotation=None, scale=None,
               placement_type=None, anchor='bounds_bottom', keep_upright=None):

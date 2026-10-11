@@ -14,6 +14,7 @@ def main(argv=None):
                         help="Initial model number in the list of installed assets (starting at 1)")
     parser.add_argument("--empty", action="store_true")
     parser.add_argument("--hidden", action="store_true", help="Hidden window for rendering checks")
+    parser.add_argument("--no-ipc", action="store_true", help="Disable the local live-editor API endpoint")
     parser.add_argument("--frames", type=int, help="Exit after this many frames")
     parser.add_argument("--screenshot", help="Save the last frame as an image (requires --frames)")
     options = parser.parse_args(argv)
@@ -24,7 +25,8 @@ def main(argv=None):
     if options.asset is not None and options.asset < 1:
         parser.error("--asset must be positive")
     initial = "auto" if options.asset is None else options.asset - 1
-    run(None if options.empty else initial, options.frames, options.screenshot, options.hidden)
+    run(None if options.empty else initial, options.frames, options.screenshot, options.hidden,
+        ipc=not options.no_ipc)
 
 
 if __name__ == "__main__":

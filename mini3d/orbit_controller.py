@@ -71,7 +71,14 @@ class OrbitController:
                     self.camera.near = min(self.camera.near, low * .5)
                 else:
                     self.camera.near = min(self.camera.near,
-                        max(min(self.distance, radius) * 1e-4, 1e-12))
+                        max(self.distance * 1e-3, 1e-12))
+                    # Large ground bounds can cross the eye while the last
+                    # focus was a tiny prop. Its radius must not control depth
+                    # precision after dollying away. Still retain other truly
+                    # close foreground geometry, including beside that ground.
+                    closest = getattr(interval, 'closest_positive', None)
+                    if closest is not None:
+                        self.camera.near = min(self.camera.near, closest * .5)
                 margin = max(high * .01, (high-low) * .01, 1e-12)
                 self.camera.far = max(high + margin, self.camera.near * 2)
 

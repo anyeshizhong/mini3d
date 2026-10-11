@@ -25,6 +25,10 @@ python -B tools/validate_v2.py --suite all --output captures/v2-review-01
 Quality/Rome需要相应原始本地资产；缺资产会失败，不用简化模型替代。Blender3.6.23只作离线参考，不是运行依赖，原.blend/HDR/图片/license保留。
 API默认无窗口，可 `Mini3DAPI(renderer, editor=existing_editor)` 绑定当前控制器；PNG需当前线程GL上下文，命令/格式与原版本相同。
 
+VS Code / Codex 连接当前运行的编辑器：`python -B -m mini3d.ipc_client --list` 发现实例，再发送原 JSON Dispatcher 命令。编辑器默认启用本地 IPC，主线程执行 API，共享场景、撤销历史和摄影机；`--no-ipc` 可关闭。使用与用户手动移动验收见 [Live Editor IPC](docs/live-editor-ipc.md)。
+
+Arrange / Lighting / Shot 工作区、截图修复和深度／阴影／40 士兵性能改进见 [Editor Quality](docs/editor-quality-improvements.md)，包含验证方式与剩余限制。
+
 ![Mini3D 编辑器实际渲染](docs/editor-preview.png)
 
 左侧 Assets 列表可双击添加模型，或拖入中央视口：优先放在鼠标指向的模型表面，否则放到地面；射线不与地面相交时使用相机观察目标。右侧 Outliner 展示原始层级，选中以整个模型实例为单位；Inspector 修改名称、显隐、位置、旋转和缩放。模型保持原始单位、枢轴和层级，仅将 glTF 的 Y 向上转换为引擎的 Z 向上。同一资产的实例共享网格、图片与 GPU 资源，变换相互独立。

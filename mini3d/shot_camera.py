@@ -106,16 +106,21 @@ class ShotCamera(Camera):
 
 def render_shot(scene, camera, renderer, target):
     """The identical clean render pass for Camera View and the exported PNG."""
+    render_scene_view(scene, camera, renderer, target, camera.size, camera.samples)
+
+
+def render_scene_view(scene, camera, renderer, target, size, samples=1):
+    """Clean Scene-lit preview, shared by both views in the Shot workspace."""
     from OpenGL import GL as gl
     clean = copy.copy(scene)
     clean.show_grid, clean.show_axes, clean.render_mode = False, False, 'Lit'
     clean._hide_entity_axes = True
     clean.lighting_mode = 'Scene'
-    target.resize(*camera.size, samples=camera.samples)
+    target.resize(*size, samples=samples)
     target.bind()
     gl.glDisable(gl.GL_SCISSOR_TEST)
     gl.glDepthMask(True)
-    renderer.resize(*camera.size)
+    renderer.resize(*size)
     multisample = bool(gl.glIsEnabled(gl.GL_MULTISAMPLE))
     try:
         gl.glEnable(gl.GL_MULTISAMPLE)

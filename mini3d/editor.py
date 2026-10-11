@@ -507,7 +507,7 @@ class Editor:
             self.set_view(pair[control])
 
 
-def run(initial_asset="auto", frames=None, screenshot=None, hidden=False):
+def run(initial_asset="auto", frames=None, screenshot=None, hidden=False, ipc=True):
     from .editor_runtime import run as run_editor
     return run_editor(Editor, initial_asset, frames, screenshot, hidden,
-                      capture_png=capture_png, render_shot=render_shot)
+                      capture_png=capture_png, render_shot=render_shot, ipc=ipc)

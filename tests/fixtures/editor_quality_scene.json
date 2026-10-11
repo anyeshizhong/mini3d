@@ -1,0 +1,202 @@
+{
+  "entities": [
+    {
+      "entity_id": "ent_000001",
+      "name": "Roman legionnaire_001",
+      "asset_path": "model/05_roman_soldier/roman_legionnaire.glb",
+      "position": [
+        1.6279324062564355,
+        4.242648577987725,
+        0.17358659764508247
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.10000000149011612,
+        0.10000000149011612,
+        0.10000000149011612
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true,
+      "bounds": {
+        "minimum": [
+          0.9272846013703032,
+          3.2777026846883595,
+          -4.440892098500626e-16
+        ],
+        "maximum": [
+          2.0690998996386343,
+          4.705794334367839,
+          2.596310213153215
+        ]
+      }
+    },
+    {
+      "entity_id": "ent_000002",
+      "name": "Sunset Ground",
+      "asset_path": "builtin:ground",
+      "position": [
+        43.27183624108632,
+        15.145142684380213,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        12.392492703936401,
+        7.053430339740478,
+        1.0
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": false,
+      "bounds": {
+        "minimum": [
+          -18.690627278595684,
+          -20.12200901432218,
+          0.0
+        ],
+        "maximum": [
+          105.23429976076832,
+          50.4122943830826,
+          0.0
+        ]
+      }
+    },
+    {
+      "entity_id": "ent_000003",
+      "name": "Side Table Tall 01_002",
+      "asset_path": "model/03_side_table/side_table.glb",
+      "position": [
+        1.3689091798817878,
+        2.3014179241720267,
+        2.1163985366001725e-05
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": false,
+      "bounds": {
+        "minimum": [
+          1.1769178208863502,
+          2.109426550275428,
+          0.0
+        ],
+        "maximum": [
+          1.5609005388772255,
+          2.493409268266303,
+          0.7611514969321433
+        ]
+      }
+    },
+    {
+      "entity_id": "ent_000004",
+      "name": "Avocado_003",
+      "asset_path": "model/11_benchmark_round01/Avocado/Avocado.glb",
+      "position": [
+        1.4064662005323438,
+        2.302468839921726,
+        0.7611991279030921
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": false,
+      "bounds": {
+        "minimum": [
+          1.385185289712575,
+          2.2886598397798075,
+          0.7611513893520172
+        ],
+        "maximum": [
+          1.4277471113521127,
+          2.3162778409949674,
+          0.824047189226258
+        ]
+      }
+    }
+  ],
+  "lighting": {
+    "mode": "Scene",
+    "direction": [
+      -1.0,
+      -0.35,
+      0.3
+    ],
+    "diffuse": 1.5,
+    "ambient": 0.12
+  },
+  "shadows": {
+    "enabled": true,
+    "resolution": 2048,
+    "bias": 0.0003,
+    "pcf": true
+  },
+  "camera": {
+    "position": [
+      1.9056889836388073,
+      -0.39130477319426804,
+      1.898783038521195
+    ],
+    "rotation": [
+      [
+        0.9982479743776328,
+        0.01945297382258985,
+        -0.055879902115256515
+      ],
+      [
+        -0.05916909371414282,
+        0.3281931578644386,
+        -0.9427556785721393
+      ],
+      [
+        0.0,
+        0.9444103096326435,
+        0.32876916987390203
+      ]
+    ],
+    "fov_y": 60.0,
+    "near": 4.040465410759306e-06,
+    "far": 55.0278508543058,
+    "viewport": [
+      247,
+      198,
+      846,
+      662
+    ],
+    "camera_view": false
+  }
+}

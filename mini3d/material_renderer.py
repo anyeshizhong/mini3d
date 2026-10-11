@@ -232,7 +232,9 @@ class MaterialRenderer:
                 depth = float((view @ center)[2])
                 records.append((transparent,depth,entity,matrix,mesh))
             # Camera looks along -Z: more negative depth is farther away.
-            records.sort(key=lambda row:(row[0],row[1] if row[0] else 0))
+            records.sort(key=lambda row:(row[0],row[1] if row[0] else id(row[4][0].material)))
+            last_material = None
+            normal_matrices = {}
             for transparent, _, entity, matrix, mesh in records:
                 material = mesh[0].material
                 if transparent:
@@ -251,9 +253,15 @@ class MaterialRenderer:
                 gl.glFrontFace(gl.GL_CW if np.linalg.det(matrix[:3,:3])<0 else gl.GL_CCW)
                 self._matrix("model",matrix)
                 # Pseudoinverse handles intentionally flattened editor objects.
-                normal_matrix = np.linalg.pinv(matrix[:3,:3]).T
+                linear_key = matrix[:3,:3].tobytes()
+                normal_matrix = normal_matrices.get(linear_key)
+                if normal_matrix is None:
+                    normal_matrix = np.linalg.pinv(matrix[:3,:3]).T
+                    normal_matrices[linear_key] = normal_matrix
                 gl.glUniformMatrix3fv(self._loc("normalMatrix"),1,gl.GL_TRUE,np.asarray(normal_matrix,np.float32))
-                self._material(material,mode)
+                if material is not last_material:
+                    self._material(material,mode)
+                    last_material = material
                 gl.glBindVertexArray(mesh[1])
                 gl.glDrawElements(gl.GL_TRIANGLES,mesh[4],gl.GL_UNSIGNED_INT,None)
                 self.draw_calls += 1

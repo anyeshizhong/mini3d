@@ -1,11 +1,23 @@
 """Scene framing and Pygame input for a Z-up orbit camera."""
 from itertools import product
+from dataclasses import dataclass
 
 import numpy as np
 import pygame
 
 from .camera import Camera
 from .orbit_controller import OrbitController
+
+
+@dataclass
+class DepthRange:
+    minimum: float
+    maximum: float
+    closest_positive: object
+
+    def __iter__(self):
+        # Retain the existing two-value unpacking used by diagnostic tools.
+        return iter((self.minimum, self.maximum))
 
 
 def _world_boxes(entities, visible_only=False):
@@ -26,7 +38,13 @@ def _world_boxes(entities, visible_only=False):
             model.bounds = (points.min(axis=0), points.max(axis=0)) if len(points) else None
         if model.bounds is None:
             continue
-        corners = np.array(list(product(*zip(*model.bounds))), dtype=np.float64)
+        bounds_key = np.asarray(model.bounds, dtype=np.float64).tobytes()
+        cached = getattr(model, '_viewer_box_corners', None)
+        if cached is None or cached[0] != bounds_key:
+            corners = np.array(list(product(*zip(*model.bounds))), dtype=np.float64)
+            model._viewer_box_corners = (bounds_key, corners)
+        else:
+            corners = cached[1]
         transform = np.asarray(entity.world_matrix, dtype=np.float64)
         yield corners @ transform[:3, :3].T + transform[:3, 3]
 
@@ -84,15 +102,18 @@ class Viewer:
         """
         self.scene.update()
         minimum = maximum = None
+        closest_positive = None
         eye, forward = self.camera.position, self.camera.forward
         for points in _world_boxes(self.scene.root_entities, visible_only=True):
             depths = (points-eye) @ forward
             lo, hi = float(depths.min()), float(depths.max())
             if hi <= 0:
                 continue
+            if lo > 0:
+                closest_positive = lo if closest_positive is None else min(closest_positive, lo)
             minimum = lo if minimum is None else min(minimum, lo)
             maximum = hi if maximum is None else max(maximum, hi)
-        return None if maximum is None else (minimum, maximum)
+        return None if maximum is None else DepthRange(minimum, maximum, closest_positive)
 
     def update_clipping(self):
         """Refresh before rendering after scene edits, without moving the camera."""

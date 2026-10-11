@@ -83,7 +83,7 @@ def _intersections(bounds, worlds, corners, world_corners, tolerances, planes, c
     return result
 
 
-def receiver_matrix(entities, direction, camera, resolution):
+def receiver_matrix(entities, direction, camera, resolution, aspect=None):
     """Return a conservative fit or None, signaling whole-scene fallback.
 
     Directional rays keep light-space XY constant. Bounds clipped to a padded
@@ -99,7 +99,8 @@ def receiver_matrix(entities, direction, camera, resolution):
         right = np.cross(up,light)
         right /= np.linalg.norm(right)
         rotation = np.stack((right,np.cross(light,right),light))
-        vp = camera.projection_matrix(camera.aspect) @ camera.view_matrix
+        aspect = camera.aspect if aspect is None else aspect
+        vp = camera.projection_matrix(aspect) @ camera.view_matrix
         planes = np.array([vp[3]+sign*vp[axis] for axis in range(3) for sign in (1,-1)])
         homogeneous = np.column_stack((_SIGNS,np.ones(8))) @ np.linalg.inv(vp).T
         frustum = homogeneous[:,:3]/homogeneous[:,3,None]

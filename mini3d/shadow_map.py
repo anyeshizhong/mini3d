@@ -2,7 +2,7 @@
 
 Copyright (c) 2021, Jiang Ye. See third_party/shadowMapping/LICENSE and
 docs/shadow-mapping-v1.md for the pinned source and adaptation mapping.
-Editor fits all real entities; Shot Camera fits conservative receiver/caster bounds.
+Both editor and Shot Camera fit conservative receiver/caster bounds.
 """
 from itertools import product
 
@@ -17,7 +17,7 @@ from .lighting import scene_light_direction
 # shader/fsScene.glsl. Visibility multiplies direct radiance, never scene color.
 SHADOW_GLSL = """
 uniform bool shadowEnabled, shadowPCF;
-uniform sampler2D shadowDepth;
+uniform sampler2DShadow shadowDepth;
 uniform mat4 shadowMatrix;
 uniform float shadowBias;
 float shadowVisibility(vec3 world, vec3 normal, vec3 light) {
@@ -29,10 +29,12 @@ float shadowVisibility(vec3 world, vec3 normal, vec3 light) {
     vec2 texel = 1.0 / vec2(textureSize(shadowDepth, 0));
     float visibility = 0.0;
     int radius = shadowPCF ? 1 : 0;
+    // Filtering the comparison results (hardware PCF) keeps fractional texel
+    // motion smooth. Interpolating raw depths would create false blockers.
+    vec2 center = shadowPCF ? q.xy : (floor(q.xy / texel) + 0.5) * texel;
     for (int x = -radius; x <= radius; ++x)
         for (int y = -radius; y <= radius; ++y) {
-            float closest = texture(shadowDepth, q.xy + vec2(x,y)*texel).r;
-            visibility += q.z - bias <= closest ? 1.0 : 0.0;
+            visibility += texture(shadowDepth, vec3(center + vec2(x,y)*texel, q.z - bias));
         }
     return visibility / (shadowPCF ? 9.0 : 1.0);
 }
@@ -66,12 +68,12 @@ void main() {
 """
 
 
-def light_matrix(entities, direction, camera=None, resolution=1024):
+def light_matrix(entities, direction, camera=None, resolution=1024, aspect=None):
     """Cached AABBs; optional Shot receiver fit with whole-scene fallback."""
     if camera is not None:
         from .shadow_fit import receiver_matrix
         entities = list(entities)
-        fitted = receiver_matrix(entities, direction, camera, resolution)
+        fitted = receiver_matrix(entities, direction, camera, resolution, aspect=aspect)
         if fitted is not None:
             return fitted
     light = np.array(direction, dtype=np.float64, copy=True)
@@ -113,6 +115,8 @@ class ShadowMap:
     def __init__(self):
         self.fbo = self.texture = self.program = self.size = 0
         self.matrix = None
+        self._cache_key = None
+        self.cache_hit = False
 
     def _allocate(self, size):
         if self.size == size:
@@ -130,7 +134,9 @@ class ShadowMap:
             gl.glTexImage2D(gl.GL_TEXTURE_2D, 0, gl.GL_DEPTH_COMPONENT24, size, size,
                             0, gl.GL_DEPTH_COMPONENT, gl.GL_FLOAT, None)
             for param in (gl.GL_TEXTURE_MIN_FILTER, gl.GL_TEXTURE_MAG_FILTER):
-                gl.glTexParameteri(gl.GL_TEXTURE_2D, param, gl.GL_NEAREST)
+                gl.glTexParameteri(gl.GL_TEXTURE_2D, param, gl.GL_LINEAR)
+            gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_COMPARE_MODE, gl.GL_COMPARE_REF_TO_TEXTURE)
+            gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_COMPARE_FUNC, gl.GL_LEQUAL)
             for param in (gl.GL_TEXTURE_WRAP_S, gl.GL_TEXTURE_WRAP_T):
                 gl.glTexParameteri(gl.GL_TEXTURE_2D, param, gl.GL_CLAMP_TO_BORDER)
             gl.glTexParameterfv(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_BORDER_COLOR, np.ones(4,np.float32))
@@ -147,10 +153,32 @@ class ShadowMap:
             self.close()
             raise
 
-    def render(self, entities, scene, renderer, camera=None):
+    def render(self, entities, scene, renderer, camera=None, aspect=None):
         self.draw_calls = self.triangles = 0
+        self.cache_hit = False
         from .gl_state import save_state, restore_state
-        matrix = light_matrix(entities, scene_light_direction(scene), camera, scene.shadow_resolution)
+        entities = list(entities)
+        # Mesh/texture payloads are immutable GPU resources; small mutable
+        # transform, bound and cutout inputs are compared on every call.
+        direction = scene_light_direction(scene)
+        records = []
+        for entity in entities:
+            material = getattr(entity.model, 'material', None) or {}
+            tex = material.get('textures', {}).get('baseColor') or {}
+            records.append((id(entity.model), np.asarray(entity.world_matrix).tobytes(),
+                np.asarray(getattr(entity.model, 'bounds', None)).tobytes(),
+                material.get('alphaMode', 'OPAQUE'), material.get('alphaCutoff', .5),
+                tuple(material.get('pbrMetallicRoughness', {}).get('baseColorFactor', [1]*4)),
+                id(tex.get('image')), tuple(sorted(tex.get('sampler', {}).items()))))
+        camera_key = None if camera is None else (
+            np.asarray(camera.view_matrix).tobytes(),
+            np.asarray(camera.projection_matrix(camera.aspect if aspect is None else aspect)).tobytes())
+        key = (scene.shadow_resolution, np.asarray(direction).tobytes(), camera_key, tuple(records))
+        if self.matrix is not None and key == self._cache_key:
+            self.cache_hit = True
+            return
+        self._cache_key = None
+        matrix = light_matrix(entities, direction, camera, scene.shadow_resolution, aspect=aspect)
         if matrix is None:
             self.matrix = None
             return
@@ -179,7 +207,9 @@ class ShadowMap:
             gl.glClearDepth(1)
             gl.glClear(gl.GL_DEPTH_BUFFER_BIT)
             gl.glUseProgram(self.program)
-            loc = lambda name: gl.glGetUniformLocation(self.program, name)
+            locations = {name: gl.glGetUniformLocation(self.program, name) for name in
+                         ('lightMatrix', 'baseMap', 'alphaMask', 'hasBase', 'baseAlpha', 'cutoff', 'model')}
+            loc = locations.__getitem__
             gl.glUniformMatrix4fv(loc('lightMatrix'),1,gl.GL_TRUE,np.asarray(matrix,np.float32))
             gl.glUniform1i(loc('baseMap'),0)
             for entity in entities:
@@ -207,6 +237,7 @@ class ShadowMap:
                 gl.glDrawElements(gl.GL_TRIANGLES,count,gl.GL_UNSIGNED_INT,None)
                 self.draw_calls += 1
                 self.triangles += count // 3
+            self._cache_key = key
         finally:
             gl.glBindFramebuffer(gl.GL_DRAW_FRAMEBUFFER,draw)
             gl.glBindFramebuffer(gl.GL_READ_FRAMEBUFFER,read)
@@ -259,3 +290,4 @@ class ShadowMap:
             gl.glDeleteProgram(self.program)
         self.fbo = self.texture = self.program = self.size = 0
         self.matrix = None
+        self._cache_key = None

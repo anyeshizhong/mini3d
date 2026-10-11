@@ -79,6 +79,8 @@ class Entity:
         self.placement_type = "prop"
         self.placement_anchor = "bounds_bottom"
         self.keep_upright = False
+        self._transform_inputs = self._parent_matrix = None
+        self._local_output = self._world_output = None
 
     def add_child(self, child):
         if child.parent is not None:
@@ -87,12 +89,24 @@ class Entity:
         self.children.append(child)
 
     def update_transform(self, parent_matrix=None):
-        transform = np.eye(4)
-        transform[:3, :3] = rotation_xyz(self.rot) @ np.diag(self.scale)
-        transform[:3, 3] = self.pos
-        # User placement acts in engine world axes, outside the imported basis.
-        self.local_matrix = transform @ self.extra_local
-        self.world_matrix = self.local_matrix if parent_matrix is None else parent_matrix @ self.local_matrix
+        # Compare values, not dirty flags: public arrays support direct/in-place
+        # edits, command undo/redo, and imported parent transforms.
+        inputs = (np.asarray(self.pos).tobytes(), np.asarray(self.rot).tobytes(),
+                  np.asarray(self.scale).tobytes(), np.asarray(self.extra_local).tobytes())
+        parent_key = None if parent_matrix is None else np.asarray(parent_matrix).tobytes()
+        local_changed = inputs != self._transform_inputs or self.local_matrix.tobytes() != self._local_output
+        if local_changed:
+            transform = np.eye(4)
+            transform[:3, :3] = rotation_xyz(self.rot) @ np.diag(self.scale)
+            transform[:3, 3] = self.pos
+            # User placement acts in engine world axes, outside the imported basis.
+            self.local_matrix = transform @ self.extra_local
+            self._transform_inputs = inputs
+            self._local_output = self.local_matrix.tobytes()
+        if local_changed or parent_key != self._parent_matrix or self.world_matrix.tobytes() != self._world_output:
+            self.world_matrix = self.local_matrix.copy() if parent_matrix is None else parent_matrix @ self.local_matrix
+            self._parent_matrix = parent_key
+            self._world_output = self.world_matrix.tobytes()
         for child in self.children:
             child.update_transform(self.world_matrix)
 

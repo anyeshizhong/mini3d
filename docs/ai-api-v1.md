@@ -1,5 +1,7 @@
 # Mini3D AI API V1
 
+运行中 Editor 的跨进程连接、主线程调度和 VS Code 使用方式见 [Live Editor IPC](live-editor-ipc.md)。本页原 V1 的“无网络/队列”限制描述的是进程内 API；新增传输层复用同一 API 和 Dispatcher。
+
 分支 `feature/ai-api-v1` 基于 `feature/placement-v2` 的 `37c14d3`。这是同进程的 Python/JSON 命令接口，外部程序无需启动或操作 Editor UI。没有网络服务、自然语言解析或 AI 模型调用。
 
 ## 文件和边界

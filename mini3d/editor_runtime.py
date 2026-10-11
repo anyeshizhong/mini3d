@@ -6,11 +6,11 @@ from pathlib import Path
 import pygame
 from .scene import Scene
 from .gl_state import read_rgb
-from .shot_camera import render_shot, capture_png
+from .shot_camera import render_shot, render_scene_view, capture_png
 
 
 def run(editor_class, initial_asset="auto", frames=None, screenshot=None, hidden=False,
-        capture_png=capture_png, render_shot=render_shot):
+        capture_png=capture_png, render_shot=render_shot, ipc=True, ipc_directory=None):
     import imgui
     from imgui.integrations.opengl import ProgrammablePipelineRenderer
     from imgui.integrations.pygame import PygameRenderer
@@ -18,6 +18,7 @@ def run(editor_class, initial_asset="auto", frames=None, screenshot=None, hidden
     from .editor_ui import EditorUI
     from .gl_renderer import GLRenderer
     from .render_target import RenderTarget
+    from .viewport_cache import viewport_key
 
     class Backend(ProgrammablePipelineRenderer):
         _custom_key = PygameRenderer._custom_key
@@ -67,12 +68,38 @@ def run(editor_class, initial_asset="auto", frames=None, screenshot=None, hidden
         cleanup.callback(backend.shutdown)
         target = RenderTarget()
         cleanup.callback(target.close)
+        previous_viewport_key = None
+        # Compose the exact displayed editor frame into an owned FBO. Windows
+        # may discard default-framebuffer pixels when the window is occluded or
+        # minimized; IPC screenshots must not depend on window pixel ownership.
+        editor_frame = RenderTarget()
+        cleanup.callback(editor_frame.close)
+        frame_ready = False
         renderer = GLRenderer(800, 700)
         cleanup.callback(renderer.close)
         app = editor_class(800, 700)
         cleanup.callback(app.model_dialog.close)
         from .api import Mini3DAPI
-        app.api = Mini3DAPI(renderer, editor=app)
+        def editor_screenshot(path):
+            if not frame_ready:
+                raise RuntimeError('No completed editor frame is available yet')
+            width, height = editor_frame.width, editor_frame.height
+            previous_framebuffer = int(gl.glGetIntegerv(gl.GL_READ_FRAMEBUFFER_BINDING))
+            previous_buffer = int(gl.glGetIntegerv(gl.GL_READ_BUFFER))
+            try:
+                gl.glBindFramebuffer(gl.GL_READ_FRAMEBUFFER, editor_frame.framebuffer)
+                gl.glReadBuffer(gl.GL_COLOR_ATTACHMENT0)
+                pixels = read_rgb(0, 0, width, height)
+            finally:
+                gl.glBindFramebuffer(gl.GL_READ_FRAMEBUFFER, previous_framebuffer)
+                gl.glReadBuffer(previous_buffer)
+            if not any(pixels):
+                raise RuntimeError('Editor frame readback returned only black pixels')
+            image = pygame.image.fromstring(pixels, (width, height), 'RGB', True)
+            path.parent.mkdir(parents=True, exist_ok=True)
+            pygame.image.save(image, str(path))
+            return dict(path=str(path), format='PNG', width=width, height=height)
+        app.api = Mini3DAPI(renderer, editor=app, screenshot=editor_screenshot)
         ui = EditorUI(app)
         previews = []
         cleanup.callback(lambda: gl.glDeleteTextures(previews) if previews else None)
@@ -97,6 +124,18 @@ def run(editor_class, initial_asset="auto", frames=None, screenshot=None, hidden
                 raise ValueError("Asset number is not available; choose from 1 to {}".format(len(app.assets)))
             app.add_asset(initial_asset)
             ui.selected_asset = initial_asset
+        bridge = None
+        if ipc:
+            from .editor_ipc import EditorIPC
+            try:
+                bridge = EditorIPC(app.api, directory=ipc_directory)
+                cleanup.callback(bridge.close)
+                # Token is deliberately omitted from logs/window UI.
+                print('Mini3D IPC: instance={} pid={} port={}'.format(
+                    bridge.instance_id, bridge.info['pid'], bridge.info['port']), flush=True)
+            except OSError as exc:
+                app.status = 'IPC unavailable: ' + str(exc)
+                print(app.status, flush=True)
         clock = pygame.time.Clock()
         running, frame = True, 0
         while running:
@@ -122,6 +161,9 @@ def run(editor_class, initial_asset="auto", frames=None, screenshot=None, hidden
                     app.handle_event(event, ui)
                 except (ValueError, OSError) as exc:
                     app.status = str(exc)
+            if bridge is not None:
+                bridge.pump()
+                app.sync_selection()
             app.scene.update()
             app.viewer.update_clipping()
             app.scene.render_mode, app.scene.show_grid = app.render_mode, app.show_grid
@@ -134,32 +176,51 @@ def run(editor_class, initial_asset="auto", frames=None, screenshot=None, hidden
                     app.status = "Captured: " + str(app.last_capture)
                 except (OSError, ValueError, pygame.error) as exc:
                     app.status = "Capture failed: " + str(exc)
-            if app.camera_view:
-                render_shot(app.scene, app.shot_camera, renderer, target)
-            else:
-                target.resize(rect[2], rect[3], samples=1)
-                target.bind()
-                gl.glDisable(gl.GL_SCISSOR_TEST)
-                gl.glDepthMask(True)
-                renderer.resize(*rect[2:])
-                renderer.render(app.scene, app.viewer.camera)
-            if not app.camera_view and app.selection is not None and app.selection.visible and hasattr(renderer, "material_renderer"):
-                selected = Scene()
-                selected.add(app.selection)
-                renderer.material_renderer.render_selection(selected.get_flat_render_list(), app.viewer.camera, *rect[2:])
-            gl.glBindFramebuffer(gl.GL_FRAMEBUFFER, 0)
-            gl.glViewport(0, 0, width, height)
+            photo_preview = ui.workspace == 'Shot' and app.shot_camera is not None
+            current_viewport_key = viewport_key(app, rect[2:], photo_preview, renderer.render_mode)
+            viewport_redrawn = current_viewport_key != previous_viewport_key
+            if viewport_redrawn:
+                if app.camera_view:
+                    render_shot(app.scene, app.shot_camera, renderer, target)
+                elif photo_preview:
+                    render_scene_view(app.scene, app.viewer.camera, renderer, target, rect[2:],
+                                      app.shot_camera.samples)
+                else:
+                    target.resize(rect[2], rect[3], samples=1)
+                    target.bind()
+                    gl.glDisable(gl.GL_SCISSOR_TEST)
+                    gl.glDepthMask(True)
+                    renderer.resize(*rect[2:])
+                    renderer.render(app.scene, app.viewer.camera)
+                if not app.camera_view and app.selection is not None and app.selection.visible and hasattr(renderer, "material_renderer"):
+                    selected = Scene()
+                    selected.add(app.selection)
+                    renderer.material_renderer.render_selection(selected.get_flat_render_list(), app.viewer.camera, *rect[2:])
+                previous_viewport_key = current_viewport_key
+            renderer.render_stats['viewport_redrawn'] = viewport_redrawn
+            editor_frame.resize(width, height)
+            editor_frame.bind()
+            gl.glDisable(gl.GL_SCISSOR_TEST)
             gl.glClearColor(.06, .07, .09, 1)
             gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT)
             imgui.render()
             backend.render(imgui.get_draw_data())
+            frame_ready = True
+            if bridge is not None:
+                bridge.pump('frame')
             frame += 1
             if screenshot and frames is not None and frame >= frames:
-                pixels = read_rgb(0, 0, width, height)
-                image = pygame.image.fromstring(pixels, (width, height), "RGB", True)
-                path = Path(screenshot)
-                path.parent.mkdir(parents=True, exist_ok=True)
-                pygame.image.save(image, str(path))
+                editor_screenshot(Path(screenshot))
+            # Present the same frame that screenshot() reads, without another
+            # scene render or another GL context. Disable clipping for the blit.
+            gl.glDisable(gl.GL_SCISSOR_TEST)
+            gl.glBindFramebuffer(gl.GL_READ_FRAMEBUFFER, editor_frame.framebuffer)
+            gl.glReadBuffer(gl.GL_COLOR_ATTACHMENT0)
+            gl.glBindFramebuffer(gl.GL_DRAW_FRAMEBUFFER, 0)
+            gl.glDrawBuffer(gl.GL_BACK)
+            gl.glBlitFramebuffer(0, 0, width, height, 0, 0, width, height,
+                                 gl.GL_COLOR_BUFFER_BIT, gl.GL_NEAREST)
+            gl.glBindFramebuffer(gl.GL_FRAMEBUFFER, 0)
             pygame.display.flip()
             if frames is not None and frame >= frames:
                 running = False
