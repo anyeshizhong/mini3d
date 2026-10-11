@@ -3,7 +3,34 @@
 These helpers borrow the current context and own no GPU resources.
 """
 import numpy as np
+from contextlib import contextmanager
 from OpenGL import GL as gl
+
+
+@contextmanager
+def preserved_pixel_pack(reset=False):
+    """Preserve pack state across readback and PyOpenGL texture allocation."""
+    names = ('ALIGNMENT', 'ROW_LENGTH', 'SKIP_ROWS', 'SKIP_PIXELS',
+             'IMAGE_HEIGHT', 'SKIP_IMAGES', 'SWAP_BYTES', 'LSB_FIRST')
+    state = {name: int(gl.glGetIntegerv(getattr(gl, 'GL_PACK_' + name)))
+             for name in names}
+    buffer = int(gl.glGetIntegerv(gl.GL_PIXEL_PACK_BUFFER_BINDING))
+    try:
+        if reset:
+            gl.glBindBuffer(gl.GL_PIXEL_PACK_BUFFER, 0)
+            for name in names:
+                gl.glPixelStorei(getattr(gl, 'GL_PACK_' + name), 1 if name == 'ALIGNMENT' else 0)
+        yield
+    finally:
+        for name, value in state.items():
+            gl.glPixelStorei(getattr(gl, 'GL_PACK_' + name), value)
+        gl.glBindBuffer(gl.GL_PIXEL_PACK_BUFFER, buffer)
+
+
+def read_rgb(x, y, width, height):
+    """Read tightly packed CPU bytes; a caller PBO must not reinterpret them."""
+    with preserved_pixel_pack(reset=True):
+        return gl.glReadPixels(x, y, width, height, gl.GL_RGB, gl.GL_UNSIGNED_BYTE)
 
 
 def save_state():

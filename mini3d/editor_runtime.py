@@ -5,6 +5,7 @@ from datetime import datetime
 from pathlib import Path
 import pygame
 from .scene import Scene
+from .gl_state import read_rgb
 from .shot_camera import render_shot, capture_png
 
 
@@ -151,7 +152,7 @@ def run(editor_class, initial_asset="auto", frames=None, screenshot=None, hidden
             backend.render(imgui.get_draw_data())
             frame += 1
             if screenshot and frames is not None and frame >= frames:
-                pixels = gl.glReadPixels(0, 0, width, height, gl.GL_RGB, gl.GL_UNSIGNED_BYTE)
+                pixels = read_rgb(0, 0, width, height)
                 image = pygame.image.fromstring(pixels, (width, height), "RGB", True)
                 path = Path(screenshot)
                 path.parent.mkdir(parents=True, exist_ok=True)

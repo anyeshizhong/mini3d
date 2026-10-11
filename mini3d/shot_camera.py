@@ -109,6 +109,7 @@ def render_shot(scene, camera, renderer, target):
     from OpenGL import GL as gl
     clean = copy.copy(scene)
     clean.show_grid, clean.show_axes, clean.render_mode = False, False, 'Lit'
+    clean._hide_entity_axes = True
     clean.lighting_mode = 'Scene'
     target.resize(*camera.size, samples=camera.samples)
     target.bind()
@@ -126,6 +127,12 @@ def render_shot(scene, camera, renderer, target):
 
 
 def capture_png(scene, camera, renderer, path):
+    from .gl_state import preserved_pixel_pack
+    with preserved_pixel_pack():
+        return _capture_png(scene, camera, renderer, path)
+
+
+def _capture_png(scene, camera, renderer, path):
     import pygame
     from OpenGL import GL as gl
     from .render_target import RenderTarget
@@ -138,7 +145,8 @@ def capture_png(scene, camera, renderer, path):
     try:
         scene.update()
         render_shot(scene, camera, renderer, target)
-        pixels = gl.glReadPixels(0, 0, *camera.size, gl.GL_RGB, gl.GL_UNSIGNED_BYTE)
+        from .gl_state import read_rgb
+        pixels = read_rgb(0, 0, *camera.size)
         picture = pygame.image.fromstring(pixels, camera.size, 'RGB', True)
         path = Path(path)
         path.parent.mkdir(parents=True, exist_ok=True)

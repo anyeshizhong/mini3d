@@ -618,7 +618,7 @@ class GLRenderer:
         
         # Entity axes
         for ent in entities:
-            if getattr(ent, "isaxes", False):
+            if getattr(ent, "isaxes", False) and not getattr(scene, "_hide_entity_axes", False):
                 self.draw_axes_at_matrix(V, P, ent.world_matrix, scale=30.0)
         
         glEnable(GL_DEPTH_TEST)
