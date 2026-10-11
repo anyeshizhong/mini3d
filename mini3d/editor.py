@@ -509,4 +509,5 @@ class Editor:
 
 def run(initial_asset="auto", frames=None, screenshot=None, hidden=False):
     from .editor_runtime import run as run_editor
-    return run_editor(Editor, initial_asset, frames, screenshot, hidden)
+    return run_editor(Editor, initial_asset, frames, screenshot, hidden,
+                      capture_png=capture_png, render_shot=render_shot)

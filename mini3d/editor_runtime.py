@@ -9,7 +9,8 @@ from .gl_state import read_rgb
 from .shot_camera import render_shot, capture_png
 
 
-def run(editor_class, initial_asset="auto", frames=None, screenshot=None, hidden=False):
+def run(editor_class, initial_asset="auto", frames=None, screenshot=None, hidden=False,
+        capture_png=capture_png, render_shot=render_shot):
     import imgui
     from imgui.integrations.opengl import ProgrammablePipelineRenderer
     from imgui.integrations.pygame import PygameRenderer
