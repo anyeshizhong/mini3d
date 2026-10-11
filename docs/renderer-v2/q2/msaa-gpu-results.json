@@ -1,0 +1,11 @@
+{
+  "gpu": "Intel(R) UHD Graphics 620",
+  "gl": "4.6.0 - Build 27.20.100.8682",
+  "checks": {
+    "four_samples_color_depth_stencil_full_resolve": true,
+    "resize_and_editor_single_sample_release": true,
+    "shot_preview_png_parity_and_caller_state": true,
+    "four_sample_scene_reload_png_exact": true,
+    "idempotent_close_no_live_gpu_handles": true
+  }
+}

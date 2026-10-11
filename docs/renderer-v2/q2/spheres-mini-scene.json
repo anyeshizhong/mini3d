@@ -1,0 +1,312 @@
+{
+  "shadows": {
+    "enabled": true,
+    "resolution": 1024,
+    "bias": 0.0003,
+    "pcf": true
+  },
+  "version": 3,
+  "objects": [
+    {
+      "asset": "docs/renderer-v2/q2/assets/stage.gltf",
+      "name": "Ground",
+      "entity_id": "ent_000001",
+      "position": [
+        0.0,
+        0.0,
+        -0.1
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        12.0,
+        12.0,
+        0.2
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": false
+    },
+    {
+      "asset": "docs/renderer-v2/q2/assets/sphere-m0-r0.08.gltf",
+      "name": "sphere-m0-r0.08",
+      "entity_id": "ent_000002",
+      "position": [
+        -2.1,
+        0.0,
+        0.6
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": false
+    },
+    {
+      "asset": "docs/renderer-v2/q2/assets/sphere-m0-r0.30.gltf",
+      "name": "sphere-m0-r0.30",
+      "entity_id": "ent_000003",
+      "position": [
+        -0.7,
+        0.0,
+        0.6
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": false
+    },
+    {
+      "asset": "docs/renderer-v2/q2/assets/sphere-m0-r0.60.gltf",
+      "name": "sphere-m0-r0.60",
+      "entity_id": "ent_000004",
+      "position": [
+        0.7,
+        0.0,
+        0.6
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": false
+    },
+    {
+      "asset": "docs/renderer-v2/q2/assets/sphere-m0-r1.00.gltf",
+      "name": "sphere-m0-r1.00",
+      "entity_id": "ent_000005",
+      "position": [
+        2.1,
+        0.0,
+        0.6
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": false
+    },
+    {
+      "asset": "docs/renderer-v2/q2/assets/sphere-m1-r0.08.gltf",
+      "name": "sphere-m1-r0.08",
+      "entity_id": "ent_000006",
+      "position": [
+        -2.1,
+        0.0,
+        1.9
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": false
+    },
+    {
+      "asset": "docs/renderer-v2/q2/assets/sphere-m1-r0.30.gltf",
+      "name": "sphere-m1-r0.30",
+      "entity_id": "ent_000007",
+      "position": [
+        -0.7,
+        0.0,
+        1.9
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": false
+    },
+    {
+      "asset": "docs/renderer-v2/q2/assets/sphere-m1-r0.60.gltf",
+      "name": "sphere-m1-r0.60",
+      "entity_id": "ent_000008",
+      "position": [
+        0.7,
+        0.0,
+        1.9
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": false
+    },
+    {
+      "asset": "docs/renderer-v2/q2/assets/sphere-m1-r1.00.gltf",
+      "name": "sphere-m1-r1.00",
+      "entity_id": "ent_000009",
+      "position": [
+        2.1,
+        0.0,
+        1.9
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": false
+    }
+  ],
+  "camera": {
+    "target": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "distance": 10.0,
+    "yaw": -0.9,
+    "pitch": 0.25,
+    "fov_y": 60.0,
+    "bounds_center": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "bounds_radius": 1.0,
+    "min_distance": 0.0001,
+    "max_distance": 100000000.0
+  },
+  "environment": {
+    "enabled": true,
+    "intensity": 0.35
+  },
+  "shot_camera": {
+    "position": [
+      0.0,
+      -9.0,
+      4.2
+    ],
+    "rotation": [
+      [
+        1.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.3114725242416853,
+        -0.9502551587034468
+      ],
+      [
+        -0.0,
+        0.9502551587034468,
+        0.3114725242416853
+      ]
+    ],
+    "focal_mm": 49.999999999999986,
+    "aspect": "16:9",
+    "fov_y": 22.89519252737121,
+    "near": 0.03,
+    "far": 100.0,
+    "samples": 1
+  },
+  "render_mode": "Lit",
+  "show_grid": true,
+  "lighting": {
+    "mode": "Scene",
+    "light_dir": [
+      -3.0,
+      -4.0,
+      6.0
+    ],
+    "ambient": 0.12,
+    "diffuse": 2.0
+  },
+  "placement_plane": {
+    "z": 0.0,
+    "size": 2000.0,
+    "enabled": true
+  },
+  "next_entity_id": 10,
+  "groups": [],
+  "next_group_id": 1,
+  "selected_ids": [],
+  "primary_selection_id": null,
+  "selected_group_id": null
+}

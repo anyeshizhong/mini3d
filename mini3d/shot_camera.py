@@ -16,6 +16,11 @@ class ShotCamera(Camera):
     def __init__(self, view):
         super().__init__(view.position, view.rotation, view.fov_y, view.near, view.far)
         self.aspect_name = '16:9'
+        self.samples = 1
+
+    def set_samples(self, samples):
+        from .render_target import RenderTarget
+        self.samples = RenderTarget.validate_samples(samples)
 
     @property
     def size(self):
@@ -50,7 +55,7 @@ class ShotCamera(Camera):
         """Detached Scene v3/API parameters; FOV preserves the exact projection."""
         return dict(position=self.position.tolist(), rotation=self.rotation.tolist(),
                     focal_mm=self.focal_mm, aspect=self.aspect_name, fov_y=self.fov_y,
-                    near=self.near, far=self.far)
+                    near=self.near, far=self.far, samples=self.samples)
 
     @classmethod
     def from_dict(cls, data):
@@ -81,6 +86,7 @@ class ShotCamera(Camera):
                 shot = cls(Camera(values['position'], values['rotation'], values['fov_y'],
                                   values['near'], values['far']))
                 shot.aspect_name = aspect
+                shot.set_samples(data.get('samples', 1))
                 if (values['focal_mm'] <= 0 or not math.isfinite(shot.focal_mm) or
                         not math.isclose(values['focal_mm'], shot.focal_mm, rel_tol=1e-12)):
                     raise ValueError('focal_mm must be positive and match fov_y/aspect')
@@ -104,12 +110,19 @@ def render_shot(scene, camera, renderer, target):
     clean = copy.copy(scene)
     clean.show_grid, clean.show_axes, clean.render_mode = False, False, 'Lit'
     clean.lighting_mode = 'Scene'
-    target.resize(*camera.size)
+    target.resize(*camera.size, samples=camera.samples)
     target.bind()
     gl.glDisable(gl.GL_SCISSOR_TEST)
     gl.glDepthMask(True)
     renderer.resize(*camera.size)
-    renderer.render(clean, camera)
+    multisample = bool(gl.glIsEnabled(gl.GL_MULTISAMPLE))
+    try:
+        gl.glEnable(gl.GL_MULTISAMPLE)
+        renderer.render(clean, camera)
+        target.resolve()
+    finally:
+        if not multisample:
+            gl.glDisable(gl.GL_MULTISAMPLE)
 
 
 def capture_png(scene, camera, renderer, path):
@@ -117,7 +130,8 @@ def capture_png(scene, camera, renderer, path):
     from OpenGL import GL as gl
     from .render_target import RenderTarget
 
-    framebuffer = int(gl.glGetIntegerv(gl.GL_FRAMEBUFFER_BINDING))
+    read_framebuffer = int(gl.glGetIntegerv(gl.GL_READ_FRAMEBUFFER_BINDING))
+    draw_framebuffer = int(gl.glGetIntegerv(gl.GL_DRAW_FRAMEBUFFER_BINDING))
     viewport = gl.glGetIntegerv(gl.GL_VIEWPORT)
     old_size = renderer.w, renderer.h
     target = RenderTarget()
@@ -133,5 +147,6 @@ def capture_png(scene, camera, renderer, path):
     finally:
         target.close()
         renderer.resize(*old_size)
-        gl.glBindFramebuffer(gl.GL_FRAMEBUFFER, framebuffer)
+        gl.glBindFramebuffer(gl.GL_READ_FRAMEBUFFER, read_framebuffer)
+        gl.glBindFramebuffer(gl.GL_DRAW_FRAMEBUFFER, draw_framebuffer)
         gl.glViewport(*viewport)

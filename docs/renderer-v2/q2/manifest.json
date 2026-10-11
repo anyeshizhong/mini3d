@@ -1,0 +1,194 @@
+{
+  "assets/sphere-m0-r0.08.gltf": {
+    "bytes": 161597,
+    "sha256": "09d6c5d0b40e9ff3124c638f0459ba8b60b9efe2fd8f4fd32b1392fd2d25ab68"
+  },
+  "assets/sphere-m0-r0.30.gltf": {
+    "bytes": 161596,
+    "sha256": "4052e18bf255d2cb9769034264d41312ec81d7d3ff95e5658f2cb24c7d0e3a13"
+  },
+  "assets/sphere-m0-r0.60.gltf": {
+    "bytes": 161596,
+    "sha256": "9f45bb02f5dcc3ae7743f5c008ba553cce1242ee6344207e56c11ed22b41f6e7"
+  },
+  "assets/sphere-m0-r1.00.gltf": {
+    "bytes": 161594,
+    "sha256": "f3d1dfcfc32baa9b22ccbafa13a70e579957f6f8ee5aac8d3725d8946b7743e1"
+  },
+  "assets/sphere-m1-r0.08.gltf": {
+    "bytes": 161597,
+    "sha256": "6777a4a659f308f8212318bd5aa3f9b5e7ef3e46e577b095a5d047aa1d0f9a75"
+  },
+  "assets/sphere-m1-r0.30.gltf": {
+    "bytes": 161596,
+    "sha256": "4dabfe63be02078508a0095250de9a0ae3d7f7e43f00c807c221aae457a9b50e"
+  },
+  "assets/sphere-m1-r0.60.gltf": {
+    "bytes": 161596,
+    "sha256": "fd3c9e4fef4b58db7da9850ce589297933b9ce4bb4200b8309565d2b43c4498d"
+  },
+  "assets/sphere-m1-r1.00.gltf": {
+    "bytes": 161594,
+    "sha256": "e727b80d5bf350fd5c17beada94ea99bdfe955a3d7a398f3aeea083dd8b15de0"
+  },
+  "assets/stage.gltf": {
+    "bytes": 1895,
+    "sha256": "2d6d17b341d188cb47a1d10feb9e64488e2057fb6e37a8415a87081b773035be"
+  },
+  "assets/studio_small_02_2k.hdr": {
+    "bytes": 6698688,
+    "sha256": "8dee8bd1f47b6e723284a58bd0a2db12e3cd3bc70283e17707d06b6b142065e0"
+  },
+  "Avocado-comparison.png": {
+    "bytes": 116621,
+    "sha256": "40f92468c4427084045662bc486655ac061b85b9506ab5e7e257c8ede732b23b"
+  },
+  "Avocado-coverage-1.png": {
+    "bytes": 11182,
+    "sha256": "3b8fa8f4fb228b83237ed7651d5345a62f20f7c6f91eab300407bc0ef642d29f"
+  },
+  "Avocado-coverage-4.png": {
+    "bytes": 15470,
+    "sha256": "9290155e2c7c785b0a2b6bd5d6a4fb6c87308442906b7fa9012d2a338ad86972"
+  },
+  "Avocado-coverage-ssaa2.png": {
+    "bytes": 15528,
+    "sha256": "68e022d2a76006bf7c1f29cb75eb62b4412c7a418c9843c8d2e3e9492e62d52a"
+  },
+  "Avocado-differences.png": {
+    "bytes": 66790,
+    "sha256": "7d699357b074b1fd03e50c278830a254d91b81b9f73b5f22ec4c8821fb630ec4"
+  },
+  "Avocado-eevee.png": {
+    "bytes": 381050,
+    "sha256": "8bff19e17b3da71d2d20a3e76d712495b2777e089f03df62c22ee9392cf6558d"
+  },
+  "Avocado-mini-1x.png": {
+    "bytes": 324681,
+    "sha256": "8edc1a0ee27b00852d57971709aa1eb613854dacecc8288f7ff2cef175fdba4f"
+  },
+  "Avocado-mini-4x.png": {
+    "bytes": 329719,
+    "sha256": "41574d0c1d174e3168b5e482dd7d5a9f9a733314c3f3a1659f01e410b358ea57"
+  },
+  "Avocado-mini-ssaa2.png": {
+    "bytes": 360260,
+    "sha256": "0c7fc21575c801117e4b6d967ce5dd882d27f8942f919a7b85ddb2c0a8a9e0ae"
+  },
+  "Avocado-outline-zoom.png": {
+    "bytes": 55925,
+    "sha256": "0fbd60ee8ea40b1b9e1c1ad9d75cbdf26c14a421e602581406683deb38899883"
+  },
+  "Avocado-shadow-zoom.png": {
+    "bytes": 12351,
+    "sha256": "1b329ff04498e40685da5c8b08c4608bef5868dd44cd97207c1744a0e20eb492"
+  },
+  "Avocado.blend": {
+    "bytes": 8205094,
+    "sha256": "4036d3262cb112368983cee043d32b985232e0f9d5a8b87f224fa6280665f2e3"
+  },
+  "Lantern-chain-zoom.png": {
+    "bytes": 58870,
+    "sha256": "72ad7b343bc8730b481f73fe9aca5947d9fedf8220f07c3aa2a287baae3343a1"
+  },
+  "Lantern-comparison.png": {
+    "bytes": 81569,
+    "sha256": "7a5c43b1cbfdad74349df7dc2477c23341184b1b7ac80d6f9dcab2867c361de1"
+  },
+  "Lantern-coverage-1.png": {
+    "bytes": 11021,
+    "sha256": "663cd5e16d4277da6550ff289fe3406b2b3317154eed86f62dfec2f85a4eac1e"
+  },
+  "Lantern-coverage-4.png": {
+    "bytes": 13718,
+    "sha256": "cdd7d71c2681908a0636e5e0e37e979f7eca8fd8a2fa780e1b1a0d13e417fd47"
+  },
+  "Lantern-coverage-ssaa2.png": {
+    "bytes": 13624,
+    "sha256": "50af87e8ee547c903148f9cbf444ba190c1b2c00d623d6683b44d5277348b07c"
+  },
+  "Lantern-differences.png": {
+    "bytes": 49231,
+    "sha256": "7c2d42317e640391406697237d2da04d8993e3dcb3d74776dc6c30d55f62c3d3"
+  },
+  "Lantern-eevee.png": {
+    "bytes": 237618,
+    "sha256": "ba297fa80d9bf6aabf3b21f7ee06ed3aa38803793f87433f0c823c9debbe7516"
+  },
+  "Lantern-mini-1x.png": {
+    "bytes": 185468,
+    "sha256": "e72fd9c21a5dcd5467a8faaa4774ed6bda753c099d8d264a3dd599c15ccd3a5e"
+  },
+  "Lantern-mini-4x.png": {
+    "bytes": 189486,
+    "sha256": "72fa20699922b1f453b88a03ad816639c7c440e8081b432d752c9a01882f1eb7"
+  },
+  "Lantern-mini-ssaa2.png": {
+    "bytes": 206215,
+    "sha256": "35efb05749909c8c13e820b60d34ce78effc58aefea7462535b72cd2933ff0ba"
+  },
+  "Lantern-shadow-zoom.png": {
+    "bytes": 19953,
+    "sha256": "2be4e5f66f206629ce3da0f234f95208a3a0431de39ec33c3a7023f7ad8eea67"
+  },
+  "Lantern.blend": {
+    "bytes": 9623435,
+    "sha256": "a69af80b4a52bf887531349139ff3d39696a9084279a85e3a0ddcf9301cc61dc"
+  },
+  "spheres-comparison.png": {
+    "bytes": 167979,
+    "sha256": "a0f25416b569356636ba2f18ca4595a06a0872aed6c407257a0f536135e242a8"
+  },
+  "spheres-coverage-1.png": {
+    "bytes": 16800,
+    "sha256": "9f1ff5e247a7e00c0e4caf368ffe9def725e2df0f24679c9ee601d2e89ade219"
+  },
+  "spheres-coverage-4.png": {
+    "bytes": 23624,
+    "sha256": "e262b7301b8b352f528281d1423b4f239e898a2fc21db52a5d7c0b468c0559a7"
+  },
+  "spheres-coverage-ssaa2.png": {
+    "bytes": 23198,
+    "sha256": "c92882233b5af5193b7022b737ea6c98fd85afc83c109363308c380698b8fe94"
+  },
+  "spheres-diagnostic-no-shadow.png": {
+    "bytes": 481653,
+    "sha256": "1241c94a1ab9808dbeeb8ca95d57a3761b8684402fc10ebb02f8ea8849dd49bb"
+  },
+  "spheres-diagnostic-radial-normals.png": {
+    "bytes": 501340,
+    "sha256": "93d6973e568eb8b28440b0c9bd5d61579021631dbebcce0bbf0c4c6f0732d6b6"
+  },
+  "spheres-differences.png": {
+    "bytes": 100233,
+    "sha256": "961329d8886f710b39e693861f940e01297e1efadfffffb9860cd2e10e23ccec"
+  },
+  "spheres-eevee.png": {
+    "bytes": 501689,
+    "sha256": "622efc0743c44ae5e38f9144a30e6ecd634a98ab54027124eef05e62fad6c73d"
+  },
+  "spheres-mini-1x.png": {
+    "bytes": 369968,
+    "sha256": "845737d0880dc7c41b5ee09d257d5a06b7ef988d367b17c1126d7e27e2a40ab1"
+  },
+  "spheres-mini-4x.png": {
+    "bytes": 378984,
+    "sha256": "dd4c8ac38172491b4de18585174298ba462af781f3f7837853d9806e739109d8"
+  },
+  "spheres-mini-ssaa2.png": {
+    "bytes": 393215,
+    "sha256": "7533727bdc0c406ce1fa34751664e2874bc1a5134232bdf95e4154e22f4440ff"
+  },
+  "spheres-outline-zoom.png": {
+    "bytes": 23096,
+    "sha256": "aba6b0095f39687b0d0e14b48fa276e60a9a5678a5f0b39f3fb56537d21a1ebd"
+  },
+  "spheres-reflection-zoom.png": {
+    "bytes": 55609,
+    "sha256": "b980159228de994fe2a689201ca0fb1cb1d86ef32d060259aa192855f9a1c18b"
+  },
+  "spheres.blend": {
+    "bytes": 336533,
+    "sha256": "d7bf7bd3af5c920de579a57df0c2618f20f5d8a9958542ffaaa918ebdb097038"
+  }
+}

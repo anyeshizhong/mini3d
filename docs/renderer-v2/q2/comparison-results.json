@@ -1,0 +1,73 @@
+[
+  {
+    "name": "Lantern",
+    "raw_1x_exact_q1": true,
+    "aa_changed_pixels": 10362,
+    "interior_tested_pixels": 4913,
+    "interior_max_delta": 0,
+    "interior_gt_1": 0,
+    "interior_gt_3": 0,
+    "rois": {
+      "chain": [
+        1058,
+        270,
+        1186,
+        398
+      ],
+      "shadow": [
+        1440,
+        780,
+        1568,
+        908
+      ]
+    },
+    "shadow_roi_max_aa_delta": 0
+  },
+  {
+    "name": "Avocado",
+    "raw_1x_exact_q1": true,
+    "aa_changed_pixels": 5240,
+    "interior_tested_pixels": 41870,
+    "interior_max_delta": 1,
+    "interior_gt_1": 0,
+    "interior_gt_3": 0,
+    "rois": {
+      "outline": [
+        810,
+        135,
+        938,
+        263
+      ],
+      "shadow": [
+        1380,
+        810,
+        1508,
+        938
+      ]
+    },
+    "shadow_roi_max_aa_delta": 0
+  },
+  {
+    "name": "spheres",
+    "raw_1x_exact_q1": true,
+    "aa_changed_pixels": 10337,
+    "interior_tested_pixels": 469361,
+    "interior_max_delta": 1,
+    "interior_gt_1": 0,
+    "interior_gt_3": 0,
+    "rois": {
+      "reflection": [
+        215,
+        215,
+        343,
+        343
+      ],
+      "outline": [
+        1440,
+        500,
+        1568,
+        628
+      ]
+    }
+  }
+]

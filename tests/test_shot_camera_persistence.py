@@ -166,6 +166,8 @@ class ShotCameraPersistenceTests(unittest.TestCase):
         valid = document['shot_camera']
         candidates = [[], True, 12, 'camera', {}]
         for key in valid:
+            if key == 'samples':  # Optional in legacy Scene v3 files.
+                continue
             missing = copy.deepcopy(valid)
             del missing[key]
             candidates.append(missing)
@@ -181,6 +183,7 @@ class ShotCameraPersistenceTests(unittest.TestCase):
             'fov_y': [0, 180, -1, 60, '30', True, float('inf'), float('nan')],
             'near': [0, -1, 300, 301, '0.05', True, float('inf'), float('nan')],
             'far': [0, -1, .01, .05, '300', True, float('inf'), float('nan')],
+            'samples': [0, 2, 8, 4.0, '4', True, float('inf'), [], {}],
         }
         for key, values in bad_fields.items():
             for value in [None] + values:

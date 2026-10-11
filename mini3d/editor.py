@@ -772,7 +772,7 @@ def run(initial_asset="auto", frames=None, screenshot=None, hidden=False):
             if app.camera_view:
                 render_shot(app.scene, app.shot_camera, renderer, target)
             else:
-                target.resize(rect[2], rect[3])
+                target.resize(rect[2], rect[3], samples=1)
                 target.bind()
                 gl.glDisable(gl.GL_SCISSOR_TEST)
                 gl.glDepthMask(True)

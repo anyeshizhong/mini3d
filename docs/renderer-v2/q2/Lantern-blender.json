@@ -1,0 +1,98 @@
+{
+  "name": "Lantern",
+  "blender": "3.6.23",
+  "engine": "BLENDER_EEVEE",
+  "taa_samples": 64,
+  "world_strength": 0.35,
+  "sun_energy": 2,
+  "sun_angle": 0,
+  "exposure_ev": 0,
+  "display": "sRGB",
+  "view_transform": "Standard",
+  "look": "None",
+  "gamma": 1,
+  "compositor": "componentwise Reinhard then sRGB; matching solid clear background",
+  "objects": [
+    {
+      "name": "Ground",
+      "world_bounds": [
+        [
+          -6.0,
+          -6.0,
+          -0.20000000298023224
+        ],
+        [
+          6.0,
+          6.0,
+          0.0
+        ]
+      ],
+      "max_bound_error": 2.980232227667301e-09,
+      "vertices": 24,
+      "materials": [
+        "stage"
+      ]
+    },
+    {
+      "name": "Lantern",
+      "world_bounds": [
+        [
+          -0.6036107540130615,
+          -0.18046213686466217,
+          0.0
+        ],
+        [
+          0.6036107540130615,
+          0.18046213686466217,
+          2.0
+        ]
+      ],
+      "max_bound_error": 4.88861859326839e-09,
+      "vertices": 4145,
+      "materials": [
+        "LanternPost_Mat"
+      ]
+    }
+  ],
+  "projection_max_error": 3.944208613049227e-07,
+  "camera_matrix_world": [
+    [
+      0.8369696140289307,
+      -0.1600409746170044,
+      0.523324728012085,
+      3.4000000953674316
+    ],
+    [
+      0.5472493767738342,
+      0.24476854503154755,
+      -0.8003789782524109,
+      -5.199999809265137
+    ],
+    [
+      -0.0,
+      0.9562819600105286,
+      0.29244616627693176,
+      2.9000000953674316
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "complete_render_seconds": 8.681808399999682,
+  "build_hash": "e467db79ca8c",
+  "sun_shadow_settings": {
+    "shadow_buffer_bias": 1.0,
+    "shadow_buffer_clip_start": 0.05000000074505806,
+    "use_contact_shadow": false,
+    "contact_shadow_distance": 0.20000000298023224,
+    "contact_shadow_bias": 0.029999999329447746,
+    "contact_shadow_thickness": 0.20000000298023224,
+    "shadow_cascade_count": 4,
+    "shadow_cascade_max_distance": 200.0,
+    "shadow_cascade_exponent": 0.800000011920929,
+    "shadow_cascade_fade": 0.10000000149011612
+  }
+}

@@ -1,0 +1,238 @@
+{
+  "name": "spheres",
+  "blender": "3.6.23",
+  "engine": "BLENDER_EEVEE",
+  "taa_samples": 64,
+  "world_strength": 0.35,
+  "sun_energy": 2,
+  "sun_angle": 0,
+  "exposure_ev": 0,
+  "display": "sRGB",
+  "view_transform": "Standard",
+  "look": "None",
+  "gamma": 1,
+  "compositor": "componentwise Reinhard then sRGB; matching solid clear background",
+  "objects": [
+    {
+      "name": "Ground",
+      "world_bounds": [
+        [
+          -6.0,
+          -6.0,
+          -0.20000000298023224
+        ],
+        [
+          6.0,
+          6.0,
+          0.0
+        ]
+      ],
+      "max_bound_error": 2.980232227667301e-09,
+      "vertices": 24,
+      "materials": [
+        "stage"
+      ]
+    },
+    {
+      "name": "sphere-m0-r0.08",
+      "world_bounds": [
+        [
+          -2.6488707065582275,
+          -0.550000011920929,
+          0.05061686038970947
+        ],
+        [
+          -1.5504460334777832,
+          0.550000011920929,
+          1.1493831872940063
+        ]
+      ],
+      "max_bound_error": 9.536743172944284e-08,
+      "vertices": 2560,
+      "materials": [
+        "sphere-m0-r0.08"
+      ]
+    },
+    {
+      "name": "sphere-m0-r0.30",
+      "world_bounds": [
+        [
+          -1.248870849609375,
+          -0.550000011920929,
+          0.05061686038970947
+        ],
+        [
+          -0.1504460573196411,
+          0.550000011920929,
+          1.1493831872940063
+        ]
+      ],
+      "max_bound_error": 4.768371586472142e-08,
+      "vertices": 2560,
+      "materials": [
+        "sphere-m0-r0.30"
+      ]
+    },
+    {
+      "name": "sphere-m0-r0.60",
+      "world_bounds": [
+        [
+          0.15112918615341187,
+          -0.550000011920929,
+          0.05061686038970947
+        ],
+        [
+          1.249553918838501,
+          0.550000011920929,
+          1.1493831872940063
+        ]
+      ],
+      "max_bound_error": 2.384185793236071e-08,
+      "vertices": 2560,
+      "materials": [
+        "sphere-m0-r0.60"
+      ]
+    },
+    {
+      "name": "sphere-m0-r1.00",
+      "world_bounds": [
+        [
+          1.5511291027069092,
+          -0.550000011920929,
+          0.05061686038970947
+        ],
+        [
+          2.6495537757873535,
+          0.550000011920929,
+          1.1493831872940063
+        ]
+      ],
+      "max_bound_error": 1.5497207650483347e-07,
+      "vertices": 2560,
+      "materials": [
+        "sphere-m0-r1.00"
+      ]
+    },
+    {
+      "name": "sphere-m1-r0.08",
+      "world_bounds": [
+        [
+          -2.6488707065582275,
+          -0.550000011920929,
+          1.3506168127059937
+        ],
+        [
+          -1.5504460334777832,
+          0.550000011920929,
+          2.44938325881958
+        ]
+      ],
+      "max_bound_error": 9.536743172944284e-08,
+      "vertices": 2560,
+      "materials": [
+        "sphere-m1-r0.08"
+      ]
+    },
+    {
+      "name": "sphere-m1-r0.30",
+      "world_bounds": [
+        [
+          -1.248870849609375,
+          -0.550000011920929,
+          1.3506168127059937
+        ],
+        [
+          -0.1504460573196411,
+          0.550000011920929,
+          2.44938325881958
+        ]
+      ],
+      "max_bound_error": 9.536743172944284e-08,
+      "vertices": 2560,
+      "materials": [
+        "sphere-m1-r0.30"
+      ]
+    },
+    {
+      "name": "sphere-m1-r0.60",
+      "world_bounds": [
+        [
+          0.15112918615341187,
+          -0.550000011920929,
+          1.3506168127059937
+        ],
+        [
+          1.249553918838501,
+          0.550000011920929,
+          2.44938325881958
+        ]
+      ],
+      "max_bound_error": 9.536743172944284e-08,
+      "vertices": 2560,
+      "materials": [
+        "sphere-m1-r0.60"
+      ]
+    },
+    {
+      "name": "sphere-m1-r1.00",
+      "world_bounds": [
+        [
+          1.5511291027069092,
+          -0.550000011920929,
+          1.3506168127059937
+        ],
+        [
+          2.6495537757873535,
+          0.550000011920929,
+          2.44938325881958
+        ]
+      ],
+      "max_bound_error": 1.5497207650483347e-07,
+      "vertices": 2560,
+      "materials": [
+        "sphere-m1-r1.00"
+      ]
+    }
+  ],
+  "projection_max_error": 3.944208613049227e-07,
+  "camera_matrix_world": [
+    [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.3114725351333618,
+      -0.9502551555633545,
+      -9.0
+    ],
+    [
+      -0.0,
+      0.9502551555633545,
+      0.3114725351333618,
+      4.199999809265137
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "complete_render_seconds": 3.250697500000115,
+  "build_hash": "e467db79ca8c",
+  "sun_shadow_settings": {
+    "shadow_buffer_bias": 1.0,
+    "shadow_buffer_clip_start": 0.05000000074505806,
+    "use_contact_shadow": false,
+    "contact_shadow_distance": 0.20000000298023224,
+    "contact_shadow_bias": 0.029999999329447746,
+    "contact_shadow_thickness": 0.20000000298023224,
+    "shadow_cascade_count": 4,
+    "shadow_cascade_max_distance": 200.0,
+    "shadow_cascade_exponent": 0.800000011920929,
+    "shadow_cascade_fade": 0.10000000149011612
+  }
+}

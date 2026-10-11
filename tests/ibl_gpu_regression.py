@@ -19,15 +19,15 @@ from mini3d.scene import Scene, Mesh, Entity
 from mini3d.shot_camera import ShotCamera, render_shot
 
 
-def run(output):
+def run(output, samples=1):
     output.mkdir(parents=True,exist_ok=True)
     pygame.init()
     pygame.display.gl_set_attribute(pygame.GL_CONTEXT_MAJOR_VERSION,3)
     pygame.display.gl_set_attribute(pygame.GL_CONTEXT_MINOR_VERSION,3)
     pygame.display.gl_set_attribute(pygame.GL_CONTEXT_PROFILE_MASK,pygame.GL_CONTEXT_PROFILE_CORE)
     pygame.display.set_mode((64,64),pygame.OPENGL | pygame.HIDDEN)
-    target, material, renderer = RenderTarget(), MaterialRenderer(), GLRenderer(512,512)
-    report = dict(gpu=gl.glGetString(gl.GL_RENDERER).decode(),checks={})
+    target, material, renderer = RenderTarget(samples), MaterialRenderer(), GLRenderer(512,512)
+    report = dict(gpu=gl.glGetString(gl.GL_RENDERER).decode(),samples=samples,checks={})
     try:
         # First upload with hostile unpack alignment and row offsets.
         parameters = (gl.GL_UNPACK_ALIGNMENT,gl.GL_UNPACK_ROW_LENGTH,gl.GL_UNPACK_SKIP_ROWS,gl.GL_UNPACK_SKIP_PIXELS)
@@ -67,6 +67,7 @@ def run(output):
             gl.glDisable(gl.GL_SCISSOR_TEST);gl.glClearColor(0,0,0,0)
             gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT)
             material.render([entity],camera,scene,512,512)
+            target.resolve()
             return np.frombuffer(gl.glReadPixels(0,0,512,512,gl.GL_RGBA,gl.GL_UNSIGNED_BYTE),np.uint8).reshape(512,512,4).copy()
 
         for mode,alpha in (('BLEND',.5),('MASK',.2),('MASK',.8),('OPAQUE',1)):
@@ -92,6 +93,7 @@ def run(output):
         ground=Entity(mesh);ground.pos[:]=[0,0,-.1];ground.scale[:]=[200,200,.2];scene.add(ground)
         caster=Entity(mesh);caster.pos[:]=[4,0,4];scene.add(caster);scene.update()
         shot=ShotCamera(Camera([0,0,8],near=.03,far=100));shot.look_at([0,0,0]);shot.set_lens(85);shot.set_aspect('16:9')
+        shot.set_samples(samples)
         def shadow_draw(enabled):
             scene.shadows_enabled=enabled;render_shot(scene,shot,renderer,target)
             rgb=np.frombuffer(gl.glReadPixels(0,0,*shot.size,gl.GL_RGB,gl.GL_UNSIGNED_BYTE),np.uint8).reshape(1080,1920,3).copy()
@@ -112,4 +114,6 @@ def run(output):
         material.close();renderer.close();target.close();pygame.quit()
 
 
-if __name__=='__main__': run(Path(sys.argv[1]) if len(sys.argv)>1 else ROOT/'captures/q1-regressions/ibl')
+if __name__=='__main__':
+    run(Path(sys.argv[1]) if len(sys.argv)>1 else ROOT/'captures/q1-regressions/ibl',
+        int(sys.argv[2]) if len(sys.argv)>2 else 1)

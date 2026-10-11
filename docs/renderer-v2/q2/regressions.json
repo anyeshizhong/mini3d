@@ -1,0 +1,9 @@
+{
+  "unit_tests": 58,
+  "unit_passed": true,
+  "editor_photo_smoke": "passed: 4 lenses/aspects, 6 PNGs, preview equality",
+  "editor_integration": "passed: picking/gizmo/Inspector/navigation",
+  "editor_ui": "passed: selection/resize/render menus/GL errors",
+  "blender_reopened_lantern_exact_png": true,
+  "sphere_authored_zero_normals": 2
+}

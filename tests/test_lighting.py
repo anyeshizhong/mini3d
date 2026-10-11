@@ -90,9 +90,13 @@ class LightingTests(unittest.TestCase):
         shot = ShotCamera(self.camera)
         renderer, target = Mock(), Mock()
         renderer.render.side_effect = RuntimeError('intentional render failure')
-        with patch('OpenGL.GL.glDisable'), patch('OpenGL.GL.glDepthMask'):
+        with patch('OpenGL.GL.glDisable') as disable, patch('OpenGL.GL.glDepthMask'), \
+                patch('OpenGL.GL.glEnable'), patch('OpenGL.GL.glIsEnabled', return_value=False):
             with self.assertRaises(RuntimeError):
                 render_shot(self.scene, shot, renderer, target)
+            from OpenGL import GL as gl
+            disable.assert_any_call(gl.GL_MULTISAMPLE)
+            target.resolve.assert_not_called()
         clean, camera = renderer.render.call_args[0]
         self.assertIs(camera, shot)
         self.assertIsNot(clean, self.scene)

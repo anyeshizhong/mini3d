@@ -1,0 +1,44 @@
+{
+  "Lantern": {
+    "shadow_buffer_bias": 1.0,
+    "shadow_buffer_clip_start": 0.05000000074505806,
+    "use_contact_shadow": false,
+    "contact_shadow_distance": 0.20000000298023224,
+    "contact_shadow_bias": 0.029999999329447746,
+    "contact_shadow_thickness": 0.20000000298023224,
+    "shadow_cascade_count": 4,
+    "shadow_cascade_max_distance": 200.0,
+    "shadow_cascade_exponent": 0.800000011920929,
+    "shadow_cascade_fade": 0.10000000149011612,
+    "blender_build_hash": "e467db79ca8c",
+    "hdr_filepath": "//assets\\studio_small_02_2k.hdr"
+  },
+  "Avocado": {
+    "shadow_buffer_bias": 1.0,
+    "shadow_buffer_clip_start": 0.05000000074505806,
+    "use_contact_shadow": false,
+    "contact_shadow_distance": 0.20000000298023224,
+    "contact_shadow_bias": 0.029999999329447746,
+    "contact_shadow_thickness": 0.20000000298023224,
+    "shadow_cascade_count": 4,
+    "shadow_cascade_max_distance": 200.0,
+    "shadow_cascade_exponent": 0.800000011920929,
+    "shadow_cascade_fade": 0.10000000149011612,
+    "blender_build_hash": "e467db79ca8c",
+    "hdr_filepath": "//assets\\studio_small_02_2k.hdr"
+  },
+  "spheres": {
+    "shadow_buffer_bias": 1.0,
+    "shadow_buffer_clip_start": 0.05000000074505806,
+    "use_contact_shadow": false,
+    "contact_shadow_distance": 0.20000000298023224,
+    "contact_shadow_bias": 0.029999999329447746,
+    "contact_shadow_thickness": 0.20000000298023224,
+    "shadow_cascade_count": 4,
+    "shadow_cascade_max_distance": 200.0,
+    "shadow_cascade_exponent": 0.800000011920929,
+    "shadow_cascade_fade": 0.10000000149011612,
+    "blender_build_hash": "e467db79ca8c",
+    "hdr_filepath": "//assets\\studio_small_02_2k.hdr"
+  }
+}

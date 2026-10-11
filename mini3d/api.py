@@ -243,3 +243,11 @@ class Mini3DAPI:
             raise ValueError('Capture output must have a .png extension')
         result = capture_png(self._app.scene, self._app.shot_camera, self._renderer, path)
         return dict(path=str(result), format='PNG', camera=self.get_shot_camera())
+
+    def set_antialiasing(self, samples=1):
+        """Choose 1x or 4x MSAA for Shot preview and PNG; saved with the camera."""
+        self._outside_transaction()
+        if self._app.shot_camera is None:
+            raise ValueError('Create a Shot Camera before setting antialiasing')
+        self._app.shot_camera.set_samples(samples)
+        return self.get_shot_camera()
