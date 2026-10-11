@@ -194,8 +194,12 @@ class MaterialRenderer:
             self._float("lightIntensity",getattr(scene,"material_light_intensity",1.0))
             self._float("ambientIntensity",getattr(scene,"material_ambient_intensity",1.0))
 
-    def render(self, entities, camera, scene, width, height, mode="Lit", shadow=None):
-        """Draw into the caller's framebuffer without clearing or resizing it."""
+    def render(self, entities, camera, scene, width, height, mode="Lit", shadow=None, plan=None):
+        """Draw into the caller's FBO; optionally consume this frame's RenderPlan.
+
+        The standalone entity entry remains supported. Plan partitions already
+        classify alpha; transparent depth ordering still belongs to this pass.
+        """
         self.draw_calls = self.triangles = 0
         entities = [entity for entity in entities if self._entity_mesh(entity) is not None]
         if not entities or width <= 0 or height <= 0:
@@ -209,18 +213,23 @@ class MaterialRenderer:
             gl.glDepthFunc(gl.GL_LESS)
             gl.glDisable(gl.GL_FRAMEBUFFER_SRGB)
             gl.glPolygonMode(gl.GL_FRONT_AND_BACK,gl.GL_LINE if mode.lower()=="wireframe" else gl.GL_FILL)
-            self._matrix("view",camera.view_matrix)
-            self._matrix("projection",camera.projection_matrix(float(width)/height))
+            view = camera.view_matrix
+            self._matrix("view", plan.view if plan is not None else view)
+            self._matrix("projection", plan.projection if plan is not None else
+                         camera.projection_matrix(float(width)/height))
             self._vec3("eye",camera.position)
             self._lighting(scene, camera)
             ShadowMap.bind(self.program, shadow, scene)
             records = []
-            for entity in entities:
+            prepared = ([(False, item) for item in plan.opaque if item.material is not None] +
+                        [(True, item) for item in plan.transparent]) if plan is not None else [
+                            (self._entity_mesh(entity).material.get("alphaMode", "OPAQUE") == "BLEND", entity)
+                            for entity in entities]
+            for transparent, entity in prepared:
                 mesh = self._mesh(self._entity_mesh(entity))
                 matrix = np.asarray(entity.world_matrix,np.float32)
                 center = matrix @ np.append(mesh[5],1)
-                depth = float((camera.view_matrix @ center)[2])
-                transparent = mesh[0].material.get("alphaMode","OPAQUE")=="BLEND"
+                depth = float((view @ center)[2])
                 records.append((transparent,depth,entity,matrix,mesh))
             # Camera looks along -Z: more negative depth is farther away.
             records.sort(key=lambda row:(row[0],row[1] if row[0] else 0))

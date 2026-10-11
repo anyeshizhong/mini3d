@@ -603,7 +603,8 @@ class GLRenderer:
                 from .material_renderer import MaterialRenderer
                 self.material_renderer = MaterialRenderer()
             self.material_renderer.render(imported, camera, scene, self.w, self.h,
-                                          mode=getattr(scene, "render_mode", "Lit"), shadow=self._active_shadow)
+                                          mode=getattr(scene, "render_mode", "Lit"), shadow=self._active_shadow,
+                                          plan=plan)
             self.render_stats["color_draw_calls"] += self.material_renderer.draw_calls
             self.render_stats["color_triangles"] += self.material_renderer.triangles
 
