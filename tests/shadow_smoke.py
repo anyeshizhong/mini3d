@@ -1,5 +1,6 @@
 """Real GPU directional shadows. --baseline uses isolated 1033e5e checkout."""
 import io
+import argparse
 import json
 from pathlib import Path
 import statistics
@@ -7,8 +8,13 @@ import sys
 import time
 
 ROOT = Path(__file__).resolve().parents[1]
-BASELINE = '--baseline' in sys.argv
-sys.path.insert(0,str(ROOT/'captures/shadow-baseline' if BASELINE else ROOT))
+parser = argparse.ArgumentParser(description=__doc__)
+parser.add_argument('output', type=Path, nargs='?', default=ROOT/'captures/shadows')
+parser.add_argument('--baseline', action='store_true')
+parser.add_argument('--baseline-root', type=Path, default=ROOT/'captures/shadow-baseline')
+options = parser.parse_args()
+BASELINE = options.baseline
+sys.path.insert(0, str(options.baseline_root if BASELINE else ROOT))
 import numpy as np
 import pygame
 from OpenGL import GL as gl
@@ -303,5 +309,4 @@ def run(output):
 
 
 if __name__ == '__main__':
-    args = [a for a in sys.argv[1:] if a != '--baseline']
-    run(Path(args[0]) if args else ROOT/'captures/shadows')
+    run(options.output)
