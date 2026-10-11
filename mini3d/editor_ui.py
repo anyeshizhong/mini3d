@@ -331,7 +331,8 @@ class EditorUI:
                     self.app.tool = tool
                 if active:
                     imgui.pop_style_color()
-            imgui.same_line()
+            if width >= 750:
+                imgui.same_line()
             if imgui.button("Surface Move"):
                 self._call("finish_edit")
                 self.app.tool = "surface"
@@ -341,7 +342,7 @@ class EditorUI:
             if self.app.place_selected_mode:
                 imgui.text_disabled("Click a surface to place the selection. Esc cancels.")
             else:
-                imgui.text_disabled("Select an object, then drag its handles or use Place on Surface.")
+                imgui.text_wrapped("Select an object, then drag its handles or use Place on Surface.")
             for index, space in enumerate(("world", "local")):
                 if index:
                     imgui.same_line()
@@ -502,8 +503,9 @@ class EditorUI:
         self._panel("Scene Outliner", x, y, width, height)
         roots = list(self.app.scene.root_entities)
         imgui.text_disabled(f"{len(roots)} objects  |  Shift+click for multi-select")
+        imgui.text_disabled("Search objects by name")
         imgui.push_item_width(-1)
-        _, self.scene_filter = imgui.input_text("Search scene##scene_filter", self.scene_filter, 128)
+        _, self.scene_filter = imgui.input_text("##scene_filter", self.scene_filter, 128)
         imgui.pop_item_width()
         if imgui.button("Group selected"):
             self._call("group_selected")
