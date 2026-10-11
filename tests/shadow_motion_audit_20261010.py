@@ -19,7 +19,7 @@ import numpy as np
 import pygame
 from OpenGL import GL as gl
 from PIL import Image, ImageDraw
-import photographer_session as fixture
+import photography_fixture as fixture
 ROOT = fixture.ROOT
 from mini3d.api import Mini3DAPI
 from mini3d.gl_renderer import GLRenderer

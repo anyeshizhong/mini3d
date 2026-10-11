@@ -20,7 +20,7 @@ from mini3d.gl_renderer import GLRenderer
 from mini3d.placement import geometry_bounds
 from mini3d.render_target import RenderTarget
 from mini3d.shot_camera import ShotCamera, render_shot
-import photographer_session as fixture
+import photography_fixture as fixture
 
 
 def prepare(output,assets,hdr):

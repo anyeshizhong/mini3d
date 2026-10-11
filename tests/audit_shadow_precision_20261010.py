@@ -8,7 +8,7 @@ from pathlib import Path
 import numpy as np
 import pygame
 from OpenGL import GL
-import photographer_session as source
+import photography_fixture as source
 from mini3d.api import Mini3DAPI
 from mini3d.gl_renderer import GLRenderer
 from mini3d.geometry import make_box

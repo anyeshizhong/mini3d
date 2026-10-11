@@ -32,7 +32,7 @@ from mini3d.gl_renderer import GLRenderer
 from mini3d.placement import geometry_bounds
 from mini3d.render_target import RenderTarget
 from mini3d.shot_camera import render_shot
-import photographer_session as fixture
+import photography_fixture as fixture
 sys.path.remove(str(args.engine_root))
 sys.path.insert(0, str(args.engine_root))  # Fixture helper inserts its own ROOT.
 

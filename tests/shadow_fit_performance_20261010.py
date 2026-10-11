@@ -213,7 +213,7 @@ if __name__=='__main__':
     output.parent.mkdir(parents=True,exist_ok=True)
     if args.mode=='cpu-proxy': cpu_proxy(output,args.cpu_samples)
     elif args.mode=='fixture-smoke':
-        import photographer_session as fixture
+        import photography_fixture as fixture
         fixture.OUT=output.parent/'harness-fixtures'
         ground=fixture.asset('ground',make_box(1,1,1),(.4,.4,.4))
         figure=fixture.asset('figure-box',make_box(.4,.3,1.7),(.7,.3,.08))

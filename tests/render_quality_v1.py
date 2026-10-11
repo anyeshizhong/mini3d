@@ -13,7 +13,7 @@ import struct
 import sys
 import time
 
-import photographer_session as fixture
+import photography_fixture as fixture
 ROOT = fixture.ROOT
 import numpy as np
 import pygame

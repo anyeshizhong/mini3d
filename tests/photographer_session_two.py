@@ -1,5 +1,5 @@
 """A second practical shoot: still life, occlusion, light, and scale changes."""
-import photographer_session as ph
+import photography_fixture as ph
 import json
 import time
 from pathlib import Path
