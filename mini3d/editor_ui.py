@@ -60,6 +60,7 @@ class EditorUI:
         self.workspace = "Arrange"
         self.assets_visible = True
         self.scene_filter = ""
+        self.formation_open = False
         self._edit_item_key = None
         self.formation_rows, self.formation_columns = 5, 8
         self.formation_spacing_x, self.formation_spacing_y = 1.2, 1.4
@@ -218,6 +219,8 @@ class EditorUI:
         if imgui.is_item_hovered():
             imgui.set_tooltip("Filter by asset name")
         imgui.pop_item_width()
+        if imgui.button("+ Ground Mesh", width=-1):
+            self._call("add_ground_mesh")
         if imgui.button("+ Import model", width=-1):
             self._call("browse_model")
         if self.app.model_dialog.pending:
@@ -592,16 +595,18 @@ class EditorUI:
             return
         count = len(self.app.selected_entities)
         if count == 1 and not entity.locked:
-            imgui.text("Formation")
-            imgui.push_item_width(120)
-            _, self.formation_rows = imgui.input_int("Rows", self.formation_rows)
-            _, self.formation_columns = imgui.input_int("Columns", self.formation_columns)
-            _, self.formation_spacing_x = imgui.input_float("Spacing X", self.formation_spacing_x, format="%.3f")
-            _, self.formation_spacing_y = imgui.input_float("Spacing Y", self.formation_spacing_y, format="%.3f")
-            imgui.pop_item_width()
-            if imgui.button("Create Formation"):
-                self._call("create_formation", self.formation_rows, self.formation_columns,
-                           self.formation_spacing_x, self.formation_spacing_y)
+            if imgui.button(("Hide" if self.formation_open else "Show") + " Formation tools"):
+                self.formation_open = not self.formation_open
+            if self.formation_open:
+                imgui.push_item_width(120)
+                _, self.formation_rows = imgui.input_int("Rows", self.formation_rows)
+                _, self.formation_columns = imgui.input_int("Columns", self.formation_columns)
+                _, self.formation_spacing_x = imgui.input_float("Spacing X", self.formation_spacing_x, format="%.3f")
+                _, self.formation_spacing_y = imgui.input_float("Spacing Y", self.formation_spacing_y, format="%.3f")
+                imgui.pop_item_width()
+                if imgui.button("Create Formation"):
+                    self._call("create_formation", self.formation_rows, self.formation_columns,
+                               self.formation_spacing_x, self.formation_spacing_y)
             imgui.separator()
         if count > 1:
             imgui.text("{} selected | {} editable".format(count, len(self.app.editable_selection)))
@@ -769,7 +774,7 @@ class EditorUI:
             imgui.push_text_wrap_pos(600)
             imgui.text_wrapped(str(self.app.status))
             imgui.pop_text_wrap_pos()
-            imgui.end()
+            imgui.end_tooltip()
         imgui.end()
         imgui.pop_style_var()
 
