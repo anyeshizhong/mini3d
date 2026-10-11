@@ -98,6 +98,12 @@ class Scene:
             traverse(entity)
         return render_list
 
+class MeshScene(Scene):
+    """Geometry demos omit axes-only nodes; URDF Scene retains link frames."""
+    def get_flat_render_list(self):
+        return [node for node in super().get_flat_render_list() if node.model is not None]
+
+
 class Mesh:
     def __init__(self, vertices, indices, color=np.array([200, 200, 200])):
         verts = np.asarray(vertices, dtype=DTYPE)

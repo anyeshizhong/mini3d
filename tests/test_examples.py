@@ -19,8 +19,20 @@ class ExampleCompatibilityTests(unittest.TestCase):
             module = importlib.import_module('examples.' + name)
             self.assertIs(module.Entity, Entity)
             self.assertIs(module.Mesh, Mesh)
-            self.assertIs(module.Scene, Scene)
+            self.assertTrue(issubclass(module.Scene, Scene))
         self.assertEqual(pygame.display.get_init(), initialized)
+
+    def test_geometry_and_urdf_keep_their_original_flattening_rules(self):
+        for name in ('primitives', 'circular_motion', 'urdf_car'):
+            module = importlib.import_module('examples.' + name)
+            scene = module.Scene()
+            axes = Entity(name='axes-only')
+            axes.isaxes = True
+            mesh = Entity(Mesh([[0,0,0],[1,0,0],[0,1,0]], [[0,1,2]]))
+            axes.add_child(mesh)
+            scene.add(axes)
+            expected = [axes, mesh] if name == 'urdf_car' else [mesh]
+            self.assertEqual(scene.get_flat_render_list(), expected, name)
 
     def test_extra_transform_precedes_legacy_pose_and_scale(self):
         parent = Entity(pos=[3, -2, 1], rot=[.2, -.3, .1], scale=2)

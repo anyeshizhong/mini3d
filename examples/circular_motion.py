@@ -7,7 +7,11 @@ from mini3d.geometry import make_box
 from mini3d.gl_renderer import GLRenderer
 from mini3d.math3d import normalize
 from mini3d.viewer import Viewer, world_bounds
-from .legacy_scene import DTYPE, PROJECT, Entity, Mesh, Scene, STLModel
+from .legacy_scene import DTYPE, PROJECT, Entity, Mesh, MeshScene, STLModel
+
+
+class Scene(MeshScene):
+    """Keep the original motion demo's model-only render list."""
 
 
 def main():
