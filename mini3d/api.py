@@ -19,8 +19,13 @@ from .lighting import lighting_state
 
 
 class Mini3DAPI:
-    def __init__(self, renderer=None):
-        self._app = Editor()
+    def __init__(self, renderer=None, editor=None):
+        """Use an existing Editor, or create the original windowless state.
+
+        The renderer is borrowed. Binding the running editor shares its Scene,
+        command history and Shot Camera without another application instance.
+        """
+        self._app = Editor() if editor is None else editor
         self._commands = self._app.commands
         self._renderer = renderer
 

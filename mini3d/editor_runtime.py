@@ -71,6 +71,8 @@ def run(editor_class, initial_asset="auto", frames=None, screenshot=None, hidden
         cleanup.callback(renderer.close)
         app = editor_class(800, 700)
         cleanup.callback(app.model_dialog.close)
+        from .api import Mini3DAPI
+        app.api = Mini3DAPI(renderer, editor=app)
         ui = EditorUI(app)
         previews = []
         cleanup.callback(lambda: gl.glDeleteTextures(previews) if previews else None)
