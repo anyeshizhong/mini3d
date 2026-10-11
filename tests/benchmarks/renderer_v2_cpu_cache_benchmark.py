@@ -1,6 +1,6 @@
 """Paired f36a0ff/current CPU timings and real-asset GL correctness evidence.
 
-python -B tests/renderer_v2_cpu_cache_benchmark.py --assets-root F:/python_project/mini3d
+python -B tests/benchmarks/renderer_v2_cpu_cache_benchmark.py --assets-root .
 --profile-only records the original hotspot before production edits. No download.
 """
 import argparse
@@ -8,18 +8,19 @@ import cProfile
 import hashlib
 import json
 import os
-from pathlib import Path
 import platform
 import pstats
 import subprocess
 import struct
-import sys
 import time
 import types
 from unittest.mock import patch
 
-ROOT = Path(__file__).resolve().parents[1]
+import sys
+from pathlib import Path
+ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(ROOT/"tests"))
 import numpy as np
 from mini3d.gltf_loader import load_gltf
 from mini3d.placement import geometry_bounds, create_ground

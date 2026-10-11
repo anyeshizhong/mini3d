@@ -112,4 +112,4 @@ LP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 PYOPENGL_PLATFORM=egl 
 python -B -m unittest discover -s tests -p test_shadow_camera_fit.py -v
 ```
 
-Windows会使用实际选中的GL context；记录中的renderer为准。云端软件GL和用户实际GPU应分别保留结果。原Rome基准仍可用之前的 [原资产入口](../../../tests/shadow_fit_performance_20261010.py)，缺原文件时明确退出，不会自动替换成本轮模型。
+Windows会使用实际选中的GL context；记录中的renderer为准。云端软件GL和用户实际GPU应分别保留结果。原Rome基准仍可用之前的 [原资产入口](../../../tests/benchmarks/shadow_fit_performance_20261010.py)，缺原文件时明确退出，不会自动替换成本轮模型。

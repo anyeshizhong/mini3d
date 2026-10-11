@@ -1,5 +1,7 @@
 # Rendering 质量基线 V1 — 2026-10-10
 
+> 历史照片与测量保持原样；当前复现用 `tests/research/render_quality_v1.py LABEL --output NEW_DIRECTORY`，见 [研究入口](../../tests/research/README.md)。
+
 基线分支 `test/render-quality-v1`，基于已修复 Issue #5 的 `406d697`。本阶段没有修改 Renderer、ShadowMap、材质、Camera 或 RenderTarget。Windows / Python 3.8.20 / Intel UHD Graphics 620 / OpenGL 4.6.0，直接读取真实 Mini3D framebuffer 并导出 PNG。
 
 复现：`F:/gymenv/python.exe -B tests/render_quality_v1.py baseline`。原始 22 张照片、22 组场景和完整参数保留在 `captures/render-quality-v1/baseline/`；全部可重新生成。本目录仅提交 6 张代表照片、[场景参数](scenes/)、[完整测量](baseline-results.json)及[本地资产来源](asset-sources.json)，没有上传第三方 GLB 或贴图。

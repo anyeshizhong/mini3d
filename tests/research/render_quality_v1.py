@@ -1,20 +1,22 @@
 """Repeatable original-geometry and local PBR photography, with real GPU timing.
 
 All generated assets/PNGs stay under captures. Never downloads or uploads GLBs.
-python -B tests/render_quality_v1.py baseline [--output captures/render-quality-v1/baseline]
+python -B tests/research/render_quality_v1.py v2-check --output captures/new-quality-run
 """
 import argparse
 import hashlib
 import inspect
 import json
-from pathlib import Path
 import statistics
 import struct
-import sys
 import time
 
+import sys
+from pathlib import Path
+ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(ROOT/"tests"))
 import photography_fixture as fixture
-ROOT = fixture.ROOT
 import numpy as np
 import pygame
 from OpenGL import GL as gl
@@ -38,7 +40,7 @@ def glb_inventory(path):
 
 def run(label, output):
     output.mkdir(parents=True, exist_ok=True)
-    fixture.OUT = ROOT / 'captures/render-quality-v1'
+    fixture.OUT = output
     box = fixture.asset('quality-box', fixture.make_box(1,1,1), (.7,.3,.08), rough=.7)
     floor = fixture.asset('quality-floor', fixture.make_box(1,1,1), (.4,.4,.4), rough=.85)
     sphere = fixture.asset('quality-metal', fixture.make_sphere(.7,40,64), (.9,.4,.1), metal=1, rough=.2)
@@ -219,6 +221,8 @@ def run(label, output):
 if __name__ == '__main__':
     parser=argparse.ArgumentParser()
     parser.add_argument('label')
-    parser.add_argument('--output',type=Path)
+    parser.add_argument('--output',type=Path,required=True)
     args=parser.parse_args()
-    run(args.label,args.output or ROOT/'captures/render-quality-v1'/args.label)
+    if args.output.exists():
+        parser.error('Output exists; choose a fresh directory')
+    run(args.label,args.output.resolve())

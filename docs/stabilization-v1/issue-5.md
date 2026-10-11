@@ -1,5 +1,7 @@
 # Issue #5 修复验收 — 2026-10-10
 
+> 本文保留修复时的命令与证据；旧 stabilization 执行器已由 `tools/validate_v2.py --suite core --output NEW_DIRECTORY` 继承，见 [测试说明](../../tests/README.md)。
+
 修复分支：`fix/gizmo-panel-drag-v1`，直接基于摄影审计提交 `54d19e775dd88e61c76e0e2cbe4c3b54fedb2433`；其祖先包含 Shot Camera 功能提交 `7cb7719868b4fbdfe16ff89b4e2b6db092b44747`。根工作区和已有摄影工作树的未提交资产、manifest、脚本均保留；开发在独立 worktree 中进行。
 
 ## 修复前后

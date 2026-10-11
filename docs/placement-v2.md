@@ -14,7 +14,7 @@
 | `mini3d/editor_tools.py` | Selection Center 和多选 World Gizmo，单选保留 World/Local |
 | `mini3d/editor_ui.py` | Surface Move、Shift 多选、分组管理、最小 Formation 输入 |
 | `tests/test_placement_v2_commands.py`、`test_surface_drag.py`、`test_multi_gizmo.py`、`test_formation.py`、`test_placement_v2_editor.py`（新增） | 核心、输入、事务、分组、阵型和持久化测试 |
-| `tests/placement_v2_smoke.py`、`placement_v2_performance.py`（新增） | 实际窗口验收和性能观察 |
+| `tests/placement_v2_smoke.py`、`tests/benchmarks/placement_v2_performance.py` | 实际窗口验收和性能观察 |
 | `tests/test_placement_editor.py` | 保存格式断言更新为 v3，保留原 V1 测试 |
 | `readme.md`、本文 | 使用方法、行为约定、实际结果与限制 |
 
@@ -110,7 +110,7 @@ Scene JSON 升级到 **version 3**，在原 objects/相机/显示设置之外增
 ```powershell
 & F:/gymenv/python.exe -B -m unittest discover -s tests -p 'test_*.py'
 & F:/gymenv/python.exe -B tests/placement_v2_smoke.py captures/placement-v2-validation
-& F:/gymenv/python.exe -B tests/placement_v2_performance.py captures/placement-v2-validation/performance.json
+& F:/gymenv/python.exe -B tests/benchmarks/placement_v2_performance.py captures/placement-v2-validation/performance.json
 ```
 
 ## 1 / 40 / 100 人性能观察

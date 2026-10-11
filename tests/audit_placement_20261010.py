@@ -190,4 +190,11 @@ class CompositionWorkflow(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    unittest.main(verbosity=2)
+    import argparse
+    parser = argparse.ArgumentParser(description=__doc__, add_help=False)
+    parser.add_argument('--output', type=Path, default=OUT)
+    args, remaining = parser.parse_known_args()
+    OUT = args.output.resolve()
+    if OUT.exists():
+        parser.error('Output exists; choose a fresh directory')
+    unittest.main(argv=[sys.argv[0]] + remaining, verbosity=2)

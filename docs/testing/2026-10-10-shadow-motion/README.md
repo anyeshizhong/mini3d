@@ -88,13 +88,13 @@ Linux / Python3.12.14 / AMD EPYC 9V74，OPENBLAS_NUM_THREADS=1。5次预热、51
 - `model/08_rome_river/rome_river_side.glb`
 - `model/05_roman_soldier/roman_legionnaire.glb`
 
-[真实资产基准脚本](../../../tests/shadow_fit_performance_20261010.py) 会记录 SHA、实际顶层/层级/展平实体数、提交三角形数、纯 CPU 拟合、Scene参数，以及1024/4096、远景/军团近景的阴影关闭/旧全场景/新摄影拟合三种完整 Shot 同步 wall。排除 PNG编码和首次上传。没有纯 GPU time 宣称，没有FPS宣称。
+[真实资产基准脚本](../../../tests/benchmarks/shadow_fit_performance_20261010.py) 会记录 SHA、实际顶层/层级/展平实体数、提交三角形数、纯 CPU 拟合、Scene参数，以及1024/4096、远景/军团近景的阴影关闭/旧全场景/新摄影拟合三种完整 Shot 同步 wall。排除 PNG编码和首次上传。没有纯 GPU time 宣称，没有FPS宣称。
 
 默认复现布局将 Rome 最长 XY 尺寸设40、士兵高度1.7、5×8含源士兵，保持模型文件不变。这是明确的性能场景，不冒充此前用户布景验收；可以用所得照片检查遮挡/场景差异后再调整。
 
 ```powershell
 $env:OPENBLAS_NUM_THREADS="1"
-& F:/gymenv/python.exe -B tests/shadow_fit_performance_20261010.py real
+& F:/gymenv/python.exe -B tests/benchmarks/shadow_fit_performance_20261010.py real
 ```
 
 可用 `--rome` / `--soldier` 指定原文件；`--gpu-samples 9 --cpu-samples 51 --resolutions 1024 4096` 是默认值。数据/照片写在 `captures/shadow-performance-20261010/`。GL context可能选择Intel而非MX130，以结果中的renderer为准。
@@ -108,7 +108,7 @@ $env:OPENBLAS_NUM_THREADS="1"
 ```bash
 python -m pip install -r requirements.txt Pillow
 LP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 PYOPENGL_PLATFORM=egl SDL_VIDEODRIVER=offscreen SDL_AUDIODRIVER=dummy python -B tests/shadow_motion_audit_20261010.py
-OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 python -B tests/shadow_fit_performance_20261010.py cpu-proxy
+OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 python -B tests/benchmarks/shadow_fit_performance_20261010.py cpu-proxy
 python -B tests/shadow_motion_audit_20261010.py --z-probe-only
 python -B -m unittest discover -s tests -p test_shadow_camera_fit.py -v
 ```

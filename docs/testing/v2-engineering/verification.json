@@ -1,0 +1,1751 @@
+{
+  "baseline": "2de85ed7e30c63ea86be4f8ec8a201a8b356621a",
+  "official_tag": "v2.0.0",
+  "python": "3.8.20",
+  "runtime_dependencies_changed": false,
+  "gpu": "Intel(R) UHD Graphics 620",
+  "opengl": "4.6.0 - Build 27.20.100.8682",
+  "before": {
+    "tested_head": "2de85ed7e30c63ea86be4f8ec8a201a8b356621a",
+    "tested_working_tree": true,
+    "passed": true,
+    "runs": [
+      {
+        "name": "unit",
+        "exit_code": 0,
+        "seconds": 6.962
+      },
+      {
+        "name": "editor_smoke",
+        "exit_code": 0,
+        "seconds": 3.3
+      },
+      {
+        "name": "editor_integration_smoke",
+        "exit_code": 0,
+        "seconds": 2.801
+      },
+      {
+        "name": "file_dialog_smoke",
+        "exit_code": 0,
+        "seconds": 4.595
+      },
+      {
+        "name": "ground_separation_smoke",
+        "exit_code": 0,
+        "seconds": 13.821
+      },
+      {
+        "name": "placement_smoke",
+        "exit_code": 0,
+        "seconds": 7.78
+      },
+      {
+        "name": "placement_v2_smoke",
+        "exit_code": 0,
+        "seconds": 17.89
+      },
+      {
+        "name": "lighting_smoke",
+        "exit_code": 0,
+        "seconds": 2.761
+      },
+      {
+        "name": "lighting_api_smoke",
+        "exit_code": 0,
+        "seconds": 4.6
+      },
+      {
+        "name": "lighting_ui_smoke",
+        "exit_code": 0,
+        "seconds": 3.761
+      },
+      {
+        "name": "scene_clipping_smoke",
+        "exit_code": 0,
+        "seconds": 5.317
+      },
+      {
+        "name": "shadow_ui_smoke",
+        "exit_code": 0,
+        "seconds": 2.742
+      },
+      {
+        "name": "photo_smoke",
+        "exit_code": 0,
+        "seconds": 5.772
+      },
+      {
+        "name": "ai_api_smoke",
+        "exit_code": 0,
+        "seconds": 5.946
+      },
+      {
+        "name": "shot_camera_persistence_smoke",
+        "exit_code": 0,
+        "seconds": 12.883
+      },
+      {
+        "name": "shot_msaa_smoke",
+        "exit_code": 0,
+        "seconds": 3.426
+      },
+      {
+        "name": "consolidation_gpu_regression",
+        "exit_code": 0,
+        "seconds": 3.903
+      },
+      {
+        "name": "unified_api_ui_smoke",
+        "exit_code": 0,
+        "seconds": 3.212
+      },
+      {
+        "name": "stl_render_smoke",
+        "exit_code": 0,
+        "seconds": 2.902
+      },
+      {
+        "name": "ibl_gpu_regression",
+        "exit_code": 0,
+        "seconds": 3.545
+      },
+      {
+        "name": "ibl_gpu_4x",
+        "exit_code": 0,
+        "seconds": 3.075
+      },
+      {
+        "name": "demo_equivalence",
+        "exit_code": 0,
+        "seconds": 10.199
+      },
+      {
+        "name": "ui_photography_81",
+        "exit_code": 0,
+        "seconds": 5.449
+      },
+      {
+        "name": "api_photography",
+        "exit_code": 0,
+        "seconds": 1.103
+      },
+      {
+        "name": "shadow_baseline",
+        "exit_code": 0,
+        "seconds": 2.813
+      },
+      {
+        "name": "shadow",
+        "exit_code": 0,
+        "seconds": 4.51
+      },
+      {
+        "name": "renderer_v2",
+        "exit_code": 0,
+        "seconds": 10.108
+      },
+      {
+        "name": "cpu_cache",
+        "exit_code": 0,
+        "seconds": 20.775
+      },
+      {
+        "name": "q1",
+        "exit_code": 0,
+        "seconds": 14.468
+      },
+      {
+        "name": "q2",
+        "exit_code": 0,
+        "seconds": 15.996
+      },
+      {
+        "name": "shadow_assets_smoke",
+        "exit_code": 0,
+        "seconds": 12.78
+      },
+      {
+        "name": "rome_integration_smoke",
+        "exit_code": 0,
+        "seconds": 36.799
+      },
+      {
+        "name": "rome_ui",
+        "exit_code": 0,
+        "seconds": 15.033
+      },
+      {
+        "name": "rome_added_models_smoke",
+        "exit_code": 0,
+        "seconds": 13.135
+      },
+      {
+        "name": "rome_performance",
+        "exit_code": 0,
+        "seconds": 36.785
+      },
+      {
+        "name": "shadow_motion",
+        "exit_code": 0,
+        "seconds": 95.029
+      },
+      {
+        "name": "caster_depth",
+        "exit_code": 0,
+        "seconds": 1.716
+      }
+    ],
+    "identical_images": [
+      {
+        "name": "q1/Avocado-A.png",
+        "exact_bytes": true,
+        "sha256": "a8ba60bf0b9574e359d7e3ec392742e38c74163e6fc0f7add78c56757ae77cb8"
+      },
+      {
+        "name": "q1/DamagedHelmet-A.png",
+        "exact_bytes": true,
+        "sha256": "1e2f49ff307632b9ac890d3575b00076c3f3da6654dd34b45e91bce9c9698f58"
+      },
+      {
+        "name": "q1/Lantern-A.png",
+        "exact_bytes": true,
+        "sha256": "c4912fcd5d6c10c634ac53a70be5e214861b0c09092d18226782cc57034e9a96"
+      },
+      {
+        "name": "q1/spheres-A.png",
+        "exact_bytes": true,
+        "sha256": "86918d770c4c39430b5e475c008acf3a2879eb33f80624632fd67ff7ce6078ad"
+      },
+      {
+        "name": "q1/Avocado-B.png",
+        "exact_bytes": true,
+        "sha256": "8edc1a0ee27b00852d57971709aa1eb613854dacecc8288f7ff2cef175fdba4f"
+      },
+      {
+        "name": "q1/DamagedHelmet-B.png",
+        "exact_bytes": true,
+        "sha256": "812737e18b421fe13b1e3a5bd9bbfab9a2b54a11e6619018ef593cf8ca36c1ce"
+      },
+      {
+        "name": "q1/Lantern-B.png",
+        "exact_bytes": true,
+        "sha256": "e72fd9c21a5dcd5467a8faaa4774ed6bda753c099d8d264a3dd599c15ccd3a5e"
+      },
+      {
+        "name": "q1/spheres-B.png",
+        "exact_bytes": true,
+        "sha256": "845737d0880dc7c41b5ee09d257d5a06b7ef988d367b17c1126d7e27e2a40ab1"
+      },
+      {
+        "name": "q2/Avocado-mini-1x.png",
+        "exact_bytes": true,
+        "sha256": "8edc1a0ee27b00852d57971709aa1eb613854dacecc8288f7ff2cef175fdba4f"
+      },
+      {
+        "name": "q2/Avocado-mini-4x.png",
+        "exact_bytes": true,
+        "sha256": "41574d0c1d174e3168b5e482dd7d5a9f9a733314c3f3a1659f01e410b358ea57"
+      },
+      {
+        "name": "q2/Avocado-mini-ssaa2.png",
+        "exact_bytes": true,
+        "sha256": "0c7fc21575c801117e4b6d967ce5dd882d27f8942f919a7b85ddb2c0a8a9e0ae"
+      },
+      {
+        "name": "q2/Lantern-mini-1x.png",
+        "exact_bytes": true,
+        "sha256": "e72fd9c21a5dcd5467a8faaa4774ed6bda753c099d8d264a3dd599c15ccd3a5e"
+      },
+      {
+        "name": "q2/Lantern-mini-4x.png",
+        "exact_bytes": true,
+        "sha256": "72fa20699922b1f453b88a03ad816639c7c440e8081b432d752c9a01882f1eb7"
+      },
+      {
+        "name": "q2/Lantern-mini-ssaa2.png",
+        "exact_bytes": true,
+        "sha256": "35efb05749909c8c13e820b60d34ce78effc58aefea7462535b72cd2933ff0ba"
+      },
+      {
+        "name": "q2/spheres-mini-1x.png",
+        "exact_bytes": true,
+        "sha256": "845737d0880dc7c41b5ee09d257d5a06b7ef988d367b17c1126d7e27e2a40ab1"
+      },
+      {
+        "name": "q2/spheres-mini-4x.png",
+        "exact_bytes": true,
+        "sha256": "dd4c8ac38172491b4de18585174298ba462af781f3f7837853d9806e739109d8"
+      },
+      {
+        "name": "q2/spheres-mini-ssaa2.png",
+        "exact_bytes": true,
+        "sha256": "7533727bdc0c406ce1fa34751664e2874bc1a5134232bdf95e4154e22f4440ff"
+      },
+      {
+        "name": "q2/Avocado-coverage-1.png",
+        "exact_bytes": true,
+        "sha256": "3b8fa8f4fb228b83237ed7651d5345a62f20f7c6f91eab300407bc0ef642d29f"
+      },
+      {
+        "name": "q2/Avocado-coverage-4.png",
+        "exact_bytes": true,
+        "sha256": "9290155e2c7c785b0a2b6bd5d6a4fb6c87308442906b7fa9012d2a338ad86972"
+      },
+      {
+        "name": "q2/Avocado-coverage-ssaa2.png",
+        "exact_bytes": true,
+        "sha256": "68e022d2a76006bf7c1f29cb75eb62b4412c7a418c9843c8d2e3e9492e62d52a"
+      },
+      {
+        "name": "q2/Lantern-coverage-1.png",
+        "exact_bytes": true,
+        "sha256": "663cd5e16d4277da6550ff289fe3406b2b3317154eed86f62dfec2f85a4eac1e"
+      },
+      {
+        "name": "q2/Lantern-coverage-4.png",
+        "exact_bytes": true,
+        "sha256": "cdd7d71c2681908a0636e5e0e37e979f7eca8fd8a2fa780e1b1a0d13e417fd47"
+      },
+      {
+        "name": "q2/Lantern-coverage-ssaa2.png",
+        "exact_bytes": true,
+        "sha256": "50af87e8ee547c903148f9cbf444ba190c1b2c00d623d6683b44d5277348b07c"
+      },
+      {
+        "name": "q2/spheres-coverage-1.png",
+        "exact_bytes": true,
+        "sha256": "9f1ff5e247a7e00c0e4caf368ffe9def725e2df0f24679c9ee601d2e89ade219"
+      },
+      {
+        "name": "q2/spheres-coverage-4.png",
+        "exact_bytes": true,
+        "sha256": "e262b7301b8b352f528281d1423b4f239e898a2fc21db52a5d7c0b468c0559a7"
+      },
+      {
+        "name": "q2/spheres-coverage-ssaa2.png",
+        "exact_bytes": true,
+        "sha256": "c92882233b5af5193b7022b737ea6c98fd85afc83c109363308c380698b8fe94"
+      }
+    ],
+    "production_source_hashes": {
+      "1 copy.py": "6a586066e15be4524705d2efc795ce747b73b1f5b3ceb44805e616ece5e8cee5",
+      "1.py": "d3c5bbc6d8e0043f44fcd63543151b42e2554fbf7741ad11fe6369bebbfc98f5",
+      "2.py": "47b645de139a282ded6a2434b03711fe41a6a9ba5e3ceede93d0f8e8ff0a11c7",
+      "editor.py": "099f1480096e77bb74d31f66c4bc244e2273d7ffc93455b4ddc746329294b880",
+      "editor_app.py": "5f747abdf68383207cefd11acc1ec6d78c1d93d5b08990c85ab41b6c77e725e8",
+      "examples/__init__.py": "7efcba027181f86d8f1dc488b67a59e71524bff8040fedebf38cd25ddbe7b0f0",
+      "examples/circular_motion.py": "890218230b1d1844d16bfc76273a3ec191ddf588b3149a345bfb0c8ba0e9e533",
+      "examples/legacy_scene.py": "7f5e0e9156e381ea931d5072e5ba89e941e45b16042a52e4e6f3740d98a3ff63",
+      "examples/primitives.py": "de283a7a666afaa5400ec8df60a616494c935d7cbe82639a325001fcd3f99877",
+      "examples/urdf_car.py": "ed63a9c714b6b95a6d3b0e5c4c10af8ec05aa33b52ae36fef6c955261ebfb0be",
+      "mini3d/__init__.py": "9b27b78f482801d6e0f35a48a72305a6e33d5052cb7b40d9788c9d17af888386",
+      "mini3d/__main__.py": "808931c196750d8c62bc0bc1ec15ad8696fc4059eb05e455f3e5f40bf993d71d",
+      "mini3d/api.py": "7dc57f00ec956a8ff756b34434e68e472b4995564a74c629d0d6a0432839351d",
+      "mini3d/api_dispatch.py": "387607c4532b7c1935893bcc2d478700591a9bc5cb8fa1a91fab6c0930a385c3",
+      "mini3d/assets.py": "6d8ce6ce464a6db03599408694602948053ab062f3061e104be676217670d244",
+      "mini3d/camera.py": "4dc8a3cae6eedf088add4355d683276fd3bb49c1843031ce6d9cf7d73ad7f96e",
+      "mini3d/commands.py": "559052197064143ab5d89c9492d451cdf6456949191823cdc4b885f537e0ec99",
+      "mini3d/cpu_renderer.py": "79d32227cbc9e73fb8252d9351db391e6b3de62ac04f7fb3e49df9d1c75205d7",
+      "mini3d/editor.py": "6d217c3f6b7c91494e5e888d09943a62c690e275d8e00d4b16edf5cd4b7c248c",
+      "mini3d/editor_runtime.py": "dfbb474358819d56d9834543bdbb3813786741337a270a5ac9cde7b187a82f66",
+      "mini3d/editor_tools.py": "d9516c61da16061bbe4bc6ac2d917e6688b3d12aef0a5e9fb4650f0f0490ce3a",
+      "mini3d/editor_ui.py": "5225afe65e48b1146f911b851699770c8f930ae60da8df57d6db04027e38b431",
+      "mini3d/environment.py": "a64a00c418b9923f7ee52e7c0aec23afbe45e03d4d284fd39864711fc4d2c6aa",
+      "mini3d/formation.py": "8c7ea5dda286494927c7b784ec96b6c0c7e5d686a0c00ef22cc9df0ca7839481",
+      "mini3d/geometry.py": "a43414723deead23d115f4d9174b6e362e2ef91a9a620655aca45cdd674a6922",
+      "mini3d/gl_renderer.py": "d26f40c15f03d6eb552dc53312c8fa2053afae413e1a56dfd7ebce1477cbd9b8",
+      "mini3d/gl_state.py": "64f7d2ca0f697562de7063c38e555e061ae392d77da7e036095a377c1ebc4f0d",
+      "mini3d/gltf_loader.py": "3d056ffb31481c10470c91e7acad7e15bad42b1e2e305bf85d2f565e324643cc",
+      "mini3d/lighting.py": "fb3b7cfc34b17d1ba4995bb7848e94d8fdb87039ab9c8e44ee4eb0cfb7ef20db",
+      "mini3d/material_renderer.py": "6e11f16a3dcf582b1c785bee2b8bc2284779d3a786544f5510774b1165c4950e",
+      "mini3d/material_shaders.py": "56a3d3fcec601618966bee6839b2470266989fa04aa291770252790316efd86f",
+      "mini3d/math3d.py": "9714e6c0434a0bfe5c8d435c3f906596c11e95d1e7b4e9c0d6c5ef3935f03dd1",
+      "mini3d/model_dialog.py": "d423ac9402d87ec9e1754d272bf76b490af9bb68517b61a98229d8a223e39823",
+      "mini3d/orbit_controller.py": "5eea75af5e78055db122de69c34852399bd18454a9ff1bffb912cfa6b59ff9e5",
+      "mini3d/picking.py": "7d0c23f397e85aecf189a6531ba315561fe8a5f55925009b9fec299e5fc81386",
+      "mini3d/placement.py": "34340e45c6196b075cce133ea8399171cc04367bf37b3f70b9039a53572b64f6",
+      "mini3d/placement_plane.py": "c78fd0cdb714cfeece12059671be9b0cf1d4c7e432a226df35e4fbf173aac98a",
+      "mini3d/render_plan.py": "595613b8cc950d77647f45e0f5a06cf2b9c1201fe5e53b626a2a670a63555662",
+      "mini3d/render_target.py": "6e7da627ca957869980a638a6fb9b463bf8b5e4b4f59ee13057f4d62f57ee40b",
+      "mini3d/resources/ibl/CC0.html": "9ca2e10c33c61a53e4b8820518b513f21dcdfdfaeaa4dffb622a8674ba21a3cd",
+      "mini3d/resources/ibl/neutral.json": "06dd9392a8988ae900dc4393fe62c55fdbdccd44fbe672823a6425cbbb0610d1",
+      "mini3d/resources/ibl/neutral.npz": "6679cedf9bc3a683be6ec70b3cf4208305b0929045753e1244df3bbc150c3cc9",
+      "mini3d/resources/ibl/NOTICE.md": "d6aac45253dd4baf85a0742fb1d736dc6f779a630a9d2902feb6b9b259633f3b",
+      "mini3d/scene.py": "4bd01d5e7aacdea1f9ae9106af3afc39e8578bdef6f03bc0978d6499650f3bb9",
+      "mini3d/scene_io.py": "998d4794bc6ca3cfec097ce6160993d65935276440f6b931248cadd231c1e32b",
+      "mini3d/shadow_fit.py": "4a134f6ec7d520082452a00b7a09e49ebee894d5bf4fb04c53c603265759f02e",
+      "mini3d/shadow_map.py": "1ee4972a10f51c71eef74295973bd8e19a3c111c76c334007f52af8a4db4546e",
+      "mini3d/shot_camera.py": "4cb10c9d8a0e57afbd9459374cd7bc7c196472992fe1beb4ab5519857feae60d",
+      "mini3d/stl_loader.py": "76e1c9fe18aaefd19346cf85f581ab4a2170534fc25f5de4395a589ac38706ad",
+      "mini3d/surface_drag.py": "ba87febeef9b51ef06c9c20f36fd5b07b1113e426005c0a62c78f4ac89105b05",
+      "mini3d/urdf_loader.py": "d8a4083ed46491664cbb9667b4b771b31b4b02b860d34ffa379b7b5ca9e66cba",
+      "mini3d/viewer.py": "6aaf58142631aa92dc0140dd24906b178bf0aabf66203b35d811ee5f66e2271b",
+      "model/manifest.json": "8d5605bc8ea7c8e3fce08fcdff31505631a666af28338100b64b5ee1cf3c14a7",
+      "requirements.txt": "9266680e8b4487c8e672d8e8f7698fb77f8470d2d220728c2d98d9743b7ef82b"
+    },
+    "production_source_unchanged_during_run": true
+  },
+  "fixture_batch": {
+    "tested_head": "759be45e0161148d9e0cfb49f19445bf80a73c06",
+    "tested_working_tree": true,
+    "passed": true,
+    "runs": [
+      {
+        "name": "unit",
+        "exit_code": 0,
+        "seconds": 5.332
+      },
+      {
+        "name": "editor_smoke",
+        "exit_code": 0,
+        "seconds": 3.491
+      },
+      {
+        "name": "editor_integration_smoke",
+        "exit_code": 0,
+        "seconds": 2.777
+      },
+      {
+        "name": "file_dialog_smoke",
+        "exit_code": 0,
+        "seconds": 4.381
+      },
+      {
+        "name": "ground_separation_smoke",
+        "exit_code": 0,
+        "seconds": 14.237
+      },
+      {
+        "name": "placement_smoke",
+        "exit_code": 0,
+        "seconds": 9.215
+      },
+      {
+        "name": "placement_v2_smoke",
+        "exit_code": 0,
+        "seconds": 17.712
+      },
+      {
+        "name": "lighting_smoke",
+        "exit_code": 0,
+        "seconds": 2.865
+      },
+      {
+        "name": "lighting_api_smoke",
+        "exit_code": 0,
+        "seconds": 4.0
+      },
+      {
+        "name": "lighting_ui_smoke",
+        "exit_code": 0,
+        "seconds": 3.672
+      },
+      {
+        "name": "scene_clipping_smoke",
+        "exit_code": 0,
+        "seconds": 6.568
+      },
+      {
+        "name": "shadow_ui_smoke",
+        "exit_code": 0,
+        "seconds": 2.767
+      },
+      {
+        "name": "photo_smoke",
+        "exit_code": 0,
+        "seconds": 5.657
+      },
+      {
+        "name": "ai_api_smoke",
+        "exit_code": 0,
+        "seconds": 5.997
+      },
+      {
+        "name": "shot_camera_persistence_smoke",
+        "exit_code": 0,
+        "seconds": 10.171
+      },
+      {
+        "name": "shot_msaa_smoke",
+        "exit_code": 0,
+        "seconds": 3.581
+      },
+      {
+        "name": "consolidation_gpu_regression",
+        "exit_code": 0,
+        "seconds": 2.866
+      },
+      {
+        "name": "unified_api_ui_smoke",
+        "exit_code": 0,
+        "seconds": 2.671
+      },
+      {
+        "name": "stl_render_smoke",
+        "exit_code": 0,
+        "seconds": 2.524
+      },
+      {
+        "name": "ibl_gpu_regression",
+        "exit_code": 0,
+        "seconds": 2.757
+      },
+      {
+        "name": "ibl_gpu_4x",
+        "exit_code": 0,
+        "seconds": 2.642
+      },
+      {
+        "name": "demo_equivalence",
+        "exit_code": 0,
+        "seconds": 9.557
+      },
+      {
+        "name": "ui_photography_81",
+        "exit_code": 0,
+        "seconds": 4.287
+      },
+      {
+        "name": "api_photography",
+        "exit_code": 0,
+        "seconds": 1.056
+      },
+      {
+        "name": "shadow_baseline",
+        "exit_code": 0,
+        "seconds": 2.251
+      },
+      {
+        "name": "shadow",
+        "exit_code": 0,
+        "seconds": 4.098
+      },
+      {
+        "name": "renderer_v2",
+        "exit_code": 0,
+        "seconds": 9.523
+      },
+      {
+        "name": "cpu_cache",
+        "exit_code": 0,
+        "seconds": 21.299
+      },
+      {
+        "name": "q1",
+        "exit_code": 0,
+        "seconds": 12.895
+      },
+      {
+        "name": "q2",
+        "exit_code": 0,
+        "seconds": 16.98
+      },
+      {
+        "name": "shadow_assets_smoke",
+        "exit_code": 0,
+        "seconds": 14.213
+      },
+      {
+        "name": "rome_integration_smoke",
+        "exit_code": 0,
+        "seconds": 36.501
+      },
+      {
+        "name": "rome_ui",
+        "exit_code": 0,
+        "seconds": 14.953
+      },
+      {
+        "name": "rome_added_models_smoke",
+        "exit_code": 0,
+        "seconds": 12.347
+      },
+      {
+        "name": "rome_performance",
+        "exit_code": 0,
+        "seconds": 38.422
+      },
+      {
+        "name": "shadow_motion",
+        "exit_code": 0,
+        "seconds": 103.413
+      },
+      {
+        "name": "caster_depth",
+        "exit_code": 0,
+        "seconds": 1.513
+      }
+    ],
+    "identical_images": [
+      {
+        "name": "q1/Avocado-A.png",
+        "exact_bytes": true,
+        "sha256": "a8ba60bf0b9574e359d7e3ec392742e38c74163e6fc0f7add78c56757ae77cb8"
+      },
+      {
+        "name": "q1/DamagedHelmet-A.png",
+        "exact_bytes": true,
+        "sha256": "1e2f49ff307632b9ac890d3575b00076c3f3da6654dd34b45e91bce9c9698f58"
+      },
+      {
+        "name": "q1/Lantern-A.png",
+        "exact_bytes": true,
+        "sha256": "c4912fcd5d6c10c634ac53a70be5e214861b0c09092d18226782cc57034e9a96"
+      },
+      {
+        "name": "q1/spheres-A.png",
+        "exact_bytes": true,
+        "sha256": "86918d770c4c39430b5e475c008acf3a2879eb33f80624632fd67ff7ce6078ad"
+      },
+      {
+        "name": "q1/Avocado-B.png",
+        "exact_bytes": true,
+        "sha256": "8edc1a0ee27b00852d57971709aa1eb613854dacecc8288f7ff2cef175fdba4f"
+      },
+      {
+        "name": "q1/DamagedHelmet-B.png",
+        "exact_bytes": true,
+        "sha256": "812737e18b421fe13b1e3a5bd9bbfab9a2b54a11e6619018ef593cf8ca36c1ce"
+      },
+      {
+        "name": "q1/Lantern-B.png",
+        "exact_bytes": true,
+        "sha256": "e72fd9c21a5dcd5467a8faaa4774ed6bda753c099d8d264a3dd599c15ccd3a5e"
+      },
+      {
+        "name": "q1/spheres-B.png",
+        "exact_bytes": true,
+        "sha256": "845737d0880dc7c41b5ee09d257d5a06b7ef988d367b17c1126d7e27e2a40ab1"
+      },
+      {
+        "name": "q2/Avocado-mini-1x.png",
+        "exact_bytes": true,
+        "sha256": "8edc1a0ee27b00852d57971709aa1eb613854dacecc8288f7ff2cef175fdba4f"
+      },
+      {
+        "name": "q2/Avocado-mini-4x.png",
+        "exact_bytes": true,
+        "sha256": "41574d0c1d174e3168b5e482dd7d5a9f9a733314c3f3a1659f01e410b358ea57"
+      },
+      {
+        "name": "q2/Avocado-mini-ssaa2.png",
+        "exact_bytes": true,
+        "sha256": "0c7fc21575c801117e4b6d967ce5dd882d27f8942f919a7b85ddb2c0a8a9e0ae"
+      },
+      {
+        "name": "q2/Lantern-mini-1x.png",
+        "exact_bytes": true,
+        "sha256": "e72fd9c21a5dcd5467a8faaa4774ed6bda753c099d8d264a3dd599c15ccd3a5e"
+      },
+      {
+        "name": "q2/Lantern-mini-4x.png",
+        "exact_bytes": true,
+        "sha256": "72fa20699922b1f453b88a03ad816639c7c440e8081b432d752c9a01882f1eb7"
+      },
+      {
+        "name": "q2/Lantern-mini-ssaa2.png",
+        "exact_bytes": true,
+        "sha256": "35efb05749909c8c13e820b60d34ce78effc58aefea7462535b72cd2933ff0ba"
+      },
+      {
+        "name": "q2/spheres-mini-1x.png",
+        "exact_bytes": true,
+        "sha256": "845737d0880dc7c41b5ee09d257d5a06b7ef988d367b17c1126d7e27e2a40ab1"
+      },
+      {
+        "name": "q2/spheres-mini-4x.png",
+        "exact_bytes": true,
+        "sha256": "dd4c8ac38172491b4de18585174298ba462af781f3f7837853d9806e739109d8"
+      },
+      {
+        "name": "q2/spheres-mini-ssaa2.png",
+        "exact_bytes": true,
+        "sha256": "7533727bdc0c406ce1fa34751664e2874bc1a5134232bdf95e4154e22f4440ff"
+      },
+      {
+        "name": "q2/Avocado-coverage-1.png",
+        "exact_bytes": true,
+        "sha256": "3b8fa8f4fb228b83237ed7651d5345a62f20f7c6f91eab300407bc0ef642d29f"
+      },
+      {
+        "name": "q2/Avocado-coverage-4.png",
+        "exact_bytes": true,
+        "sha256": "9290155e2c7c785b0a2b6bd5d6a4fb6c87308442906b7fa9012d2a338ad86972"
+      },
+      {
+        "name": "q2/Avocado-coverage-ssaa2.png",
+        "exact_bytes": true,
+        "sha256": "68e022d2a76006bf7c1f29cb75eb62b4412c7a418c9843c8d2e3e9492e62d52a"
+      },
+      {
+        "name": "q2/Lantern-coverage-1.png",
+        "exact_bytes": true,
+        "sha256": "663cd5e16d4277da6550ff289fe3406b2b3317154eed86f62dfec2f85a4eac1e"
+      },
+      {
+        "name": "q2/Lantern-coverage-4.png",
+        "exact_bytes": true,
+        "sha256": "cdd7d71c2681908a0636e5e0e37e979f7eca8fd8a2fa780e1b1a0d13e417fd47"
+      },
+      {
+        "name": "q2/Lantern-coverage-ssaa2.png",
+        "exact_bytes": true,
+        "sha256": "50af87e8ee547c903148f9cbf444ba190c1b2c00d623d6683b44d5277348b07c"
+      },
+      {
+        "name": "q2/spheres-coverage-1.png",
+        "exact_bytes": true,
+        "sha256": "9f1ff5e247a7e00c0e4caf368ffe9def725e2df0f24679c9ee601d2e89ade219"
+      },
+      {
+        "name": "q2/spheres-coverage-4.png",
+        "exact_bytes": true,
+        "sha256": "e262b7301b8b352f528281d1423b4f239e898a2fc21db52a5d7c0b468c0559a7"
+      },
+      {
+        "name": "q2/spheres-coverage-ssaa2.png",
+        "exact_bytes": true,
+        "sha256": "c92882233b5af5193b7022b737ea6c98fd85afc83c109363308c380698b8fe94"
+      }
+    ],
+    "production_source_hashes": {
+      "1 copy.py": "6a586066e15be4524705d2efc795ce747b73b1f5b3ceb44805e616ece5e8cee5",
+      "1.py": "d3c5bbc6d8e0043f44fcd63543151b42e2554fbf7741ad11fe6369bebbfc98f5",
+      "2.py": "47b645de139a282ded6a2434b03711fe41a6a9ba5e3ceede93d0f8e8ff0a11c7",
+      "editor.py": "099f1480096e77bb74d31f66c4bc244e2273d7ffc93455b4ddc746329294b880",
+      "editor_app.py": "5f747abdf68383207cefd11acc1ec6d78c1d93d5b08990c85ab41b6c77e725e8",
+      "examples/__init__.py": "7efcba027181f86d8f1dc488b67a59e71524bff8040fedebf38cd25ddbe7b0f0",
+      "examples/circular_motion.py": "890218230b1d1844d16bfc76273a3ec191ddf588b3149a345bfb0c8ba0e9e533",
+      "examples/legacy_scene.py": "7f5e0e9156e381ea931d5072e5ba89e941e45b16042a52e4e6f3740d98a3ff63",
+      "examples/primitives.py": "de283a7a666afaa5400ec8df60a616494c935d7cbe82639a325001fcd3f99877",
+      "examples/urdf_car.py": "ed63a9c714b6b95a6d3b0e5c4c10af8ec05aa33b52ae36fef6c955261ebfb0be",
+      "mini3d/__init__.py": "9b27b78f482801d6e0f35a48a72305a6e33d5052cb7b40d9788c9d17af888386",
+      "mini3d/__main__.py": "808931c196750d8c62bc0bc1ec15ad8696fc4059eb05e455f3e5f40bf993d71d",
+      "mini3d/api.py": "7dc57f00ec956a8ff756b34434e68e472b4995564a74c629d0d6a0432839351d",
+      "mini3d/api_dispatch.py": "387607c4532b7c1935893bcc2d478700591a9bc5cb8fa1a91fab6c0930a385c3",
+      "mini3d/assets.py": "6d8ce6ce464a6db03599408694602948053ab062f3061e104be676217670d244",
+      "mini3d/camera.py": "4dc8a3cae6eedf088add4355d683276fd3bb49c1843031ce6d9cf7d73ad7f96e",
+      "mini3d/commands.py": "559052197064143ab5d89c9492d451cdf6456949191823cdc4b885f537e0ec99",
+      "mini3d/cpu_renderer.py": "79d32227cbc9e73fb8252d9351db391e6b3de62ac04f7fb3e49df9d1c75205d7",
+      "mini3d/editor.py": "6d217c3f6b7c91494e5e888d09943a62c690e275d8e00d4b16edf5cd4b7c248c",
+      "mini3d/editor_runtime.py": "dfbb474358819d56d9834543bdbb3813786741337a270a5ac9cde7b187a82f66",
+      "mini3d/editor_tools.py": "d9516c61da16061bbe4bc6ac2d917e6688b3d12aef0a5e9fb4650f0f0490ce3a",
+      "mini3d/editor_ui.py": "5225afe65e48b1146f911b851699770c8f930ae60da8df57d6db04027e38b431",
+      "mini3d/environment.py": "a64a00c418b9923f7ee52e7c0aec23afbe45e03d4d284fd39864711fc4d2c6aa",
+      "mini3d/formation.py": "8c7ea5dda286494927c7b784ec96b6c0c7e5d686a0c00ef22cc9df0ca7839481",
+      "mini3d/geometry.py": "a43414723deead23d115f4d9174b6e362e2ef91a9a620655aca45cdd674a6922",
+      "mini3d/gl_renderer.py": "d26f40c15f03d6eb552dc53312c8fa2053afae413e1a56dfd7ebce1477cbd9b8",
+      "mini3d/gl_state.py": "64f7d2ca0f697562de7063c38e555e061ae392d77da7e036095a377c1ebc4f0d",
+      "mini3d/gltf_loader.py": "3d056ffb31481c10470c91e7acad7e15bad42b1e2e305bf85d2f565e324643cc",
+      "mini3d/lighting.py": "fb3b7cfc34b17d1ba4995bb7848e94d8fdb87039ab9c8e44ee4eb0cfb7ef20db",
+      "mini3d/material_renderer.py": "6e11f16a3dcf582b1c785bee2b8bc2284779d3a786544f5510774b1165c4950e",
+      "mini3d/material_shaders.py": "56a3d3fcec601618966bee6839b2470266989fa04aa291770252790316efd86f",
+      "mini3d/math3d.py": "9714e6c0434a0bfe5c8d435c3f906596c11e95d1e7b4e9c0d6c5ef3935f03dd1",
+      "mini3d/model_dialog.py": "d423ac9402d87ec9e1754d272bf76b490af9bb68517b61a98229d8a223e39823",
+      "mini3d/orbit_controller.py": "5eea75af5e78055db122de69c34852399bd18454a9ff1bffb912cfa6b59ff9e5",
+      "mini3d/picking.py": "7d0c23f397e85aecf189a6531ba315561fe8a5f55925009b9fec299e5fc81386",
+      "mini3d/placement.py": "34340e45c6196b075cce133ea8399171cc04367bf37b3f70b9039a53572b64f6",
+      "mini3d/placement_plane.py": "c78fd0cdb714cfeece12059671be9b0cf1d4c7e432a226df35e4fbf173aac98a",
+      "mini3d/render_plan.py": "595613b8cc950d77647f45e0f5a06cf2b9c1201fe5e53b626a2a670a63555662",
+      "mini3d/render_target.py": "6e7da627ca957869980a638a6fb9b463bf8b5e4b4f59ee13057f4d62f57ee40b",
+      "mini3d/resources/ibl/CC0.html": "9ca2e10c33c61a53e4b8820518b513f21dcdfdfaeaa4dffb622a8674ba21a3cd",
+      "mini3d/resources/ibl/neutral.json": "06dd9392a8988ae900dc4393fe62c55fdbdccd44fbe672823a6425cbbb0610d1",
+      "mini3d/resources/ibl/neutral.npz": "6679cedf9bc3a683be6ec70b3cf4208305b0929045753e1244df3bbc150c3cc9",
+      "mini3d/resources/ibl/NOTICE.md": "d6aac45253dd4baf85a0742fb1d736dc6f779a630a9d2902feb6b9b259633f3b",
+      "mini3d/scene.py": "4bd01d5e7aacdea1f9ae9106af3afc39e8578bdef6f03bc0978d6499650f3bb9",
+      "mini3d/scene_io.py": "998d4794bc6ca3cfec097ce6160993d65935276440f6b931248cadd231c1e32b",
+      "mini3d/shadow_fit.py": "4a134f6ec7d520082452a00b7a09e49ebee894d5bf4fb04c53c603265759f02e",
+      "mini3d/shadow_map.py": "1ee4972a10f51c71eef74295973bd8e19a3c111c76c334007f52af8a4db4546e",
+      "mini3d/shot_camera.py": "4cb10c9d8a0e57afbd9459374cd7bc7c196472992fe1beb4ab5519857feae60d",
+      "mini3d/stl_loader.py": "76e1c9fe18aaefd19346cf85f581ab4a2170534fc25f5de4395a589ac38706ad",
+      "mini3d/surface_drag.py": "ba87febeef9b51ef06c9c20f36fd5b07b1113e426005c0a62c78f4ac89105b05",
+      "mini3d/urdf_loader.py": "d8a4083ed46491664cbb9667b4b771b31b4b02b860d34ffa379b7b5ca9e66cba",
+      "mini3d/viewer.py": "6aaf58142631aa92dc0140dd24906b178bf0aabf66203b35d811ee5f66e2271b",
+      "model/manifest.json": "8d5605bc8ea7c8e3fce08fcdff31505631a666af28338100b64b5ee1cf3c14a7",
+      "requirements.txt": "9266680e8b4487c8e672d8e8f7698fb77f8470d2d220728c2d98d9743b7ef82b"
+    },
+    "production_source_unchanged_during_run": true
+  },
+  "migration_batch": {
+    "tested_head": "fd0a42d5c4da7c5f788a70cd519666f9add1f691",
+    "tested_working_tree": true,
+    "passed": true,
+    "runs": [
+      {
+        "name": "unit",
+        "exit_code": 0,
+        "seconds": 7.228
+      },
+      {
+        "name": "editor_smoke",
+        "exit_code": 0,
+        "seconds": 3.198
+      },
+      {
+        "name": "editor_integration_smoke",
+        "exit_code": 0,
+        "seconds": 3.232
+      },
+      {
+        "name": "file_dialog_smoke",
+        "exit_code": 0,
+        "seconds": 4.577
+      },
+      {
+        "name": "ground_separation_smoke",
+        "exit_code": 0,
+        "seconds": 14.633
+      },
+      {
+        "name": "placement_smoke",
+        "exit_code": 0,
+        "seconds": 6.95
+      },
+      {
+        "name": "placement_v2_smoke",
+        "exit_code": 0,
+        "seconds": 19.032
+      },
+      {
+        "name": "lighting_smoke",
+        "exit_code": 0,
+        "seconds": 2.691
+      },
+      {
+        "name": "lighting_api_smoke",
+        "exit_code": 0,
+        "seconds": 4.655
+      },
+      {
+        "name": "lighting_ui_smoke",
+        "exit_code": 0,
+        "seconds": 3.733
+      },
+      {
+        "name": "scene_clipping_smoke",
+        "exit_code": 0,
+        "seconds": 5.515
+      },
+      {
+        "name": "shadow_ui_smoke",
+        "exit_code": 0,
+        "seconds": 3.006
+      },
+      {
+        "name": "photo_smoke",
+        "exit_code": 0,
+        "seconds": 6.391
+      },
+      {
+        "name": "ai_api_smoke",
+        "exit_code": 0,
+        "seconds": 6.46
+      },
+      {
+        "name": "shot_camera_persistence_smoke",
+        "exit_code": 0,
+        "seconds": 11.978
+      },
+      {
+        "name": "shot_msaa_smoke",
+        "exit_code": 0,
+        "seconds": 3.581
+      },
+      {
+        "name": "consolidation_gpu_regression",
+        "exit_code": 0,
+        "seconds": 5.159
+      },
+      {
+        "name": "unified_api_ui_smoke",
+        "exit_code": 0,
+        "seconds": 4.511
+      },
+      {
+        "name": "stl_render_smoke",
+        "exit_code": 0,
+        "seconds": 3.349
+      },
+      {
+        "name": "ibl_gpu_regression",
+        "exit_code": 0,
+        "seconds": 4.242
+      },
+      {
+        "name": "ibl_gpu_4x",
+        "exit_code": 0,
+        "seconds": 2.63
+      },
+      {
+        "name": "demo_equivalence",
+        "exit_code": 0,
+        "seconds": 9.705
+      },
+      {
+        "name": "ui_photography_81",
+        "exit_code": 0,
+        "seconds": 4.512
+      },
+      {
+        "name": "api_photography",
+        "exit_code": 0,
+        "seconds": 1.028
+      },
+      {
+        "name": "shadow_baseline",
+        "exit_code": 0,
+        "seconds": 2.349
+      },
+      {
+        "name": "shadow",
+        "exit_code": 0,
+        "seconds": 4.162
+      },
+      {
+        "name": "renderer_v2",
+        "exit_code": 0,
+        "seconds": 8.993
+      },
+      {
+        "name": "cpu_cache",
+        "exit_code": 0,
+        "seconds": 20.86
+      },
+      {
+        "name": "q1",
+        "exit_code": 0,
+        "seconds": 13.973
+      },
+      {
+        "name": "q2",
+        "exit_code": 0,
+        "seconds": 17.423
+      },
+      {
+        "name": "shadow_assets_smoke",
+        "exit_code": 0,
+        "seconds": 12.935
+      },
+      {
+        "name": "rome_integration_smoke",
+        "exit_code": 0,
+        "seconds": 33.705
+      },
+      {
+        "name": "rome_ui",
+        "exit_code": 0,
+        "seconds": 16.905
+      },
+      {
+        "name": "rome_added_models_smoke",
+        "exit_code": 0,
+        "seconds": 10.441
+      },
+      {
+        "name": "rome_performance",
+        "exit_code": 0,
+        "seconds": 34.246
+      },
+      {
+        "name": "shadow_motion",
+        "exit_code": 0,
+        "seconds": 102.998
+      },
+      {
+        "name": "caster_depth",
+        "exit_code": 0,
+        "seconds": 1.699
+      }
+    ],
+    "identical_images": [
+      {
+        "name": "q1/Avocado-A.png",
+        "exact_bytes": true,
+        "sha256": "a8ba60bf0b9574e359d7e3ec392742e38c74163e6fc0f7add78c56757ae77cb8"
+      },
+      {
+        "name": "q1/DamagedHelmet-A.png",
+        "exact_bytes": true,
+        "sha256": "1e2f49ff307632b9ac890d3575b00076c3f3da6654dd34b45e91bce9c9698f58"
+      },
+      {
+        "name": "q1/Lantern-A.png",
+        "exact_bytes": true,
+        "sha256": "c4912fcd5d6c10c634ac53a70be5e214861b0c09092d18226782cc57034e9a96"
+      },
+      {
+        "name": "q1/spheres-A.png",
+        "exact_bytes": true,
+        "sha256": "86918d770c4c39430b5e475c008acf3a2879eb33f80624632fd67ff7ce6078ad"
+      },
+      {
+        "name": "q1/Avocado-B.png",
+        "exact_bytes": true,
+        "sha256": "8edc1a0ee27b00852d57971709aa1eb613854dacecc8288f7ff2cef175fdba4f"
+      },
+      {
+        "name": "q1/DamagedHelmet-B.png",
+        "exact_bytes": true,
+        "sha256": "812737e18b421fe13b1e3a5bd9bbfab9a2b54a11e6619018ef593cf8ca36c1ce"
+      },
+      {
+        "name": "q1/Lantern-B.png",
+        "exact_bytes": true,
+        "sha256": "e72fd9c21a5dcd5467a8faaa4774ed6bda753c099d8d264a3dd599c15ccd3a5e"
+      },
+      {
+        "name": "q1/spheres-B.png",
+        "exact_bytes": true,
+        "sha256": "845737d0880dc7c41b5ee09d257d5a06b7ef988d367b17c1126d7e27e2a40ab1"
+      },
+      {
+        "name": "q2/Avocado-mini-1x.png",
+        "exact_bytes": true,
+        "sha256": "8edc1a0ee27b00852d57971709aa1eb613854dacecc8288f7ff2cef175fdba4f"
+      },
+      {
+        "name": "q2/Avocado-mini-4x.png",
+        "exact_bytes": true,
+        "sha256": "41574d0c1d174e3168b5e482dd7d5a9f9a733314c3f3a1659f01e410b358ea57"
+      },
+      {
+        "name": "q2/Avocado-mini-ssaa2.png",
+        "exact_bytes": true,
+        "sha256": "0c7fc21575c801117e4b6d967ce5dd882d27f8942f919a7b85ddb2c0a8a9e0ae"
+      },
+      {
+        "name": "q2/Lantern-mini-1x.png",
+        "exact_bytes": true,
+        "sha256": "e72fd9c21a5dcd5467a8faaa4774ed6bda753c099d8d264a3dd599c15ccd3a5e"
+      },
+      {
+        "name": "q2/Lantern-mini-4x.png",
+        "exact_bytes": true,
+        "sha256": "72fa20699922b1f453b88a03ad816639c7c440e8081b432d752c9a01882f1eb7"
+      },
+      {
+        "name": "q2/Lantern-mini-ssaa2.png",
+        "exact_bytes": true,
+        "sha256": "35efb05749909c8c13e820b60d34ce78effc58aefea7462535b72cd2933ff0ba"
+      },
+      {
+        "name": "q2/spheres-mini-1x.png",
+        "exact_bytes": true,
+        "sha256": "845737d0880dc7c41b5ee09d257d5a06b7ef988d367b17c1126d7e27e2a40ab1"
+      },
+      {
+        "name": "q2/spheres-mini-4x.png",
+        "exact_bytes": true,
+        "sha256": "dd4c8ac38172491b4de18585174298ba462af781f3f7837853d9806e739109d8"
+      },
+      {
+        "name": "q2/spheres-mini-ssaa2.png",
+        "exact_bytes": true,
+        "sha256": "7533727bdc0c406ce1fa34751664e2874bc1a5134232bdf95e4154e22f4440ff"
+      },
+      {
+        "name": "q2/Avocado-coverage-1.png",
+        "exact_bytes": true,
+        "sha256": "3b8fa8f4fb228b83237ed7651d5345a62f20f7c6f91eab300407bc0ef642d29f"
+      },
+      {
+        "name": "q2/Avocado-coverage-4.png",
+        "exact_bytes": true,
+        "sha256": "9290155e2c7c785b0a2b6bd5d6a4fb6c87308442906b7fa9012d2a338ad86972"
+      },
+      {
+        "name": "q2/Avocado-coverage-ssaa2.png",
+        "exact_bytes": true,
+        "sha256": "68e022d2a76006bf7c1f29cb75eb62b4412c7a418c9843c8d2e3e9492e62d52a"
+      },
+      {
+        "name": "q2/Lantern-coverage-1.png",
+        "exact_bytes": true,
+        "sha256": "663cd5e16d4277da6550ff289fe3406b2b3317154eed86f62dfec2f85a4eac1e"
+      },
+      {
+        "name": "q2/Lantern-coverage-4.png",
+        "exact_bytes": true,
+        "sha256": "cdd7d71c2681908a0636e5e0e37e979f7eca8fd8a2fa780e1b1a0d13e417fd47"
+      },
+      {
+        "name": "q2/Lantern-coverage-ssaa2.png",
+        "exact_bytes": true,
+        "sha256": "50af87e8ee547c903148f9cbf444ba190c1b2c00d623d6683b44d5277348b07c"
+      },
+      {
+        "name": "q2/spheres-coverage-1.png",
+        "exact_bytes": true,
+        "sha256": "9f1ff5e247a7e00c0e4caf368ffe9def725e2df0f24679c9ee601d2e89ade219"
+      },
+      {
+        "name": "q2/spheres-coverage-4.png",
+        "exact_bytes": true,
+        "sha256": "e262b7301b8b352f528281d1423b4f239e898a2fc21db52a5d7c0b468c0559a7"
+      },
+      {
+        "name": "q2/spheres-coverage-ssaa2.png",
+        "exact_bytes": true,
+        "sha256": "c92882233b5af5193b7022b737ea6c98fd85afc83c109363308c380698b8fe94"
+      }
+    ],
+    "production_source_hashes": {
+      "1 copy.py": "6a586066e15be4524705d2efc795ce747b73b1f5b3ceb44805e616ece5e8cee5",
+      "1.py": "d3c5bbc6d8e0043f44fcd63543151b42e2554fbf7741ad11fe6369bebbfc98f5",
+      "2.py": "47b645de139a282ded6a2434b03711fe41a6a9ba5e3ceede93d0f8e8ff0a11c7",
+      "editor.py": "099f1480096e77bb74d31f66c4bc244e2273d7ffc93455b4ddc746329294b880",
+      "editor_app.py": "5f747abdf68383207cefd11acc1ec6d78c1d93d5b08990c85ab41b6c77e725e8",
+      "examples/__init__.py": "7efcba027181f86d8f1dc488b67a59e71524bff8040fedebf38cd25ddbe7b0f0",
+      "examples/circular_motion.py": "890218230b1d1844d16bfc76273a3ec191ddf588b3149a345bfb0c8ba0e9e533",
+      "examples/legacy_scene.py": "7f5e0e9156e381ea931d5072e5ba89e941e45b16042a52e4e6f3740d98a3ff63",
+      "examples/primitives.py": "de283a7a666afaa5400ec8df60a616494c935d7cbe82639a325001fcd3f99877",
+      "examples/urdf_car.py": "ed63a9c714b6b95a6d3b0e5c4c10af8ec05aa33b52ae36fef6c955261ebfb0be",
+      "mini3d/__init__.py": "9b27b78f482801d6e0f35a48a72305a6e33d5052cb7b40d9788c9d17af888386",
+      "mini3d/__main__.py": "808931c196750d8c62bc0bc1ec15ad8696fc4059eb05e455f3e5f40bf993d71d",
+      "mini3d/api.py": "7dc57f00ec956a8ff756b34434e68e472b4995564a74c629d0d6a0432839351d",
+      "mini3d/api_dispatch.py": "387607c4532b7c1935893bcc2d478700591a9bc5cb8fa1a91fab6c0930a385c3",
+      "mini3d/assets.py": "6d8ce6ce464a6db03599408694602948053ab062f3061e104be676217670d244",
+      "mini3d/camera.py": "4dc8a3cae6eedf088add4355d683276fd3bb49c1843031ce6d9cf7d73ad7f96e",
+      "mini3d/commands.py": "559052197064143ab5d89c9492d451cdf6456949191823cdc4b885f537e0ec99",
+      "mini3d/cpu_renderer.py": "79d32227cbc9e73fb8252d9351db391e6b3de62ac04f7fb3e49df9d1c75205d7",
+      "mini3d/editor.py": "6d217c3f6b7c91494e5e888d09943a62c690e275d8e00d4b16edf5cd4b7c248c",
+      "mini3d/editor_runtime.py": "dfbb474358819d56d9834543bdbb3813786741337a270a5ac9cde7b187a82f66",
+      "mini3d/editor_tools.py": "d9516c61da16061bbe4bc6ac2d917e6688b3d12aef0a5e9fb4650f0f0490ce3a",
+      "mini3d/editor_ui.py": "5225afe65e48b1146f911b851699770c8f930ae60da8df57d6db04027e38b431",
+      "mini3d/environment.py": "a64a00c418b9923f7ee52e7c0aec23afbe45e03d4d284fd39864711fc4d2c6aa",
+      "mini3d/formation.py": "8c7ea5dda286494927c7b784ec96b6c0c7e5d686a0c00ef22cc9df0ca7839481",
+      "mini3d/geometry.py": "a43414723deead23d115f4d9174b6e362e2ef91a9a620655aca45cdd674a6922",
+      "mini3d/gl_renderer.py": "d26f40c15f03d6eb552dc53312c8fa2053afae413e1a56dfd7ebce1477cbd9b8",
+      "mini3d/gl_state.py": "64f7d2ca0f697562de7063c38e555e061ae392d77da7e036095a377c1ebc4f0d",
+      "mini3d/gltf_loader.py": "3d056ffb31481c10470c91e7acad7e15bad42b1e2e305bf85d2f565e324643cc",
+      "mini3d/lighting.py": "fb3b7cfc34b17d1ba4995bb7848e94d8fdb87039ab9c8e44ee4eb0cfb7ef20db",
+      "mini3d/material_renderer.py": "6e11f16a3dcf582b1c785bee2b8bc2284779d3a786544f5510774b1165c4950e",
+      "mini3d/material_shaders.py": "56a3d3fcec601618966bee6839b2470266989fa04aa291770252790316efd86f",
+      "mini3d/math3d.py": "9714e6c0434a0bfe5c8d435c3f906596c11e95d1e7b4e9c0d6c5ef3935f03dd1",
+      "mini3d/model_dialog.py": "d423ac9402d87ec9e1754d272bf76b490af9bb68517b61a98229d8a223e39823",
+      "mini3d/orbit_controller.py": "5eea75af5e78055db122de69c34852399bd18454a9ff1bffb912cfa6b59ff9e5",
+      "mini3d/picking.py": "7d0c23f397e85aecf189a6531ba315561fe8a5f55925009b9fec299e5fc81386",
+      "mini3d/placement.py": "34340e45c6196b075cce133ea8399171cc04367bf37b3f70b9039a53572b64f6",
+      "mini3d/placement_plane.py": "c78fd0cdb714cfeece12059671be9b0cf1d4c7e432a226df35e4fbf173aac98a",
+      "mini3d/render_plan.py": "595613b8cc950d77647f45e0f5a06cf2b9c1201fe5e53b626a2a670a63555662",
+      "mini3d/render_target.py": "6e7da627ca957869980a638a6fb9b463bf8b5e4b4f59ee13057f4d62f57ee40b",
+      "mini3d/resources/ibl/CC0.html": "9ca2e10c33c61a53e4b8820518b513f21dcdfdfaeaa4dffb622a8674ba21a3cd",
+      "mini3d/resources/ibl/neutral.json": "06dd9392a8988ae900dc4393fe62c55fdbdccd44fbe672823a6425cbbb0610d1",
+      "mini3d/resources/ibl/neutral.npz": "6679cedf9bc3a683be6ec70b3cf4208305b0929045753e1244df3bbc150c3cc9",
+      "mini3d/resources/ibl/NOTICE.md": "d6aac45253dd4baf85a0742fb1d736dc6f779a630a9d2902feb6b9b259633f3b",
+      "mini3d/scene.py": "4bd01d5e7aacdea1f9ae9106af3afc39e8578bdef6f03bc0978d6499650f3bb9",
+      "mini3d/scene_io.py": "998d4794bc6ca3cfec097ce6160993d65935276440f6b931248cadd231c1e32b",
+      "mini3d/shadow_fit.py": "4a134f6ec7d520082452a00b7a09e49ebee894d5bf4fb04c53c603265759f02e",
+      "mini3d/shadow_map.py": "1ee4972a10f51c71eef74295973bd8e19a3c111c76c334007f52af8a4db4546e",
+      "mini3d/shot_camera.py": "4cb10c9d8a0e57afbd9459374cd7bc7c196472992fe1beb4ab5519857feae60d",
+      "mini3d/stl_loader.py": "76e1c9fe18aaefd19346cf85f581ab4a2170534fc25f5de4395a589ac38706ad",
+      "mini3d/surface_drag.py": "ba87febeef9b51ef06c9c20f36fd5b07b1113e426005c0a62c78f4ac89105b05",
+      "mini3d/urdf_loader.py": "d8a4083ed46491664cbb9667b4b771b31b4b02b860d34ffa379b7b5ca9e66cba",
+      "mini3d/viewer.py": "6aaf58142631aa92dc0140dd24906b178bf0aabf66203b35d811ee5f66e2271b",
+      "model/manifest.json": "8d5605bc8ea7c8e3fce08fcdff31505631a666af28338100b64b5ee1cf3c14a7",
+      "requirements.txt": "9266680e8b4487c8e672d8e8f7698fb77f8470d2d220728c2d98d9743b7ef82b"
+    },
+    "production_source_unchanged_during_run": true
+  },
+  "direct_cli": {
+    "tested_head": "fd0a42d5c4da7c5f788a70cd519666f9add1f691",
+    "tested_working_tree": true,
+    "passed": true,
+    "runs": [
+      {
+        "name": "composition",
+        "exit_code": 0,
+        "seconds": 0.849
+      },
+      {
+        "name": "first_session",
+        "exit_code": 0,
+        "seconds": 2.844
+      },
+      {
+        "name": "second_session",
+        "exit_code": 0,
+        "seconds": 4.136
+      },
+      {
+        "name": "first_scene_ui",
+        "exit_code": 0,
+        "seconds": 3.198
+      },
+      {
+        "name": "second_scene_ui",
+        "exit_code": 0,
+        "seconds": 3.443
+      },
+      {
+        "name": "shadow_precision",
+        "exit_code": 0,
+        "seconds": 3.359
+      },
+      {
+        "name": "render_quality_v1",
+        "exit_code": 0,
+        "seconds": 14.299
+      },
+      {
+        "name": "placement_performance",
+        "exit_code": 0,
+        "seconds": 25.948
+      },
+      {
+        "name": "open_assets",
+        "exit_code": 0,
+        "seconds": 77.799
+      }
+    ],
+    "test_source_hashes": {
+      "tests/ai_api_smoke.py": "d4d655a2d7a878acc24419a7c1e21ce2a298c24561b51efb1af24284c7696f53",
+      "tests/api_photography_workflow_20261010.py": "f0ff09a2bef8c0802c66c88ed110969b7ada4e8eadf1513b77f5d4069e09a1d7",
+      "tests/audit_placement_20261010.py": "81e14e422a56f3b1e2c0a456feb8b6d6ff432da020ad72ca89278528c52c8cca",
+      "tests/benchmarks/placement_v2_performance.py": "3622c3657e39838977c71cb43427365a49d9a1577fcdc65af5431f73e2d8da4c",
+      "tests/benchmarks/renderer_v2_cpu_cache_benchmark.py": "220c59ab7f6ea42931f9844f80fcd86ce4057be6afb53e6cd6f22273073f0bf7",
+      "tests/benchmarks/shadow_fit_performance_20261010.py": "21d82771210a7786b5b3a7188f1a384014e3f5088a79620fdd3e6ea011cac111",
+      "tests/consolidation_gpu_regression.py": "bf5af8f2b8447019582db2998c5a719ad906d4518baf1e50b05c55e53437a07a",
+      "tests/demo_equivalence.py": "2f854780deb14733e1264da34630ec5eba9792282e5f39fd68b55ab61064146c",
+      "tests/editor_integration_smoke.py": "c6c39ee804ae9a93be0c47dd6501cf467415c404de5e18a493329733652fea91",
+      "tests/editor_smoke.py": "dcb50be0b79bc15e292c653039141b060f736a6cf4b942a691e521aeaf0ce733",
+      "tests/file_dialog_smoke.py": "67a16e53427577aeaaeea4511eb0bcd35d6537a4f7d2b58a37c471d3d87e0fa1",
+      "tests/ground_separation_smoke.py": "3d36dcada5c2714de3fab5d9e15bccc4aedc53a309b4771122c88938375a2868",
+      "tests/ibl_gpu_regression.py": "4ce36781d5ebb228ef8c0e978e1ab1d632246b190a56fe0de6ca855cbc215303",
+      "tests/ibl_quality_q1.py": "99ef9ca0768953a6d7c443ec3a41ccad126f59d73362232119783a342cc4078b",
+      "tests/lighting_api_smoke.py": "f59b89557d6883451129f8647b15d90570b8f4f2df1e9e6abd774fa64edaaf51",
+      "tests/lighting_fixture.py": "e9404fc143f97cc419ee68bb38c3bfd8d4ea5172d97396c7a5b90697de586ee4",
+      "tests/lighting_smoke.py": "30ec83e57db756f676c3282d10ba61ef10798a3545740ebd9661f91ed17215b0",
+      "tests/lighting_ui_smoke.py": "6d46f4c92478dd242cf4d1f5b04fb2c3ca1376331bb7ac378171d6792b3a62ec",
+      "tests/photo_smoke.py": "65e663e7fba10b0320e3fc27899eff451cc1c33c42568f21d1d84e1fbfbfd2ac",
+      "tests/photography_fixture.py": "518332e8b27139f2ab7db7a640cf6cafc120327098f947b419a7b9a0132464c7",
+      "tests/placement_smoke.py": "abe8b421999587b8850033e81078d8ad0b7a0f3d96b1730d2cbcf2ee213ae4eb",
+      "tests/placement_v2_smoke.py": "5c79475e9f48d532340b361c20b9c984f5fbcc49c1f47586ddfa5ec972ddb534",
+      "tests/render_smoke.py": "f2bd75cd709fc2f1c61613256ba466a1c9dd9fd58d5339b3a21efab480c95554",
+      "tests/renderer_v2_smoke.py": "37a8c4aa6af631d08e304a688507e82e3c6e0d31109e723585a758c775791a3c",
+      "tests/research/audit_shadow_precision_20261010.py": "90f49653318072bad60136ef972241533af4acb4defb6b13ff5b00315d468692",
+      "tests/research/open_assets_shadow_audit_20261010.py": "1503e52294eea8fb4b30f0cb40c0053414fff1cbc876b5a605b1d5586658b0c6",
+      "tests/research/open_scene.py": "08027f9f012ad517a25f0549b71c99b228bfd865ef283c15624fdf68ce1b8af1",
+      "tests/research/photographer_session.py": "aaeb20b28bc92ff3ff25cc8a04eaa9e03aaf4c6fcfa7e80f7bce0892ad72d6b8",
+      "tests/research/photographer_session_two.py": "c9a7c0e38e64d7243884707f4463445f308a5d1af9aa3d12c9b535a1dae54020",
+      "tests/research/render_quality_v1.py": "528f951aea743b81a19e0503574093b6ade2d25799cd3d3534833e770840e188",
+      "tests/rome_added_models_smoke.py": "e8ed4b6bb3ccd96c038c8dd0dd82bfd34191aae40aa7a2345d170fd15979c981",
+      "tests/rome_integration_smoke.py": "12ee01fcabaaa1c8896843718c4eef719c5fad2ef90085ea99bbc97982321e1e",
+      "tests/rome_integration_ui_smoke.py": "8bc2caab3f91255c32665d811cb246b700a9a31b4e9eb711ee2cb0fb2ca8b053",
+      "tests/scene_clipping_smoke.py": "34d0acca1bf4787deccd3e2041192860e85f250c1cebd15c03da70af83c8e832",
+      "tests/shadow_assets_smoke.py": "142e55f40cb1281aace93dc0719cf92ce1d120cd3f7ded15f10e52ced437b47b",
+      "tests/shadow_motion_audit_20261010.py": "83d6ef7e1892ee281fa2a8768a2f92767d7dbec3784931f023ffba03ac4c074a",
+      "tests/shadow_smoke.py": "f02cdb6930ebd0be7cce23390214d92b0c79a275a8898340657b90ced9949bca",
+      "tests/shadow_ui_smoke.py": "c57ddc9efe86ea9533f36cd0950468be7d815f07b30311b5e988ec614d1f1529",
+      "tests/shot_camera_persistence_smoke.py": "ec5993fec63303e8769bbf8ffb3aae4e5bcc6fa2927ccc0fe8d1fa011bf4f048",
+      "tests/shot_msaa_smoke.py": "9a81da2923753a3a23ccb2b76c01d52e13b98064ea85a0444755b16c39967247",
+      "tests/stl_render_smoke.py": "25a0b01565a2478a36aab24e09613dd64176239b04d2a4aece1ac9655149ae14",
+      "tests/test_api.py": "eb12a364e318f0098ed79f9ebccfc78a7fbc80002a4865bbc33cb652b312f443",
+      "tests/test_api_binding.py": "3c465c97010e54f8c9a9d6c5a5956aa42becf1ab3957cec715ae4319866f4dfd",
+      "tests/test_api_dispatch.py": "24e45adbe703cd8d13bfd3b2a8aa34e36b32f6b6c89cc1d09671f134910b10b9",
+      "tests/test_camera.py": "0a21523192a2782c5434db81c19834dba18ad16c2314c65b162273c026831359",
+      "tests/test_commands.py": "e68e2b87698e5bd712d92d8ef23b38b716f78e6a2bb173cbe2c2c40b40d40c7d",
+      "tests/test_editor.py": "9cbc1739804eb17088b67718f236f05a7a8481c5715b2df253ae1960568292c9",
+      "tests/test_environment.py": "8f9769db43cee66e17217048630bbcdfcf29077054cc18d313d6c463d3b89a5d",
+      "tests/test_examples.py": "57c68e73dc9585128f9f7e7f62cbddf032004daa57cb5c63330b5af77818e08f",
+      "tests/test_formation.py": "01c51b5cff760694e5bc4c2ccb41b40b4785371a717caea71c78f038415b43eb",
+      "tests/test_gltf_loader.py": "a0089e42011c90fb2731c3586ba65a35840ec8f9a3d1f1ff402f8c7fd417a3f5",
+      "tests/test_ground_separation.py": "01bfac02c9e89e4afe7d61a56f7cc6695829f1738437641dddd4e71a92e3fb9d",
+      "tests/test_lighting.py": "9c81dab75096a9f94148511f06b5bc51ada7cf125c92f611cbf6a5bcdd5bce43",
+      "tests/test_lighting_api.py": "46227c33956738162cb958d2b177a0fff3ba035af76b0af77fdc4b777800e1fc",
+      "tests/test_model_dialog.py": "cb81d5b3cc8dbc3c6034b21b08cc7252db1c75ec24720dc1b5c086a39d9fe155",
+      "tests/test_multi_gizmo.py": "87913a803328d3366131fbbdf180d650fe3a5471f158f6e2b97747e9ec6f3815",
+      "tests/test_picking.py": "147ae5055d6882cb37f8f6976b50af1dfc05500423d827d2f37eaabf45834b98",
+      "tests/test_placement.py": "211fd166d90b725e9843128b3a2051d311aa04d3ec9fff1e5d772f15a0a66efc",
+      "tests/test_placement_assets.py": "76bc7f4c5c42f68fa960f3ca4d0cba60fecf8220e3970c26e4fcb640005776d5",
+      "tests/test_placement_editor.py": "14682e9512394d2762752d08c3f7bc85a81fca33722390656981ae1b817f434d",
+      "tests/test_placement_gizmo.py": "ae20b8c94d9886244b4044025e2f2bbf767055d13580a4261800996f525dd3d6",
+      "tests/test_placement_v2_commands.py": "9fc2e130019aa1a9867eafa97d53dde6d4480418e93ad62ea65260846f6a3af9",
+      "tests/test_placement_v2_editor.py": "03d4b3e8d810276e9ddaa770e063fda07917c595532c50c3eec297662b7eff83",
+      "tests/test_render_plan.py": "031e0b7dd47c5978038faddd71da48c6c5cd979f26b315b67b0fd8c7c601d40e",
+      "tests/test_scene_clipping.py": "12b3195ea45666720a01d9998fd574cd883b8329afebb2b0a4b24b5896ba1146",
+      "tests/test_shadow_camera_fit.py": "e8149b1881ad012a384c8565af05abaa12b3ada08eecad374d1c93e5375f42b6",
+      "tests/test_shadow_fit_batch.py": "dd4498b06a4f2701c5759f431203380df422ac6828b63914a53ba12ce11817ab",
+      "tests/test_shadows.py": "8ae5909b88b1a4b282122dc9fea6e75133ff2bab8a43c2092d406d9713c81d63",
+      "tests/test_shot_antialiasing.py": "d93c3aae868a0481a7b752a4f7726a2a4e2c41c3fe4f554569f1c4e47b7f986a",
+      "tests/test_shot_camera.py": "5c1605567146d372ea3483ad70c514753e3eed0eaaa9a053e096ca8e73420c6f",
+      "tests/test_shot_camera_persistence.py": "cc6f02b6a633922ec773fd27b1cee1ec69c1b13cc9e9cc1e036d6540f4bb5998",
+      "tests/test_stl_loader.py": "e1dc9fac8c14e95bad59424642daf9cc81ab981114d8f2f80725608350f624c6",
+      "tests/test_surface_drag.py": "f7f50474915f6aa586c1d3127ce592787a7387f2a9e2b179e34bf8d3f6eb59c3",
+      "tests/ui_photography_journey_20261010.py": "8a7ddb7d356dd3075288dde31a40e05ae0ddd4c0346c4b709e284d1d0d883a5f",
+      "tests/unified_api_ui_smoke.py": "85f11cdb7b4d67c1263fc90b07f76eba7d993eece91b723bed90bbf6e9fc0c5a"
+    }
+  },
+  "coverage": {
+    "unit_ids_unchanged": 277,
+    "unit_sources_byte_exact": 32,
+    "production_hashes_unchanged": 54,
+    "files": [
+      {
+        "before": "tests/ai_api_smoke.py",
+        "after": "tests/ai_api_smoke.py",
+        "assertions_unchanged": true
+      },
+      {
+        "before": "tests/api_photography_workflow_20261010.py",
+        "after": "tests/api_photography_workflow_20261010.py",
+        "assertions_unchanged": true
+      },
+      {
+        "before": "tests/audit_placement_20261010.py",
+        "after": "tests/audit_placement_20261010.py",
+        "assertions_unchanged": true
+      },
+      {
+        "before": "tests/audit_shadow_precision_20261010.py",
+        "after": "tests/research/audit_shadow_precision_20261010.py",
+        "assertions_unchanged": true
+      },
+      {
+        "before": "tests/consolidation_gpu_regression.py",
+        "after": "tests/consolidation_gpu_regression.py",
+        "assertions_unchanged": true
+      },
+      {
+        "before": "tests/demo_equivalence.py",
+        "after": "tests/demo_equivalence.py",
+        "assertions_unchanged": true
+      },
+      {
+        "before": "tests/editor_integration_smoke.py",
+        "after": "tests/editor_integration_smoke.py",
+        "assertions_unchanged": true
+      },
+      {
+        "before": "tests/editor_smoke.py",
+        "after": "tests/editor_smoke.py",
+        "assertions_unchanged": true
+      },
+      {
+        "before": "tests/file_dialog_smoke.py",
+        "after": "tests/file_dialog_smoke.py",
+        "assertions_unchanged": true
+      },
+      {
+        "before": "tests/ground_separation_smoke.py",
+        "after": "tests/ground_separation_smoke.py",
+        "assertions_unchanged": true
+      },
+      {
+        "before": "tests/ibl_gpu_regression.py",
+        "after": "tests/ibl_gpu_regression.py",
+        "assertions_unchanged": true
+      },
+      {
+        "before": "tests/ibl_quality_q1.py",
+        "after": "tests/ibl_quality_q1.py",
+        "assertions_unchanged": true
+      },
+      {
+        "before": "tests/lighting_api_smoke.py",
+        "after": "tests/lighting_api_smoke.py",
+        "assertions_unchanged": true
+      },
+      {
+        "before": "tests/lighting_fixture.py",
+        "after": "tests/lighting_fixture.py",
+        "assertions_unchanged": true
+      },
+      {
+        "before": "tests/lighting_smoke.py",
+        "after": "tests/lighting_smoke.py",
+        "assertions_unchanged": true
+      },
+      {
+        "before": "tests/lighting_ui_smoke.py",
+        "after": "tests/lighting_ui_smoke.py",
+        "assertions_unchanged": true
+      },
+      {
+        "before": "tests/open_assets_shadow_audit_20261010.py",
+        "after": "tests/research/open_assets_shadow_audit_20261010.py",
+        "assertions_unchanged": true
+      },
+      {
+        "before": "tests/open_photographer_session.py",
+        "removed_no_assertions": true
+      },
+      {
+        "before": "tests/open_second_session.py",
+        "removed_no_assertions": true
+      },
+      {
+        "before": "tests/photo_smoke.py",
+        "after": "tests/photo_smoke.py",
+        "assertions_unchanged": true
+      },
+      {
+        "before": "tests/photographer_session.py",
+        "after": "tests/research/photographer_session.py",
+        "assertions_unchanged": true
+      },
+      {
+        "before": "tests/photographer_session_two.py",
+        "after": "tests/research/photographer_session_two.py",
+        "assertions_unchanged": true
+      },
+      {
+        "before": "tests/placement_smoke.py",
+        "after": "tests/placement_smoke.py",
+        "assertions_unchanged": true
+      },
+      {
+        "before": "tests/placement_v2_performance.py",
+        "after": "tests/benchmarks/placement_v2_performance.py",
+        "assertions_unchanged": true
+      },
+      {
+        "before": "tests/placement_v2_smoke.py",
+        "after": "tests/placement_v2_smoke.py",
+        "assertions_unchanged": true
+      },
+      {
+        "before": "tests/render_quality_v1.py",
+        "after": "tests/research/render_quality_v1.py",
+        "assertions_unchanged": true
+      },
+      {
+        "before": "tests/render_smoke.py",
+        "after": "tests/render_smoke.py",
+        "assertions_unchanged": true
+      },
+      {
+        "before": "tests/renderer_v2_cpu_cache_benchmark.py",
+        "after": "tests/benchmarks/renderer_v2_cpu_cache_benchmark.py",
+        "assertions_unchanged": true
+      },
+      {
+        "before": "tests/renderer_v2_smoke.py",
+        "after": "tests/renderer_v2_smoke.py",
+        "assertions_unchanged": true
+      },
+      {
+        "before": "tests/rome_added_models_smoke.py",
+        "after": "tests/rome_added_models_smoke.py",
+        "assertions_unchanged": true
+      },
+      {
+        "before": "tests/rome_integration_smoke.py",
+        "after": "tests/rome_integration_smoke.py",
+        "assertions_unchanged": true
+      },
+      {
+        "before": "tests/rome_integration_ui_smoke.py",
+        "after": "tests/rome_integration_ui_smoke.py",
+        "assertions_unchanged": true
+      },
+      {
+        "before": "tests/rome_visibility_smoke.py",
+        "removed_no_assertions": true
+      },
+      {
+        "before": "tests/scene_clipping_smoke.py",
+        "after": "tests/scene_clipping_smoke.py",
+        "assertions_unchanged": true
+      },
+      {
+        "before": "tests/shadow_assets_smoke.py",
+        "after": "tests/shadow_assets_smoke.py",
+        "assertions_unchanged": true
+      },
+      {
+        "before": "tests/shadow_fit_performance_20261010.py",
+        "after": "tests/benchmarks/shadow_fit_performance_20261010.py",
+        "assertions_unchanged": true
+      },
+      {
+        "before": "tests/shadow_motion_audit_20261010.py",
+        "after": "tests/shadow_motion_audit_20261010.py",
+        "assertions_unchanged": true
+      },
+      {
+        "before": "tests/shadow_smoke.py",
+        "after": "tests/shadow_smoke.py",
+        "assertions_unchanged": true
+      },
+      {
+        "before": "tests/shadow_ui_smoke.py",
+        "after": "tests/shadow_ui_smoke.py",
+        "assertions_unchanged": true
+      },
+      {
+        "before": "tests/shot_camera_persistence_smoke.py",
+        "after": "tests/shot_camera_persistence_smoke.py",
+        "assertions_unchanged": true
+      },
+      {
+        "before": "tests/shot_msaa_smoke.py",
+        "after": "tests/shot_msaa_smoke.py",
+        "assertions_unchanged": true
+      },
+      {
+        "before": "tests/stabilization_regressions.py",
+        "removed_no_assertions": true
+      },
+      {
+        "before": "tests/stl_render_smoke.py",
+        "after": "tests/stl_render_smoke.py",
+        "assertions_unchanged": true
+      },
+      {
+        "before": "tests/test_api.py",
+        "after": "tests/test_api.py",
+        "assertions_unchanged": true
+      },
+      {
+        "before": "tests/test_api_binding.py",
+        "after": "tests/test_api_binding.py",
+        "assertions_unchanged": true
+      },
+      {
+        "before": "tests/test_api_dispatch.py",
+        "after": "tests/test_api_dispatch.py",
+        "assertions_unchanged": true
+      },
+      {
+        "before": "tests/test_camera.py",
+        "after": "tests/test_camera.py",
+        "assertions_unchanged": true
+      },
+      {
+        "before": "tests/test_commands.py",
+        "after": "tests/test_commands.py",
+        "assertions_unchanged": true
+      },
+      {
+        "before": "tests/test_editor.py",
+        "after": "tests/test_editor.py",
+        "assertions_unchanged": true
+      },
+      {
+        "before": "tests/test_environment.py",
+        "after": "tests/test_environment.py",
+        "assertions_unchanged": true
+      },
+      {
+        "before": "tests/test_examples.py",
+        "after": "tests/test_examples.py",
+        "assertions_unchanged": true
+      },
+      {
+        "before": "tests/test_formation.py",
+        "after": "tests/test_formation.py",
+        "assertions_unchanged": true
+      },
+      {
+        "before": "tests/test_gltf_loader.py",
+        "after": "tests/test_gltf_loader.py",
+        "assertions_unchanged": true
+      },
+      {
+        "before": "tests/test_ground_separation.py",
+        "after": "tests/test_ground_separation.py",
+        "assertions_unchanged": true
+      },
+      {
+        "before": "tests/test_lighting.py",
+        "after": "tests/test_lighting.py",
+        "assertions_unchanged": true
+      },
+      {
+        "before": "tests/test_lighting_api.py",
+        "after": "tests/test_lighting_api.py",
+        "assertions_unchanged": true
+      },
+      {
+        "before": "tests/test_model_dialog.py",
+        "after": "tests/test_model_dialog.py",
+        "assertions_unchanged": true
+      },
+      {
+        "before": "tests/test_multi_gizmo.py",
+        "after": "tests/test_multi_gizmo.py",
+        "assertions_unchanged": true
+      },
+      {
+        "before": "tests/test_picking.py",
+        "after": "tests/test_picking.py",
+        "assertions_unchanged": true
+      },
+      {
+        "before": "tests/test_placement.py",
+        "after": "tests/test_placement.py",
+        "assertions_unchanged": true
+      },
+      {
+        "before": "tests/test_placement_assets.py",
+        "after": "tests/test_placement_assets.py",
+        "assertions_unchanged": true
+      },
+      {
+        "before": "tests/test_placement_editor.py",
+        "after": "tests/test_placement_editor.py",
+        "assertions_unchanged": true
+      },
+      {
+        "before": "tests/test_placement_gizmo.py",
+        "after": "tests/test_placement_gizmo.py",
+        "assertions_unchanged": true
+      },
+      {
+        "before": "tests/test_placement_v2_commands.py",
+        "after": "tests/test_placement_v2_commands.py",
+        "assertions_unchanged": true
+      },
+      {
+        "before": "tests/test_placement_v2_editor.py",
+        "after": "tests/test_placement_v2_editor.py",
+        "assertions_unchanged": true
+      },
+      {
+        "before": "tests/test_render_plan.py",
+        "after": "tests/test_render_plan.py",
+        "assertions_unchanged": true
+      },
+      {
+        "before": "tests/test_scene_clipping.py",
+        "after": "tests/test_scene_clipping.py",
+        "assertions_unchanged": true
+      },
+      {
+        "before": "tests/test_shadow_camera_fit.py",
+        "after": "tests/test_shadow_camera_fit.py",
+        "assertions_unchanged": true
+      },
+      {
+        "before": "tests/test_shadow_fit_batch.py",
+        "after": "tests/test_shadow_fit_batch.py",
+        "assertions_unchanged": true
+      },
+      {
+        "before": "tests/test_shadows.py",
+        "after": "tests/test_shadows.py",
+        "assertions_unchanged": true
+      },
+      {
+        "before": "tests/test_shot_antialiasing.py",
+        "after": "tests/test_shot_antialiasing.py",
+        "assertions_unchanged": true
+      },
+      {
+        "before": "tests/test_shot_camera.py",
+        "after": "tests/test_shot_camera.py",
+        "assertions_unchanged": true
+      },
+      {
+        "before": "tests/test_shot_camera_persistence.py",
+        "after": "tests/test_shot_camera_persistence.py",
+        "assertions_unchanged": true
+      },
+      {
+        "before": "tests/test_stl_loader.py",
+        "after": "tests/test_stl_loader.py",
+        "assertions_unchanged": true
+      },
+      {
+        "before": "tests/test_surface_drag.py",
+        "after": "tests/test_surface_drag.py",
+        "assertions_unchanged": true
+      },
+      {
+        "before": "tests/ui_photography_journey_20261010.py",
+        "after": "tests/ui_photography_journey_20261010.py",
+        "assertions_unchanged": true
+      },
+      {
+        "before": "tests/unified_api_ui_smoke.py",
+        "after": "tests/unified_api_ui_smoke.py",
+        "assertions_unchanged": true
+      }
+    ]
+  },
+  "fixture_equivalence": {
+    "function_ast_identical": true,
+    "cases": [
+      {
+        "name": "stage",
+        "sha256": "2d6d17b341d188cb47a1d10feb9e64488e2057fb6e37a8415a87081b773035be",
+        "bytes": 1895,
+        "exact": true
+      },
+      {
+        "name": "column",
+        "sha256": "1c684263134609bb413b8ef564247f5c1edfae6a34373d706fe3f692cedcacdf",
+        "bytes": 7210,
+        "exact": true
+      },
+      {
+        "name": "sphere-m0-r0.08",
+        "sha256": "09d6c5d0b40e9ff3124c638f0459ba8b60b9efe2fd8f4fd32b1392fd2d25ab68",
+        "bytes": 161597,
+        "exact": true
+      },
+      {
+        "name": "sphere-m0-r0.30",
+        "sha256": "4052e18bf255d2cb9769034264d41312ec81d7d3ff95e5658f2cb24c7d0e3a13",
+        "bytes": 161596,
+        "exact": true
+      },
+      {
+        "name": "sphere-m0-r0.60",
+        "sha256": "9f45bb02f5dcc3ae7743f5c008ba553cce1242ee6344207e56c11ed22b41f6e7",
+        "bytes": 161596,
+        "exact": true
+      },
+      {
+        "name": "sphere-m0-r1.00",
+        "sha256": "7bf1c0731de162bc9e6d41f67bf2e51f45a3e564cd174c4ea144fae1c020bde0",
+        "bytes": 161596,
+        "exact": true
+      },
+      {
+        "name": "sphere-m1-r0.08",
+        "sha256": "6777a4a659f308f8212318bd5aa3f9b5e7ef3e46e577b095a5d047aa1d0f9a75",
+        "bytes": 161597,
+        "exact": true
+      },
+      {
+        "name": "sphere-m1-r0.30",
+        "sha256": "4dabfe63be02078508a0095250de9a0ae3d7f7e43f00c807c221aae457a9b50e",
+        "bytes": 161596,
+        "exact": true
+      },
+      {
+        "name": "sphere-m1-r0.60",
+        "sha256": "fd3c9e4fef4b58db7da9850ce589297933b9ce4bb4200b8309565d2b43c4498d",
+        "bytes": 161596,
+        "exact": true
+      },
+      {
+        "name": "sphere-m1-r1.00",
+        "sha256": "0a0c24d6e8eccb1b2b2e5faeebced9190652f0777ec4ddba9d36d6d0011f3169",
+        "bytes": 161596,
+        "exact": true
+      }
+    ]
+  },
+  "q2_original_manifest_items": 48,
+  "all_q2_manifest_bytes_unchanged": true,
+  "original_data_files_byte_exact": 2247,
+  "original_data_deleted": 0,
+  "composition_additional_tests": 4,
+  "research_open_assets": {
+    "status": "COMPLETED_OPEN_ASSETS_NOT_ROME",
+    "parameters": {
+      "cpu_samples": 3,
+      "shot_samples": 1,
+      "frames": 4,
+      "resolutions": [
+        1024
+      ]
+    },
+    "independent_of_rome": true
+  },
+  "limitations": "Full existing thresholds/checks preserved. Research CLI smoke parameters are not the Rome performance/motion acceptance parameters. SDL/ImGui automation is not exhaustive manual validation. Existing V2 shadow/quality limits remain."
+}

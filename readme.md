@@ -188,7 +188,7 @@ python -B tests/file_dialog_smoke.py
 python -B tests/stl_render_smoke.py
 python -B tests/placement_smoke.py captures/placement-v1-validation
 python -B tests/placement_v2_smoke.py captures/placement-v2-validation
-python -B tests/placement_v2_performance.py captures/placement-v2-validation/performance.json
+python -B tests/benchmarks/placement_v2_performance.py captures/placement-v2-validation/performance.json
 ```
 
 单元测试覆盖投影、不同尺度的自动取景、层级包围盒、拖拽、预设、重置和 resize。第二条在隐藏 OpenGL 窗口中运行三个真实示例，注入导航事件并检查模型像素及 GL 错误；需本机图形驱动，可追加截图输出目录参数。

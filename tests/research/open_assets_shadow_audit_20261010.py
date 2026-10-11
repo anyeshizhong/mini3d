@@ -13,17 +13,19 @@ os.environ.setdefault('SDL_AUDIODRIVER', 'dummy')
 import argparse
 import hashlib
 import json
-import sys
 import time
 import urllib.request
-from pathlib import Path
 from unittest.mock import patch
-ROOT = Path(__file__).resolve().parents[1]
+import sys
+from pathlib import Path
+ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(ROOT/"tests"))
 import numpy as np
 import pygame
 from OpenGL import GL as gl
 from PIL import Image
+sys.path.insert(0,str(ROOT/"tests/benchmarks"))
 import shadow_fit_performance_20261010 as perf
 from shadow_motion_audit_20261010 import union_fit
 from mini3d.api import Mini3DAPI
@@ -332,14 +334,17 @@ def refine_common_receivers(output):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--output', type=Path, default=ROOT/'captures/open-assets-20261010')
+    parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--download', action='store_true')
     parser.add_argument('--refine-only', action='store_true')
     parser.add_argument('--cpu-samples', type=int, default=51)
     parser.add_argument('--shot-samples', type=int, default=9)
     parser.add_argument('--frames', type=int, default=33)
     parser.add_argument('--resolutions', type=int, nargs='+', default=[1024,4096])
-    args = parser.parse_args(); args.output.mkdir(parents=True, exist_ok=True)
+    args = parser.parse_args()
+    if args.output.exists() and not args.refine_only:
+        parser.error('Output exists; choose a fresh directory (refine-only intentionally reuses an existing run)')
+    args.output.mkdir(parents=True, exist_ok=True)
     if args.download:
         download(args.output/'assets')
     if args.refine_only:

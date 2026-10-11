@@ -5,11 +5,13 @@ if os.name != 'nt' and not os.environ.get('DISPLAY'):
 os.environ.setdefault('SDL_AUDIODRIVER', 'dummy')
 if os.environ.get('SDL_VIDEODRIVER') == 'offscreen':
     os.environ.setdefault('PYOPENGL_PLATFORM','egl')
-import sys, json, time
-import photography_fixture as fixture
+import json, time
+import sys
 from pathlib import Path
-ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0,str(ROOT))
+ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(ROOT/"tests"))
+import photography_fixture as fixture
 import numpy as np
 import pygame
 from OpenGL import GL
@@ -79,4 +81,11 @@ def run():
     (OUT/'session.json').write_text(json.dumps(report,indent=2))
     renderer.close();pygame.quit();print(json.dumps(report))
 
-if __name__=='__main__':run()
+if __name__ == '__main__':
+    import argparse
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--output', type=Path, required=True, help='New directory; preserve original evidence')
+    OUT = parser.parse_args().output.resolve()
+    if OUT.exists():
+        parser.error('Output exists; choose a fresh directory')
+    run()

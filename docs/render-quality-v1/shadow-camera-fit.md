@@ -1,5 +1,7 @@
 # Shot Camera 阴影范围拟合 V1
 
+> 本文保留当时命令及证据；当前质量脚本见 [研究入口](../../tests/research/README.md)，旧 stabilization 执行器由 `tools/validate_v2.py --suite core --output NEW_DIRECTORY` 继承。
+
 2026-10-10。基线 `7b51eae`（Renderer 仍为原始全场景拟合），功能分支 `feature/shadow-camera-fit-v1`。测试 GPU：Intel UHD Graphics 620，OpenGL 4.6.0，驱动 27.20.100.8682。
 
 ## 实现与正确性边界

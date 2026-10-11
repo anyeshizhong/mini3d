@@ -107,7 +107,7 @@
 | `mini3d/commands.py` | 更新职责说明，无命令架构变更 |
 | `tests/test_ground_separation.py`（新增） | 6 项架构、查询、锚点、存档回归 |
 | `tests/ground_separation_smoke.py`（新增） | 图像、深度、摄影、真实资产放置与 Editor 验收 |
-| `tests/rome_visibility_smoke.py` | 旧入口转发到新验收，历史偏移实验保留在 Git 历史 |
+| 旧 `tests/rome_visibility_smoke.py`（已退休） | 无独有断言；现有 ground_separation CLI 继承，历史偏移实验保留在 Git 历史 |
 | `tests/test_commands.py`、`test_placement.py`、`test_placement_assets.py`、`test_surface_drag.py` | 更新预期为查询平面，而非隐式 Entity |
 | `tests/placement_smoke.py` | fallback 命中不再返回 Ground Entity |
 | `tests/ai_api_smoke.py` | 使用真正的模型前景断言，而非依赖灰色地板 |

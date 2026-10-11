@@ -68,9 +68,9 @@ PNG 保存在仓库用于非商业验证，并按所含 Roman Legionnaire 衍生
 在 `.worktrees/renderer-v2-core`（当前分支 `feature/renderer-v2-cpu-cache`）执行：
 
 ```powershell
-F:/gymenv/python.exe -B tests/renderer_v2_cpu_cache_benchmark.py --assets-root F:/python_project/mini3d --profile-only
-F:/gymenv/python.exe -B tests/renderer_v2_cpu_cache_benchmark.py --assets-root F:/python_project/mini3d --gpu
-F:/gymenv/python.exe -B tests/renderer_v2_cpu_cache_benchmark.py --assets-root F:/python_project/mini3d --offscreen-only
+F:/gymenv/python.exe -B tests/benchmarks/renderer_v2_cpu_cache_benchmark.py --assets-root F:/python_project/mini3d --profile-only
+F:/gymenv/python.exe -B tests/benchmarks/renderer_v2_cpu_cache_benchmark.py --assets-root F:/python_project/mini3d --gpu
+F:/gymenv/python.exe -B tests/benchmarks/renderer_v2_cpu_cache_benchmark.py --assets-root F:/python_project/mini3d --offscreen-only
 F:/gymenv/python.exe -B -m unittest discover -s tests -p 'test_*.py'
 ```
 

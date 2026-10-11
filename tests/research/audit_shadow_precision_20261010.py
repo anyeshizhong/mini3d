@@ -1,10 +1,16 @@
 """Controlled render: only ground span and shadow resolution vary."""
 import os
-os.environ.setdefault('SDL_VIDEODRIVER', 'offscreen')
+if os.name != 'nt' and not os.environ.get('DISPLAY'):
+    os.environ.setdefault('SDL_VIDEODRIVER', 'offscreen')
 os.environ.setdefault('SDL_AUDIODRIVER', 'dummy')
-os.environ.setdefault('PYOPENGL_PLATFORM', 'egl')
+if os.environ.get('SDL_VIDEODRIVER') == 'offscreen':
+    os.environ.setdefault('PYOPENGL_PLATFORM', 'egl')
 import json
+import sys
 from pathlib import Path
+ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(ROOT/"tests"))
 import numpy as np
 import pygame
 from OpenGL import GL
@@ -52,4 +58,10 @@ def run():
     pygame.quit()
 
 if __name__ == '__main__':
+    import argparse
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--output', type=Path, required=True, help='New directory; preserve original evidence')
+    OUT = parser.parse_args().output.resolve()
+    if OUT.exists():
+        parser.error('Output exists; choose a fresh directory')
     run()

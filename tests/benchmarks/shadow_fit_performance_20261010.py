@@ -16,12 +16,13 @@ import json
 import platform
 import statistics
 import subprocess
-import sys
 import time
-from pathlib import Path
 from unittest.mock import patch
-ROOT=Path(__file__).resolve().parents[1]
-sys.path.insert(0,str(ROOT))
+import sys
+from pathlib import Path
+ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(ROOT/"tests"))
 import numpy as np
 from mini3d.scene import Entity,Mesh,Scene
 from mini3d.camera import Camera

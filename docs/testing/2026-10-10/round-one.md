@@ -1,5 +1,7 @@
 # Mini3D 摄影使用记录：柱廊与金色球体
 
+> 本文是历史研究记录，图片/Scene/测量保持原样；旧脚本和手动启动命令的当前映射见 [研究入口](../../../tests/research/README.md)。
+
 2026-10-10；代码版本 `7cb7719`，分支 `feature/shot-camera-persistence`。
 
 ## 实际做了什么

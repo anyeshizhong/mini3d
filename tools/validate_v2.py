@@ -76,7 +76,7 @@ def run(output, suite):
     if suite in ('quality', 'all'):
         commands.extend([
             ('renderer_v2', ['tests/renderer_v2_smoke.py', '--assets-root', '.', '--output', str(output/'renderer_v2')]),
-            ('cpu_cache', ['tests/renderer_v2_cpu_cache_benchmark.py', '--assets-root', '.', '--output',
+            ('cpu_cache', ['tests/benchmarks/renderer_v2_cpu_cache_benchmark.py', '--assets-root', '.', '--output',
                            str(output/'cpu_cache'), '--gpu', '--samples', '21']),
             ('q1', ['tests/ibl_quality_q1.py', '--assets-root', 'model/11_benchmark_round01',
                     '--output', str(output/'q1'), '--original', 'docs/renderer-v2/q1']),
@@ -88,7 +88,7 @@ def run(output, suite):
         commands.append(('rome_ui', ['tests/rome_integration_ui_smoke.py', str(output/'rome_integration_smoke')]))
         commands.append(('rome_added_models_smoke', ['tests/rome_added_models_smoke.py',
                          str(output/'rome_integration_smoke')]))
-        commands.append(('rome_performance', ['tests/shadow_fit_performance_20261010.py', 'real',
+        commands.append(('rome_performance', ['tests/benchmarks/shadow_fit_performance_20261010.py', 'real',
                          '--output', str(output/'rome_performance/results.json'), '--cpu-samples', '21',
                          '--gpu-samples', '5', '--resolutions', '1024', '4096']))
         commands.append(('shadow_motion', ['tests/shadow_motion_audit_20261010.py', '--output',

@@ -1,15 +1,18 @@
 """A second practical shoot: still life, occlusion, light, and scale changes."""
+import sys
+from pathlib import Path
+ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(ROOT/"tests"))
 import photography_fixture as ph
 import json
 import time
-from pathlib import Path
 import numpy as np
 import pygame
 from OpenGL import GL
 from mini3d.api import Mini3DAPI
 from mini3d.gl_renderer import GLRenderer
 
-ROOT=ph.ROOT
 OUT=ROOT/'captures/second-session/still-life'
 
 def pixels(path):
@@ -97,4 +100,11 @@ def run():
     (OUT/'session.json').write_text(json.dumps(report,indent=2))
     renderer.close();pygame.quit();print(json.dumps(report))
 
-if __name__=='__main__':run()
+if __name__ == '__main__':
+    import argparse
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--output', type=Path, required=True, help='New directory; preserve original evidence')
+    OUT = parser.parse_args().output.resolve()
+    if OUT.exists():
+        parser.error('Output exists; choose a fresh directory')
+    run()

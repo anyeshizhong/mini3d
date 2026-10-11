@@ -1,21 +1,22 @@
 """Measure real Editor/OpenGL Roman 1/40/100 cases; no optimization or downloads.
 
-Run: F:/gymenv/python.exe -B tests/placement_v2_performance.py [result.json]
+Run: python -B tests/benchmarks/placement_v2_performance.py NEW_DIRECTORY/result.json
 Wall frame samples include Editor UI, selection outline and synchronized GPU
 completion. Render samples include synchronized scene rendering only. The same
 OpenGL context/cache stays alive across all counts to detect repeated uploads.
 """
 import json
 import os
-from pathlib import Path
-import sys
 import time
 from unittest.mock import patch
 
 os.environ.setdefault("PYGAME_HIDE_SUPPORT_PROMPT", "1")
-ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT))
 
+import sys
+from pathlib import Path
+ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(ROOT/"tests"))
 import numpy as np
 import pygame
 from OpenGL import GL as gl

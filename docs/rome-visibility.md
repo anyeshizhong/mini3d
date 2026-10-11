@@ -1,5 +1,7 @@
 # Rome River Side 几何消失诊断
 
+> 本文记录历史偏移实验，旧脚本在 Git bd41b2b 追溯；正式 Ground 回归使用 `tests/ground_separation_smoke.py`，见 [测试说明](../tests/README.md)。
+
 本文保留首次诊断及偏移方案失败的历史证据。当前实现已移除默认 Ground Mesh 和它的深度偏移，见 [Ground 职责分离修复](ground-separation.md)。旧诊断脚本入口现转发到新的近/远景像素回归，原脚本可在 `bd41b2b` 查看。
 
 2026-10-08，Intel UHD Graphics 620，真实桌面 OpenGL / Editor。使用本地 `model/08_rome_river/rome_river_side.glb`，未改 GLB、材质或实例几何。
