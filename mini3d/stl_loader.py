@@ -5,7 +5,7 @@ import struct
 import numpy as np
 from stl import Mode, mesh as stl_mesh
 
-from .gltf_loader import Asset
+from .assets import Asset
 from .scene import Entity, Mesh
 
 
