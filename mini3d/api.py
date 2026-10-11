@@ -76,6 +76,19 @@ class Mini3DAPI:
         """Return mode, world surface-to-light direction, diffuse and ambient."""
         return lighting_state(self._app.scene)
 
+    def get_environment(self):
+        """Fixed neutral studio IBL settings shared by Scene and Shot Camera."""
+        from .environment import environment_state
+        return environment_state(self._app.scene)
+
+    def set_environment(self, enabled=None, intensity=None):
+        """Atomic update outside placement transactions. Linear intensity, exposure=1."""
+        from .environment import update_environment
+        if self._commands.active_transaction:
+            raise ValueError('Cannot change environment inside a placement transaction')
+        self._app.finish_edit()
+        return update_environment(self._app.scene, enabled, intensity)
+
     def set_lighting(self, mode=None, direction=None, diffuse=None, ambient=None):
         """Atomic partial update outside placement transactions; None preserves.
 
@@ -95,6 +108,7 @@ class Mini3DAPI:
             placement_plane=self._app.scene.placement_plane.to_dict(),
             shot_camera=self.get_shot_camera(),
             lighting=self.get_lighting(), shadows=self.get_shadows(),
+            environment=self.get_environment(),
             history=dict(undo_count=self._commands.undo_count, redo_count=self._commands.redo_count,
                          active_transaction=self._commands.active_transaction))
 

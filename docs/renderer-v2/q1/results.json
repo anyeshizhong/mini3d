@@ -1,0 +1,739 @@
+{
+  "baseline": false,
+  "gpu": "Intel(R) UHD Graphics 620",
+  "gl_version": "4.6.0 - Build 27.20.100.8682",
+  "texture_units": 32,
+  "resolution": [
+    1920,
+    1080
+  ],
+  "exposure": 1.0,
+  "environment_intensity": 0.35,
+  "cases": [
+    {
+      "name": "DamagedHelmet-A",
+      "camera": {
+        "position": [
+          3.4,
+          -5.2,
+          2.9
+        ],
+        "rotation": [
+          [
+            0.8369696139735455,
+            -0.16004097539156126,
+            0.5233247094115582
+          ],
+          [
+            0.5472493629827029,
+            0.24476855059885838,
+            -0.8003789673353242
+          ],
+          [
+            -0.0,
+            0.9562819891817746,
+            0.2924461611417531
+          ]
+        ],
+        "focal_mm": 49.999999999999986,
+        "aspect": "16:9",
+        "fov_y": 22.89519252737121,
+        "near": 0.03,
+        "far": 100.0,
+        "camera_id": "shot",
+        "width": 1920,
+        "height": 1080
+      },
+      "lighting": {
+        "mode": "Scene",
+        "direction": [
+          -3.0,
+          -4.0,
+          6.0
+        ],
+        "diffuse": 2.0,
+        "ambient": 0.12
+      },
+      "shadows": {
+        "enabled": true,
+        "resolution": 1024,
+        "bias": 0.0003,
+        "pcf": true
+      },
+      "environment": {
+        "enabled": false,
+        "intensity": 0.35
+      },
+      "gpu_ms": 8.671342,
+      "cpu_gpu_ms": 13.413600000000248,
+      "png_sha256": "1e2f49ff307632b9ac890d3575b00076c3f3da6654dd34b45e91bce9c9698f58",
+      "draw_calls": {
+        "entities_before": 2,
+        "entities_after": 2,
+        "entities_culled": 0,
+        "bounds_tested": 2,
+        "shadow_candidates": 2,
+        "opaque_entities": 2,
+        "transparent_entities": 0,
+        "color_draw_calls": 2,
+        "shadow_draw_calls": 2,
+        "color_triangles": 15464,
+        "shadow_triangles": 15464,
+        "render_plan_cpu_ms": 0.46509999999999607,
+        "draw_calls": 4,
+        "submitted_triangles": 30928
+      }
+    },
+    {
+      "name": "DamagedHelmet-B",
+      "camera": {
+        "position": [
+          3.4,
+          -5.2,
+          2.9
+        ],
+        "rotation": [
+          [
+            0.8369696139735455,
+            -0.16004097539156126,
+            0.5233247094115582
+          ],
+          [
+            0.5472493629827029,
+            0.24476855059885838,
+            -0.8003789673353242
+          ],
+          [
+            -0.0,
+            0.9562819891817746,
+            0.2924461611417531
+          ]
+        ],
+        "focal_mm": 49.999999999999986,
+        "aspect": "16:9",
+        "fov_y": 22.89519252737121,
+        "near": 0.03,
+        "far": 100.0,
+        "camera_id": "shot",
+        "width": 1920,
+        "height": 1080
+      },
+      "lighting": {
+        "mode": "Scene",
+        "direction": [
+          -3.0,
+          -4.0,
+          6.0
+        ],
+        "diffuse": 2.0,
+        "ambient": 0.12
+      },
+      "shadows": {
+        "enabled": true,
+        "resolution": 1024,
+        "bias": 0.0003,
+        "pcf": true
+      },
+      "environment": {
+        "enabled": true,
+        "intensity": 0.35
+      },
+      "gpu_ms": 9.400995,
+      "cpu_gpu_ms": 14.163600000000276,
+      "png_sha256": "812737e18b421fe13b1e3a5bd9bbfab9a2b54a11e6619018ef593cf8ca36c1ce",
+      "draw_calls": {
+        "entities_before": 2,
+        "entities_after": 2,
+        "entities_culled": 0,
+        "bounds_tested": 2,
+        "shadow_candidates": 2,
+        "opaque_entities": 2,
+        "transparent_entities": 0,
+        "color_draw_calls": 2,
+        "shadow_draw_calls": 2,
+        "color_triangles": 15464,
+        "shadow_triangles": 15464,
+        "render_plan_cpu_ms": 0.8448999999997042,
+        "draw_calls": 4,
+        "submitted_triangles": 30928
+      },
+      "asset_sha256": "a1e3b04de97b11de564ce6e53b95f02954a297f0008183ac63a4f5974f6b32d8"
+    },
+    {
+      "name": "Lantern-A",
+      "camera": {
+        "position": [
+          3.4,
+          -5.2,
+          2.9
+        ],
+        "rotation": [
+          [
+            0.8369696139735455,
+            -0.16004097539156126,
+            0.5233247094115582
+          ],
+          [
+            0.5472493629827029,
+            0.24476855059885838,
+            -0.8003789673353242
+          ],
+          [
+            -0.0,
+            0.9562819891817746,
+            0.2924461611417531
+          ]
+        ],
+        "focal_mm": 49.999999999999986,
+        "aspect": "16:9",
+        "fov_y": 22.89519252737121,
+        "near": 0.03,
+        "far": 100.0,
+        "camera_id": "shot",
+        "width": 1920,
+        "height": 1080
+      },
+      "lighting": {
+        "mode": "Scene",
+        "direction": [
+          -3.0,
+          -4.0,
+          6.0
+        ],
+        "diffuse": 2.0,
+        "ambient": 0.12
+      },
+      "shadows": {
+        "enabled": true,
+        "resolution": 1024,
+        "bias": 0.0003,
+        "pcf": true
+      },
+      "environment": {
+        "enabled": false,
+        "intensity": 0.35
+      },
+      "gpu_ms": 4.592639,
+      "cpu_gpu_ms": 10.046700000000186,
+      "png_sha256": "c4912fcd5d6c10c634ac53a70be5e214861b0c09092d18226782cc57034e9a96",
+      "draw_calls": {
+        "entities_before": 4,
+        "entities_after": 4,
+        "entities_culled": 0,
+        "bounds_tested": 4,
+        "shadow_candidates": 4,
+        "opaque_entities": 4,
+        "transparent_entities": 0,
+        "color_draw_calls": 4,
+        "shadow_draw_calls": 4,
+        "color_triangles": 5406,
+        "shadow_triangles": 5406,
+        "render_plan_cpu_ms": 0.6866000000007588,
+        "draw_calls": 8,
+        "submitted_triangles": 10812
+      }
+    },
+    {
+      "name": "Lantern-B",
+      "camera": {
+        "position": [
+          3.4,
+          -5.2,
+          2.9
+        ],
+        "rotation": [
+          [
+            0.8369696139735455,
+            -0.16004097539156126,
+            0.5233247094115582
+          ],
+          [
+            0.5472493629827029,
+            0.24476855059885838,
+            -0.8003789673353242
+          ],
+          [
+            -0.0,
+            0.9562819891817746,
+            0.2924461611417531
+          ]
+        ],
+        "focal_mm": 49.999999999999986,
+        "aspect": "16:9",
+        "fov_y": 22.89519252737121,
+        "near": 0.03,
+        "far": 100.0,
+        "camera_id": "shot",
+        "width": 1920,
+        "height": 1080
+      },
+      "lighting": {
+        "mode": "Scene",
+        "direction": [
+          -3.0,
+          -4.0,
+          6.0
+        ],
+        "diffuse": 2.0,
+        "ambient": 0.12
+      },
+      "shadows": {
+        "enabled": true,
+        "resolution": 1024,
+        "bias": 0.0003,
+        "pcf": true
+      },
+      "environment": {
+        "enabled": true,
+        "intensity": 0.35
+      },
+      "gpu_ms": 5.100848,
+      "cpu_gpu_ms": 10.590300000000497,
+      "png_sha256": "e72fd9c21a5dcd5467a8faaa4774ed6bda753c099d8d264a3dd599c15ccd3a5e",
+      "draw_calls": {
+        "entities_before": 4,
+        "entities_after": 4,
+        "entities_culled": 0,
+        "bounds_tested": 4,
+        "shadow_candidates": 4,
+        "opaque_entities": 4,
+        "transparent_entities": 0,
+        "color_draw_calls": 4,
+        "shadow_draw_calls": 4,
+        "color_triangles": 5406,
+        "shadow_triangles": 5406,
+        "render_plan_cpu_ms": 0.589600000000523,
+        "draw_calls": 8,
+        "submitted_triangles": 10812
+      },
+      "asset_sha256": "a79458c4b02d695187a952f23a63b8bf278e7bc3d316a3c2a314f2d6974181f1"
+    },
+    {
+      "name": "Avocado-A",
+      "camera": {
+        "position": [
+          3.4,
+          -5.2,
+          2.9
+        ],
+        "rotation": [
+          [
+            0.8369696139735455,
+            -0.16004097539156126,
+            0.5233247094115582
+          ],
+          [
+            0.5472493629827029,
+            0.24476855059885838,
+            -0.8003789673353242
+          ],
+          [
+            -0.0,
+            0.9562819891817746,
+            0.2924461611417531
+          ]
+        ],
+        "focal_mm": 49.999999999999986,
+        "aspect": "16:9",
+        "fov_y": 22.89519252737121,
+        "near": 0.03,
+        "far": 100.0,
+        "camera_id": "shot",
+        "width": 1920,
+        "height": 1080
+      },
+      "lighting": {
+        "mode": "Scene",
+        "direction": [
+          -3.0,
+          -4.0,
+          6.0
+        ],
+        "diffuse": 2.0,
+        "ambient": 0.12
+      },
+      "shadows": {
+        "enabled": true,
+        "resolution": 1024,
+        "bias": 0.0003,
+        "pcf": true
+      },
+      "environment": {
+        "enabled": false,
+        "intensity": 0.35
+      },
+      "gpu_ms": 5.322873,
+      "cpu_gpu_ms": 10.581100000000454,
+      "png_sha256": "a8ba60bf0b9574e359d7e3ec392742e38c74163e6fc0f7add78c56757ae77cb8",
+      "draw_calls": {
+        "entities_before": 2,
+        "entities_after": 2,
+        "entities_culled": 0,
+        "bounds_tested": 2,
+        "shadow_candidates": 2,
+        "opaque_entities": 2,
+        "transparent_entities": 0,
+        "color_draw_calls": 2,
+        "shadow_draw_calls": 2,
+        "color_triangles": 694,
+        "shadow_triangles": 694,
+        "render_plan_cpu_ms": 0.41950000000046117,
+        "draw_calls": 4,
+        "submitted_triangles": 1388
+      }
+    },
+    {
+      "name": "Avocado-B",
+      "camera": {
+        "position": [
+          3.4,
+          -5.2,
+          2.9
+        ],
+        "rotation": [
+          [
+            0.8369696139735455,
+            -0.16004097539156126,
+            0.5233247094115582
+          ],
+          [
+            0.5472493629827029,
+            0.24476855059885838,
+            -0.8003789673353242
+          ],
+          [
+            -0.0,
+            0.9562819891817746,
+            0.2924461611417531
+          ]
+        ],
+        "focal_mm": 49.999999999999986,
+        "aspect": "16:9",
+        "fov_y": 22.89519252737121,
+        "near": 0.03,
+        "far": 100.0,
+        "camera_id": "shot",
+        "width": 1920,
+        "height": 1080
+      },
+      "lighting": {
+        "mode": "Scene",
+        "direction": [
+          -3.0,
+          -4.0,
+          6.0
+        ],
+        "diffuse": 2.0,
+        "ambient": 0.12
+      },
+      "shadows": {
+        "enabled": true,
+        "resolution": 1024,
+        "bias": 0.0003,
+        "pcf": true
+      },
+      "environment": {
+        "enabled": true,
+        "intensity": 0.35
+      },
+      "gpu_ms": 6.108717,
+      "cpu_gpu_ms": 10.647999999999769,
+      "png_sha256": "8edc1a0ee27b00852d57971709aa1eb613854dacecc8288f7ff2cef175fdba4f",
+      "draw_calls": {
+        "entities_before": 2,
+        "entities_after": 2,
+        "entities_culled": 0,
+        "bounds_tested": 2,
+        "shadow_candidates": 2,
+        "opaque_entities": 2,
+        "transparent_entities": 0,
+        "color_draw_calls": 2,
+        "shadow_draw_calls": 2,
+        "color_triangles": 694,
+        "shadow_triangles": 694,
+        "render_plan_cpu_ms": 0.511200000000045,
+        "draw_calls": 4,
+        "submitted_triangles": 1388
+      },
+      "asset_sha256": "ccc9c3ce56423720b09399c2351537207cd5a65f859f9e6e2f30922762f3abd4"
+    },
+    {
+      "name": "spheres-A",
+      "camera": {
+        "position": [
+          0.0,
+          -9.0,
+          4.2
+        ],
+        "rotation": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.3114725242416853,
+            -0.9502551587034468
+          ],
+          [
+            -0.0,
+            0.9502551587034468,
+            0.3114725242416853
+          ]
+        ],
+        "focal_mm": 49.999999999999986,
+        "aspect": "16:9",
+        "fov_y": 22.89519252737121,
+        "near": 0.03,
+        "far": 100.0,
+        "camera_id": "shot",
+        "width": 1920,
+        "height": 1080
+      },
+      "lighting": {
+        "mode": "Scene",
+        "direction": [
+          -3.0,
+          -4.0,
+          6.0
+        ],
+        "diffuse": 2.0,
+        "ambient": 0.12
+      },
+      "shadows": {
+        "enabled": true,
+        "resolution": 1024,
+        "bias": 0.0003,
+        "pcf": true
+      },
+      "environment": {
+        "enabled": false,
+        "intensity": 0.35
+      },
+      "gpu_ms": 6.734371,
+      "cpu_gpu_ms": 14.227699999999288,
+      "png_sha256": "86918d770c4c39430b5e475c008acf3a2879eb33f80624632fd67ff7ce6078ad",
+      "draw_calls": {
+        "entities_before": 9,
+        "entities_after": 9,
+        "entities_culled": 0,
+        "bounds_tested": 9,
+        "shadow_candidates": 9,
+        "opaque_entities": 9,
+        "transparent_entities": 0,
+        "color_draw_calls": 9,
+        "shadow_draw_calls": 9,
+        "color_triangles": 39324,
+        "shadow_triangles": 39324,
+        "render_plan_cpu_ms": 1.1467999999990042,
+        "draw_calls": 18,
+        "submitted_triangles": 78648
+      }
+    },
+    {
+      "name": "spheres-B",
+      "camera": {
+        "position": [
+          0.0,
+          -9.0,
+          4.2
+        ],
+        "rotation": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.3114725242416853,
+            -0.9502551587034468
+          ],
+          [
+            -0.0,
+            0.9502551587034468,
+            0.3114725242416853
+          ]
+        ],
+        "focal_mm": 49.999999999999986,
+        "aspect": "16:9",
+        "fov_y": 22.89519252737121,
+        "near": 0.03,
+        "far": 100.0,
+        "camera_id": "shot",
+        "width": 1920,
+        "height": 1080
+      },
+      "lighting": {
+        "mode": "Scene",
+        "direction": [
+          -3.0,
+          -4.0,
+          6.0
+        ],
+        "diffuse": 2.0,
+        "ambient": 0.12
+      },
+      "shadows": {
+        "enabled": true,
+        "resolution": 1024,
+        "bias": 0.0003,
+        "pcf": true
+      },
+      "environment": {
+        "enabled": true,
+        "intensity": 0.35
+      },
+      "gpu_ms": 7.127542,
+      "cpu_gpu_ms": 14.165200000000766,
+      "png_sha256": "845737d0880dc7c41b5ee09d257d5a06b7ef988d367b17c1126d7e27e2a40ab1",
+      "draw_calls": {
+        "entities_before": 9,
+        "entities_after": 9,
+        "entities_culled": 0,
+        "bounds_tested": 9,
+        "shadow_candidates": 9,
+        "opaque_entities": 9,
+        "transparent_entities": 0,
+        "color_draw_calls": 9,
+        "shadow_draw_calls": 9,
+        "color_triangles": 39324,
+        "shadow_triangles": 39324,
+        "render_plan_cpu_ms": 0.8759000000004846,
+        "draw_calls": 18,
+        "submitted_triangles": 78648
+      }
+    }
+  ],
+  "checks": {
+    "DamagedHelmet": {
+      "disabled_matches_original": true,
+      "depth_identical": true,
+      "changed_pixels": 1478235,
+      "max_channel": 254,
+      "saturated_pixels": 632,
+      "save_load_pixels_identical": true
+    },
+    "Lantern": {
+      "disabled_matches_original": true,
+      "depth_identical": true,
+      "changed_pixels": 1414865,
+      "max_channel": 222,
+      "saturated_pixels": 0,
+      "save_load_pixels_identical": true
+    },
+    "Avocado": {
+      "disabled_matches_original": true,
+      "depth_identical": true,
+      "changed_pixels": 1412497,
+      "max_channel": 184,
+      "saturated_pixels": 0,
+      "save_load_pixels_identical": true
+    },
+    "spheres": {
+      "disabled_matches_original": true,
+      "depth_identical": true,
+      "changed_pixels": 1498306,
+      "max_channel": 254,
+      "saturated_pixels": 23,
+      "save_load_pixels_identical": true
+    },
+    "unlit_state_and_resource_reuse": true,
+    "release_recreate": true,
+    "gl_error_zero": true
+  },
+  "baseline_commit": "dfcca0de6465d70e4cdcc8881a7f4c4d8084ace3",
+  "sphere_materials": {
+    "base_color_linear": [
+      0.55,
+      0.25,
+      0.07
+    ],
+    "top_row_metallic": 1,
+    "bottom_row_metallic": 0,
+    "roughness_left_to_right": [
+      0.08,
+      0.3,
+      0.6,
+      1.0
+    ]
+  },
+  "paired_timing": {
+    "DamagedHelmet": {
+      "A": {
+        "gpu_median_ms": 8.1173585,
+        "gpu_p95_ms": 9.1007757,
+        "cpu_gpu_median_ms": 13.046249999999926,
+        "cpu_gpu_p95_ms": 13.371170000000253,
+        "samples": 12
+      },
+      "B": {
+        "gpu_median_ms": 9.3061675,
+        "gpu_p95_ms": 9.74637045,
+        "cpu_gpu_median_ms": 13.943449999999968,
+        "cpu_gpu_p95_ms": 14.275115000000094,
+        "samples": 12
+      }
+    },
+    "Lantern": {
+      "A": {
+        "gpu_median_ms": 4.737308,
+        "gpu_p95_ms": 5.21344995,
+        "cpu_gpu_median_ms": 9.733500000000284,
+        "cpu_gpu_p95_ms": 11.10558499999974,
+        "samples": 12
+      },
+      "B": {
+        "gpu_median_ms": 5.217131,
+        "gpu_p95_ms": 6.05776745,
+        "cpu_gpu_median_ms": 10.715450000000182,
+        "cpu_gpu_p95_ms": 11.649609999999955,
+        "samples": 12
+      }
+    },
+    "Avocado": {
+      "A": {
+        "gpu_median_ms": 5.3590610000000005,
+        "gpu_p95_ms": 5.71013855,
+        "cpu_gpu_median_ms": 10.003950000000206,
+        "cpu_gpu_p95_ms": 11.000925000000272,
+        "samples": 12
+      },
+      "B": {
+        "gpu_median_ms": 5.9119655,
+        "gpu_p95_ms": 6.3743419,
+        "cpu_gpu_median_ms": 10.466650000000133,
+        "cpu_gpu_p95_ms": 12.282549999999757,
+        "samples": 12
+      }
+    },
+    "spheres": {
+      "A": {
+        "gpu_median_ms": 6.3543555000000005,
+        "gpu_p95_ms": 6.9481458,
+        "cpu_gpu_median_ms": 13.376099999999447,
+        "cpu_gpu_p95_ms": 14.529984999999979,
+        "samples": 12
+      },
+      "B": {
+        "gpu_median_ms": 7.803079,
+        "gpu_p95_ms": 8.89987835,
+        "cpu_gpu_median_ms": 14.32774999999964,
+        "cpu_gpu_p95_ms": 16.60987999999923,
+        "samples": 12
+      }
+    }
+  },
+  "texture_bytes": 3444724,
+  "material_shader_source": "mini3d\\material_renderer.py",
+  "material_shader_source_sha256": "3cb765de57225f18997927398e343267132f267c0f4582036faa8684110a6883",
+  "hardware": {
+    "cpu": "Intel(R) Core(TM) i7-8550U CPU @ 1.80GHz",
+    "os": "Windows-10-10.0.19045-SP0",
+    "python": "3.8.20",
+    "numpy": "1.24.3",
+    "pygame": "2.6.1",
+    "pyopengl": "3.1.10"
+  }
+}

@@ -2,7 +2,7 @@
 
 Lighting uses the existing GGX metallic/roughness BRDF with either one world
 directional light or three studio lights and analytic studio reflections.
-It does not implement environment-map IBL, transmission or animation.
+Optional fixed split-sum IBL uses offline-filtered resources; no transmission or animation.
 Call ``close`` before destroying GL.
 """
 
@@ -15,6 +15,7 @@ from OpenGL import GL as gl
 from OpenGL.GL.shaders import compileProgram, compileShader
 from .lighting import scene_light_direction
 from .shadow_map import SHADOW_GLSL, ShadowMap
+from .environment import EnvironmentMap
 
 
 VERTEX_SHADER = """#version 330 core
@@ -56,6 +57,10 @@ uniform int alphaMode, shadingMode;
 uniform vec3 eye, light0, light1, light2;
 uniform float lightIntensity, ambientIntensity;
 uniform bool sceneLighting;
+uniform bool environmentEnabled;
+uniform float environmentIntensity;
+uniform samplerCube diffuseEnv, specularEnv;
+uniform sampler2D brdfLut;
 """ + SHADOW_GLSL + """
 const float PI = 3.14159265359;
 
@@ -150,6 +155,20 @@ void main() {
         vec3 reflected = fresnel(max(dot(n,v),0.0),f0) * (0.27 + panel * 0.9);
         result += ((1.0-metal)*base.rgb*0.32 + reflected) * ao * ambientIntensity;
     }
+    if (environmentEnabled) {
+        // Classic split-sum IBL, following Khronos/Filament (Q1 source notes).
+        // Mini3D Z-up -> environment/glTF Y-up. No camera-relative rotation.
+        vec3 envN = vec3(n.x,n.z,-n.y);
+        vec3 r = reflect(-v,n);
+        vec3 envR = vec3(r.x,r.z,-r.y);
+        vec2 ab = texture(brdfLut,vec2(clamp(dot(n,v),0.0,1.0),rough)).rg;
+        vec3 radiance = textureLod(specularEnv,envR,rough*8.0).rgb;
+        vec3 irradianceOverPi = texture(diffuseEnv,envN).rgb;
+        float f90 = mix(clamp(specWeight,0.0,1.0),1.0,metal);
+        vec3 specular = radiance * (f0*ab.x + f90*ab.y);
+        vec3 diffuse = irradianceOverPi * (1.0-f0) * (1.0-metal) * base.rgb;
+        result += (diffuse+specular) * ao * environmentIntensity;
+    }
     vec3 emission = emissiveFactor;
     if (hasEmissive) emission *= linearize(texture(emissiveMap,uv).rgb);
     result += emission;
@@ -206,10 +225,13 @@ class MaterialRenderer:
 
     def __init__(self):
         self.program = compileProgram(compileShader(VERTEX_SHADER, gl.GL_VERTEX_SHADER),
-                                      compileShader(FRAGMENT_SHADER, gl.GL_FRAGMENT_SHADER))
+                                      compileShader(FRAGMENT_SHADER, gl.GL_FRAGMENT_SHADER), validate=False)
+        # Default sampler uniforms all point to unit zero after linking. Assign
+        # cube/2D units before any draw; pre-assignment validation would fail.
         self._locations = {}
         self._meshes = {}
         self._textures = {}
+        self.environment = None
         self._selection_program = 0
         self._selection_locations = {}
 
@@ -326,6 +348,17 @@ class MaterialRenderer:
             gl.glBindTexture(gl.GL_TEXTURE_2D,self._texture(texture) if texture is not None else 0)
 
     def _lighting(self, scene, camera):
+        enabled = getattr(scene, 'environment_enabled', False)
+        self._int('environmentEnabled', enabled)
+        self._float('environmentIntensity', getattr(scene, 'environment_intensity', .35))
+        # Assign distinct sampler types even when disabled: GL validates all samplers.
+        self._int('diffuseEnv', 8)
+        self._int('specularEnv', 9)
+        self._int('brdfLut', 10)
+        if enabled:
+            if self.environment is None:
+                self.environment = EnvironmentMap()
+            self.environment.bind()
         mode = getattr(scene, 'lighting_mode', 'Studio')
         if mode not in ('Scene', 'Studio'):
             raise ValueError('Unknown lighting mode: ' + str(mode))
@@ -477,16 +510,20 @@ class MaterialRenderer:
         state = {name:int(gl.glGetIntegerv(getattr(gl,"GL_"+name))) for name in integer_names}
         state["enabled"] = {cap:bool(gl.glIsEnabled(cap)) for cap in
                             (gl.GL_DEPTH_TEST,gl.GL_CULL_FACE,gl.GL_BLEND,gl.GL_FRAMEBUFFER_SRGB,
-                             gl.GL_STENCIL_TEST,gl.GL_SCISSOR_TEST,gl.GL_POLYGON_OFFSET_FILL,gl.GL_RASTERIZER_DISCARD)}
+                             gl.GL_STENCIL_TEST,gl.GL_SCISSOR_TEST,gl.GL_POLYGON_OFFSET_FILL,gl.GL_RASTERIZER_DISCARD,
+                             gl.GL_TEXTURE_CUBE_MAP_SEAMLESS)}
         state["polygon_offset"] = (float(gl.glGetFloatv(gl.GL_POLYGON_OFFSET_FACTOR)),
                                    float(gl.glGetFloatv(gl.GL_POLYGON_OFFSET_UNITS)))
         state["depth_mask"] = bool(gl.glGetBooleanv(gl.GL_DEPTH_WRITEMASK))
         state["color_mask"] = np.asarray(gl.glGetBooleanv(gl.GL_COLOR_WRITEMASK)).reshape(-1)
         state["polygon"] = np.asarray(gl.glGetIntegerv(gl.GL_POLYGON_MODE)).reshape(-1)
         state["textures"] = []
-        for unit in range(len(MaterialRenderer._slots)+1):
+        state["cubemaps"] = []
+        for unit in range(11):
             gl.glActiveTexture(gl.GL_TEXTURE0+unit)
             state["textures"].append(int(gl.glGetIntegerv(gl.GL_TEXTURE_BINDING_2D)))
+            if unit in (8,9):
+                state["cubemaps"].append((unit,int(gl.glGetIntegerv(gl.GL_TEXTURE_BINDING_CUBE_MAP))))
         return state
 
     @staticmethod
@@ -514,6 +551,9 @@ class MaterialRenderer:
         for unit, texture in enumerate(state["textures"]):
             gl.glActiveTexture(gl.GL_TEXTURE0+unit)
             gl.glBindTexture(gl.GL_TEXTURE_2D,texture)
+        for unit, texture in state["cubemaps"]:
+            gl.glActiveTexture(gl.GL_TEXTURE0+unit)
+            gl.glBindTexture(gl.GL_TEXTURE_CUBE_MAP,texture)
         gl.glActiveTexture(state["ACTIVE_TEXTURE"])
 
     def release(self):
@@ -525,6 +565,9 @@ class MaterialRenderer:
             gl.glDeleteTextures([texture])
         self._meshes.clear()
         self._textures.clear()
+        if self.environment is not None:
+            self.environment.close()
+            self.environment = None
 
     def close(self):
         """Release all GPU resources; safe to call more than once."""

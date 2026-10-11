@@ -368,7 +368,9 @@ class Editor:
         snapshot = self.viewer.controller.snapshot()
         snapshot = {key: value.tolist() if isinstance(value, np.ndarray) else value for key, value in snapshot.items()}
         from .lighting import shadow_state
+        from .environment import environment_state
         document = dict(shadows=shadow_state(self.scene), version=3, objects=records, camera=snapshot,
+                        environment=environment_state(self.scene),
                         shot_camera=None if self.shot_camera is None else self.shot_camera.to_dict(),
                         render_mode=self.render_mode, show_grid=self.show_grid,
                         lighting=dict(mode=self.scene.lighting_mode,
@@ -404,6 +406,11 @@ class Editor:
         shot_data = document.get('shot_camera')
         shot = None if shot_data is None else ShotCamera.from_dict(shot_data)
         loaded = Scene()
+        from .environment import environment_state, update_environment
+        environment = document.get('environment', {})
+        if not isinstance(environment, dict) or any(v is None for v in environment.values()):
+            raise ValueError('Invalid environment document')
+        update_environment(loaded, **environment)
         lighting = document.get('lighting', {})
         # JSON null is invalid in saved parameters (API None means "unchanged").
         if not isinstance(lighting, dict) or any(value is None for value in lighting.values()):
@@ -486,6 +493,7 @@ class Editor:
         self.scene.lighting_mode = loaded.lighting_mode
         self.scene.light_dir = loaded.light_dir.copy()
         self.scene.ambient, self.scene.diffuse = loaded.ambient, loaded.diffuse
+        update_environment(self.scene, **environment_state(loaded))
         self.commands.clear_history()
         self.scene.update()
         self.commands.set_selection(loaded.selected_ids, primary_id=loaded.primary_selection_id,

@@ -1,0 +1,58 @@
+{
+  "gpu": "Intel(R) UHD Graphics 620",
+  "gl": "4.6.0 - Build 27.20.100.8682",
+  "checks": {
+    "disabled_and_studio_exact_baseline": true,
+    "world_probes": {
+      "shadow_off": [
+        147.0,
+        147.0,
+        147.0
+      ],
+      "shadow_on": [
+        76.0,
+        76.0,
+        76.0
+      ],
+      "lit": [
+        147.0,
+        147.0,
+        147.0
+      ]
+    },
+    "exposed_ground_no_acne_and_contact_shadow": true,
+    "ambient_emission_unlit_preserved": true,
+    "alpha_mask_texture_and_blend_noncasting": true,
+    "shot_png_equals_camera_view": true,
+    "depth_pass_state_restored": true,
+    "scales_mutual_shadows_bias_pcf": true
+  },
+  "timing": {
+    "off": {
+      "gpu_median_ms": 0.1320945,
+      "cpu_median_ms": 2.096549999999864
+    },
+    "on": {
+      "gpu_median_ms": 0.6255295000000001,
+      "cpu_median_ms": 3.8623500000001254
+    }
+  },
+  "large_scene": {
+    "instances": 100,
+    "shared_imported_meshes": 2,
+    "synchronized_frame_readback_median_ms": 53.105399999999975,
+    "camera_far": 150
+  },
+  "depth": {
+    "resolution": 1024,
+    "format": "DEPTH_COMPONENT24",
+    "nominal_bytes": 3145728,
+    "typical_allocated_bytes": 4194304,
+    "covered_pixels": 805792,
+    "minimum": 0.026278438046574593
+  },
+  "camera_clips": {
+    "near": 0.1,
+    "far": 150
+  }
+}

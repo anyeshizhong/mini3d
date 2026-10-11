@@ -1,0 +1,3 @@
+# Keep pinned upstream shaders byte-identical across Windows/Linux checkouts.
+# Their original whitespace is intentionally retained for source SHA-256 audits.
+tools/ibl/upstream/*.frag text eol=lf whitespace=-blank-at-eol,-blank-at-eof

@@ -1,0 +1,37 @@
+{
+  "gpu": "Intel(R) UHD Graphics 620",
+  "checks": {
+    "first_upload_restores_unpack": true,
+    "blend_mask_opaque_alpha_and_unlit": true,
+    "close_deletes_all_ibl_textures": true,
+    "ibl_offscreen_shadow_drop": 19.666666666666657,
+    "gl_error_zero": true
+  },
+  "first_upload_sync_ms": 60.99260000000007,
+  "texture_formats": [
+    {
+      "unit": 8,
+      "channel_bits": [
+        16,
+        16,
+        16
+      ]
+    },
+    {
+      "unit": 9,
+      "channel_bits": [
+        16,
+        16,
+        16
+      ]
+    },
+    {
+      "unit": 10,
+      "channel_bits": [
+        16,
+        16,
+        0
+      ]
+    }
+  ]
+}

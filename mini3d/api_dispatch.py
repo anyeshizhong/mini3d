@@ -7,9 +7,10 @@ METHODS = frozenset(('list_entities', 'get_entity', 'list_groups', 'get_group', 
     'spawn', 'delete', 'duplicate', 'set_transform', 'transform_many', 'place_on_ground', 'place_at',
     'lock', 'unlock', 'create_group', 'create_rectangular_formation', 'undo', 'redo',
     'save_scene', 'load_scene', 'create_shot_camera', 'get_shot_camera', 'set_lens', 'set_aspect', 'capture',
-    'get_lighting', 'set_lighting', 'get_shadows', 'set_shadows'))
+    'get_lighting', 'set_lighting', 'get_shadows', 'set_shadows', 'get_environment', 'set_environment'))
 BATCH_METHODS = METHODS - {'undo', 'redo', 'save_scene', 'load_scene', 'create_shot_camera',
-                         'set_lens', 'set_aspect', 'capture', 'create_rectangular_formation', 'set_lighting', 'set_shadows'}
+                         'set_lens', 'set_aspect', 'capture', 'create_rectangular_formation', 'set_lighting', 'set_shadows',
+                         'set_environment'}
 
 
 def _validate(api, command, allowed=METHODS):

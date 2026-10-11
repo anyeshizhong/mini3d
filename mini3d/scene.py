@@ -135,6 +135,8 @@ class Scene:
         self.show_axes = False
         self.render_mode = "Lit"
         self.lighting_mode = "Studio"  # Editor preview; render_shot forces Scene.
+        self.environment_enabled = False
+        self.environment_intensity = .35
 
     def add(self, entity):
         if entity.parent is not None:

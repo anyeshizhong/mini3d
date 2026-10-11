@@ -1,0 +1,24 @@
+{
+  "source_sha256": "8dee8bd1f47b6e723284a58bd0a2db12e3cd3bc70283e17707d06b6b142065e0",
+  "source_filament_commit": "764fe6cac9bdb4ba24d3d852344dfa04a5f70f75",
+  "samples": 1024,
+  "source_cube_size": 512,
+  "roughness_mips": [
+    0.0,
+    0.125,
+    0.25,
+    0.375,
+    0.5,
+    0.625,
+    0.75,
+    0.875,
+    1.0
+  ],
+  "diffuse_is_irradiance_div_pi": true,
+  "exposure": 1.0,
+  "rgb_scale": 1.0,
+  "gpu": "Intel(R) UHD Graphics 620",
+  "bake_seconds": 2.3707606,
+  "texture_bytes": 3444724,
+  "resource_sha256": "6679cedf9bc3a683be6ec70b3cf4208305b0929045753e1244df3bbc150c3cc9"
+}
