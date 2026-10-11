@@ -12,7 +12,7 @@ python : test_extra_transform_precedes_legacy_pose_and_scale (test_examples.Exam
 
     + FullyQualifiedErrorId : NativeCommandError
 
- 
+
 
 test_geometry_and_urdf_keep_their_original_flattening_rules (test_examples.ExampleCompatibilityTests) ... FAIL
 
@@ -38,7 +38,7 @@ f_keep_their_original_flattening_rules
 
     self.assertEqual(scene.get_flat_render_list(), expected, name)
 
-AssertionError: Lists differ: [<exa[46 chars]AC5058E0>, <examples.legacy_scene.Entity objec[20 chars]B20>] != [<exa[46 
+AssertionError: Lists differ: [<exa[46 chars]AC5058E0>, <examples.legacy_scene.Entity objec[20 chars]B20>] != [<exa[46
 
 chars]AC505B20>]
 
@@ -87,4 +87,3 @@ FAILED (failures=1)
 pygame 2.6.1 (SDL 2.28.4, Python 3.8.20)
 
 Hello from the pygame community. https://www.pygame.org/contribute.html
-
