@@ -148,5 +148,21 @@
     "triangles": 12,
     "bytes": 684,
     "license": "Existing project test asset"
+  },
+  "08_rome_river": {
+    "name": "Rome River Side",
+    "status": "downloaded",
+    "entry": "rome_river_side.glb",
+    "placement_type": "prop",
+    "source": "https://sketchfab.com/3d-models/rome-river-side-8521d86dcd9043eba0b518ccab430d0f",
+    "author": "Shahriar Shahrabi",
+    "license": "CC-BY-4.0",
+    "license_url": "https://creativecommons.org/licenses/by/4.0/",
+    "description": "User-supplied river-side environment; attribution from embedded GLB metadata. Original units preserved.",
+    "bytes": 47827728,
+    "meshes": 17,
+    "materials": 4,
+    "images": 2,
+    "triangles": 353735
   }
 }
