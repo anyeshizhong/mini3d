@@ -16,6 +16,15 @@ import time
 ROOT = Path(__file__).resolve().parents[1]
 
 
+def source_hashes():
+    files = list((ROOT/'mini3d').rglob('*.py')) + list((ROOT/'examples').glob('*.py'))
+    files += list((ROOT/'mini3d/resources').rglob('*'))
+    files += [ROOT/name for name in ('editor_app.py','editor.py','1.py','1 copy.py','2.py',
+                                    'requirements.txt','model/manifest.json')]
+    return {str(p.relative_to(ROOT)).replace('\\','/'): hashlib.sha256(p.read_bytes()).hexdigest()
+            for p in sorted(files) if p.is_file()}
+
+
 def snapshot(output):
     """Make a new read-only-input baseline from Git, never touch a worktree."""
     destination = output / 'reference-1033e5e'
@@ -47,7 +56,8 @@ def run(output, suite):
                      'ground_separation_smoke', 'placement_smoke', 'placement_v2_smoke',
                      'lighting_smoke', 'lighting_api_smoke', 'lighting_ui_smoke',
                      'scene_clipping_smoke', 'shadow_ui_smoke', 'photo_smoke', 'ai_api_smoke',
-                     'shot_camera_persistence_smoke', 'shot_msaa_smoke', 'consolidation_gpu_regression'):
+                     'shot_camera_persistence_smoke', 'shot_msaa_smoke', 'consolidation_gpu_regression',
+                     'unified_api_ui_smoke'):
             smoke(name)
         smoke('stl_render_smoke')
         commands[-1] = ('stl_render_smoke', ['tests/stl_render_smoke.py',
@@ -57,7 +67,8 @@ def run(output, suite):
         smoke('demo_equivalence')
         commands.append(('ui_photography_81', ['tests/ui_photography_journey_20261010.py',
                          '--output', str(output/'ui_photography_81'), '--panel-release']))
-        commands.append(('api_photography', ['tests/api_photography_workflow_20261010.py']))
+        commands.append(('api_photography', ['tests/api_photography_workflow_20261010.py',
+                         str(output/'api_photography')]))
         baseline = snapshot(output)
         commands.append(('shadow_baseline', ['tests/shadow_smoke.py', str(output/'shadow'),
                           '--baseline', '--baseline-root', str(baseline)]))
@@ -75,7 +86,8 @@ def run(output, suite):
         smoke('shadow_assets_smoke')
         smoke('rome_integration_smoke')
         commands.append(('rome_ui', ['tests/rome_integration_ui_smoke.py', str(output/'rome_integration_smoke')]))
-        smoke('rome_added_models_smoke')
+        commands.append(('rome_added_models_smoke', ['tests/rome_added_models_smoke.py',
+                         str(output/'rome_integration_smoke')]))
         commands.append(('rome_performance', ['tests/shadow_fit_performance_20261010.py', 'real',
                          '--output', str(output/'rome_performance/results.json'), '--cpu-samples', '21',
                          '--gpu-samples', '5', '--resolutions', '1024', '4096']))
@@ -84,7 +96,7 @@ def run(output, suite):
         commands.append(('caster_depth', ['tests/shadow_motion_audit_20261010.py', '--output',
                          str(output/'caster_depth'), '--z-probe-only']))
     report = dict(revision=subprocess.check_output(['git','rev-parse','HEAD'], cwd=str(ROOT)).decode().strip(),
-                  suite=suite, runs=[])
+                  suite=suite, source_hashes=source_hashes(), runs=[])
     for name, arguments in commands:
         started = time.perf_counter()
         print('RUN ' + name, flush=True)
@@ -105,7 +117,8 @@ def run(output, suite):
                     same = old.is_file() and image.read_bytes() == old.read_bytes()
                     report['identical_images'].append(dict(name=case+'/'+image.name, exact_bytes=same,
                         sha256=hashlib.sha256(image.read_bytes()).hexdigest()))
-    report['passed'] = all(r['exit_code']==0 for r in report['runs']) and all(
+    report['source_unchanged_during_run'] = report['source_hashes'] == source_hashes()
+    report['passed'] = report['source_unchanged_during_run'] and all(r['exit_code']==0 for r in report['runs']) and all(
         r['exact_bytes'] for r in report['identical_images'])
     (output/'runs.json').write_text(json.dumps(report,indent=2),encoding='utf8')
     return 0 if report['passed'] else 1

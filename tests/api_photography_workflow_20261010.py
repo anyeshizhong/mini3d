@@ -8,7 +8,7 @@ sys.path.insert(0, str(ROOT))
 from mini3d.api import Mini3DAPI
 from mini3d.api_dispatch import dispatch, dispatch_json
 
-OUT = ROOT / 'captures/audit-20261010/api'
+OUT = Path(sys.argv[1]) if len(sys.argv)>1 else ROOT / 'captures/audit-20261010/api'
 OUT.mkdir(parents=True, exist_ok=True)
 checks = []
 

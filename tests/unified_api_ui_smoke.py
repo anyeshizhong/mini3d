@@ -51,6 +51,7 @@ def run(output):
             state['checks']['api_shot_aa_environment_and_scene_in_same_ui'] = (
                 app.shot_camera.samples == 4 and app.scene.environment_enabled and
                 app.scene.shadows_enabled and app.camera_view)
+            app.status = 'Unified V2: Editor + JSON API + Shot 4x MSAA'
         return []
     def inspect():
         if state['frame'] == 4:
