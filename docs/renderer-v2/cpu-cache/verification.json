@@ -1,0 +1,51 @@
+[
+  {
+    "name": "unit",
+    "exit_code": 0,
+    "seconds": 5.7167371000000005,
+    "command": [
+      "F:\\gymenv\\python.exe",
+      "-B",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "tests",
+      "-p",
+      "test_*.py"
+    ]
+  },
+  {
+    "name": "shadow",
+    "exit_code": 0,
+    "seconds": 4.570340699999999,
+    "command": [
+      "F:\\gymenv\\python.exe",
+      "-B",
+      "tests/shadow_smoke.py",
+      "captures\\renderer-v2-cpu-cache\\regressions\\shadow"
+    ]
+  },
+  {
+    "name": "lighting_api",
+    "exit_code": 0,
+    "seconds": 5.693158399999998,
+    "command": [
+      "F:\\gymenv\\python.exe",
+      "-B",
+      "tests/lighting_api_smoke.py",
+      "captures\\renderer-v2-cpu-cache\\regressions\\lighting_api"
+    ]
+  },
+  {
+    "name": "shot_camera_persistence",
+    "exit_code": 0,
+    "seconds": 11.3964353,
+    "command": [
+      "F:\\gymenv\\python.exe",
+      "-B",
+      "tests/shot_camera_persistence_smoke.py",
+      "captures\\renderer-v2-cpu-cache\\regressions\\shot_camera_persistence"
+    ]
+  }
+]

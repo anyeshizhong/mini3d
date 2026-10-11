@@ -1,0 +1,32 @@
+[
+  {
+    "path": "F:\\python_project\\mini3d\\model\\08_rome_river\\rome_river_side.glb",
+    "bytes": 47827728,
+    "sha256": "9b04c6d0cc8db8bb431935a98eaa9ebc9dca46163be71fd3e969ac8bca7cc2fd",
+    "asset": {
+      "extras": {
+        "author": "Shahriar Shahrabi (https://sketchfab.com/shahriyarshahrabi)",
+        "license": "CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)",
+        "source": "https://sketchfab.com/3d-models/rome-river-side-8521d86dcd9043eba0b518ccab430d0f",
+        "title": "Rome River Side"
+      },
+      "generator": "Sketchfab-0.13.0",
+      "version": "2.0"
+    }
+  },
+  {
+    "path": "F:\\python_project\\mini3d\\model\\05_roman_soldier\\roman_legionnaire.glb",
+    "bytes": 29411784,
+    "sha256": "255f02bda756ac8e81ba1895ca338d54d5d5cae33e46d47d97628adb53afc08d",
+    "asset": {
+      "extras": {
+        "author": "Geoffrey Marchal (https://sketchfab.com/geoffreymarchal)",
+        "license": "CC-BY-NC-SA-4.0 (http://creativecommons.org/licenses/by-nc-sa/4.0/)",
+        "source": "https://sketchfab.com/3d-models/roman-legionnaire-40b87797180148e4bace023b6da0c45a",
+        "title": "Roman legionnaire"
+      },
+      "generator": "Sketchfab-15.12.0",
+      "version": "2.0"
+    }
+  }
+]

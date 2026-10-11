@@ -1,0 +1,300 @@
+{
+  "baseline": "f36a0ffae693841e03d8fad21fca058062bf9545",
+  "python": "3.8.20 (default, Oct  3 2024, 15:19:54) [MSC v.1929 64 bit (AMD64)]",
+  "platform": "Windows-10-10.0.19045-SP0",
+  "counts": {
+    "roots": 42,
+    "hierarchy_nodes": 643,
+    "render_entities": 258,
+    "submitted_triangles": 23948897,
+    "shared_meshes": 24
+  },
+  "camera": {
+    "position": [
+      9.0,
+      -12.0,
+      7.0
+    ],
+    "rotation": [
+      [
+        0.8,
+        -0.2228344058124623,
+        0.5570860145311557
+      ],
+      [
+        0.6000000000000001,
+        0.29711254108328305,
+        -0.7427813527082076
+      ],
+      [
+        -0.0,
+        0.9284766908852595,
+        0.3713906763541038
+      ]
+    ],
+    "focal_mm": 49.999999999999986,
+    "aspect": "16:9",
+    "fov_y": 22.89519252737121,
+    "near": 0.05,
+    "far": 400.0
+  },
+  "light": [
+    -3.0,
+    -2.0,
+    3.0
+  ],
+  "assets": [
+    {
+      "path": "F:\\python_project\\mini3d\\model\\08_rome_river\\rome_river_side.glb",
+      "bytes": 47827728,
+      "sha256": "9b04c6d0cc8db8bb431935a98eaa9ebc9dca46163be71fd3e969ac8bca7cc2fd"
+    },
+    {
+      "path": "F:\\python_project\\mini3d\\model\\05_roman_soldier\\roman_legionnaire.glb",
+      "bytes": 29411784,
+      "sha256": "255f02bda756ac8e81ba1895ca338d54d5d5cae33e46d47d97628adb53afc08d"
+    }
+  ],
+  "profile": [
+    {
+      "function": "<lambda>",
+      "file": "renderer_v2_cpu_cache_benchmark.py",
+      "line": 99,
+      "calls": 5,
+      "self_ms": 0.7236,
+      "cumulative_ms": 431.937
+    },
+    {
+      "function": "receiver_matrix",
+      "file": "shadow_fit@f36a0ff",
+      "line": 61,
+      "calls": 5,
+      "self_ms": 27.7128,
+      "cumulative_ms": 431.21340000000004
+    },
+    {
+      "function": "_intersection",
+      "file": "shadow_fit@f36a0ff",
+      "line": 36,
+      "calls": 2580,
+      "self_ms": 123.42560000000002,
+      "cumulative_ms": 366.5299
+    },
+    {
+      "function": "<listcomp>",
+      "file": "shadow_fit@f36a0ff",
+      "line": 107,
+      "calls": 5,
+      "self_ms": 1.8637000000000001,
+      "cumulative_ms": 184.81840000000003
+    },
+    {
+      "function": "<built-in method numpy.core._multiarray_umath.implement_array_function>",
+      "file": "~",
+      "line": 0,
+      "calls": 13765,
+      "self_ms": 24.362400000000004,
+      "cumulative_ms": 144.9995
+    },
+    {
+      "function": "_corners",
+      "file": "shadow_fit@f36a0ff",
+      "line": 15,
+      "calls": 3875,
+      "self_ms": 59.7986,
+      "cumulative_ms": 74.4104
+    },
+    {
+      "function": "_wrapreduction",
+      "file": "fromnumeric.py",
+      "line": 69,
+      "calls": 8135,
+      "self_ms": 16.6304,
+      "cumulative_ms": 54.693000000000005
+    },
+    {
+      "function": "norm",
+      "file": "<__array_function__ internals>",
+      "line": 177,
+      "calls": 2590,
+      "self_ms": 3.5579,
+      "cumulative_ms": 49.139100000000006
+    },
+    {
+      "function": "<method 'reduce' of 'numpy.ufunc' objects>",
+      "file": "~",
+      "line": 0,
+      "calls": 11150,
+      "self_ms": 46.17660000000001,
+      "cumulative_ms": 46.17660000000001
+    },
+    {
+      "function": "norm",
+      "file": "linalg.py",
+      "line": 2342,
+      "calls": 2590,
+      "self_ms": 25.7198,
+      "cumulative_ms": 41.9677
+    },
+    {
+      "function": "any",
+      "file": "<__array_function__ internals>",
+      "line": 177,
+      "calls": 2775,
+      "self_ms": 3.0037000000000003,
+      "cumulative_ms": 33.2934
+    },
+    {
+      "function": "_crossings",
+      "file": "shadow_fit@f36a0ff",
+      "line": 25,
+      "calls": 390,
+      "self_ms": 24.2791,
+      "cumulative_ms": 31.32
+    },
+    {
+      "function": "amax",
+      "file": "<__array_function__ internals>",
+      "line": 177,
+      "calls": 2780,
+      "self_ms": 2.8299000000000003,
+      "cumulative_ms": 28.960700000000003
+    },
+    {
+      "function": "all",
+      "file": "<__array_function__ internals>",
+      "line": 177,
+      "calls": 2580,
+      "self_ms": 2.9762,
+      "cumulative_ms": 26.495900000000002
+    },
+    {
+      "function": "amax",
+      "file": "fromnumeric.py",
+      "line": 2703,
+      "calls": 2780,
+      "self_ms": 4.471800000000001,
+      "cumulative_ms": 23.3125
+    },
+    {
+      "function": "any",
+      "file": "fromnumeric.py",
+      "line": 2333,
+      "calls": 2775,
+      "self_ms": 4.3597,
+      "cumulative_ms": 23.2722
+    },
+    {
+      "function": "all",
+      "file": "fromnumeric.py",
+      "line": 2432,
+      "calls": 2580,
+      "self_ms": 3.7204000000000006,
+      "cumulative_ms": 20.6602
+    },
+    {
+      "function": "<built-in method numpy.asarray>",
+      "file": "~",
+      "line": 0,
+      "calls": 8175,
+      "self_ms": 16.625500000000002,
+      "cumulative_ms": 16.625500000000002
+    },
+    {
+      "function": "_planes",
+      "file": "shadow_fit@f36a0ff",
+      "line": 20,
+      "calls": 200,
+      "self_ms": 1.711,
+      "cumulative_ms": 11.5136
+    },
+    {
+      "function": "concatenate",
+      "file": "<__array_function__ internals>",
+      "line": 177,
+      "calls": 820,
+      "self_ms": 0.8992000000000001,
+      "cumulative_ms": 6.9508
+    },
+    {
+      "function": "column_stack",
+      "file": "<__array_function__ internals>",
+      "line": 177,
+      "calls": 405,
+      "self_ms": 0.4494,
+      "cumulative_ms": 6.395600000000001
+    },
+    {
+      "function": "inv",
+      "file": "<__array_function__ internals>",
+      "line": 177,
+      "calls": 200,
+      "self_ms": 0.24000000000000002,
+      "cumulative_ms": 5.8247
+    },
+    {
+      "function": "inv",
+      "file": "linalg.py",
+      "line": 469,
+      "calls": 200,
+      "self_ms": 2.9265000000000003,
+      "cumulative_ms": 5.309100000000001
+    },
+    {
+      "function": "full_like",
+      "file": "<__array_function__ internals>",
+      "line": 177,
+      "calls": 390,
+      "self_ms": 0.5254000000000001,
+      "cumulative_ms": 5.2081
+    },
+    {
+      "function": "<dictcomp>",
+      "file": "fromnumeric.py",
+      "line": 70,
+      "calls": 8135,
+      "self_ms": 4.9712000000000005,
+      "cumulative_ms": 4.9712000000000005
+    },
+    {
+      "function": "column_stack",
+      "file": "shape_base.py",
+      "line": 612,
+      "calls": 405,
+      "self_ms": 1.7205,
+      "cumulative_ms": 4.7606
+    },
+    {
+      "function": "full_like",
+      "file": "numeric.py",
+      "line": 358,
+      "calls": 390,
+      "self_ms": 1.0336,
+      "cumulative_ms": 4.237400000000001
+    },
+    {
+      "function": "<method 'all' of 'numpy.ndarray' objects>",
+      "file": "~",
+      "line": 0,
+      "calls": 395,
+      "self_ms": 0.6427,
+      "cumulative_ms": 3.2298
+    },
+    {
+      "function": "eye",
+      "file": "twodim_base.py",
+      "line": 162,
+      "calls": 415,
+      "self_ms": 2.1921000000000004,
+      "cumulative_ms": 2.8780000000000006
+    },
+    {
+      "function": "<built-in method builtins.max>",
+      "file": "~",
+      "line": 0,
+      "calls": 2595,
+      "self_ms": 2.6832000000000003,
+      "cumulative_ms": 2.6832000000000003
+    }
+  ]
+}

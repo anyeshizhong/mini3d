@@ -5,3 +5,5 @@ Milestone 1 没有集成、复制或移植新的第三方代码，没有新增 P
 cglm、meshoptimizer、pybind11、Khronos Sample Viewer、Filament 和 bgfx 目前均只是后续路线图候选，不应标记为已采用。以后实际集成时，在本文逐项记录上游 URL、固定版本/SHA、许可证、署名、使用范围、构建依赖及实测收益。
 
 本轮真实 PBR 资产沿用已有 DamagedHelmet 来源与许可证清单：[asset-sources.json](../render-quality-v1/asset-sources.json)。没有提交原始模型或贴图；[里程碑报告](milestone-1.md) 为输出图片提供作者署名和许可说明。既有渲染依赖、阴影 shader 来源与行为未因本轮而替换。
+
+Milestone 2A 同样没有引入第三方代码或新依赖，仅批量执行现有 NumPy 几何判定。原 Roman Legionnaire / Rome GLB 的内置来源和许可见 [asset-metadata.json](cpu-cache/asset-metadata.json)，实际输出图片的署名与 CC-BY-NC-SA 分享说明见 [Milestone 2A 报告](milestone-2a.md)。

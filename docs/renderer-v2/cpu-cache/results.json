@@ -1,0 +1,867 @@
+{
+  "baseline": "f36a0ffae693841e03d8fad21fca058062bf9545",
+  "python": "3.8.20 (default, Oct  3 2024, 15:19:54) [MSC v.1929 64 bit (AMD64)]",
+  "platform": "Windows-10-10.0.19045-SP0",
+  "counts": {
+    "roots": 42,
+    "hierarchy_nodes": 643,
+    "render_entities": 258,
+    "submitted_triangles": 23948897,
+    "shared_meshes": 24
+  },
+  "camera": {
+    "position": [
+      9.0,
+      -12.0,
+      7.0
+    ],
+    "rotation": [
+      [
+        0.8,
+        -0.2228344058124623,
+        0.5570860145311557
+      ],
+      [
+        0.6000000000000001,
+        0.29711254108328305,
+        -0.7427813527082076
+      ],
+      [
+        -0.0,
+        0.9284766908852595,
+        0.3713906763541038
+      ]
+    ],
+    "focal_mm": 49.999999999999986,
+    "aspect": "16:9",
+    "fov_y": 22.89519252737121,
+    "near": 0.05,
+    "far": 400.0
+  },
+  "light": [
+    -3.0,
+    -2.0,
+    3.0
+  ],
+  "assets": [
+    {
+      "path": "F:\\python_project\\mini3d\\model\\08_rome_river\\rome_river_side.glb",
+      "bytes": 47827728,
+      "sha256": "9b04c6d0cc8db8bb431935a98eaa9ebc9dca46163be71fd3e969ac8bca7cc2fd",
+      "asset": {
+        "extras": {
+          "author": "Shahriar Shahrabi (https://sketchfab.com/shahriyarshahrabi)",
+          "license": "CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)",
+          "source": "https://sketchfab.com/3d-models/rome-river-side-8521d86dcd9043eba0b518ccab430d0f",
+          "title": "Rome River Side"
+        },
+        "generator": "Sketchfab-0.13.0",
+        "version": "2.0"
+      }
+    },
+    {
+      "path": "F:\\python_project\\mini3d\\model\\05_roman_soldier\\roman_legionnaire.glb",
+      "bytes": 29411784,
+      "sha256": "255f02bda756ac8e81ba1895ca338d54d5d5cae33e46d47d97628adb53afc08d",
+      "asset": {
+        "extras": {
+          "author": "Geoffrey Marchal (https://sketchfab.com/geoffreymarchal)",
+          "license": "CC-BY-NC-SA-4.0 (http://creativecommons.org/licenses/by-nc-sa/4.0/)",
+          "source": "https://sketchfab.com/3d-models/roman-legionnaire-40b87797180148e4bace023b6da0c45a",
+          "title": "Roman legionnaire"
+        },
+        "generator": "Sketchfab-15.12.0",
+        "version": "2.0"
+      }
+    }
+  ],
+  "profile": [
+    {
+      "function": "<lambda>",
+      "file": "renderer_v2_cpu_cache_benchmark.py",
+      "line": 99,
+      "calls": 5,
+      "self_ms": 0.7236,
+      "cumulative_ms": 431.937
+    },
+    {
+      "function": "receiver_matrix",
+      "file": "shadow_fit@f36a0ff",
+      "line": 61,
+      "calls": 5,
+      "self_ms": 27.7128,
+      "cumulative_ms": 431.21340000000004
+    },
+    {
+      "function": "_intersection",
+      "file": "shadow_fit@f36a0ff",
+      "line": 36,
+      "calls": 2580,
+      "self_ms": 123.42560000000002,
+      "cumulative_ms": 366.5299
+    },
+    {
+      "function": "<listcomp>",
+      "file": "shadow_fit@f36a0ff",
+      "line": 107,
+      "calls": 5,
+      "self_ms": 1.8637000000000001,
+      "cumulative_ms": 184.81840000000003
+    },
+    {
+      "function": "<built-in method numpy.core._multiarray_umath.implement_array_function>",
+      "file": "~",
+      "line": 0,
+      "calls": 13765,
+      "self_ms": 24.362400000000004,
+      "cumulative_ms": 144.9995
+    },
+    {
+      "function": "_corners",
+      "file": "shadow_fit@f36a0ff",
+      "line": 15,
+      "calls": 3875,
+      "self_ms": 59.7986,
+      "cumulative_ms": 74.4104
+    },
+    {
+      "function": "_wrapreduction",
+      "file": "fromnumeric.py",
+      "line": 69,
+      "calls": 8135,
+      "self_ms": 16.6304,
+      "cumulative_ms": 54.693000000000005
+    },
+    {
+      "function": "norm",
+      "file": "<__array_function__ internals>",
+      "line": 177,
+      "calls": 2590,
+      "self_ms": 3.5579,
+      "cumulative_ms": 49.139100000000006
+    },
+    {
+      "function": "<method 'reduce' of 'numpy.ufunc' objects>",
+      "file": "~",
+      "line": 0,
+      "calls": 11150,
+      "self_ms": 46.17660000000001,
+      "cumulative_ms": 46.17660000000001
+    },
+    {
+      "function": "norm",
+      "file": "linalg.py",
+      "line": 2342,
+      "calls": 2590,
+      "self_ms": 25.7198,
+      "cumulative_ms": 41.9677
+    },
+    {
+      "function": "any",
+      "file": "<__array_function__ internals>",
+      "line": 177,
+      "calls": 2775,
+      "self_ms": 3.0037000000000003,
+      "cumulative_ms": 33.2934
+    },
+    {
+      "function": "_crossings",
+      "file": "shadow_fit@f36a0ff",
+      "line": 25,
+      "calls": 390,
+      "self_ms": 24.2791,
+      "cumulative_ms": 31.32
+    },
+    {
+      "function": "amax",
+      "file": "<__array_function__ internals>",
+      "line": 177,
+      "calls": 2780,
+      "self_ms": 2.8299000000000003,
+      "cumulative_ms": 28.960700000000003
+    },
+    {
+      "function": "all",
+      "file": "<__array_function__ internals>",
+      "line": 177,
+      "calls": 2580,
+      "self_ms": 2.9762,
+      "cumulative_ms": 26.495900000000002
+    },
+    {
+      "function": "amax",
+      "file": "fromnumeric.py",
+      "line": 2703,
+      "calls": 2780,
+      "self_ms": 4.471800000000001,
+      "cumulative_ms": 23.3125
+    },
+    {
+      "function": "any",
+      "file": "fromnumeric.py",
+      "line": 2333,
+      "calls": 2775,
+      "self_ms": 4.3597,
+      "cumulative_ms": 23.2722
+    },
+    {
+      "function": "all",
+      "file": "fromnumeric.py",
+      "line": 2432,
+      "calls": 2580,
+      "self_ms": 3.7204000000000006,
+      "cumulative_ms": 20.6602
+    },
+    {
+      "function": "<built-in method numpy.asarray>",
+      "file": "~",
+      "line": 0,
+      "calls": 8175,
+      "self_ms": 16.625500000000002,
+      "cumulative_ms": 16.625500000000002
+    },
+    {
+      "function": "_planes",
+      "file": "shadow_fit@f36a0ff",
+      "line": 20,
+      "calls": 200,
+      "self_ms": 1.711,
+      "cumulative_ms": 11.5136
+    },
+    {
+      "function": "concatenate",
+      "file": "<__array_function__ internals>",
+      "line": 177,
+      "calls": 820,
+      "self_ms": 0.8992000000000001,
+      "cumulative_ms": 6.9508
+    },
+    {
+      "function": "column_stack",
+      "file": "<__array_function__ internals>",
+      "line": 177,
+      "calls": 405,
+      "self_ms": 0.4494,
+      "cumulative_ms": 6.395600000000001
+    },
+    {
+      "function": "inv",
+      "file": "<__array_function__ internals>",
+      "line": 177,
+      "calls": 200,
+      "self_ms": 0.24000000000000002,
+      "cumulative_ms": 5.8247
+    },
+    {
+      "function": "inv",
+      "file": "linalg.py",
+      "line": 469,
+      "calls": 200,
+      "self_ms": 2.9265000000000003,
+      "cumulative_ms": 5.309100000000001
+    },
+    {
+      "function": "full_like",
+      "file": "<__array_function__ internals>",
+      "line": 177,
+      "calls": 390,
+      "self_ms": 0.5254000000000001,
+      "cumulative_ms": 5.2081
+    },
+    {
+      "function": "<dictcomp>",
+      "file": "fromnumeric.py",
+      "line": 70,
+      "calls": 8135,
+      "self_ms": 4.9712000000000005,
+      "cumulative_ms": 4.9712000000000005
+    },
+    {
+      "function": "column_stack",
+      "file": "shape_base.py",
+      "line": 612,
+      "calls": 405,
+      "self_ms": 1.7205,
+      "cumulative_ms": 4.7606
+    },
+    {
+      "function": "full_like",
+      "file": "numeric.py",
+      "line": 358,
+      "calls": 390,
+      "self_ms": 1.0336,
+      "cumulative_ms": 4.237400000000001
+    },
+    {
+      "function": "<method 'all' of 'numpy.ndarray' objects>",
+      "file": "~",
+      "line": 0,
+      "calls": 395,
+      "self_ms": 0.6427,
+      "cumulative_ms": 3.2298
+    },
+    {
+      "function": "eye",
+      "file": "twodim_base.py",
+      "line": 162,
+      "calls": 415,
+      "self_ms": 2.1921000000000004,
+      "cumulative_ms": 2.8780000000000006
+    },
+    {
+      "function": "<built-in method builtins.max>",
+      "file": "~",
+      "line": 0,
+      "calls": 2595,
+      "self_ms": 2.6832000000000003,
+      "cumulative_ms": 2.6832000000000003
+    }
+  ],
+  "static_cpu": {
+    "fit_before": {
+      "median_ms": 64.66710000000032,
+      "p95_ms": 94.95559999999958,
+      "samples": 21
+    },
+    "fit_after": {
+      "median_ms": 18.45579999999991,
+      "p95_ms": 27.569200000000293,
+      "samples": 21
+    },
+    "plan_before": {
+      "median_ms": 23.59429999999918,
+      "p95_ms": 35.6772000000003,
+      "samples": 21
+    },
+    "plan_after": {
+      "median_ms": 21.44950000000012,
+      "p95_ms": 36.303900000000056,
+      "samples": 21
+    },
+    "update_before": {
+      "median_ms": 29.03739999999999,
+      "p95_ms": 40.54110000000044,
+      "samples": 21
+    },
+    "update_after": {
+      "median_ms": 26.780899999999885,
+      "p95_ms": 49.90149999999982,
+      "samples": 21
+    }
+  },
+  "raw_cpu_ms": {
+    "fit_before": [
+      64.23729999999983,
+      64.64300000000023,
+      61.713500000000195,
+      61.690000000000026,
+      62.9135999999999,
+      65.6184000000004,
+      62.61739999999971,
+      62.198600000000326,
+      65.67119999999971,
+      64.27810000000011,
+      61.37420000000038,
+      219.13110000000023,
+      88.5859,
+      94.95559999999958,
+      73.28449999999975,
+      71.1909000000004,
+      69.41790000000037,
+      83.73540000000013,
+      67.56600000000023,
+      64.66710000000032,
+      62.56149999999927
+    ],
+    "fit_after": [
+      19.442999999999877,
+      17.862800000000068,
+      18.45579999999991,
+      17.127400000000126,
+      17.18350000000024,
+      21.877299999999877,
+      19.699999999999385,
+      17.369099999999804,
+      17.682399999999987,
+      20.251499999999645,
+      17.26649999999985,
+      23.333899999999907,
+      27.569200000000293,
+      28.11909999999962,
+      20.8143999999999,
+      17.125100000000337,
+      18.094399999999844,
+      20.09120000000042,
+      18.827800000000394,
+      17.784199999999473,
+      17.360400000000276
+    ],
+    "plan_before": [
+      23.1306,
+      21.2163000000003,
+      21.93170000000011,
+      21.483899999999778,
+      22.99030000000002,
+      22.955099999999895,
+      21.051599999999837,
+      21.095100000000144,
+      25.471699999999764,
+      24.275799999999848,
+      21.216300000000743,
+      70.65289999999979,
+      35.6772000000003,
+      27.93060000000036,
+      33.99049999999981,
+      24.585599999999985,
+      23.809299999999922,
+      26.3795,
+      23.59429999999918,
+      19.81579999999994,
+      25.46460000000028
+    ],
+    "plan_after": [
+      20.158700000000085,
+      19.610899999999987,
+      21.32659999999964,
+      21.009799999999856,
+      20.15720000000032,
+      19.811299999999754,
+      26.88120000000005,
+      18.893199999999943,
+      18.848600000000104,
+      20.61270000000004,
+      19.123099999999837,
+      40.99089999999972,
+      32.16339999999995,
+      36.303900000000056,
+      24.73599999999987,
+      24.65160000000033,
+      22.879900000000397,
+      25.974800000000187,
+      22.608399999999307,
+      21.44950000000012,
+      21.67479999999955
+    ],
+    "update_before": [
+      33.38319999999983,
+      24.08509999999975,
+      27.106899999999712,
+      29.7493000000002,
+      24.7976999999997,
+      22.82289999999998,
+      29.03739999999999,
+      31.52799999999978,
+      24.02480000000029,
+      30.73809999999977,
+      23.78940000000007,
+      77.02589999999975,
+      33.988700000000094,
+      39.240799999999965,
+      40.54110000000044,
+      29.575999999999603,
+      25.38689999999999,
+      30.276699999999934,
+      27.84420000000054,
+      26.889800000000186,
+      26.66579999999996
+    ],
+    "update_after": [
+      23.685899999999815,
+      24.93400000000001,
+      26.780899999999885,
+      22.67299999999972,
+      25.857999999999937,
+      24.068100000000037,
+      27.437699999999232,
+      26.01100000000045,
+      25.302800000000403,
+      28.876700000000532,
+      25.016800000000394,
+      49.90149999999982,
+      37.01050000000006,
+      35.61120000000084,
+      54.818999999999285,
+      27.384500000000145,
+      25.62150000000063,
+      33.379700000000234,
+      27.17319999999912,
+      26.13809999999983,
+      29.83119999999939
+    ]
+  },
+  "profile_after": [
+    {
+      "function": "<lambda>",
+      "file": "renderer_v2_cpu_cache_benchmark.py",
+      "line": 129,
+      "calls": 5,
+      "self_ms": 0.34520000000000006,
+      "cumulative_ms": 109.0284
+    },
+    {
+      "function": "receiver_matrix",
+      "file": "shadow_fit.py",
+      "line": 86,
+      "calls": 5,
+      "self_ms": 3.4658,
+      "cumulative_ms": 108.68320000000001
+    },
+    {
+      "function": "_intersections",
+      "file": "shadow_fit.py",
+      "line": 61,
+      "calls": 10,
+      "self_ms": 5.8253,
+      "cumulative_ms": 91.24600000000001
+    },
+    {
+      "function": "_intersection",
+      "file": "shadow_fit.py",
+      "line": 36,
+      "calls": 195,
+      "self_ms": 19.5166,
+      "cumulative_ms": 82.1611
+    },
+    {
+      "function": "<built-in method numpy.core._multiarray_umath.implement_array_function>",
+      "file": "~",
+      "line": 0,
+      "calls": 4280,
+      "self_ms": 12.2466,
+      "cumulative_ms": 35.9535
+    },
+    {
+      "function": "_crossings",
+      "file": "shadow_fit.py",
+      "line": 25,
+      "calls": 390,
+      "self_ms": 20.5987,
+      "cumulative_ms": 26.756600000000002
+    },
+    {
+      "function": "_planes",
+      "file": "shadow_fit.py",
+      "line": 20,
+      "calls": 200,
+      "self_ms": 1.4857000000000002,
+      "cumulative_ms": 9.9223
+    },
+    {
+      "function": "<method 'reduce' of 'numpy.ufunc' objects>",
+      "file": "~",
+      "line": 0,
+      "calls": 1665,
+      "self_ms": 9.7465,
+      "cumulative_ms": 9.7465
+    },
+    {
+      "function": "_wrapreduction",
+      "file": "fromnumeric.py",
+      "line": 69,
+      "calls": 1025,
+      "self_ms": 1.9822,
+      "cumulative_ms": 8.3777
+    },
+    {
+      "function": "concatenate",
+      "file": "<__array_function__ internals>",
+      "line": 177,
+      "calls": 820,
+      "self_ms": 0.7571,
+      "cumulative_ms": 7.432500000000001
+    },
+    {
+      "function": "amax",
+      "file": "<__array_function__ internals>",
+      "line": 177,
+      "calls": 410,
+      "self_ms": 0.4072,
+      "cumulative_ms": 5.646
+    },
+    {
+      "function": "column_stack",
+      "file": "<__array_function__ internals>",
+      "line": 177,
+      "calls": 405,
+      "self_ms": 0.3734,
+      "cumulative_ms": 5.4786
+    },
+    {
+      "function": "inv",
+      "file": "<__array_function__ internals>",
+      "line": 177,
+      "calls": 200,
+      "self_ms": 0.2009,
+      "cumulative_ms": 4.8697
+    },
+    {
+      "function": "any",
+      "file": "<__array_function__ internals>",
+      "line": 177,
+      "calls": 410,
+      "self_ms": 0.4092,
+      "cumulative_ms": 4.856400000000001
+    },
+    {
+      "function": "amax",
+      "file": "fromnumeric.py",
+      "line": 2703,
+      "calls": 410,
+      "self_ms": 0.5999,
+      "cumulative_ms": 4.8249
+    },
+    {
+      "function": "norm",
+      "file": "<__array_function__ internals>",
+      "line": 177,
+      "calls": 215,
+      "self_ms": 0.3013,
+      "cumulative_ms": 4.7996
+    },
+    {
+      "function": "full_like",
+      "file": "<__array_function__ internals>",
+      "line": 177,
+      "calls": 390,
+      "self_ms": 0.4354,
+      "cumulative_ms": 4.5875
+    },
+    {
+      "function": "inv",
+      "file": "linalg.py",
+      "line": 469,
+      "calls": 200,
+      "self_ms": 2.2968,
+      "cumulative_ms": 4.423
+    },
+    {
+      "function": "norm",
+      "file": "linalg.py",
+      "line": 2342,
+      "calls": 215,
+      "self_ms": 2.4791000000000003,
+      "cumulative_ms": 4.1606000000000005
+    },
+    {
+      "function": "column_stack",
+      "file": "shape_base.py",
+      "line": 612,
+      "calls": 405,
+      "self_ms": 1.4113,
+      "cumulative_ms": 4.0997
+    },
+    {
+      "function": "full_like",
+      "file": "numeric.py",
+      "line": 358,
+      "calls": 390,
+      "self_ms": 0.8903,
+      "cumulative_ms": 3.7414
+    },
+    {
+      "function": "_corners",
+      "file": "shadow_fit.py",
+      "line": 15,
+      "calls": 200,
+      "self_ms": 3.3082000000000003,
+      "cumulative_ms": 3.4509000000000003
+    },
+    {
+      "function": "any",
+      "file": "fromnumeric.py",
+      "line": 2333,
+      "calls": 410,
+      "self_ms": 0.6306,
+      "cumulative_ms": 3.4219000000000004
+    },
+    {
+      "function": "<listcomp>",
+      "file": "shadow_fit.py",
+      "line": 122,
+      "calls": 5,
+      "self_ms": 3.278,
+      "cumulative_ms": 3.4070000000000005
+    },
+    {
+      "function": "<built-in method numpy.asarray>",
+      "file": "~",
+      "line": 0,
+      "calls": 2135,
+      "self_ms": 2.9937,
+      "cumulative_ms": 2.9937
+    },
+    {
+      "function": "<method 'all' of 'numpy.ndarray' objects>",
+      "file": "~",
+      "line": 0,
+      "calls": 395,
+      "self_ms": 0.5423,
+      "cumulative_ms": 2.7136
+    },
+    {
+      "function": "eye",
+      "file": "twodim_base.py",
+      "line": 162,
+      "calls": 415,
+      "self_ms": 1.9013,
+      "cumulative_ms": 2.4678
+    },
+    {
+      "function": "_all",
+      "file": "_methods.py",
+      "line": 61,
+      "calls": 395,
+      "self_ms": 0.2071,
+      "cumulative_ms": 2.1713
+    },
+    {
+      "function": "all",
+      "file": "<__array_function__ internals>",
+      "line": 177,
+      "calls": 205,
+      "self_ms": 0.23160000000000003,
+      "cumulative_ms": 2.1152
+    },
+    {
+      "function": "all",
+      "file": "fromnumeric.py",
+      "line": 2432,
+      "calls": 205,
+      "self_ms": 0.28480000000000005,
+      "cumulative_ms": 1.6462
+    }
+  ],
+  "matrix_identical": true,
+  "mutation_checks": [
+    "parent position changed in place",
+    "parent rotation changed in place",
+    "parent nonuniform scale changed in place",
+    "child transform and imported matrix changed in place",
+    "model replaced",
+    "bounds mutated in place",
+    "camera pose lens aspect near far changed",
+    "light direction changed in place",
+    "visibility changed",
+    "child reparented",
+    "restored state"
+  ],
+  "gpu": "Intel(R) UHD Graphics 620",
+  "driver": "4.6.0 - Build 27.20.100.8682",
+  "gpu_checks": [
+    {
+      "name": "original",
+      "changed_pixels": 0,
+      "before": {
+        "entities_before": 258,
+        "entities_after": 258,
+        "entities_culled": 0,
+        "bounds_tested": 258,
+        "shadow_candidates": 258,
+        "opaque_entities": 257,
+        "transparent_entities": 1,
+        "color_draw_calls": 258,
+        "shadow_draw_calls": 257,
+        "color_triangles": 23948897,
+        "shadow_triangles": 23942537,
+        "render_plan_cpu_ms": 26.485299999999157,
+        "draw_calls": 515,
+        "submitted_triangles": 47891434
+      },
+      "after": {
+        "entities_before": 258,
+        "entities_after": 258,
+        "entities_culled": 0,
+        "bounds_tested": 258,
+        "shadow_candidates": 258,
+        "opaque_entities": 257,
+        "transparent_entities": 1,
+        "color_draw_calls": 258,
+        "shadow_draw_calls": 257,
+        "color_triangles": 23948897,
+        "shadow_triangles": 23942537,
+        "render_plan_cpu_ms": 34.298599999999624,
+        "draw_calls": 515,
+        "submitted_triangles": 47891434
+      }
+    },
+    {
+      "name": "changed-model-camera-light",
+      "changed_pixels": 0,
+      "before": {
+        "entities_before": 258,
+        "entities_after": 258,
+        "entities_culled": 0,
+        "bounds_tested": 258,
+        "shadow_candidates": 258,
+        "opaque_entities": 257,
+        "transparent_entities": 1,
+        "color_draw_calls": 258,
+        "shadow_draw_calls": 257,
+        "color_triangles": 23948897,
+        "shadow_triangles": 23942537,
+        "render_plan_cpu_ms": 21.580300000000108,
+        "draw_calls": 515,
+        "submitted_triangles": 47891434
+      },
+      "after": {
+        "entities_before": 258,
+        "entities_after": 258,
+        "entities_culled": 0,
+        "bounds_tested": 258,
+        "shadow_candidates": 258,
+        "opaque_entities": 257,
+        "transparent_entities": 1,
+        "color_draw_calls": 258,
+        "shadow_draw_calls": 257,
+        "color_triangles": 23948897,
+        "shadow_triangles": 23942537,
+        "render_plan_cpu_ms": 25.419699999996936,
+        "draw_calls": 515,
+        "submitted_triangles": 47891434
+      }
+    },
+    {
+      "name": "API scene save/load",
+      "changed_pixels": 0
+    }
+  ],
+  "offscreen_shadow": {
+    "model": "Original Roman Legionnaire",
+    "changed_pixels_vs_baseline": 0,
+    "shadow_pixels": 243998,
+    "before": {
+      "entities_before": 7,
+      "entities_after": 1,
+      "entities_culled": 6,
+      "bounds_tested": 7,
+      "shadow_candidates": 7,
+      "opaque_entities": 1,
+      "transparent_entities": 0,
+      "color_draw_calls": 1,
+      "shadow_draw_calls": 7,
+      "color_triangles": 2,
+      "shadow_triangles": 589881,
+      "render_plan_cpu_ms": 0.8293999999999802,
+      "draw_calls": 8,
+      "submitted_triangles": 589883
+    },
+    "after": {
+      "entities_before": 7,
+      "entities_after": 1,
+      "entities_culled": 6,
+      "bounds_tested": 7,
+      "shadow_candidates": 7,
+      "opaque_entities": 1,
+      "transparent_entities": 0,
+      "color_draw_calls": 1,
+      "shadow_draw_calls": 7,
+      "color_triangles": 2,
+      "shadow_triangles": 589881,
+      "render_plan_cpu_ms": 1.2280000000000069,
+      "draw_calls": 8,
+      "submitted_triangles": 589883
+    },
+    "gl_error": 0
+  },
+  "cpu": "Intel(R) Core(TM) i7-8550U CPU @ 1.80GHz"
+}
