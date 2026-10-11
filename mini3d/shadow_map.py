@@ -149,12 +149,12 @@ class ShadowMap:
 
     def render(self, entities, scene, renderer, camera=None):
         self.draw_calls = self.triangles = 0
-        from .material_renderer import MaterialRenderer
+        from .gl_state import save_state, restore_state
         matrix = light_matrix(entities, scene_light_direction(scene), camera, scene.shadow_resolution)
         if matrix is None:
             self.matrix = None
             return
-        state = MaterialRenderer._save_state()
+        state = save_state()
         draw = int(gl.glGetIntegerv(gl.GL_DRAW_FRAMEBUFFER_BINDING))
         read = int(gl.glGetIntegerv(gl.GL_READ_FRAMEBUFFER_BINDING))
         viewport = gl.glGetIntegerv(gl.GL_VIEWPORT)
@@ -213,7 +213,7 @@ class ShadowMap:
             gl.glViewport(*viewport)
             gl.glClearDepth(clear)
             gl.glDepthRange(*depth_range)
-            MaterialRenderer._restore_state(state)
+            restore_state(state)
 
     @staticmethod
     def bind(program, shadow, scene):
