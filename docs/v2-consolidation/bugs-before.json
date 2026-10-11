@@ -1,0 +1,18 @@
+{
+  "checks": {
+    "shot_hides_entity_axes": false,
+    "editor_entity_axes_retained": true,
+    "export_ignores_pack_state_and_pbo": false,
+    "export_restores_pack_state_and_pbo": false,
+    "gl_error_zero": true,
+    "failed_startup_releases_resources": false
+  },
+  "errors": {
+    "export": "GLError: GLError(\n\terr = 1282,\n\tdescription = b'\\xce\\xde\\xd0\\xa7\\xb2\\xd9\\xd7\\xf7',\n\tbaseOperation = glReadPixels,\n\tcArguments = (\n\t\t0,\n\t\t0,\n\t\t128,\n\t\t96,\n\t\tGL_RGB,\n\t\tGL_UNSIGNED_BYTE,\n\t\tarray([[[0, 0, 0],\n        [0, 0, 0],\n        [0, 0, 0],\n        ...,\n        [0, 0, 0],\n        [0, 0, 0],\n        [...,\n\t)\n)"
+  },
+  "gpu": "Intel(R) UHD Graphics 620",
+  "startup_close_calls": {
+    "renderer": 0,
+    "target": 0
+  }
+}

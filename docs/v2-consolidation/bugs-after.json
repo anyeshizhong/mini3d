@@ -1,0 +1,23 @@
+{
+  "checks": {
+    "shot_hides_entity_axes": true,
+    "editor_entity_axes_retained": true,
+    "export_ignores_pack_state_and_pbo": true,
+    "export_restores_pack_state_and_pbo": true,
+    "gl_error_zero": true,
+    "failed_startup_releases_resources": true
+  },
+  "errors": {},
+  "gpu": "Intel(R) UHD Graphics 620",
+  "pack_state_after_export": {
+    "ALIGNMENT": 8,
+    "ROW_LENGTH": 136,
+    "SKIP_ROWS": 2,
+    "SKIP_PIXELS": 3
+  },
+  "pbo_restored": true,
+  "startup_close_calls": {
+    "renderer": 1,
+    "target": 1
+  }
+}

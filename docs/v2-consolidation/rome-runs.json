@@ -1,0 +1,101 @@
+{
+  "revision": "99144e7952deecb0d3f78653dc538a7c53ed5801",
+  "suite": "rome",
+  "source_hashes": {
+    "1 copy.py": "6a586066e15be4524705d2efc795ce747b73b1f5b3ceb44805e616ece5e8cee5",
+    "1.py": "d3c5bbc6d8e0043f44fcd63543151b42e2554fbf7741ad11fe6369bebbfc98f5",
+    "2.py": "47b645de139a282ded6a2434b03711fe41a6a9ba5e3ceede93d0f8e8ff0a11c7",
+    "editor.py": "099f1480096e77bb74d31f66c4bc244e2273d7ffc93455b4ddc746329294b880",
+    "editor_app.py": "5f747abdf68383207cefd11acc1ec6d78c1d93d5b08990c85ab41b6c77e725e8",
+    "examples/__init__.py": "7efcba027181f86d8f1dc488b67a59e71524bff8040fedebf38cd25ddbe7b0f0",
+    "examples/circular_motion.py": "890218230b1d1844d16bfc76273a3ec191ddf588b3149a345bfb0c8ba0e9e533",
+    "examples/legacy_scene.py": "7f5e0e9156e381ea931d5072e5ba89e941e45b16042a52e4e6f3740d98a3ff63",
+    "examples/primitives.py": "de283a7a666afaa5400ec8df60a616494c935d7cbe82639a325001fcd3f99877",
+    "examples/urdf_car.py": "ed63a9c714b6b95a6d3b0e5c4c10af8ec05aa33b52ae36fef6c955261ebfb0be",
+    "mini3d/__init__.py": "9b27b78f482801d6e0f35a48a72305a6e33d5052cb7b40d9788c9d17af888386",
+    "mini3d/__main__.py": "808931c196750d8c62bc0bc1ec15ad8696fc4059eb05e455f3e5f40bf993d71d",
+    "mini3d/api.py": "7dc57f00ec956a8ff756b34434e68e472b4995564a74c629d0d6a0432839351d",
+    "mini3d/api_dispatch.py": "387607c4532b7c1935893bcc2d478700591a9bc5cb8fa1a91fab6c0930a385c3",
+    "mini3d/assets.py": "6d8ce6ce464a6db03599408694602948053ab062f3061e104be676217670d244",
+    "mini3d/camera.py": "4dc8a3cae6eedf088add4355d683276fd3bb49c1843031ce6d9cf7d73ad7f96e",
+    "mini3d/commands.py": "559052197064143ab5d89c9492d451cdf6456949191823cdc4b885f537e0ec99",
+    "mini3d/cpu_renderer.py": "79d32227cbc9e73fb8252d9351db391e6b3de62ac04f7fb3e49df9d1c75205d7",
+    "mini3d/editor.py": "6d217c3f6b7c91494e5e888d09943a62c690e275d8e00d4b16edf5cd4b7c248c",
+    "mini3d/editor_runtime.py": "dfbb474358819d56d9834543bdbb3813786741337a270a5ac9cde7b187a82f66",
+    "mini3d/editor_tools.py": "d9516c61da16061bbe4bc6ac2d917e6688b3d12aef0a5e9fb4650f0f0490ce3a",
+    "mini3d/editor_ui.py": "5225afe65e48b1146f911b851699770c8f930ae60da8df57d6db04027e38b431",
+    "mini3d/environment.py": "a64a00c418b9923f7ee52e7c0aec23afbe45e03d4d284fd39864711fc4d2c6aa",
+    "mini3d/formation.py": "8c7ea5dda286494927c7b784ec96b6c0c7e5d686a0c00ef22cc9df0ca7839481",
+    "mini3d/geometry.py": "a43414723deead23d115f4d9174b6e362e2ef91a9a620655aca45cdd674a6922",
+    "mini3d/gl_renderer.py": "d26f40c15f03d6eb552dc53312c8fa2053afae413e1a56dfd7ebce1477cbd9b8",
+    "mini3d/gl_state.py": "64f7d2ca0f697562de7063c38e555e061ae392d77da7e036095a377c1ebc4f0d",
+    "mini3d/gltf_loader.py": "3d056ffb31481c10470c91e7acad7e15bad42b1e2e305bf85d2f565e324643cc",
+    "mini3d/lighting.py": "fb3b7cfc34b17d1ba4995bb7848e94d8fdb87039ab9c8e44ee4eb0cfb7ef20db",
+    "mini3d/material_renderer.py": "6e11f16a3dcf582b1c785bee2b8bc2284779d3a786544f5510774b1165c4950e",
+    "mini3d/material_shaders.py": "56a3d3fcec601618966bee6839b2470266989fa04aa291770252790316efd86f",
+    "mini3d/math3d.py": "9714e6c0434a0bfe5c8d435c3f906596c11e95d1e7b4e9c0d6c5ef3935f03dd1",
+    "mini3d/model_dialog.py": "d423ac9402d87ec9e1754d272bf76b490af9bb68517b61a98229d8a223e39823",
+    "mini3d/orbit_controller.py": "5eea75af5e78055db122de69c34852399bd18454a9ff1bffb912cfa6b59ff9e5",
+    "mini3d/picking.py": "7d0c23f397e85aecf189a6531ba315561fe8a5f55925009b9fec299e5fc81386",
+    "mini3d/placement.py": "34340e45c6196b075cce133ea8399171cc04367bf37b3f70b9039a53572b64f6",
+    "mini3d/placement_plane.py": "c78fd0cdb714cfeece12059671be9b0cf1d4c7e432a226df35e4fbf173aac98a",
+    "mini3d/render_plan.py": "595613b8cc950d77647f45e0f5a06cf2b9c1201fe5e53b626a2a670a63555662",
+    "mini3d/render_target.py": "6e7da627ca957869980a638a6fb9b463bf8b5e4b4f59ee13057f4d62f57ee40b",
+    "mini3d/resources/ibl/CC0.html": "9ca2e10c33c61a53e4b8820518b513f21dcdfdfaeaa4dffb622a8674ba21a3cd",
+    "mini3d/resources/ibl/neutral.json": "06dd9392a8988ae900dc4393fe62c55fdbdccd44fbe672823a6425cbbb0610d1",
+    "mini3d/resources/ibl/neutral.npz": "6679cedf9bc3a683be6ec70b3cf4208305b0929045753e1244df3bbc150c3cc9",
+    "mini3d/resources/ibl/NOTICE.md": "d6aac45253dd4baf85a0742fb1d736dc6f779a630a9d2902feb6b9b259633f3b",
+    "mini3d/scene.py": "4bd01d5e7aacdea1f9ae9106af3afc39e8578bdef6f03bc0978d6499650f3bb9",
+    "mini3d/scene_io.py": "998d4794bc6ca3cfec097ce6160993d65935276440f6b931248cadd231c1e32b",
+    "mini3d/shadow_fit.py": "4a134f6ec7d520082452a00b7a09e49ebee894d5bf4fb04c53c603265759f02e",
+    "mini3d/shadow_map.py": "1ee4972a10f51c71eef74295973bd8e19a3c111c76c334007f52af8a4db4546e",
+    "mini3d/shot_camera.py": "4cb10c9d8a0e57afbd9459374cd7bc7c196472992fe1beb4ab5519857feae60d",
+    "mini3d/stl_loader.py": "76e1c9fe18aaefd19346cf85f581ab4a2170534fc25f5de4395a589ac38706ad",
+    "mini3d/surface_drag.py": "ba87febeef9b51ef06c9c20f36fd5b07b1113e426005c0a62c78f4ac89105b05",
+    "mini3d/urdf_loader.py": "d8a4083ed46491664cbb9667b4b771b31b4b02b860d34ffa379b7b5ca9e66cba",
+    "mini3d/viewer.py": "6aaf58142631aa92dc0140dd24906b178bf0aabf66203b35d811ee5f66e2271b",
+    "model/manifest.json": "8d5605bc8ea7c8e3fce08fcdff31505631a666af28338100b64b5ee1cf3c14a7",
+    "requirements.txt": "9266680e8b4487c8e672d8e8f7698fb77f8470d2d220728c2d98d9743b7ef82b"
+  },
+  "runs": [
+    {
+      "name": "shadow_assets_smoke",
+      "exit_code": 0,
+      "seconds": 12.828
+    },
+    {
+      "name": "rome_integration_smoke",
+      "exit_code": 0,
+      "seconds": 32.202
+    },
+    {
+      "name": "rome_ui",
+      "exit_code": 0,
+      "seconds": 12.963
+    },
+    {
+      "name": "rome_added_models_smoke",
+      "exit_code": 0,
+      "seconds": 11.065
+    },
+    {
+      "name": "rome_performance",
+      "exit_code": 0,
+      "seconds": 30.249
+    },
+    {
+      "name": "shadow_motion",
+      "exit_code": 0,
+      "seconds": 94.423
+    },
+    {
+      "name": "caster_depth",
+      "exit_code": 0,
+      "seconds": 1.533
+    }
+  ],
+  "identical_images": [],
+  "source_unchanged_during_run": true,
+  "passed": true,
+  "derived_from": "release-runs.json"
+}

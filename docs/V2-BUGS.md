@@ -1,25 +1,36 @@
 # V2 Bug、质量限制与验证状态
 
-核查日期2026-10-11。GitHub Issue状态与代码完成状态分别记录，不自动关闭Issue或发表评论。
-本轮已读取仓库全部6个Issue与评论，并核对代码及Git祖先；下面是初始清单，修复/最终验证追加记录。
+已读取仓库全部六个Issue和评论并核对代码/Git祖先；Issue状态与实际修复分别记录，没有自动关闭Issue或发表评论。
 
-| 编号 / 优先级 | 分类与现状 | 来源与验证 |
-| --- | --- | --- |
-| #1 Lighting / 已包含 | 功能已实现；Issue open不等于缺失 | [Issue1](https://github.com/anyeshizhong/mini3d/issues/1)，efb3852；原子参数、UI/API/Shot与存档回归保留 |
-| #2 Shadow / 已包含 | 功能已验收，Issue closed；单图质量限制仍在 | [Issue2](https://github.com/anyeshizhong/mini3d/issues/2)，52ee1ee；depth/bias/PCF/状态与真实GPU回归 |
-| #3 Focus裁剪 / 已修复 | framing bounds误作clip bounds，1033e5e已包含，Issue closed | [Issue3](https://github.com/anyeshizhong/mini3d/issues/3)；保留失败→成功图片与scene_clipping测试 |
-| #4 Rome集成 / 部分通过 | Unlit不受影是材料语义；40人碰撞是布局与点锚定范围，不是裁剪Bug | [Issue4](https://github.com/anyeshizhong/mini3d/issues/4)，476a799合入；原资产/真实UI/性能复测；不改材料或增加避障 |
-| #4 Shot不存档 / 已修复 | 旧Rome报告的限制已被7cb7719修复并包含Q2 | shot_camera_persistence及跨进程PNG；保留历史报告但不再列为当前缺功能 |
-| #5 Gizmo跨面板 / 已修复 | 406d697已包含；Issue仍open | [Issue5](https://github.com/anyeshizhong/mini3d/issues/5)，65与81条实际UI轨迹/单测回归保留并复跑 |
-| #6 阴影运动 / P2遗留 | 确认质量限制：逐帧fit中心/尺度/Z改变，缺稳定化；不能只看普通照片移动 | [Issue6](https://github.com/anyeshizhong/mini3d/issues/6)；固定世界区域/固定观察机位与重复控制复测，批量CPU优化dfcca0d已包含但未消除抖动 |
-| 阴影接触、自阴影 / P2遗留 | 单图分辨率/bias/PCF质量限制，薄几何/掠射角；不预设全为程序Bug | Q2 Blender对齐与shadow zoom、不同分辨率，保留原参数，不重写算法 |
-| Q2参考球极点 / 资产缺陷 | 2/2560零长度法线、退化极点三角；不能为整理改正式几何 | 原spheres诊断no-shadow/radial normals与Q2报告保留 |
-| PNG readback状态 / P1待复现 | capture未隔离PACK_ROW_LENGTH/SKIP等caller状态，潜在真实Bug | 先新增可复现GPU故障，再局部修复并保留前后证据 |
-| Shot legacy实体axes / P2待复现 | show_axes=False未直接限制实体isaxes辅助循环 | 先测试干净Shot输出与Editor差别；若确认仅消除摄影辅助元素，不移除legacy axes能力 |
-| Editor初始化失败释放 / P2待验证 | target/renderer等创建在try之前，异常可能绕过finally | 控制构造失败、验证资源与backend/context释放，单独提交 |
-| 共享Mesh直接修改 / 契约限制 | bounds/picking/GPU缓存假设导入mesh不变；无编辑几何功能 | 文档明确，不新增mutable mesh失效框架 |
-| 透明mesh中心排序 / 质量限制 | BLEND不是逐三角排序；BLEND不投透射阴影 | alpha模式回归保留；禁止把排序算法扩展伪装成重构 |
+| 问题 / 状态 | 结论与验证 |
+| --- | --- |
+| [#1 Lighting](https://github.com/anyeshizhong/mini3d/issues/1) 已包含 | Issue open；efb3852在Q2，原子参数、UI/API/Shot/存档回归通过 |
+| [#2 Shadow](https://github.com/anyeshizhong/mini3d/issues/2) 已包含 | Issue closed；52ee1ee在Q2，depth/bias/PCF/MASK/Unlit/状态/真实资产通过，质量限制保留 |
+| [#3 Focus clip](https://github.com/anyeshizhong/mini3d/issues/3) 已修复 | 1033e5e修复framing bounds错作clip bounds；当前GPU回归通过，原失败/成功图保留 |
+| [#4 Rome](https://github.com/anyeshizhong/mini3d/issues/4) 部分验收 | 476a799历史合入；原Unlit不受影是语义，40人点锚定与fountain/stall重叠是布局限制；原GLB/UI/Shot/深度/重载/性能通过，不增加避障或修改模型 |
+| #4旧Shot不存档 已修复 | 后续7cb7719已在Q2；新进程及Editor导航后PNG exact，旧报告原样保留 |
+| [#5 Gizmo跨面板](https://github.com/anyeshizhong/mini3d/issues/5) 已修复 | Issue open；406d697已在Q2，81条实际UI检查全部通过 |
+| [#6 摄影机移动阴影](https://github.com/anyeshizhong/mini3d/issues/6) P2遗留 | 实际GL深度、固定世界点PCF重放确认边界变化；CPU batch不是稳定化修复，locked-union control深度恒定 |
+| 接触/自阴影 P2质量限制 | 单图resolution、bias/PCF、薄几何/掠射角限制；Q2原图和Blender对齐保持，未宣称全部解决 |
+| 球极点 资产缺陷 | 2/2560零长度法线和退化极点三角形；原no-shadow/radial-normal诊断保留，不改正式几何 |
+| 透明度 质量限制 | BLEND按mesh中心排序，非逐三角形/OIT，不投透射影；alpha/doubleSided/负scale实际GPU通过 |
+| 共享Mesh直接修改 契约限制 | bounds/picking/GPU cache依赖导入Mesh不可变；未新增几何编辑或失效框架 |
+| Rome manifest遗漏 已修复 | 原Q2缺登记、测试KeyError；c606682补核实元数据，原模型不改，真实资产回归成功 |
+| PNG PACK/PBO P1已修复 | 调用者PBO导致CPU readback误作offset、GL error1282；e6ff83b隔离/恢复pack与PBO，也涵盖纹理分配对ALIGNMENT影响；与正常PNG byte exact |
+| Shot实体axes P2已修复 | 原isaxes绕过clean Shot world axes关闭；e6ff83b只隐藏clean副本entity axes，Editor能力保留 |
+| Editor构造失败 P2已修复 | app创建在try前绕过释放；25da77f用ExitStack登记资源，renderer/target close从0次变1次，SDL关闭 |
+| runtime摄影hook 已修复 | 4829395保持Editor摄影替换/子类hook；原81条实际UI轨迹通过 |
+| 统一窗口/API 已整合 | a3bb19b允许绑定现有Editor，正式app.api共享Scene/Commands/Shot/renderer；同窗口JSON、Undo/Redo、4x/IBL/shadow/PNG/save-load通过，旧独立构造保留 |
+| 示例flatten边界 已修复 | 共享适配曾扩大geometry对axes-only的保留；99144e7恢复geometry仅mesh、URDF保留link axes；新增测试失败→成功、277单测及六原入口PNG exact |
 
-需要大型算法的遗留项方案：阴影稳定化需稳定尺度/迟滞、texel中心对齐和Z/bias世界尺度分析，
-同时保留画外caster和fallback；只做中心snapping不足。另立任务后使用本机固定观察运动路径验收。
-本次整合只报告此方案，不未经审查引入新的时间历史状态、CSM或渲染管线。
+本轮 [修复前](v2-consolidation/bugs-before.json)、[修复后](v2-consolidation/bugs-after.json) 和真实图片保留；未删除失败测试。
+回归工具的参数/输入目录错误已纠正并补跑，原失败日志留存；这些不计作程序Bug。
+
+## 阴影稳定化后续方案
+
+1024横移有2230/73728点变化（3.02%），4096有613点（0.83%）；最大单步visibility变化仍达0.4444。
+lateral各121帧，dolly/low-sun各61帧，1024/4096共486帧；固定观察点与locked control用于区分相机运动和实际影子变化。
+CPU caster进入探针的Z extent跳变19.7035，仅是几何诊断，不能直接声称可见闪烁。
+只有中心texel snapping不足以解决尺度和Z/bias逐帧变化。建议另立任务：稳定尺度/必要迟滞、中心texel对齐、Z/bias世界尺度策略，同时保持画外caster/fallback。
+验收使用当前固定点、locked control、原Rome及Q2画质/性能证据。CSM、时间历史等大型算法须先审查方案，本整合未引入，也未将#6标为已修复。
+单测/GPU成功不证明所有模型、驱动或人工操作都无缺陷；遗留边界随候选交付。

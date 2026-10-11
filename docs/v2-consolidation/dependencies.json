@@ -1,0 +1,491 @@
+{
+  "mini3d.__init__": {
+    "lines": 1,
+    "imports": [],
+    "classes": [],
+    "functions": []
+  },
+  "mini3d.__main__": {
+    "lines": 6,
+    "imports": [],
+    "classes": [],
+    "functions": []
+  },
+  "mini3d.api": {
+    "lines": 258,
+    "imports": [
+      "mini3d.camera",
+      "mini3d.editor",
+      "mini3d.environment",
+      "mini3d.lighting",
+      "mini3d.orbit_controller",
+      "mini3d.placement",
+      "mini3d.shot_camera",
+      "mini3d.viewer"
+    ],
+    "classes": [
+      "Mini3DAPI"
+    ],
+    "functions": []
+  },
+  "mini3d.api_dispatch": {
+    "lines": 69,
+    "imports": [],
+    "classes": [],
+    "functions": [
+      "_validate",
+      "dispatch",
+      "dispatch_json"
+    ]
+  },
+  "mini3d.assets": {
+    "lines": 43,
+    "imports": [
+      "mini3d.gltf_loader",
+      "mini3d.placement",
+      "mini3d.stl_loader"
+    ],
+    "classes": [
+      "Asset",
+      "AssetCache"
+    ],
+    "functions": []
+  },
+  "mini3d.camera": {
+    "lines": 116,
+    "imports": [],
+    "classes": [
+      "Camera"
+    ],
+    "functions": [
+      "_vector3"
+    ]
+  },
+  "mini3d.commands": {
+    "lines": 398,
+    "imports": [
+      "mini3d.formation",
+      "mini3d.placement",
+      "mini3d.scene",
+      "mini3d.surface_drag"
+    ],
+    "classes": [
+      "PlacementCommands"
+    ],
+    "functions": [
+      "_vector",
+      "_placement_metadata"
+    ]
+  },
+  "mini3d.cpu_renderer": {
+    "lines": 235,
+    "imports": [],
+    "classes": [
+      "Renderer"
+    ],
+    "functions": [
+      "project",
+      "draw_line",
+      "draw_axes"
+    ]
+  },
+  "mini3d.editor": {
+    "lines": 513,
+    "imports": [
+      "mini3d.commands",
+      "mini3d.editor_runtime",
+      "mini3d.editor_tools",
+      "mini3d.gltf_loader",
+      "mini3d.lighting",
+      "mini3d.model_dialog",
+      "mini3d.picking",
+      "mini3d.placement",
+      "mini3d.placement_plane",
+      "mini3d.scene",
+      "mini3d.scene_io",
+      "mini3d.shot_camera",
+      "mini3d.viewer"
+    ],
+    "classes": [
+      "Editor"
+    ],
+    "functions": [
+      "run"
+    ]
+  },
+  "mini3d.editor_runtime": {
+    "lines": 165,
+    "imports": [
+      "mini3d.api",
+      "mini3d.editor_ui",
+      "mini3d.gl_renderer",
+      "mini3d.gl_state",
+      "mini3d.render_target",
+      "mini3d.scene",
+      "mini3d.shot_camera"
+    ],
+    "classes": [],
+    "functions": [
+      "run"
+    ]
+  },
+  "mini3d.editor_tools": {
+    "lines": 220,
+    "imports": [
+      "mini3d.picking",
+      "mini3d.scene"
+    ],
+    "classes": [
+      "TransformGizmo"
+    ],
+    "functions": [
+      "segment_distance",
+      "plane_point",
+      "euler_xyz"
+    ]
+  },
+  "mini3d.editor_ui": {
+    "lines": 711,
+    "imports": [],
+    "classes": [
+      "EditorUI"
+    ],
+    "functions": []
+  },
+  "mini3d.environment": {
+    "lines": 102,
+    "imports": [],
+    "classes": [
+      "EnvironmentMap"
+    ],
+    "functions": [
+      "environment_state",
+      "update_environment",
+      "load_environment"
+    ]
+  },
+  "mini3d.formation": {
+    "lines": 65,
+    "imports": [],
+    "classes": [],
+    "functions": [
+      "create_rectangular_formation"
+    ]
+  },
+  "mini3d.geometry": {
+    "lines": 175,
+    "imports": [],
+    "classes": [],
+    "functions": [
+      "make_box",
+      "make_sphere",
+      "make_cylinder"
+    ]
+  },
+  "mini3d.gl_renderer": {
+    "lines": 1024,
+    "imports": [
+      "mini3d.lighting",
+      "mini3d.material_renderer",
+      "mini3d.render_plan",
+      "mini3d.shadow_map",
+      "mini3d.shot_camera"
+    ],
+    "classes": [
+      "GLGrid",
+      "GLMeshGPU",
+      "GLRenderer"
+    ],
+    "functions": [
+      "perspective_matrix",
+      "perspective_from_focal",
+      "add_axis_with_arrow"
+    ]
+  },
+  "mini3d.gl_state": {
+    "lines": 93,
+    "imports": [],
+    "classes": [],
+    "functions": [
+      "preserved_pixel_pack",
+      "read_rgb",
+      "save_state",
+      "restore_state"
+    ]
+  },
+  "mini3d.gltf_loader": {
+    "lines": 329,
+    "imports": [
+      "mini3d.assets",
+      "mini3d.scene"
+    ],
+    "classes": [
+      "GltfError",
+      "_Document"
+    ],
+    "functions": [
+      "_node_matrix",
+      "_normals",
+      "load_gltf"
+    ]
+  },
+  "mini3d.lighting": {
+    "lines": 90,
+    "imports": [],
+    "classes": [],
+    "functions": [
+      "_direction",
+      "lighting_state",
+      "update_lighting",
+      "scene_light_direction",
+      "shadow_state",
+      "update_shadows"
+    ]
+  },
+  "mini3d.material_renderer": {
+    "lines": 352,
+    "imports": [
+      "mini3d.environment",
+      "mini3d.gl_state",
+      "mini3d.lighting",
+      "mini3d.material_shaders",
+      "mini3d.shadow_map"
+    ],
+    "classes": [
+      "MaterialRenderer"
+    ],
+    "functions": []
+  },
+  "mini3d.material_shaders": {
+    "lines": 190,
+    "imports": [
+      "mini3d.shadow_map"
+    ],
+    "classes": [],
+    "functions": []
+  },
+  "mini3d.math3d": {
+    "lines": 45,
+    "imports": [],
+    "classes": [],
+    "functions": [
+      "normalize",
+      "get_rotation_matrix",
+      "xyzrpy_to_T"
+    ]
+  },
+  "mini3d.model_dialog": {
+    "lines": 104,
+    "imports": [],
+    "classes": [
+      "ModelFileDialog"
+    ],
+    "functions": [
+      "choose_model",
+      "main"
+    ]
+  },
+  "mini3d.orbit_controller": {
+    "lines": 166,
+    "imports": [
+      "mini3d.camera"
+    ],
+    "classes": [
+      "OrbitController"
+    ],
+    "functions": []
+  },
+  "mini3d.picking": {
+    "lines": 199,
+    "imports": [],
+    "classes": [],
+    "functions": [
+      "_rect",
+      "screen_ray",
+      "project_point",
+      "ground_hit",
+      "_aabb",
+      "_triangle_data",
+      "_triangle_hit",
+      "raycast_entities",
+      "pick_entity"
+    ]
+  },
+  "mini3d.placement": {
+    "lines": 130,
+    "imports": [
+      "mini3d.picking",
+      "mini3d.scene"
+    ],
+    "classes": [
+      "SurfaceHit"
+    ],
+    "functions": [
+      "_vector",
+      "create_ground",
+      "raycast_surface",
+      "geometry_bounds",
+      "compute_placement"
+    ]
+  },
+  "mini3d.placement_plane": {
+    "lines": 34,
+    "imports": [],
+    "classes": [
+      "PlacementPlane"
+    ],
+    "functions": []
+  },
+  "mini3d.render_plan": {
+    "lines": 115,
+    "imports": [],
+    "classes": [
+      "DrawItem",
+      "RenderPlan"
+    ],
+    "functions": [
+      "frustum_planes",
+      "aabb_visible",
+      "world_bounds",
+      "build_render_plan"
+    ]
+  },
+  "mini3d.render_target": {
+    "lines": 129,
+    "imports": [],
+    "classes": [
+      "RenderTarget"
+    ],
+    "functions": []
+  },
+  "mini3d.scene": {
+    "lines": 230,
+    "imports": [
+      "mini3d.placement_plane"
+    ],
+    "classes": [
+      "SceneGroup",
+      "Mesh",
+      "Entity",
+      "Scene"
+    ],
+    "functions": [
+      "rotation_xyz",
+      "euler_xyz"
+    ]
+  },
+  "mini3d.scene_io": {
+    "lines": 170,
+    "imports": [
+      "mini3d.commands",
+      "mini3d.environment",
+      "mini3d.lighting",
+      "mini3d.placement_plane",
+      "mini3d.scene",
+      "mini3d.shot_camera",
+      "mini3d.viewer"
+    ],
+    "classes": [],
+    "functions": [
+      "save_scene",
+      "load_scene"
+    ]
+  },
+  "mini3d.shadow_fit": {
+    "lines": 152,
+    "imports": [],
+    "classes": [],
+    "functions": [
+      "_corners",
+      "_planes",
+      "_crossings",
+      "_intersection",
+      "_intersections",
+      "receiver_matrix"
+    ]
+  },
+  "mini3d.shadow_map": {
+    "lines": 261,
+    "imports": [
+      "mini3d.gl_state",
+      "mini3d.lighting",
+      "mini3d.shadow_fit"
+    ],
+    "classes": [
+      "ShadowMap"
+    ],
+    "functions": [
+      "light_matrix"
+    ]
+  },
+  "mini3d.shot_camera": {
+    "lines": 160,
+    "imports": [
+      "mini3d.camera",
+      "mini3d.gl_state",
+      "mini3d.render_target"
+    ],
+    "classes": [
+      "ShotCamera"
+    ],
+    "functions": [
+      "render_shot",
+      "capture_png",
+      "_capture_png"
+    ]
+  },
+  "mini3d.stl_loader": {
+    "lines": 44,
+    "imports": [
+      "mini3d.assets",
+      "mini3d.scene"
+    ],
+    "classes": [],
+    "functions": [
+      "load_stl"
+    ]
+  },
+  "mini3d.surface_drag": {
+    "lines": 55,
+    "imports": [
+      "mini3d.placement"
+    ],
+    "classes": [
+      "SurfaceDrag"
+    ],
+    "functions": []
+  },
+  "mini3d.urdf_loader": {
+    "lines": 330,
+    "imports": [],
+    "classes": [
+      "LinkSpec",
+      "JointSpec",
+      "URDFModel"
+    ],
+    "functions": [
+      "_parse_vec3",
+      "_parse_rgba",
+      "urdf_rpy_matrix",
+      "rot_axis_angle",
+      "joint_transform",
+      "resolve_mesh_filename",
+      "load_urdf",
+      "build_entity_tree"
+    ]
+  },
+  "mini3d.viewer": {
+    "lines": 185,
+    "imports": [
+      "mini3d.camera",
+      "mini3d.orbit_controller"
+    ],
+    "classes": [
+      "Viewer"
+    ],
+    "functions": [
+      "_world_boxes",
+      "world_bounds"
+    ]
+  }
+}

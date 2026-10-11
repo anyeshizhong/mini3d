@@ -1,3 +1,62 @@
+# V2 Consolidation 审计与实施记录
+
+稳定候选 `refactor/v2-consolidation`，Q2起步并保留Rome历史；main/历史分支不改。当前 [架构](ARCHITECTURE.md)、[功能](V2-FEATURES.md)、[Bug](V2-BUGS.md)、[验证](V2-VALIDATION.md) 是最终状态。
+下方Q2快照保留c198546最初判断，其“本轮未改/待审批”等描述仅指文档审计阶段。
+
+## 实际分批整合
+
+核对全部本地分支、远端heads、worktree及六个Issue/评论，以祖先和代码判断。Q2已含Placement V1/V2、Lighting、Shadow、Focus/Gizmo修复、Shot存档、Renderer V2、CPU cache、Q1/Q2。
+Rome476a799是独立验收提交，合入唯一证据/文档并保留两侧development-progress；不以旧生产代码覆盖Q2。backup早期Editor/STL/dialog已被主链实现替代，不重复合入。
+
+| 批次 / 提交 | 范围 | 验证 / 回退边界 |
+| --- | --- | --- |
+| B0 981025f | Rome历史、清单、本地产物ignore | Q2生产无变化，271单测无skip；merge回退选第一父提交，不删历史分支 |
+| B1 a02982f | GLRenderer前1346行纯注释、确定性示例工具 | AST相同，六PNG exact，STL/MSAA；单独revert |
+| B2 332463c | 统一包入口、legacy共享适配 | 变换/URDF/真实启动/六PNG exact；旧类型/helper接口保留 |
+| B3 d5ae05c | material_shaders/gl_state，解除状态反向依赖 | 275单测、IBL/Shadow UI、Shader AST不变；原常量/方法兼容 |
+| B4 32ce71d | assets/scene_io/editor_runtime | 275单测、GLB UI、跨进程Shot/PNG、40人API；原方法/导入/格式兼容 |
+| B5 c606682 | Rome manifest登记 | 五类原资产+Rome材质/深度/ray/Shot通过；原模型不改 |
+| B6 25da77f、e6ff83b | 构造失败回收、PACK/PBO、clean Shot axes | GPU失败→成功、UI/MSAA；分别回退，状态工具/调用为同一批 |
+| B7 4829395、c68c5f9 | Editor摄影hook、Plan消费 | UI81、实际裁剪/透明度/画外影；分别回退，不加跨帧缓存 |
+| B8 0e28310、ded4899、20f9e8b | runner/Git快照/固定Blender、pyc停止跟踪 | core/Blender通过；pyc磁盘保留，工具和索引独立回退 |
+| B9 a3bb19b | API绑定运行Editor | 同窗口JSON/Undo/Shot/4x/IBL/PNG，原独立构造保留 |
+| B9b 99144e7 | 原geometry/URDF flatten边界 | 新测试失败→成功，277单测、六PNG exact；独立回退 |
+| B10 最终文档/证据 | 当前架构、功能/Bug、完整GPU证据 | 37入口、26原图、Blender三组、隐私/完整性检查；不改生产代码 |
+
+各批在验证后提交。后续有依赖时按逆序revert，或在独立审查分支逐批验证；不要reset已推送历史。
+
+## 当前职责决定
+
+GLRenderer保留legacy三模式/公共helper，只删纯注释。MR负责GPU资源/材质，material_shaders仅GLSL，gl_state只借用context。
+Editor负责控制/输入；runtime负责生命周期/主循环；scene_io负责原v1/v2/v3存档。AssetCache格式无关，loaders仅解码，原gltf_loader符号re-export。
+Scene只管CPU实例/ID/组/selection；Plan仅本帧颜色规划；shadow_fit拟合receiver/caster，ShadowMap自有depth资源但借用MR上传；RenderTarget只管附件。
+不同用途bounds和不同阈值/math-numpy Euler保留原语义；CPU/URDF/公共辅助接口不因低使用频率删除。删除功能或公共接口不作为减少文件数手段。
+全部38生产模块的AST入口/import/行数在 [dependencies.json](v2-consolidation/dependencies.json)；基线逐模块调用者/测试在下方。
+
+| 新模块 | 调用者 | 回归 |
+| --- | --- | --- |
+| assets | Editor/Commands/glTF/STL | 导入、clone/ID、placement、GLB UI、API存档/Rome |
+| scene_io | Editor原save/load/_load | editor/lighting/IBL/Shot、非法载入原子状态、跨进程PNG |
+| editor_runtime | editor.run/统一入口 | Editor/UI/file dialog/resize/失焦、构造失败、同窗口API |
+| material_shaders | MR及旧常量re-export | Shader AST、Q1/Q2 exact、alpha/IBL/lighting/shadow |
+| gl_state | MR/ShadowMap/capture/runtime | texture/stencil/cull等状态、MSAA/PACK/PBO/释放 |
+| __init__/__main__ | 包导入/启动 | 无窗口API及真实统一启动 |
+| legacy_scene | 三个旧/命名示例 | 五项兼容、六确定性PNG、URDF/标量/extra变换 |
+
+## 资料保留与main顺序
+
+生产代码/IBL资源与回归/研究资料分开：全部test_*.py及关键UI/GPU smoke长期保留；日期命名的性能、shadow-motion、摄影session/Q1/Q2/Blender是研究工具，不因日期删除。
+Rome/Q1/Q2/V1原报告、失败图、原GLB/glTF/bin/纹理/STL、Q2 .blend/HDR/PNG、raw性能和用户未提交文件均保留；线上PNG不替代本地原件。
+pyc仅停止跟踪，磁盘仍在；没有git clean、分支/worktree删除或环境修改。私有文件清单、绝对路径及整理建议只保存在本机忽略目录。
+
+1. 审查本分支的功能、Bug/限制、GPU证据与逐批提交。
+2. 正式合入前重核远端/main祖先，若有新代码先在整合分支处理并补证据。
+3. 只合入这一条完整候选历史，不按名字重复合入已在Q2的feature/fix。
+4. 获得正式许可后合入main并标稳定版，保留Q2/Rome/修复可追溯性。
+5. 主目录有用户修改，不能直接切换覆盖；历史Worktree/资产整理另列确认，本轮不执行。
+
+## Q2基线审计快照（c198546）
+
 # V2 Consolidation：第一阶段代码与架构审计
 
 日期：2026-10-11。基线：`efd5ddc158b7a9709c420564a383b99f0e6b934b`。

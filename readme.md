@@ -2,15 +2,28 @@
 
 基于 Python、Pygame、NumPy 和 OpenGL 的三维引擎，支持 STL、基础几何体、URDF 实体树，以及 glTF/GLB 模型与材质。新增 pyimgui 编辑器作为后续场景编辑功能的入口。
 
-## Mini3D Editor 0.1
+## Mini3D V2 统一入口
+
+开发/验收分支 `refactor/v2-consolidation`，Placement、Rendering、Photography、AI API在同一版本共用状态。从该版本项目根、已有Python环境运行：
 
 ```powershell
-cd F:/python_project/mini3d
-& F:/gymenv/python.exe -m pip install -r requirements.txt
-& F:/gymenv/python.exe -B editor_app.py
+python -B -m mini3d
 ```
 
-默认展示罗马士兵。`--asset 1` 至 `--asset 5` 分别展示方块、水瓶、边桌、狐狸和士兵；`--empty` 从空场景开始。
+`--empty`启动空场景，`--asset N`使用当前已安装列表编号；也可Assets双击或Import model。editor_app.py/editor.py兼容入口调用同一程序。
+已验证Python3.8.20，NumPy1.24.3、pygame2.6.1、numpy-stl3.1.2、PyOpenGL3.1.10、imgui2.0.0；本轮未升级依赖。
+新机器可在自己的环境 `python -m pip install -r requirements.txt`。运行需要桌面OpenGL3.3，固定IBL和STL fixture随仓库提供。
+第三方模型按 [资源说明](model/README.md) / manifest安装到本版本项目内，或文件选择器直接导入；不从旧Worktree读取资产。
+
+[完整功能](docs/V2-FEATURES.md) · [架构](docs/ARCHITECTURE.md) · [审计/提交边界](docs/V2-CONSOLIDATION-AUDIT.md) · [Bug/限制](docs/V2-BUGS.md) · [验证](docs/V2-VALIDATION.md)
+
+```powershell
+python -B tools/validate_v2.py --suite all --output captures/v2-review-01
+```
+
+输出选择新目录。core为单测/UI/Placement/摄影/API/GL，quality为原Q1/Q2，rome为原复杂资产/阴影运动。
+Quality/Rome需要相应原始本地资产；缺资产会失败，不用简化模型替代。Blender3.6.23只作离线参考，不是运行依赖，原.blend/HDR/图片/license保留。
+API默认无窗口，可 `Mini3DAPI(renderer, editor=existing_editor)` 绑定当前控制器；PNG需当前线程GL上下文，命令/格式与原版本相同。
 
 ![Mini3D 编辑器实际渲染](docs/editor-preview.png)
 
@@ -34,11 +47,11 @@ cd F:/python_project/mini3d
 
 STL 同时支持 ASCII 和二进制文件，接入与 glTF 相同的选择、轮廓、变换、复制及场景保存流程。`mini3d/stl_loader.py` 保留原始坐标、尺寸和枢轴，以独立面法线保持硬边；STL 没有标准材质和单位信息，默认用灰色非金属材质显示，不自动换算毫米或米，也不自动旋转坐标轴。
 
-文件选择器使用独立进程中的 Tkinter，Tk 根窗口隐藏，并在选择完成或失败后销毁；退出编辑器时也会回收尚未关闭的选择器。这样不会把阻塞的原生文件对话框放进 Pygame 渲染循环。`F:/gymenv` 已包含 Tk 8.6，无需额外 pip 安装。其他环境缺少 Tk 时可使用手动路径导入。
+文件选择器使用独立进程中的 Tkinter，Tk 根窗口隐藏，并在选择完成或失败后销毁；退出编辑器时也会回收尚未关闭的选择器。这样不会把阻塞的原生文件对话框放进 Pygame 渲染循环。已有Python环境 已包含 Tk 8.6，无需额外 pip 安装。其他环境缺少 Tk 时可使用手动路径导入。
 
 File 菜单支持保存或载入默认场景。场景存为 `scenes/editor_scene.json`，保存资产引用、实例变换、相机及显示设置，不复制模型文件；代码接口 `save_scene(path)` / `load_scene(path)` 可指定其他路径。
 
-代码按职责拆分：`editor_app.py` 为统一启动入口，旧 `editor.py` 转发到同一入口；`mini3d/editor.py` 管理状态、主循环与输入仲裁，`editor_ui.py` 管理 ImGui 面板，`editor_tools.py` 管理 Gizmo，`scene.py` 管理实例层级，`gltf_loader.py` 管理资产缓存，`picking.py` 做几何拾取，`render_target.py` 提供视口缓冲区，`material_renderer.py` 渲染 glTF 材质。
+代码按职责拆分：`editor_app.py` 为统一启动入口，旧 `editor.py` 转发到同一入口；`mini3d/editor.py` 管理状态和输入，editor_runtime管理主循环，scene_io管理存档，`editor_ui.py` 管理 ImGui 面板，`editor_tools.py` 管理 Gizmo，`scene.py` 管理实例层级，`assets.py` 管理资产缓存，gltf_loader负责解码，`picking.py` 做几何拾取，`render_target.py` 提供视口缓冲区，`material_renderer.py` 渲染 glTF 材质。
 
 编辑器显式关闭 Viewer 的默认输入绑定，只由 `Editor.handle_event()` 分配场景输入：左键选择/Gizmo，中键 Orbit，Shift+中键 Pan，滚轮 Zoom；UI 捕获鼠标时停止视口操作。集成调用链、回归验证及剩余问题见 [Editor 审计记录](docs/editor-audit.md)。
 
@@ -69,7 +82,7 @@ Outliner 或 Inspector 的 **Lock / Unlock** 控制实例锁定。锁定模型�
 接口、调用示例及限制见 [AI API V1 文档](docs/ai-api-v1.md)。建场景不需要窗口；Capture 需要调用方提供真实 OpenGL context 和 GLRenderer。实际验收已通过纯 API 完成 Roman 5×8 编队、变换、保存、重新载入，并输出 50mm、16:9 的 1920×1080 PNG。
 
 ```powershell
-& F:/gymenv/python.exe -B tests/ai_api_smoke.py
+python -B tests/ai_api_smoke.py
 ```
 
 ### 世界空间 Directional Light
@@ -103,12 +116,12 @@ Shot Camera 不接受鼠标导航；需要调整位置时，返回 Editor View �
 
 ## 运行
 
-本机工作环境为 `F:/gymenv`（Python 3.8）。在 PowerShell 中执行：
+本机工作环境为 已有Python环境（Python 3.8）。在 PowerShell 中执行：
 
 ```powershell
-& F:/gymenv/python.exe "F:/python_project/mini3d/1.py"
-& F:/gymenv/python.exe "F:/python_project/mini3d/1 copy.py"
-& F:/gymenv/python.exe "F:/python_project/mini3d/2.py"
+python 1.py
+python "1 copy.py"
+python 2.py
 ```
 
 - `1.py`：球体、圆柱、方块和 STL 模型；Tab 切换物体，I/J/K/L 平移，U/O 旋转。
@@ -166,16 +179,16 @@ renderer.render(scene, viewer.camera)
 在项目目录中执行：
 
 ```powershell
-& F:/gymenv/python.exe -B -m unittest discover -s tests -v
-& F:/gymenv/python.exe -B tests/render_smoke.py
-& F:/gymenv/python.exe -B tests/editor_smoke.py
-& F:/gymenv/python.exe -B tests/editor_integration_smoke.py
-& F:/gymenv/python.exe -B tests/photo_smoke.py
-& F:/gymenv/python.exe -B tests/file_dialog_smoke.py
-& F:/gymenv/python.exe -B tests/stl_render_smoke.py
-& F:/gymenv/python.exe -B tests/placement_smoke.py captures/placement-v1-validation
-& F:/gymenv/python.exe -B tests/placement_v2_smoke.py captures/placement-v2-validation
-& F:/gymenv/python.exe -B tests/placement_v2_performance.py captures/placement-v2-validation/performance.json
+python -B -m unittest discover -s tests -v
+python -B tests/render_smoke.py
+python -B tests/editor_smoke.py
+python -B tests/editor_integration_smoke.py
+python -B tests/photo_smoke.py
+python -B tests/file_dialog_smoke.py
+python -B tests/stl_render_smoke.py
+python -B tests/placement_smoke.py captures/placement-v1-validation
+python -B tests/placement_v2_smoke.py captures/placement-v2-validation
+python -B tests/placement_v2_performance.py captures/placement-v2-validation/performance.json
 ```
 
 单元测试覆盖投影、不同尺度的自动取景、层级包围盒、拖拽、预设、重置和 resize。第二条在隐藏 OpenGL 窗口中运行三个真实示例，注入导航事件并检查模型像素及 GL 错误；需本机图形驱动，可追加截图输出目录参数。

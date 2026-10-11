@@ -1,0 +1,6 @@
+{
+  "api_uses_live_editor_and_history": true,
+  "ui_undo_redo_visible_through_json": true,
+  "api_shot_aa_environment_and_scene_in_same_ui": true,
+  "camera_view_gpu_frame": true
+}

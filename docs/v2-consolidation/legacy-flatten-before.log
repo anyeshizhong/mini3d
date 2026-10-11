@@ -1,0 +1,90 @@
+python : test_extra_transform_precedes_legacy_pose_and_scale (test_examples.ExampleCompatibilityTests) ..
+
+. ok
+
+所在位置 行:2 字符: 1
+
++ python -B -m unittest discover -s tests -p test_example ...
+
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    + CategoryInfo          : NotSpecified: (test_extra_tran...tyTests) ... ok:String) [], RemoteException
+
+    + FullyQualifiedErrorId : NativeCommandError
+
+ 
+
+test_geometry_and_urdf_keep_their_original_flattening_rules (test_examples.ExampleCompatibilityTests) ... FAIL
+
+test_named_examples_share_types_without_opening_a_window (test_examples.ExampleCompatibilityTests) ... ok
+
+test_shared_scene_keeps_axes_only_urdf_nodes (test_examples.ExampleCompatibilityTests) ... ok
+
+test_urdf_adapter_preserves_joint_hierarchy (test_examples.ExampleCompatibilityTests) ... ok
+
+
+
+======================================================================
+
+FAIL: test_geometry_and_urdf_keep_their_original_flattening_rules (test_examples.ExampleCompatibilityTests)
+
+----------------------------------------------------------------------
+
+Traceback (most recent call last):
+
+  File "PROJECT\tests\test_examples.py", line 35, in test_geometry_and_urd
+
+f_keep_their_original_flattening_rules
+
+    self.assertEqual(scene.get_flat_render_list(), expected, name)
+
+AssertionError: Lists differ: [<exa[46 chars]AC5058E0>, <examples.legacy_scene.Entity objec[20 chars]B20>] != [<exa[46 
+
+chars]AC505B20>]
+
+
+
+First differing element 0:
+
+<examples.legacy_scene.Entity object at <instance>>
+
+<examples.legacy_scene.Entity object at <instance>>
+
+
+
+First list contains 1 additional elements.
+
+First extra element 1:
+
+<examples.legacy_scene.Entity object at <instance>>
+
+
+
+- [<examples.legacy_scene.Entity object at <instance>>,
+
+-  <examples.legacy_scene.Entity object at <instance>>]
+
+? ^
+
+
+
++ [<examples.legacy_scene.Entity object at <instance>>]
+
+? ^
+
+ : primitives
+
+
+
+----------------------------------------------------------------------
+
+Ran 5 tests in 0.287s
+
+
+
+FAILED (failures=1)
+
+pygame 2.6.1 (SDL 2.28.4, Python 3.8.20)
+
+Hello from the pygame community. https://www.pygame.org/contribute.html
+

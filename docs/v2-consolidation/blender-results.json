@@ -1,0 +1,30 @@
+{
+  "version": "Blender 3.6.23",
+  "cases": [
+    {
+      "name": "Lantern",
+      "exit_code": 0,
+      "seconds": 18.122,
+      "changed_pixels": 0,
+      "max_channel_delta": 0,
+      "exact_png_bytes": false
+    },
+    {
+      "name": "Avocado",
+      "exit_code": 0,
+      "seconds": 10.928,
+      "changed_pixels": 0,
+      "max_channel_delta": 0,
+      "exact_png_bytes": false
+    },
+    {
+      "name": "spheres",
+      "exit_code": 0,
+      "seconds": 9.003,
+      "changed_pixels": 0,
+      "max_channel_delta": 0,
+      "exact_png_bytes": false
+    }
+  ],
+  "passed": true
+}

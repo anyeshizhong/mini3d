@@ -2,7 +2,7 @@
 
 正式候选分支：`refactor/v2-consolidation`，开发起点Q2 `efd5ddc`，包含审计`c198546`。
 3+1指 **Placement、Rendering、Photography、AI API**。四者共用同一个程序和Scene。
-状态：代码与历史已核实；整合后的最终验证结果在本轮回归完成后补齐。
+状态：代码/Git/Issue已核实；277单测、实际UI/GPU及原图结果见 [验证](V2-VALIDATION.md)。质量限制另列。
 
 | 既有能力 | 来源/实现 | 回归入口 |
 | --- | --- | --- |
@@ -36,5 +36,7 @@
 
 Git核查：Q2包含所有feature/fix主链；Rome476a799为独立支线，本轮保留merge历史。
 旧backup分支的早期editor/STL/dialog能力在后续链已替代；不恢复旧实现覆盖Commands或Q2。
-主目录未提交的统一入口/示例整理将逐文件review接入，原文件保持原状。
+主目录统一入口/示例已逐文件审查接入，原文件/未提交状态保持原样。
 不新增实时skin animation、透射阴影、避障、CSM/GI/LOD/Instancing等功能。
+
+正式入口 `python -B -m mini3d`；runtime的app.api绑定同一Editor/Scene/Commands/Shot/renderer。`Mini3DAPI(renderer, editor=existing_editor)`支持已有控制器，旧独立构造不变。没有新增API命令、网络服务或画质功能。

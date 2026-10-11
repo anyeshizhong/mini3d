@@ -1,0 +1,384 @@
+{
+  "status": "COMPLETED_REAL_ASSETS",
+  "environment": {
+    "python": "3.8.20",
+    "platform": "Windows-10-10.0.19045-SP0",
+    "cpu": "unknown",
+    "logical_cpus": 8,
+    "openblas_threads": "default",
+    "commit": "99144e7952deecb0d3f78653dc538a7c53ed5801"
+  },
+  "renderer": "Intel(R) UHD Graphics 620",
+  "gl": "4.6.0 - Build 27.20.100.8682",
+  "assets": [
+    {
+      "path": "PROJECT\\model\\08_rome_river\\rome_river_side.glb",
+      "bytes": 47827728,
+      "sha256": "9b04c6d0cc8db8bb431935a98eaa9ebc9dca46163be71fd3e969ac8bca7cc2fd"
+    },
+    {
+      "path": "PROJECT\\model\\05_roman_soldier\\roman_legionnaire.glb",
+      "bytes": 29411784,
+      "sha256": "255f02bda756ac8e81ba1895ca338d54d5d5cae33e46d47d97628adb53afc08d"
+    }
+  ],
+  "runs": [
+    {
+      "view": "overview",
+      "resolution": 1024,
+      "camera": {
+        "position": [
+          25.0,
+          -32.0,
+          25.0
+        ],
+        "rotation": [
+          [
+            0.7880243737245634,
+            -0.2932627710691336,
+            0.5413081687180258
+          ],
+          [
+            0.6156440419723151,
+            0.37537634696849104,
+            -0.692874455959073
+          ],
+          [
+            -0.0,
+            0.8792551081690934,
+            0.4763511884718627
+          ]
+        ],
+        "focal_mm": 34.99999999999999,
+        "aspect": "16:9",
+        "fov_y": 32.26880217111643,
+        "near": 0.05,
+        "far": 400.0,
+        "samples": 1
+      },
+      "fitting": {
+        "whole_scene": {
+          "samples": 21,
+          "median_ms": 5.2514999999999645,
+          "p95_ms": 5.933500000000258,
+          "min_ms": 5.053599999999658,
+          "max_ms": 6.006499999999804
+        },
+        "camera_fit": {
+          "samples": 21,
+          "median_ms": 7.785399999999942,
+          "p95_ms": 8.60139999999987,
+          "min_ms": 7.345799999999958,
+          "max_ms": 10.699999999999932
+        },
+        "paired_extra": {
+          "samples": 21,
+          "median_ms": 2.6690000000000325,
+          "p95_ms": 3.380899999999798,
+          "min_ms": 1.4122999999997,
+          "max_ms": 5.618300000000076
+        }
+      },
+      "intersection_work": {
+        "contained": 0,
+        "rejected": 0,
+        "partial": 14,
+        "total": 14,
+        "fallback": false
+      },
+      "passes": {
+        "off": {
+          "samples": 5,
+          "median_ms": 148.91559999999959,
+          "p95_ms": 152.3144799999999,
+          "min_ms": 145.55000000000007,
+          "max_ms": 152.89209999999986
+        },
+        "whole-scene": {
+          "samples": 5,
+          "median_ms": 214.60590000000047,
+          "p95_ms": 227.66712000000064,
+          "min_ms": 209.94389999999984,
+          "max_ms": 227.94640000000044
+        },
+        "camera-fit": {
+          "samples": 5,
+          "median_ms": 214.12370000000004,
+          "p95_ms": 225.6649199999991,
+          "min_ms": 212.24540000000047,
+          "max_ms": 228.277799999999
+        }
+      }
+    },
+    {
+      "view": "overview",
+      "resolution": 4096,
+      "camera": {
+        "position": [
+          25.0,
+          -32.0,
+          25.0
+        ],
+        "rotation": [
+          [
+            0.7880243737245634,
+            -0.2932627710691336,
+            0.5413081687180258
+          ],
+          [
+            0.6156440419723151,
+            0.37537634696849104,
+            -0.692874455959073
+          ],
+          [
+            -0.0,
+            0.8792551081690934,
+            0.4763511884718627
+          ]
+        ],
+        "focal_mm": 34.99999999999999,
+        "aspect": "16:9",
+        "fov_y": 32.26880217111643,
+        "near": 0.05,
+        "far": 400.0,
+        "samples": 1
+      },
+      "fitting": {
+        "whole_scene": {
+          "samples": 21,
+          "median_ms": 5.2514999999999645,
+          "p95_ms": 5.933500000000258,
+          "min_ms": 5.053599999999658,
+          "max_ms": 6.006499999999804
+        },
+        "camera_fit": {
+          "samples": 21,
+          "median_ms": 7.785399999999942,
+          "p95_ms": 8.60139999999987,
+          "min_ms": 7.345799999999958,
+          "max_ms": 10.699999999999932
+        },
+        "paired_extra": {
+          "samples": 21,
+          "median_ms": 2.6690000000000325,
+          "p95_ms": 3.380899999999798,
+          "min_ms": 1.4122999999997,
+          "max_ms": 5.618300000000076
+        }
+      },
+      "intersection_work": {
+        "contained": 0,
+        "rejected": 0,
+        "partial": 14,
+        "total": 14,
+        "fallback": false
+      },
+      "passes": {
+        "off": {
+          "samples": 5,
+          "median_ms": 164.34440000000095,
+          "p95_ms": 220.56307999999908,
+          "min_ms": 143.93369999999982,
+          "max_ms": 229.3706999999987
+        },
+        "whole-scene": {
+          "samples": 5,
+          "median_ms": 218.49200000000124,
+          "p95_ms": 234.85036000000042,
+          "min_ms": 213.21939999999984,
+          "max_ms": 238.15210000000064
+        },
+        "camera-fit": {
+          "samples": 5,
+          "median_ms": 223.16880000000162,
+          "p95_ms": 225.75701999999998,
+          "min_ms": 221.6573000000004,
+          "max_ms": 226.21089999999987
+        }
+      }
+    },
+    {
+      "view": "legion-close",
+      "resolution": 1024,
+      "camera": {
+        "position": [
+          9.0,
+          -12.0,
+          7.0
+        ],
+        "rotation": [
+          [
+            0.8,
+            -0.2228344058124623,
+            0.5570860145311557
+          ],
+          [
+            0.6000000000000001,
+            0.29711254108328305,
+            -0.7427813527082076
+          ],
+          [
+            -0.0,
+            0.9284766908852595,
+            0.3713906763541038
+          ]
+        ],
+        "focal_mm": 49.999999999999986,
+        "aspect": "16:9",
+        "fov_y": 22.89519252737121,
+        "near": 0.05,
+        "far": 400.0,
+        "samples": 1
+      },
+      "fitting": {
+        "whole_scene": {
+          "samples": 21,
+          "median_ms": 5.1910999999975616,
+          "p95_ms": 7.076900000001274,
+          "min_ms": 4.922499999999275,
+          "max_ms": 7.6404999999972745
+        },
+        "camera_fit": {
+          "samples": 21,
+          "median_ms": 14.085599999997811,
+          "p95_ms": 15.265899999999277,
+          "min_ms": 13.62179999999924,
+          "max_ms": 16.59490000000119
+        },
+        "paired_extra": {
+          "samples": 21,
+          "median_ms": 8.946900000001534,
+          "p95_ms": 10.132099999999866,
+          "min_ms": 6.333600000004935,
+          "max_ms": 11.500400000002742
+        }
+      },
+      "intersection_work": {
+        "contained": 0,
+        "rejected": 0,
+        "partial": 37,
+        "total": 37,
+        "fallback": false
+      },
+      "passes": {
+        "off": {
+          "samples": 5,
+          "median_ms": 160.35610000000133,
+          "p95_ms": 200.01641999999933,
+          "min_ms": 154.45470000000228,
+          "max_ms": 207.78789999999958
+        },
+        "whole-scene": {
+          "samples": 5,
+          "median_ms": 211.3334000000009,
+          "p95_ms": 262.49931999999984,
+          "min_ms": 207.2002000000026,
+          "max_ms": 272.4808000000003
+        },
+        "camera-fit": {
+          "samples": 5,
+          "median_ms": 224.58209999999923,
+          "p95_ms": 257.91373999999865,
+          "min_ms": 222.6321999999996,
+          "max_ms": 259.4324999999991
+        }
+      }
+    },
+    {
+      "view": "legion-close",
+      "resolution": 4096,
+      "camera": {
+        "position": [
+          9.0,
+          -12.0,
+          7.0
+        ],
+        "rotation": [
+          [
+            0.8,
+            -0.2228344058124623,
+            0.5570860145311557
+          ],
+          [
+            0.6000000000000001,
+            0.29711254108328305,
+            -0.7427813527082076
+          ],
+          [
+            -0.0,
+            0.9284766908852595,
+            0.3713906763541038
+          ]
+        ],
+        "focal_mm": 49.999999999999986,
+        "aspect": "16:9",
+        "fov_y": 22.89519252737121,
+        "near": 0.05,
+        "far": 400.0,
+        "samples": 1
+      },
+      "fitting": {
+        "whole_scene": {
+          "samples": 21,
+          "median_ms": 5.1910999999975616,
+          "p95_ms": 7.076900000001274,
+          "min_ms": 4.922499999999275,
+          "max_ms": 7.6404999999972745
+        },
+        "camera_fit": {
+          "samples": 21,
+          "median_ms": 14.085599999997811,
+          "p95_ms": 15.265899999999277,
+          "min_ms": 13.62179999999924,
+          "max_ms": 16.59490000000119
+        },
+        "paired_extra": {
+          "samples": 21,
+          "median_ms": 8.946900000001534,
+          "p95_ms": 10.132099999999866,
+          "min_ms": 6.333600000004935,
+          "max_ms": 11.500400000002742
+        }
+      },
+      "intersection_work": {
+        "contained": 0,
+        "rejected": 0,
+        "partial": 37,
+        "total": 37,
+        "fallback": false
+      },
+      "passes": {
+        "off": {
+          "samples": 5,
+          "median_ms": 150.84540000000146,
+          "p95_ms": 184.38613999999944,
+          "min_ms": 140.67730000000012,
+          "max_ms": 186.02789999999914
+        },
+        "whole-scene": {
+          "samples": 5,
+          "median_ms": 216.32600000000224,
+          "p95_ms": 219.07721999999836,
+          "min_ms": 208.79429999999743,
+          "max_ms": 219.26909999999822
+        },
+        "camera-fit": {
+          "samples": 5,
+          "median_ms": 229.16529999999824,
+          "p95_ms": 229.88372000000226,
+          "min_ms": 219.94700000000122,
+          "max_ms": 230.03060000000275
+        }
+      }
+    }
+  ],
+  "layout": "Rome longest XY span normalized to 40; soldiers height 1.7, 5x8 includes source. Default layout is reproducible, not earlier user scene.",
+  "counts": {
+    "roots": 41,
+    "hierarchy_nodes": 642,
+    "render_entities": 257,
+    "submitted_triangles": 23948895,
+    "shared_meshes": 23
+  },
+  "all_gl_errors_zero": true
+}
