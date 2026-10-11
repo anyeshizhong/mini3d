@@ -1,0 +1,153 @@
+{
+  "shadows": {
+    "enabled": true,
+    "resolution": 1024,
+    "bias": 0.0005,
+    "pcf": true
+  },
+  "version": 3,
+  "objects": [
+    {
+      "asset": "builtin:ground",
+      "name": "EXPLICIT PBR stage",
+      "entity_id": "ent_000001",
+      "position": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        2.0,
+        2.0,
+        2.0
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": false
+    },
+    {
+      "asset": "model\\05_roman_soldier\\roman_legionnaire.glb",
+      "name": "Roman on PBR stage",
+      "entity_id": "ent_000002",
+      "position": [
+        0.09081810767308146,
+        0.1756300453046466,
+        0.12151061654090875
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.07,
+        0.07,
+        0.07
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    },
+    {
+      "asset": "model\\09_other_roman_soldier\\roman_soldier_-_t_pose_-_free_download.glb",
+      "name": "roman_soldier_-_t_pose_-_free_download",
+      "entity_id": "ent_000003",
+      "position": [
+        1.966605322160099,
+        0.16389840828067131,
+        0.03651759172683297
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.009518295607559901,
+        0.009518295607559901,
+        0.009518295607559901
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": false
+    },
+    {
+      "asset": "model\\10_pantheon\\agrippa_pantheon.glb",
+      "name": "agrippa_pantheon",
+      "entity_id": "ent_000004",
+      "position": [
+        0.15003443771512748,
+        9.424213504077324,
+        3.1182125736220483
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.2306461402460522,
+        0.2306461402460522,
+        0.2306461402460522
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": false
+    }
+  ],
+  "camera": {
+    "target": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "distance": 10.0,
+    "yaw": -0.9,
+    "pitch": 0.25,
+    "fov_y": 60.0,
+    "bounds_center": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "bounds_radius": 1.0,
+    "min_distance": 0.0001,
+    "max_distance": 100000000.0
+  },
+  "render_mode": "Lit",
+  "show_grid": true,
+  "lighting": {
+    "mode": "Scene",
+    "light_dir": [
+      1.0,
+      -1.0,
+      1.6
+    ],
+    "ambient": 0.22,
+    "diffuse": 2.5
+  },
+  "placement_plane": {
+    "z": 0.0,
+    "size": 2000.0,
+    "enabled": true
+  },
+  "next_entity_id": 5,
+  "groups": [],
+  "next_group_id": 1,
+  "selected_ids": [],
+  "primary_selection_id": null,
+  "selected_group_id": null
+}

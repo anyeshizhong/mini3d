@@ -1,0 +1,288 @@
+[
+  {
+    "path": "model/05_roman_soldier/roman_legionnaire.glb",
+    "sha256": "255f02bda756ac8e81ba1895ca338d54d5d5cae33e46d47d97628adb53afc08d",
+    "bytes": 29411784,
+    "asset": {
+      "extras": {
+        "author": "Geoffrey Marchal (https://sketchfab.com/geoffreymarchal)",
+        "license": "CC-BY-NC-SA-4.0 (http://creativecommons.org/licenses/by-nc-sa/4.0/)",
+        "source": "https://sketchfab.com/3d-models/roman-legionnaire-40b87797180148e4bace023b6da0c45a",
+        "title": "Roman legionnaire"
+      },
+      "generator": "Sketchfab-15.12.0",
+      "version": "2.0"
+    },
+    "primitives": 6,
+    "triangles": 589879,
+    "bounds": [
+      [
+        -11.487476818825716,
+        -9.66928040662004,
+        -1.7358659505844138
+      ],
+      [
+        6.543418046177152,
+        6.048272292280927,
+        24.227235794067383
+      ]
+    ],
+    "skins": 0,
+    "animations": 0,
+    "materials": [
+      {
+        "name": "Material_0",
+        "alpha": "OPAQUE",
+        "extensions": [
+          "KHR_materials_specular"
+        ]
+      }
+    ]
+  },
+  {
+    "path": "model/08_rome_river/rome_river_side.glb",
+    "sha256": "9b04c6d0cc8db8bb431935a98eaa9ebc9dca46163be71fd3e969ac8bca7cc2fd",
+    "bytes": 47827728,
+    "asset": {
+      "extras": {
+        "author": "Shahriar Shahrabi (https://sketchfab.com/shahriyarshahrabi)",
+        "license": "CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)",
+        "source": "https://sketchfab.com/3d-models/rome-river-side-8521d86dcd9043eba0b518ccab430d0f",
+        "title": "Rome River Side"
+      },
+      "generator": "Sketchfab-0.13.0",
+      "version": "2.0"
+    },
+    "primitives": 17,
+    "triangles": 353735,
+    "bounds": [
+      [
+        -0.616477071446274,
+        -0.5657014715779339,
+        -0.013661720412858243
+      ],
+      [
+        0.5630365362122086,
+        0.7126331827057684,
+        0.2969847226050662
+      ]
+    ],
+    "skins": 0,
+    "animations": 0,
+    "materials": [
+      {
+        "name": "Fire",
+        "alpha": "BLEND",
+        "extensions": [
+          "KHR_materials_unlit"
+        ]
+      },
+      {
+        "name": "mainMehsMat",
+        "alpha": "OPAQUE",
+        "extensions": [
+          "KHR_materials_unlit"
+        ]
+      },
+      {
+        "name": "Attachments",
+        "alpha": "OPAQUE",
+        "extensions": [
+          "KHR_materials_unlit"
+        ]
+      },
+      {
+        "name": "TreesOnly",
+        "alpha": "OPAQUE",
+        "extensions": [
+          "KHR_materials_unlit"
+        ]
+      }
+    ]
+  },
+  {
+    "path": "model/09_other_roman_soldier/roman_soldier_-_t_pose_-_free_download.glb",
+    "sha256": "374a2513f5cb1f11acb6a94b71fc3c0c35a5397c77c28f7e26489fc7223f6f68",
+    "bytes": 36816896,
+    "asset": {
+      "extras": {
+        "author": "Andy woodhead (https://sketchfab.com/Andywoodhead)",
+        "license": "CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)",
+        "source": "https://sketchfab.com/3d-models/roman-soldier-t-pose-free-download-61cd5cae148042c38048bff2bd206af3",
+        "title": "Roman Soldier - T pose - free download"
+      },
+      "generator": "Sketchfab-12.66.0",
+      "version": "2.0"
+    },
+    "primitives": 21,
+    "triangles": 280624,
+    "bounds": [
+      [
+        -94.38656616210938,
+        -62.801635742187536,
+        -3.8365683555603076
+      ],
+      [
+        101.40351104736328,
+        28.363031387329077,
+        185.27291870117188
+      ]
+    ],
+    "skins": 0,
+    "animations": 0,
+    "materials": [
+      {
+        "name": "Full_figure_42_T_pose0",
+        "alpha": "OPAQUE",
+        "extensions": []
+      },
+      {
+        "name": "Ties0",
+        "alpha": "OPAQUE",
+        "extensions": []
+      },
+      {
+        "name": "Armour_top0",
+        "alpha": "OPAQUE",
+        "extensions": []
+      },
+      {
+        "name": "Armour_top1",
+        "alpha": "OPAQUE",
+        "extensions": []
+      },
+      {
+        "name": "Dangles0",
+        "alpha": "OPAQUE",
+        "extensions": []
+      },
+      {
+        "name": "Tunic_10",
+        "alpha": "OPAQUE",
+        "extensions": []
+      },
+      {
+        "name": "New_eye0",
+        "alpha": "OPAQUE",
+        "extensions": []
+      },
+      {
+        "name": "New_eye_20",
+        "alpha": "OPAQUE",
+        "extensions": []
+      },
+      {
+        "name": "New_arms0",
+        "alpha": "OPAQUE",
+        "extensions": []
+      },
+      {
+        "name": "New_legs0",
+        "alpha": "OPAQUE",
+        "extensions": []
+      },
+      {
+        "name": "New_head0",
+        "alpha": "OPAQUE",
+        "extensions": []
+      },
+      {
+        "name": "Helmet30",
+        "alpha": "OPAQUE",
+        "extensions": []
+      },
+      {
+        "name": "Helmet31",
+        "alpha": "OPAQUE",
+        "extensions": []
+      },
+      {
+        "name": "Sword2_10",
+        "alpha": "OPAQUE",
+        "extensions": []
+      },
+      {
+        "name": "Sword2_11",
+        "alpha": "OPAQUE",
+        "extensions": []
+      },
+      {
+        "name": "Scabbard0",
+        "alpha": "OPAQUE",
+        "extensions": []
+      },
+      {
+        "name": "Scabbard1",
+        "alpha": "OPAQUE",
+        "extensions": []
+      },
+      {
+        "name": "Boots0",
+        "alpha": "OPAQUE",
+        "extensions": []
+      },
+      {
+        "name": "Wrist_guard10",
+        "alpha": "OPAQUE",
+        "extensions": []
+      },
+      {
+        "name": "Scutum_04_010",
+        "alpha": "OPAQUE",
+        "extensions": []
+      },
+      {
+        "name": "Scutum_04_011",
+        "alpha": "OPAQUE",
+        "extensions": []
+      }
+    ]
+  },
+  {
+    "path": "model/10_pantheon/agrippa_pantheon.glb",
+    "sha256": "c4d00f81c854776c9b2a20d07cb1aabe69d0b1794c0386a897a6f7d93d40f543",
+    "bytes": 41310344,
+    "asset": {
+      "extras": {
+        "author": "Fovea (https://sketchfab.com/3dfovea)",
+        "license": "CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)",
+        "source": "https://sketchfab.com/3d-models/agrippa-pantheon-074e9fe9154f41169cb2e79f5330e58f",
+        "title": "Agrippa Pantheon"
+      },
+      "generator": "Sketchfab-12.68.0",
+      "version": "2.0"
+    },
+    "primitives": 10,
+    "triangles": 668640,
+    "bounds": [
+      [
+        -31.540785049219494,
+        -55.20433112694356,
+        -13.519465664136243
+      ],
+      [
+        30.239792649736273,
+        34.183268285907616,
+        12.494409935946367
+      ]
+    ],
+    "skins": 0,
+    "animations": 0,
+    "materials": [
+      {
+        "name": "PANTEON_ROMA_FOVEA_R0_Material_u1_v1",
+        "alpha": "OPAQUE",
+        "extensions": [
+          "KHR_materials_unlit"
+        ]
+      },
+      {
+        "name": "PANTEON_ROMA_FOVEA_R0_Material_u2_v1",
+        "alpha": "OPAQUE",
+        "extensions": [
+          "KHR_materials_unlit"
+        ]
+      }
+    ]
+  }
+]

@@ -1,0 +1,17 @@
+# Generated captures: keep only the review selection in Git.
+*.png
+!added-models-depth.png
+!added-models-on.png
+!camera-ui-view1-on.png
+!editor-view1-on.png
+!rome-view0-depth.png
+!rome-view0-off.png
+!rome-view0-on.png
+!rome-view1-off.png
+!rome-view1-on.png
+!stage-view0-2048.png
+!stage-view0-depth.png
+!stage-view0-off.png
+!stage-view0-on.png
+!stage-view1-off.png
+!stage-view1-on.png

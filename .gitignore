@@ -2,6 +2,11 @@ __pycache__/
 *.py[cod]
 /captures/
 .pytest_cache/
+/.worktrees/
+/archives/
+/.vscode/
+/.venv/
+/scenes/
 
 # Optional local assets; only the small 06 STL fixture is distributed.
 /model/01_box/
@@ -10,3 +15,7 @@ __pycache__/
 /model/04_fox/
 /model/05_roman_soldier/
 /model/07_urdf_car/
+/model/08_rome_river/
+/model/09_other_roman_soldier/
+/model/10_pantheon/
+/model/11_benchmark_round01/

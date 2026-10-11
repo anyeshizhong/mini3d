@@ -1,0 +1,62 @@
+[
+  {
+    "test": "unit",
+    "exit_code": 0
+  },
+  {
+    "test": "ground",
+    "exit_code": 0
+  },
+  {
+    "test": "placement",
+    "exit_code": 0
+  },
+  {
+    "test": "placement-v2",
+    "exit_code": 0
+  },
+  {
+    "test": "photography",
+    "exit_code": 0
+  },
+  {
+    "test": "ai-api",
+    "exit_code": 0
+  },
+  {
+    "test": "lighting",
+    "exit_code": 0
+  },
+  {
+    "test": "lighting-api",
+    "exit_code": 0
+  },
+  {
+    "test": "lighting-ui",
+    "exit_code": 0
+  },
+  {
+    "test": "scene-clipping",
+    "exit_code": 0
+  },
+  {
+    "test": "shadow",
+    "exit_code": 0
+  },
+  {
+    "test": "shadow-ui",
+    "exit_code": 0
+  },
+  {
+    "test": "integration",
+    "exit_code": 0
+  },
+  {
+    "test": "editor",
+    "exit_code": 0
+  },
+  {
+    "test": "added-models",
+    "exit_code": 0
+  }
+]

@@ -1,0 +1,490 @@
+{
+  "gpu": "Intel(R) UHD Graphics 620",
+  "size": [
+    1000,
+    750
+  ],
+  "assets": {
+    "05_roman_soldier": {
+      "triangles": 589879,
+      "primitives": 6,
+      "scale": [
+        0.07703239850423438,
+        0.07703239850423438,
+        0.07703239850423438
+      ],
+      "source": "https://sketchfab.com/3d-models/roman-legionnaire-40b87797180148e4bace023b6da0c45a",
+      "license": "CC Attribution-NonCommercial-ShareAlike",
+      "materials": [
+        {
+          "alpha": "OPAQUE",
+          "extensions": [
+            "KHR_materials_specular"
+          ],
+          "textures": [
+            "baseColor",
+            "specular"
+          ]
+        },
+        {
+          "alpha": "OPAQUE",
+          "extensions": [
+            "KHR_materials_specular"
+          ],
+          "textures": [
+            "baseColor",
+            "specular"
+          ]
+        },
+        {
+          "alpha": "OPAQUE",
+          "extensions": [
+            "KHR_materials_specular"
+          ],
+          "textures": [
+            "baseColor",
+            "specular"
+          ]
+        },
+        {
+          "alpha": "OPAQUE",
+          "extensions": [
+            "KHR_materials_specular"
+          ],
+          "textures": [
+            "baseColor",
+            "specular"
+          ]
+        },
+        {
+          "alpha": "OPAQUE",
+          "extensions": [
+            "KHR_materials_specular"
+          ],
+          "textures": [
+            "baseColor",
+            "specular"
+          ]
+        },
+        {
+          "alpha": "OPAQUE",
+          "extensions": [
+            "KHR_materials_specular"
+          ],
+          "textures": [
+            "baseColor",
+            "specular"
+          ]
+        }
+      ]
+    },
+    "03_side_table": {
+      "triangles": 6408,
+      "primitives": 1,
+      "scale": [
+        2.6275978015691925,
+        2.6275978015691925,
+        2.6275978015691925
+      ],
+      "source": "https://polyhaven.com/a/side_table_tall_01",
+      "license": "CC0-1.0",
+      "materials": [
+        {
+          "alpha": "OPAQUE",
+          "extensions": [],
+          "textures": [
+            "baseColor",
+            "metallicRoughness",
+            "normal"
+          ]
+        }
+      ]
+    },
+    "02_water_bottle": {
+      "triangles": 4510,
+      "primitives": 1,
+      "scale": [
+        7.679291959813428,
+        7.679291959813428,
+        7.679291959813428
+      ],
+      "source": "https://github.com/KhronosGroup/glTF-Sample-Assets/tree/main/Models/WaterBottle",
+      "license": "CC0-1.0; Microsoft",
+      "materials": [
+        {
+          "alpha": "OPAQUE",
+          "extensions": [],
+          "textures": [
+            "baseColor",
+            "metallicRoughness",
+            "normal",
+            "occlusion",
+            "emissive"
+          ]
+        }
+      ]
+    },
+    "04_fox": {
+      "triangles": 576,
+      "primitives": 1,
+      "scale": [
+        0.02530718486372158,
+        0.02530718486372158,
+        0.02530718486372158
+      ],
+      "source": "https://github.com/KhronosGroup/glTF-Sample-Assets/tree/main/Models/Fox",
+      "license": "Model: CC0-1.0, PixelMannen; rig/animation: CC-BY-4.0, tomkranis; glTF conversion: CC-BY-4.0, AsoboStudio and scurest",
+      "materials": [
+        {
+          "alpha": "OPAQUE",
+          "extensions": [],
+          "textures": [
+            "baseColor"
+          ]
+        }
+      ]
+    },
+    "08_rome_river": {
+      "triangles": 353735,
+      "primitives": 17,
+      "scale": [
+        4.184821778001139,
+        4.184821778001139,
+        4.184821778001139
+      ],
+      "source": "https://sketchfab.com/3d-models/rome-river-side-8521d86dcd9043eba0b518ccab430d0f",
+      "license": "CC-BY-4.0",
+      "materials": [
+        {
+          "alpha": "BLEND",
+          "extensions": [
+            "KHR_materials_unlit"
+          ],
+          "textures": []
+        },
+        {
+          "alpha": "OPAQUE",
+          "extensions": [
+            "KHR_materials_unlit"
+          ],
+          "textures": [
+            "baseColor"
+          ]
+        },
+        {
+          "alpha": "OPAQUE",
+          "extensions": [
+            "KHR_materials_unlit"
+          ],
+          "textures": [
+            "baseColor"
+          ]
+        },
+        {
+          "alpha": "OPAQUE",
+          "extensions": [
+            "KHR_materials_unlit"
+          ],
+          "textures": [
+            "baseColor"
+          ]
+        },
+        {
+          "alpha": "OPAQUE",
+          "extensions": [
+            "KHR_materials_unlit"
+          ],
+          "textures": [
+            "baseColor"
+          ]
+        },
+        {
+          "alpha": "OPAQUE",
+          "extensions": [
+            "KHR_materials_unlit"
+          ],
+          "textures": [
+            "baseColor"
+          ]
+        },
+        {
+          "alpha": "OPAQUE",
+          "extensions": [
+            "KHR_materials_unlit"
+          ],
+          "textures": [
+            "baseColor"
+          ]
+        },
+        {
+          "alpha": "OPAQUE",
+          "extensions": [
+            "KHR_materials_unlit"
+          ],
+          "textures": [
+            "baseColor"
+          ]
+        },
+        {
+          "alpha": "OPAQUE",
+          "extensions": [
+            "KHR_materials_unlit"
+          ],
+          "textures": [
+            "baseColor"
+          ]
+        },
+        {
+          "alpha": "OPAQUE",
+          "extensions": [
+            "KHR_materials_unlit"
+          ],
+          "textures": [
+            "baseColor"
+          ]
+        },
+        {
+          "alpha": "OPAQUE",
+          "extensions": [
+            "KHR_materials_unlit"
+          ],
+          "textures": [
+            "baseColor"
+          ]
+        },
+        {
+          "alpha": "OPAQUE",
+          "extensions": [
+            "KHR_materials_unlit"
+          ],
+          "textures": [
+            "baseColor"
+          ]
+        },
+        {
+          "alpha": "OPAQUE",
+          "extensions": [
+            "KHR_materials_unlit"
+          ],
+          "textures": [
+            "baseColor"
+          ]
+        },
+        {
+          "alpha": "OPAQUE",
+          "extensions": [
+            "KHR_materials_unlit"
+          ],
+          "textures": [
+            "baseColor"
+          ]
+        },
+        {
+          "alpha": "OPAQUE",
+          "extensions": [
+            "KHR_materials_unlit"
+          ],
+          "textures": [
+            "baseColor"
+          ]
+        },
+        {
+          "alpha": "OPAQUE",
+          "extensions": [
+            "KHR_materials_unlit"
+          ],
+          "textures": [
+            "baseColor"
+          ]
+        },
+        {
+          "alpha": "OPAQUE",
+          "extensions": [
+            "KHR_materials_unlit"
+          ],
+          "textures": [
+            "baseColor"
+          ]
+        }
+      ]
+    }
+  },
+  "scenes": {
+    "roman_soldier": {
+      "triangles": 589881,
+      "resolution": 1024,
+      "ground_shadow_pixels": 2862,
+      "model_shadow_changed_pixels": 823,
+      "geometry_depth_exact": true,
+      "receiver_pixels": 378029,
+      "cpu_shadow_rays": {
+        "hits": 12,
+        "samples": 12
+      },
+      "timing": {
+        "off": {
+          "gpu_ms": 2.108366,
+          "synchronized_ms": 7.106600000000185
+        },
+        "on": {
+          "gpu_ms": 4.117132,
+          "synchronized_ms": 10.28049999999947
+        }
+      }
+    },
+    "roman_soldier-sun-changed": {
+      "triangles": 589881,
+      "resolution": 1024,
+      "ground_shadow_pixels": 1977,
+      "model_shadow_changed_pixels": 846,
+      "geometry_depth_exact": true,
+      "receiver_pixels": 378029
+    },
+    "roman_soldier-2048": {
+      "triangles": 589881,
+      "resolution": 2048,
+      "ground_shadow_pixels": 2867,
+      "model_shadow_changed_pixels": 830,
+      "geometry_depth_exact": true,
+      "receiver_pixels": 378029,
+      "cpu_shadow_rays": {
+        "hits": 12,
+        "samples": 12
+      }
+    },
+    "side_table": {
+      "triangles": 6410,
+      "resolution": 1024,
+      "ground_shadow_pixels": 5433,
+      "model_shadow_changed_pixels": 96,
+      "geometry_depth_exact": true,
+      "receiver_pixels": 378367,
+      "cpu_shadow_rays": {
+        "hits": 12,
+        "samples": 12
+      },
+      "timing": {
+        "off": {
+          "gpu_ms": 0.7304,
+          "synchronized_ms": 4.173399999999106
+        },
+        "on": {
+          "gpu_ms": 1.656929,
+          "synchronized_ms": 7.652400000001336
+        }
+      }
+    },
+    "side_table-sun-changed": {
+      "triangles": 6410,
+      "resolution": 1024,
+      "ground_shadow_pixels": 3821,
+      "model_shadow_changed_pixels": 591,
+      "geometry_depth_exact": true,
+      "receiver_pixels": 378367
+    },
+    "side_table-2048": {
+      "triangles": 6410,
+      "resolution": 2048,
+      "ground_shadow_pixels": 5427,
+      "model_shadow_changed_pixels": 93,
+      "geometry_depth_exact": true,
+      "receiver_pixels": 378367,
+      "cpu_shadow_rays": {
+        "hits": 12,
+        "samples": 12
+      }
+    },
+    "water_bottle": {
+      "triangles": 4512,
+      "resolution": 1024,
+      "ground_shadow_pixels": 4878,
+      "model_shadow_changed_pixels": 385,
+      "geometry_depth_exact": true,
+      "receiver_pixels": 374716,
+      "cpu_shadow_rays": {
+        "hits": 12,
+        "samples": 12
+      }
+    },
+    "fox": {
+      "triangles": 578,
+      "resolution": 1024,
+      "ground_shadow_pixels": 11877,
+      "model_shadow_changed_pixels": 76,
+      "geometry_depth_exact": true,
+      "receiver_pixels": 370171,
+      "cpu_shadow_rays": {
+        "hits": 12,
+        "samples": 12
+      }
+    },
+    "rome_river": {
+      "triangles": 353737,
+      "resolution": 1024,
+      "ground_shadow_pixels": 14672,
+      "model_shadow_changed_pixels": 0,
+      "geometry_depth_exact": true,
+      "receiver_pixels": 331115,
+      "cpu_shadow_rays": {
+        "hits": 12,
+        "samples": 12
+      },
+      "unlit_opaque_pixels_unchanged": true
+    },
+    "composed": {
+      "triangles": 601375,
+      "resolution": 1024,
+      "ground_shadow_pixels": 5885,
+      "model_shadow_changed_pixels": 1189,
+      "geometry_depth_exact": true,
+      "receiver_pixels": 282773,
+      "cpu_shadow_rays": {
+        "hits": 12,
+        "samples": 12
+      },
+      "timing": {
+        "off": {
+          "gpu_ms": 1.976147,
+          "synchronized_ms": 7.706999999999908
+        },
+        "on": {
+          "gpu_ms": 3.94499,
+          "synchronized_ms": 13.520099999999147
+        }
+      },
+      "bottle_on_other_model_restored_pixels": 79,
+      "shot_png_exact": true
+    },
+    "composed-2048": {
+      "triangles": 601375,
+      "resolution": 2048,
+      "ground_shadow_pixels": 5908,
+      "model_shadow_changed_pixels": 1188,
+      "geometry_depth_exact": true,
+      "receiver_pixels": 282773,
+      "cpu_shadow_rays": {
+        "hits": 12,
+        "samples": 12
+      }
+    },
+    "eight-soldiers": {
+      "triangles": 4719034,
+      "resolution": 1024,
+      "ground_shadow_pixels": 4434,
+      "model_shadow_changed_pixels": 1476,
+      "geometry_depth_exact": true,
+      "receiver_pixels": 142208,
+      "timing": {
+        "off": {
+          "gpu_ms": 10.669484,
+          "synchronized_ms": 35.379000000000715
+        },
+        "on": {
+          "gpu_ms": 21.136199,
+          "synchronized_ms": 52.17460000000074
+        }
+      },
+      "unique_meshes_including_ground": 7
+    }
+  }
+}

@@ -28,3 +28,6 @@ Issue #3“放士兵后放小凳子导致远裁剪过近”已在 `fix/editor-sc
 Shadow 摄影区域拟合 V1：同分辨率下改善大地面近景阴影；保留画外投影物，Editor Camera 维持原算法。251 单测、22 组摄影及既有 GPU 回归通过；CPU 与高分辨率 pass 耗时增加，详见 [质量、性能和边界](render-quality-v1/shadow-camera-fit.md)。
 
 后续 Rendering 评估完成：分析成片 MSAA/SSAA、固定环境 IBL、纯色/图片/天空背景的最小方案、模块、显存与风险，见 [下一轮技术评估](render-quality-v1/next-rendering-steps.md)。以上功能均未开发。本轮分阶段交付完成，不合并 main，停止等待审查。
+Issue #4: real Rome 3+1 integration experiments completed on test/rome-integration-v1. 229 unit tests and existing GPU regressions pass. Photographic layout quality is NOT accepted: fountain/stall intersections, Unlit receivers and coarse shadow sampling are documented. Evidence delivered; further material/architecture work awaits review. [Report and captures](rome-integration.md).
+
+Complex library shadow supplement: soldier, table, bottle, Fox, Rome and eight soldiers. [Tests and timings](shadow-assets.md). Production renderer and Camera unchanged.

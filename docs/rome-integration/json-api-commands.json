@@ -1,0 +1,409 @@
+[
+  {
+    "command": "spawn",
+    "args": {
+      "asset_path": "F:\\python_project\\mini3d\\model\\08_rome_river\\rome_river_side.glb",
+      "name": "Rome River Side (original Unlit)",
+      "scale": [
+        100,
+        100,
+        100
+      ]
+    }
+  },
+  {
+    "command": "place_on_ground",
+    "args": {
+      "entity_id": "ent_000001",
+      "x": 0,
+      "y": 0
+    }
+  },
+  {
+    "command": "lock",
+    "args": {
+      "entity_id": "ent_000001"
+    }
+  },
+  {
+    "command": "spawn",
+    "args": {
+      "asset_path": "F:\\python_project\\mini3d\\model\\05_roman_soldier\\roman_legionnaire.glb",
+      "name": "Roman original scan",
+      "scale": [
+        0.07,
+        0.07,
+        0.07
+      ],
+      "placement_type": "character",
+      "keep_upright": true
+    }
+  },
+  {
+    "command": "place_at",
+    "args": {
+      "entity_id": "ent_000002",
+      "position": [
+        -8.598508063282935,
+        -13.116030441258214,
+        2.66541705867796
+      ]
+    }
+  },
+  {
+    "command": "set_lighting",
+    "args": {
+      "mode": "Scene",
+      "direction": [
+        1,
+        -1,
+        1.6
+      ],
+      "diffuse": 2.5,
+      "ambient": 0.22
+    }
+  },
+  {
+    "command": "set_shadows",
+    "args": {
+      "enabled": true,
+      "resolution": 1024,
+      "bias": 0.0005,
+      "pcf": true
+    }
+  },
+  {
+    "command": "create_shot_camera",
+    "args": {
+      "position": [
+        -17.348508063282935,
+        -29.516030441258216,
+        38.225366334639155
+      ],
+      "target": [
+        -3.348508063282935,
+        -9.516030441258218,
+        4.025366334639154
+      ],
+      "focal_mm": 35,
+      "aspect": "16:9",
+      "near": 0.05,
+      "far": 300
+    }
+  },
+  {
+    "command": "capture",
+    "args": {
+      "path": "docs\\rome-integration\\rome-one.png"
+    }
+  },
+  {
+    "command": "capture",
+    "args": {
+      "path": "docs\\rome-integration\\rome-three.png"
+    }
+  },
+  {
+    "command": "undo",
+    "args": {}
+  },
+  {
+    "command": "redo",
+    "args": {}
+  },
+  {
+    "command": "undo",
+    "args": {}
+  },
+  {
+    "command": "create_rectangular_formation",
+    "args": {
+      "source_id": "ent_000002",
+      "rows": 5,
+      "columns": 8,
+      "spacing_x": 1.5,
+      "spacing_y": 1.8
+    }
+  },
+  {
+    "command": "create_shot_camera",
+    "args": {
+      "position": [
+        -17.348508063282935,
+        -29.516030441258216,
+        38.225366334639155
+      ],
+      "target": [
+        -3.348508063282935,
+        -9.516030441258218,
+        4.025366334639154
+      ],
+      "focal_mm": 35,
+      "aspect": "16:9",
+      "near": 0.05,
+      "far": 300
+    }
+  },
+  {
+    "command": "set_shadows",
+    "args": {
+      "enabled": false
+    }
+  },
+  {
+    "command": "capture",
+    "args": {
+      "path": "docs\\rome-integration\\rome-view0-off.png"
+    }
+  },
+  {
+    "command": "set_shadows",
+    "args": {
+      "enabled": true
+    }
+  },
+  {
+    "command": "capture",
+    "args": {
+      "path": "docs\\rome-integration\\rome-view0-on.png"
+    }
+  },
+  {
+    "command": "set_shadows",
+    "args": {
+      "enabled": false
+    }
+  },
+  {
+    "command": "set_shadows",
+    "args": {
+      "enabled": true
+    }
+  },
+  {
+    "command": "create_shot_camera",
+    "args": {
+      "position": [
+        12.651491936717065,
+        -24.516030441258216,
+        11.225366334639153
+      ],
+      "target": [
+        -3.348508063282935,
+        -9.516030441258218,
+        4.025366334639154
+      ],
+      "focal_mm": 35,
+      "aspect": "16:9",
+      "near": 0.05,
+      "far": 300
+    }
+  },
+  {
+    "command": "set_shadows",
+    "args": {
+      "enabled": false
+    }
+  },
+  {
+    "command": "capture",
+    "args": {
+      "path": "docs\\rome-integration\\rome-view1-off.png"
+    }
+  },
+  {
+    "command": "set_shadows",
+    "args": {
+      "enabled": true
+    }
+  },
+  {
+    "command": "capture",
+    "args": {
+      "path": "docs\\rome-integration\\rome-view1-on.png"
+    }
+  },
+  {
+    "command": "set_shadows",
+    "args": {
+      "enabled": true
+    }
+  },
+  {
+    "command": "save_scene",
+    "args": {
+      "path": "docs\\rome-integration\\rome-scene.json"
+    }
+  },
+  {
+    "command": "create_shot_camera",
+    "args": {
+      "position": [
+        12.651491936717065,
+        -24.516030441258216,
+        11.225366334639153
+      ],
+      "target": [
+        -3.348508063282935,
+        -9.516030441258218,
+        4.025366334639154
+      ],
+      "focal_mm": 35,
+      "aspect": "16:9",
+      "near": 0.05,
+      "far": 300
+    }
+  },
+  {
+    "command": "capture",
+    "args": {
+      "path": "docs\\rome-integration\\rome-reloaded.png"
+    }
+  },
+  {
+    "command": "spawn",
+    "args": {
+      "asset_path": "builtin:ground",
+      "name": "EXPLICIT PBR stage",
+      "scale": [
+        2,
+        2,
+        2
+      ]
+    }
+  },
+  {
+    "command": "spawn",
+    "args": {
+      "asset_path": "F:\\python_project\\mini3d\\model\\05_roman_soldier\\roman_legionnaire.glb",
+      "name": "Roman on PBR stage",
+      "scale": [
+        0.07,
+        0.07,
+        0.07
+      ]
+    }
+  },
+  {
+    "command": "place_on_ground",
+    "args": {
+      "entity_id": "ent_000002",
+      "x": 0,
+      "y": 0
+    }
+  },
+  {
+    "command": "set_lighting",
+    "args": {
+      "mode": "Scene",
+      "direction": [
+        1,
+        -1,
+        1.6
+      ],
+      "diffuse": 2.5,
+      "ambient": 0.22
+    }
+  },
+  {
+    "command": "set_shadows",
+    "args": {
+      "enabled": true,
+      "resolution": 1024,
+      "bias": 0.0005,
+      "pcf": true
+    }
+  },
+  {
+    "command": "create_shot_camera",
+    "args": {
+      "position": [
+        -4,
+        6,
+        4
+      ],
+      "target": [
+        0,
+        0,
+        0.8
+      ],
+      "focal_mm": 50,
+      "aspect": "16:9",
+      "near": 0.02,
+      "far": 100
+    }
+  },
+  {
+    "command": "set_shadows",
+    "args": {
+      "enabled": false
+    }
+  },
+  {
+    "command": "capture",
+    "args": {
+      "path": "docs\\rome-integration\\stage-view0-off.png"
+    }
+  },
+  {
+    "command": "set_shadows",
+    "args": {
+      "enabled": true
+    }
+  },
+  {
+    "command": "capture",
+    "args": {
+      "path": "docs\\rome-integration\\stage-view0-on.png"
+    }
+  },
+  {
+    "command": "create_shot_camera",
+    "args": {
+      "position": [
+        -6,
+        3,
+        3
+      ],
+      "target": [
+        0,
+        0,
+        0.8
+      ],
+      "focal_mm": 50,
+      "aspect": "16:9",
+      "near": 0.02,
+      "far": 100
+    }
+  },
+  {
+    "command": "set_shadows",
+    "args": {
+      "enabled": false
+    }
+  },
+  {
+    "command": "capture",
+    "args": {
+      "path": "docs\\rome-integration\\stage-view1-off.png"
+    }
+  },
+  {
+    "command": "set_shadows",
+    "args": {
+      "enabled": true
+    }
+  },
+  {
+    "command": "capture",
+    "args": {
+      "path": "docs\\rome-integration\\stage-view1-on.png"
+    }
+  },
+  {
+    "command": "save_scene",
+    "args": {
+      "path": "docs\\rome-integration\\stage-scene.json"
+    }
+  }
+]
