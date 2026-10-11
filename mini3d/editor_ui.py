@@ -56,6 +56,11 @@ class EditorUI:
         self._open_help = False
         self._show_lighting = False
         self.lighting_error = ''
+        # Lightweight task workspaces: keep engine state and commands untouched.
+        self.workspace = "Arrange"
+        self.assets_visible = True
+        self.scene_filter = ""
+        self.formation_open = False
         self._edit_item_key = None
         self.formation_rows, self.formation_columns = 5, 8
         self.formation_spacing_x, self.formation_spacing_y = 1.2, 1.4
@@ -103,16 +108,23 @@ class EditorUI:
         return imgui.begin(name, flags=flags | extra_flags)
 
     def draw(self, width, height, texture_id):
+        """Keep the viewport large while allowing the asset shelf to collapse."""
         self.asset_dragging = False
         self.modal_open = False
         menu_height = self._menu()
         status_height = 30
         available_height = max(80, height - menu_height - status_height)
-        left = min(240, max(165, width * 0.18))
-        right = min(320, max(235, width * 0.235))
+        left = min(235, max(185, width * .175)) if self.assets_visible else 0
+        right = min(335, max(255, width * .24))
+        # On small windows collapse the library instead of crushing the viewport.
+        if width - left - right < 420:
+            left = 0
+        if width - right < 320:
+            right = max(185, width * .34)
         center = max(1, width - left - right)
-        outliner_height = max(140, available_height * 0.39)
-        self._assets(0, menu_height, left, available_height)
+        outliner_height = max(140, available_height * .39)
+        if left:
+            self._assets(0, menu_height, left, available_height)
         self._viewport(left, menu_height, center, available_height, texture_id)
         self._outliner(left + center, menu_height, right, outliner_height)
         self._inspector(left + center, menu_height + outliner_height,
@@ -121,8 +133,6 @@ class EditorUI:
         self._popups()
         self._lighting_window()
         io = imgui.get_io()
-        # ImGui can keep keyboard capture for one frame after a viewport click.
-        # Text fields, active widgets and menus still own keyboard input.
         viewport_input = self.viewport_hovered and self.viewport_focused and not imgui.is_any_item_active()
         self.keyboard_captured = bool(io.want_text_input or (io.want_capture_keyboard and not viewport_input))
         self.mouse_captured = bool(io.want_capture_mouse and not self.viewport_hovered)
@@ -197,7 +207,7 @@ class EditorUI:
                     self._open_help = True
                 imgui.end_menu()
             imgui.same_line(spacing=25)
-            imgui.text_disabled("MINI3D  /  Editor 0.1")
+            imgui.text_disabled("MINI3D  /  Arrange  -  Light  -  Shot")
             imgui.end_main_menu_bar()
         return menu_height
 
@@ -209,6 +219,8 @@ class EditorUI:
         if imgui.is_item_hovered():
             imgui.set_tooltip("Filter by asset name")
         imgui.pop_item_width()
+        if imgui.button("+ Ground Mesh", width=-1):
+            self._call("add_ground_mesh")
         if imgui.button("+ Import model", width=-1):
             self._call("browse_model")
         if self.app.model_dialog.pending:
@@ -275,101 +287,137 @@ class EditorUI:
         imgui.image(texture, display_width, display_height)
         imgui.text_disabled("Source preview")
 
+    def _choose_workspace(self, workspace):
+        """Only the presentation changes; the scene and selection remain shared."""
+        if workspace == self.workspace:
+            return
+        self._call("finish_edit")
+        if workspace != "Shot" and self.app.camera_view:
+            self._call("set_camera_view", False)
+        self.workspace = workspace
+        self.assets_visible = workspace == "Arrange"
+
     def _viewport(self, x, y, width, height, texture_id):
         self._panel("Viewport", x, y, width, height,
                     imgui.WINDOW_NO_SCROLLBAR | imgui.WINDOW_NO_SCROLL_WITH_MOUSE)
-        if imgui.button("Create Camera From View"):
-            self._call("create_camera_from_view")
-        imgui.same_line()
-        if imgui.button("Editor View"):
-            self._call("set_camera_view", False)
-        imgui.same_line()
-        if imgui.button("Camera View"):
-            self._call("set_camera_view", True)
-        for index, focal in enumerate((24, 35, 50, 85)):
+        # Primary navigation is task-oriented, like dedicated workspaces in 3D editors.
+        for index, name in enumerate(("Arrange", "Lighting", "Shot")):
             if index:
                 imgui.same_line()
-            if imgui.button(str(focal) + "mm"):
-                self._call("set_shot_lens", focal)
-        if self.app.shot_camera is not None:
-            imgui.same_line()
-            shot = self.app.shot_camera
-            imgui.text_disabled("{:.1f}mm | {} | {}x{}".format(shot.focal_mm, shot.aspect_name, *shot.size))
-        for index, ratio in enumerate(("16:9", "3:2", "4:3", "1:1")):
-            if index:
-                imgui.same_line()
-            if imgui.button(ratio):
-                self._call("set_shot_aspect", ratio)
-        imgui.same_line()
-        if imgui.button("Grid On" if self.app.composition_grid else "Grid Off"):
-            self.app.composition_grid = not self.app.composition_grid
-        imgui.same_line()
-        if imgui.button("Capture"):
-            self._call("request_capture")
-        imgui.text_disabled("Shot Camera preview" if self.app.camera_view else "Editor Camera")
-        imgui.separator()
-        for index, (tool, label) in enumerate(self.TOOLS):
-            if index:
-                imgui.same_line()
-            selected = self.app.tool == tool
-            if selected:
-                imgui.push_style_color(imgui.COLOR_BUTTON, 0.18, 0.46, 0.58, 1.0)
-            if imgui.button(label):
-                self._call("finish_edit")
-                self.app.tool = tool
-            if selected:
+            active = self.workspace == name
+            if active:
+                imgui.push_style_color(imgui.COLOR_BUTTON, .18, .46, .58, 1.0)
+            if imgui.button(name + "##workspace"):
+                self._choose_workspace(name)
+            if active:
                 imgui.pop_style_color()
-        for index, space in enumerate(("world", "local")):
-            if index:
+        imgui.same_line()
+        if imgui.button("Hide library" if self.assets_visible else "Show library"):
+            self.assets_visible = not self.assets_visible
+        imgui.same_line()
+        if imgui.button("Help ?"):
+            self._open_help = True
+        imgui.separator()
+
+        if self.workspace == "Arrange":
+            for index, (tool, label) in enumerate(self.TOOLS[:4]):
+                if index:
+                    imgui.same_line()
+                active = self.app.tool == tool
+                if active:
+                    imgui.push_style_color(imgui.COLOR_BUTTON, .18, .46, .58, 1.0)
+                if imgui.button(label):
+                    self._call("finish_edit")
+                    self.app.tool = tool
+                if active:
+                    imgui.pop_style_color()
+            if width >= 750:
                 imgui.same_line()
-            if imgui.radio_button(space.title(), self.app.transform_space == space):
+            if imgui.button("Surface Move"):
                 self._call("finish_edit")
-                self.app.transform_space = space
-        imgui.same_line()
-        imgui.push_item_width(132)
-        anchor_values = ("bounds_bottom", "pivot")
-        changed, anchor = imgui.combo("##drop_anchor", anchor_values.index(self.app.placement_anchor),
-                                      ["Bounds Bottom", "Pivot"])
-        if changed:
-            self.app.placement_anchor = anchor_values[anchor]
-        imgui.pop_item_width()
-        if imgui.is_item_hovered():
-            imgui.set_tooltip("Placement anchor for newly added assets")
-        imgui.same_line()
-        if imgui.button("Place on Surface"):
-            self._call("begin_surface_placement")
-        if self.app.place_selected_mode:
-            imgui.text_disabled("Click a surface to place the selection. Esc cancels.")
-        elif self.app.tool == "surface":
-            imgui.text_disabled("Drag one selected object on surfaces. Esc cancels.")
-        imgui.push_item_width(100)
-        mode_index = self.MODES.index(self.app.render_mode) if self.app.render_mode in self.MODES else 0
-        changed, mode_index = imgui.combo("##render_mode", mode_index, list(self.MODES))
-        if changed:
-            self.app.render_mode = self.MODES[mode_index]
-        imgui.pop_item_width()
-        imgui.same_line()
-        _, self.app.show_grid = imgui.checkbox("Editor Grid", self.app.show_grid)
-        imgui.same_line()
-        if self.app.camera_view:
-            imgui.text_disabled('Scene Lighting (Shot)')
-        else:
-            modes = ('Studio', 'Scene')
-            imgui.push_item_width(150)
-            changed, lighting = imgui.combo('##lighting_mode',
-                modes.index(self.app.scene.lighting_mode), ['Studio Lighting', 'Scene Lighting'])
+                self.app.tool = "surface"
+            imgui.same_line()
+            if imgui.button("Place on Surface"):
+                self._call("begin_surface_placement")
+            if self.app.place_selected_mode:
+                imgui.text_disabled("Click a surface to place the selection. Esc cancels.")
+            else:
+                imgui.text_wrapped("Select an object, then drag its handles or use Place on Surface.")
+            for index, space in enumerate(("world", "local")):
+                if index:
+                    imgui.same_line()
+                if imgui.radio_button(space.title(), self.app.transform_space == space):
+                    self._call("finish_edit")
+                    self.app.transform_space = space
+            imgui.same_line()
+            imgui.push_item_width(120)
+            anchor_values = ("bounds_bottom", "pivot")
+            changed, anchor = imgui.combo("Anchor##drop", anchor_values.index(self.app.placement_anchor),
+                                          ["Bounds Bottom", "Pivot"])
             if changed:
-                self._apply_lighting(mode=modes[lighting])
+                self.app.placement_anchor = anchor_values[anchor]
             imgui.pop_item_width()
-        imgui.same_line()
-        if imgui.button('Lighting...'):
-            self._show_lighting = True
-        imgui.same_line()
-        if imgui.button("Frame all"):
-            self._call("frame_all")
-        imgui.same_line()
-        if imgui.button("Focus"):
-            self._call("focus_selected")
+            imgui.same_line()
+            if imgui.button("Focus [F]"):
+                self._call("focus_selected")
+            imgui.same_line()
+            if imgui.button("Frame all"):
+                self._call("frame_all")
+            imgui.same_line()
+            _, self.app.show_grid = imgui.checkbox("Grid", self.app.show_grid)
+        elif self.workspace == "Lighting":
+            imgui.text_disabled("Sun / directional light  |  Adjust X Y Z, intensity and shadows in Inspector")
+            modes = ("Studio", "Scene")
+            imgui.push_item_width(158)
+            changed, index = imgui.combo("Preview##light", modes.index(self.app.scene.lighting_mode),
+                                          ["Studio Lighting", "Scene Lighting"])
+            if changed:
+                self._apply_lighting(mode=modes[index])
+            imgui.pop_item_width()
+            imgui.same_line()
+            if imgui.button("Advanced lighting..."):
+                self._show_lighting = True
+            imgui.same_line()
+            if imgui.button("Frame all"):
+                self._call("frame_all")
+        else:
+            if imgui.button("Create Camera From View"):
+                self._call("create_camera_from_view")
+            imgui.same_line()
+            if imgui.button("Editor View"):
+                self._call("set_camera_view", False)
+            imgui.same_line()
+            if imgui.button("Camera View") and self.app.shot_camera is not None:
+                self._call("set_camera_view", True)
+            imgui.same_line()
+            if imgui.button("Capture") and self.app.shot_camera is not None:
+                self._call("request_capture")
+            if self.app.shot_camera is None:
+                imgui.text_disabled("Start in Editor View, frame the scene, then Create Camera From View.")
+            else:
+                lens_options = (24, 35, 50, 85)
+                lens_value = min(range(len(lens_options)),
+                                 key=lambda i: abs(lens_options[i] - self.app.shot_camera.focal_mm))
+                imgui.push_item_width(116)
+                changed, index = imgui.combo("Lens##shot", lens_value,
+                                              [str(v) + " mm" for v in lens_options])
+                if changed:
+                    self._call("set_shot_lens", lens_options[index])
+                imgui.pop_item_width()
+                imgui.same_line()
+                ratios = ("16:9", "3:2", "4:3", "1:1")
+                imgui.push_item_width(90)
+                changed, index = imgui.combo("Aspect##shot",
+                                              ratios.index(self.app.shot_camera.aspect_name), list(ratios))
+                if changed:
+                    self._call("set_shot_aspect", ratios[index])
+                imgui.pop_item_width()
+                imgui.same_line()
+                if imgui.button("Guides on" if self.app.composition_grid else "Guides off"):
+                    self.app.composition_grid = not self.app.composition_grid
+                imgui.same_line()
+                imgui.text_disabled("Camera View is fixed; use Editor View to reposition.")
+
         imgui.separator()
         image_x, image_y = imgui.get_cursor_screen_pos()
         image_w, image_h = imgui.get_content_region_available()
@@ -378,7 +426,8 @@ class EditorUI:
             draw_list = imgui.get_window_draw_list()
             draw_list.add_rect_filled(image_x, image_y, image_x + image_w, image_y + image_h,
                                       imgui.get_color_u32_rgba(.025, .025, .03, 1))
-            image_x, image_y, image_w, image_h = self.app.shot_camera.fit_rect((image_x, image_y, image_w, image_h))
+            image_x, image_y, image_w, image_h = self.app.shot_camera.fit_rect(
+                (image_x, image_y, image_w, image_h))
             imgui.set_cursor_screen_pos((image_x, image_y))
         self.viewport_rect = (int(image_x), int(image_y), image_w, image_h)
         imgui.image(texture_id, image_w, image_h, uv0=(0, 1), uv1=(1, 0))
@@ -453,7 +502,11 @@ class EditorUI:
     def _outliner(self, x, y, width, height):
         self._panel("Scene Outliner", x, y, width, height)
         roots = list(self.app.scene.root_entities)
-        imgui.text_disabled(f"{len(roots)} scene object{'s' if len(roots) != 1 else ''}")
+        imgui.text_disabled(f"{len(roots)} objects  |  Shift+click for multi-select")
+        imgui.text_disabled("Search objects by name")
+        imgui.push_item_width(-1)
+        _, self.scene_filter = imgui.input_text("##scene_filter", self.scene_filter, 128)
+        imgui.pop_item_width()
         if imgui.button("Group selected"):
             self._call("group_selected")
         imgui.same_line()
@@ -470,6 +523,8 @@ class EditorUI:
         if not roots:
             imgui.text_wrapped("Add an asset to start building the scene.")
         for entity in roots:
+            if self.scene_filter and self.scene_filter.casefold() not in entity.name.casefold():
+                continue
             self._entity_node(entity, entity)
         if self.app.selection is not None:
             locked = self.app.selection.locked
@@ -522,23 +577,38 @@ class EditorUI:
 
     def _inspector(self, x, y, width, height):
         self._panel("Inspector", x, y, width, height)
+        if self.workspace == "Lighting":
+            self._inspector_lighting()
+            imgui.end()
+            return
+        if self.workspace == "Shot":
+            self._inspector_shot()
+            imgui.end()
+            return
         entity = self.app.selection
         if entity is None:
-            imgui.text_wrapped("Select an object in the viewport or outliner to edit its transform.")
+            imgui.text_wrapped("Select an object in the viewport or Scene Outliner to edit its transform.")
+            imgui.separator()
+            imgui.text_wrapped("QUICK START")
+            imgui.text_wrapped("1. Add Ground Mesh or an asset from the library.")
+            imgui.text_wrapped("2. Select it and use G / R / S, or edit X Y Z here.")
+            imgui.text_wrapped("3. Switch to Lighting, then Shot to capture a photo.")
             imgui.end()
             return
         count = len(self.app.selected_entities)
         if count == 1 and not entity.locked:
-            imgui.text("Formation")
-            imgui.push_item_width(120)
-            _, self.formation_rows = imgui.input_int("Rows", self.formation_rows)
-            _, self.formation_columns = imgui.input_int("Columns", self.formation_columns)
-            _, self.formation_spacing_x = imgui.input_float("Spacing X", self.formation_spacing_x, format="%.3f")
-            _, self.formation_spacing_y = imgui.input_float("Spacing Y", self.formation_spacing_y, format="%.3f")
-            imgui.pop_item_width()
-            if imgui.button("Create Formation"):
-                self._call("create_formation", self.formation_rows, self.formation_columns,
-                           self.formation_spacing_x, self.formation_spacing_y)
+            if imgui.button(("Hide" if self.formation_open else "Show") + " Formation tools"):
+                self.formation_open = not self.formation_open
+            if self.formation_open:
+                imgui.push_item_width(120)
+                _, self.formation_rows = imgui.input_int("Rows", self.formation_rows)
+                _, self.formation_columns = imgui.input_int("Columns", self.formation_columns)
+                _, self.formation_spacing_x = imgui.input_float("Spacing X", self.formation_spacing_x, format="%.3f")
+                _, self.formation_spacing_y = imgui.input_float("Spacing Y", self.formation_spacing_y, format="%.3f")
+                imgui.pop_item_width()
+                if imgui.button("Create Formation"):
+                    self._call("create_formation", self.formation_rows, self.formation_columns,
+                               self.formation_spacing_x, self.formation_spacing_y)
             imgui.separator()
         if count > 1:
             imgui.text("{} selected | {} editable".format(count, len(self.app.editable_selection)))
@@ -637,6 +707,65 @@ class EditorUI:
         imgui.pop_id()
         imgui.end()
 
+    def _inspector_lighting(self):
+        scene = self.app.scene
+        imgui.text("SUN / DIRECTIONAL LIGHT")
+        imgui.text_wrapped("Direction describes where the light is, not a physical lamp position.")
+        modes = ("Studio", "Scene")
+        changed, index = imgui.combo("Editor preview", modes.index(scene.lighting_mode),
+                                      ["Studio Lighting", "Scene Lighting"])
+        if changed:
+            self._apply_lighting(mode=modes[index])
+        imgui.separator()
+        imgui.text_disabled("Toward light - world X / Y / Z")
+        changed, direction = imgui.input_float3("##sun_direction", *map(float, scene.light_dir),
+                                                 format="%.3f")
+        if changed:
+            self._apply_lighting(mode="Scene", direction=direction)
+        changed, diffuse = imgui.input_float("Direct strength", scene.diffuse,
+                                               step=.05, format="%.3f")
+        if changed:
+            self._apply_lighting(mode="Scene", diffuse=diffuse)
+        changed, ambient = imgui.input_float("Ambient strength", scene.ambient,
+                                               step=.05, format="%.3f")
+        if changed:
+            self._apply_lighting(mode="Scene", ambient=ambient)
+        changed, enabled = imgui.checkbox("Scene shadows", scene.shadows_enabled)
+        if changed:
+            self._call("set_shadows", enabled)
+        imgui.separator()
+        imgui.text_wrapped("Tip: use Scene Lighting to match the final photo. "
+                           "Shot always uses Scene Lighting even if the editor uses Studio.")
+        if self.lighting_error:
+            imgui.text_wrapped("Lighting error: " + self.lighting_error)
+
+    def _inspector_shot(self):
+        imgui.text("PHOTO / SHOT CAMERA")
+        if self.app.shot_camera is None:
+            imgui.text_wrapped("1. Switch to Editor View and frame your subject.")
+            imgui.text_wrapped("2. Click Create Camera From View above the viewport.")
+            imgui.text_wrapped("3. Preview in Camera View, then Capture.")
+            return
+        shot = self.app.shot_camera
+        imgui.text_disabled("Lens: {:.1f} mm".format(shot.focal_mm))
+        imgui.text_disabled("Frame: {}  /  {} x {}".format(shot.aspect_name, *shot.size))
+        imgui.text_disabled("Preview: " + ("Shot Camera" if self.app.camera_view else "Editor Camera"))
+        imgui.separator()
+        if imgui.button("Preview photo", width=-1):
+            self._call("set_camera_view", True)
+        if imgui.button("Return to editor view", width=-1):
+            self._call("set_camera_view", False)
+        if imgui.button("Capture PNG", width=-1):
+            self._call("request_capture")
+        imgui.separator()
+        imgui.text_wrapped("The shot camera is independent from the editor camera. "
+                           "To change framing, return to Editor View and click "
+                           "Create Camera From View again.")
+        imgui.text_wrapped("Photos exclude editing grid, gizmos and selection axes.")
+        if self.app.last_capture is not None:
+            imgui.separator()
+            imgui.text_wrapped("Last capture: " + str(self.app.last_capture))
+
     def _status(self, width, height, status_height):
         imgui.push_style_var(imgui.STYLE_WINDOW_PADDING, (12, 5))
         self._panel("##status", 0, height - status_height, width, status_height,
@@ -688,6 +817,11 @@ class EditorUI:
         if imgui.begin_popup_modal("Editor controls", flags=imgui.WINDOW_ALWAYS_AUTO_RESIZE).opened:
             self.modal_open = True
             for text in (
+                "WORKFLOW: Arrange objects -> Lighting -> Shot -> Capture PNG",
+                "Arrange: add assets from the left library, move using handles.",
+                "Lighting: change sun direction / strength and enable shadows in Inspector.",
+                "Shot: create a shot from Editor View, preview and capture a PNG.",
+                "Library: toggle Show/Hide library to enlarge the viewport.",
                 "Left click: select an object",
                 "Drag a transform handle: edit the selected object",
                 "Middle drag: orbit | Shift + middle drag: pan",
