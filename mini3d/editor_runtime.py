@@ -1,5 +1,6 @@
 """Pygame/ImGui/GL lifecycle and frame loop for the unified editor."""
 import math
+from contextlib import ExitStack
 from datetime import datetime
 from pathlib import Path
 import pygame
@@ -47,23 +48,30 @@ def run(editor_class, initial_asset="auto", frames=None, screenshot=None, hidden
                 return
             return PygameRenderer.process_event(self, event)
 
-    pygame.init()
-    pygame.display.set_mode((1440, 900), pygame.OPENGL | pygame.DOUBLEBUF | pygame.RESIZABLE |
-                            (pygame.HIDDEN if hidden else 0))
-    pygame.display.set_caption("Mini3D Editor 0.1")
-    context = imgui.create_context()
-    imgui.get_io().ini_file_name = None
-    imgui.get_io().display_size = (1440, 900)
-    font_path = Path("C:/Windows/Fonts/segoeui.ttf")
-    if font_path.is_file():
-        imgui.get_io().fonts.add_font_from_file_ttf(str(font_path), 16)
-    backend = Backend()
-    target = RenderTarget()
-    renderer = GLRenderer(800, 700)
-    app = editor_class(800, 700)
-    ui = EditorUI(app)
-    previews = []
-    try:
+    with ExitStack() as cleanup:
+        pygame.init()
+        cleanup.callback(pygame.quit)
+        pygame.display.set_mode((1440, 900), pygame.OPENGL | pygame.DOUBLEBUF | pygame.RESIZABLE |
+                                (pygame.HIDDEN if hidden else 0))
+        pygame.display.set_caption("Mini3D Editor 0.1")
+        context = imgui.create_context()
+        cleanup.callback(imgui.destroy_context, context)
+        imgui.get_io().ini_file_name = None
+        imgui.get_io().display_size = (1440, 900)
+        font_path = Path("C:/Windows/Fonts/segoeui.ttf")
+        if font_path.is_file():
+            imgui.get_io().fonts.add_font_from_file_ttf(str(font_path), 16)
+        backend = Backend()
+        cleanup.callback(backend.shutdown)
+        target = RenderTarget()
+        cleanup.callback(target.close)
+        renderer = GLRenderer(800, 700)
+        cleanup.callback(renderer.close)
+        app = editor_class(800, 700)
+        cleanup.callback(app.model_dialog.close)
+        ui = EditorUI(app)
+        previews = []
+        cleanup.callback(lambda: gl.glDeleteTextures(previews) if previews else None)
         for asset in app.assets:
             candidates = list(Path(asset["path"]).parent.glob("preview.*"))
             if candidates:
@@ -151,12 +159,3 @@ def run(editor_class, initial_asset="auto", frames=None, screenshot=None, hidden
             pygame.display.flip()
             if frames is not None and frame >= frames:
                 running = False
-    finally:
-        app.model_dialog.close()
-        renderer.close()
-        if previews:
-            gl.glDeleteTextures(previews)
-        target.close()
-        backend.shutdown()
-        imgui.destroy_context(context)
-        pygame.quit()
