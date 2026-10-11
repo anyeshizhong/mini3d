@@ -139,6 +139,7 @@ class MaterialRenderer:
         return handle
 
     def _material(self, material, mode):
+        self._int("photographicGround", material.get("extras", {}).get("photographicGround", False))
         pbr = material.get("pbrMetallicRoughness", {})
         extensions = material.get("extensions", {})
         specular = extensions.get("KHR_materials_specular", {})
@@ -166,6 +167,15 @@ class MaterialRenderer:
             gl.glBindTexture(gl.GL_TEXTURE_2D,self._texture(texture) if texture is not None else 0)
 
     def _lighting(self, scene, camera):
+        from .atmosphere import atmosphere_state, sun_color
+        atmosphere = atmosphere_state(scene)
+        self._int('atmosphereEnabled', atmosphere['enabled'])
+        self._vec3('sunColor', sun_color(atmosphere['sun_temperature']))
+        self._vec3('sunDirection', scene_light_direction(scene))
+        self._float('exposureEV', atmosphere['exposure_ev'])
+        self._float('hazeDensity', atmosphere['haze'])
+        self._float('groundScale', atmosphere['ground_scale'])
+        self._float('photoFar', getattr(camera, 'far', 1000.))
         enabled = getattr(scene, 'environment_enabled', False)
         self._int('environmentEnabled', enabled)
         self._float('environmentIntensity', getattr(scene, 'environment_intensity', .35))

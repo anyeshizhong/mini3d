@@ -32,6 +32,8 @@ class Editor:
                        for key, info in sorted(manifest.items())
                        if info.get("status") == "downloaded" and
                        (PROJECT / "model" / key / info["entry"]).is_file()]
+        self.assets.insert(0, dict(path='builtin:roman-soldier', name='Roman Soldier (built-in study)',
+                                   format='procedural', entry='builtin:roman-soldier', status='builtin'))
         self.viewer = Viewer(self.scene, width, height, input_enabled=False)
         self.viewer.controller.yaw = -.9
         self.viewer.controller.pitch = .25
@@ -330,6 +332,18 @@ class Editor:
             raise ValueError('Lighting changes require a completed placement transaction')
         return update_lighting(self.scene, mode, direction, diffuse, ambient)
 
+    def set_atmosphere(self, **changes):
+        from .atmosphere import update_atmosphere
+        if self.commands.active_transaction:
+            raise ValueError('Atmosphere changes require a completed placement transaction')
+        return update_atmosphere(self.scene, **changes)
+
+    def sunset_preset(self):
+        from .atmosphere import sunset_preset
+        if self.commands.active_transaction:
+            raise ValueError('Atmosphere changes require a completed placement transaction')
+        return sunset_preset(self.scene)
+
     def focus_selected(self):
         self.scene.update()
         bounds = world_bounds(self.selected_entities, visible_only=True)
@@ -507,7 +521,7 @@ class Editor:
             self.set_view(pair[control])
 
 
-def run(initial_asset="auto", frames=None, screenshot=None, hidden=False, ipc=True):
+def run(initial_asset="auto", frames=None, screenshot=None, hidden=False, ipc=True, scene_path=None):
     from .editor_runtime import run as run_editor
     return run_editor(Editor, initial_asset, frames, screenshot, hidden,
-                      capture_png=capture_png, render_shot=render_shot, ipc=ipc)
+                      capture_png=capture_png, render_shot=render_shot, ipc=ipc, scene_path=scene_path)

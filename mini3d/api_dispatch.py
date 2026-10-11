@@ -8,13 +8,14 @@ METHODS = frozenset(('list_entities', 'get_entity', 'list_groups', 'get_group', 
     'lock', 'unlock', 'create_group', 'create_rectangular_formation', 'undo', 'redo',
     'save_scene', 'load_scene', 'create_shot_camera', 'get_shot_camera', 'set_lens', 'set_aspect', 'capture',
     'get_lighting', 'set_lighting', 'get_shadows', 'set_shadows', 'get_environment', 'set_environment',
+    'get_atmosphere', 'set_atmosphere', 'sunset_preset',
     'set_antialiasing', 'get_editor_camera', 'screenshot'))
 READ_METHODS = frozenset(('list_entities', 'get_entity', 'list_groups', 'get_group',
     'get_scene_state', 'get_shot_camera', 'get_editor_camera', 'get_lighting',
-    'get_shadows', 'get_environment', 'screenshot'))
+    'get_shadows', 'get_environment', 'get_atmosphere', 'screenshot'))
 BATCH_METHODS = METHODS - {'undo', 'redo', 'save_scene', 'load_scene', 'create_shot_camera',
                          'set_lens', 'set_aspect', 'capture', 'create_rectangular_formation', 'set_lighting', 'set_shadows',
-                         'set_environment', 'set_antialiasing', 'screenshot'}
+                         'set_environment', 'set_atmosphere', 'sunset_preset', 'set_antialiasing', 'screenshot'}
 
 
 def _validate(api, command, allowed=METHODS):

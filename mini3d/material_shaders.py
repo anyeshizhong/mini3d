@@ -1,5 +1,6 @@
 """Material and selection GLSL; runtime ownership stays in MaterialRenderer."""
 from .shadow_map import SHADOW_GLSL
+from .sky_renderer import ATMOSPHERE_GLSL
 
 VERTEX_SHADER = """#version 330 core
 layout(location=0) in vec3 position;
@@ -39,12 +40,12 @@ uniform float specularFactor, alphaCutoff;
 uniform int alphaMode, shadingMode;
 uniform vec3 eye, light0, light1, light2;
 uniform float lightIntensity, ambientIntensity;
-uniform bool sceneLighting;
+uniform bool sceneLighting, photographicGround;
 uniform bool environmentEnabled;
 uniform float environmentIntensity;
 uniform samplerCube diffuseEnv, specularEnv;
 uniform sampler2D brdfLut;
-""" + SHADOW_GLSL + """
+""" + SHADOW_GLSL + ATMOSPHERE_GLSL + """
 const float PI = 3.14159265359;
 
 vec3 linearize(vec3 c) {
@@ -76,12 +77,13 @@ vec3 directLight(vec3 n, vec3 v, vec3 l, vec3 base, vec3 f0,
     vec3 diffuse = (1.0-f) * (1.0-metal) * base / PI;
     return (diffuse + spec) * radiance * nl;
 }
+vec2 surfaceUV() { return photographicGround ? worldPosition.xy*groundScale : uv; }
 vec3 mappedNormal() {
     vec3 n = normalize(worldNormal);
     if (!gl_FrontFacing) n = -n;
     if (!hasNormal) return n;
     vec3 dp1 = dFdx(worldPosition), dp2 = dFdy(worldPosition);
-    vec2 dt1 = dFdx(uv), dt2 = dFdy(uv);
+    vec2 dt1 = dFdx(surfaceUV()), dt2 = dFdy(surfaceUV());
     float determinant = dt1.x * dt2.y - dt1.y * dt2.x;
     if (abs(determinant) < 1e-10) return n;
     vec3 t = (dp1 * dt2.y - dp2 * dt1.y) / determinant;
@@ -90,14 +92,14 @@ vec3 mappedNormal() {
     if (dot(t,t) < 1e-12) return n;
     t = normalize(t);
     b = normalize(cross(n,t)) * (dot(cross(n,t),b) < 0.0 ? -1.0 : 1.0);
-    vec3 mapNormal = texture(normalMap, uv).xyz * 2.0 - 1.0;
+    vec3 mapNormal = texture(normalMap, surfaceUV()).xyz * 2.0 - 1.0;
     mapNormal.xy *= normalScale;
     return normalize(mat3(t,b,n) * mapNormal);
 }
 void main() {
     vec4 base = baseFactor * vertexColor;
     if (hasBase) {
-        vec4 sampled = texture(baseMap, uv);
+        vec4 sampled = texture(baseMap, surfaceUV());
         base *= vec4(linearize(sampled.rgb), sampled.a);
     }
     if (alphaMode == 1 && base.a < alphaCutoff) discard;
@@ -107,25 +109,25 @@ void main() {
     float metal = metallicFactor;
     float rough = roughnessFactor;
     if (hasMR) {
-        vec4 mr = texture(mrMap,uv);
+        vec4 mr = texture(mrMap,surfaceUV());
         metal *= mr.b; rough *= mr.g;
     }
     metal = clamp(metal, 0.0, 1.0);
     rough = clamp(rough, 0.045, 1.0);
     float specWeight = specularFactor;
     vec3 specColor = specularColorFactor;
-    if (hasSpecular) specWeight *= texture(specularMap,uv).a;
-    if (hasSpecularColor) specColor *= linearize(texture(specularColorMap,uv).rgb);
+    if (hasSpecular) specWeight *= texture(specularMap,surfaceUV()).a;
+    if (hasSpecularColor) specColor *= linearize(texture(specularColorMap,surfaceUV()).rgb);
     vec3 f0 = mix(min(vec3(1.0), 0.04 * specColor) * specWeight, base.rgb, metal);
     vec3 n = mappedNormal();
     vec3 v = normalize(eye-worldPosition);
-    float ao = hasAO ? mix(1.0,texture(aoMap,uv).r,aoStrength) : 1.0;
+    float ao = hasAO ? mix(1.0,texture(aoMap,surfaceUV()).r,aoStrength) : 1.0;
     vec3 result;
     if (sceneLighting) {
         // light0 is surface-to-light in WORLD space, without distance falloff.
         // Keep the existing BRDF; no studio fill lights or reflection panels.
-        result = directLight(n,v,light0,base.rgb,f0,metal,rough,vec3(lightIntensity)) * shadowVisibility(worldPosition,n,light0);
-        result += (1.0-metal)*base.rgb * ao * ambientIntensity;
+        result = directLight(n,v,light0,base.rgb,f0,metal,rough,(atmosphereEnabled ? sunColor : vec3(1.0))*lightIntensity) * shadowVisibility(worldPosition,n,light0);
+        result += (1.0-metal)*base.rgb * ao * ambientIntensity * (atmosphereEnabled ? vec3(.55,.68,1.0) : vec3(1.0));
     } else {
         result = directLight(n,v,light0,base.rgb,f0,metal,rough,vec3(3.1,2.9,2.65));
         result += directLight(n,v,light1,base.rgb,f0,metal,rough,vec3(1.3,1.5,1.9));
@@ -152,12 +154,30 @@ void main() {
         vec3 diffuse = irradianceOverPi * (1.0-f0) * (1.0-metal) * base.rgb;
         result += (diffuse+specular) * ao * environmentIntensity;
     }
+    if (atmosphereEnabled && sceneLighting) {
+        vec3 reflectedSky=skyRadiance(reflect(-v,n),sunDirection,rough*.15);
+        result+=fresnel(max(dot(n,v),0.0),f0)*reflectedSky*ao*.7;
+    }
     vec3 emission = emissiveFactor;
-    if (hasEmissive) emission *= linearize(texture(emissiveMap,uv).rgb);
+    if (hasEmissive) emission *= linearize(texture(emissiveMap,surfaceUV()).rgb);
     result += emission;
+    if (atmosphereEnabled) {
+        float distanceToEye=length(eye-worldPosition);
+        float fog=1.0-exp(-distanceToEye*hazeDensity);
+        if (photographicGround)
+            fog=max(fog,smoothstep(photoFar*.3,photoFar*.85,distanceToEye));
+        result=mix(result,skyRadiance(normalize(worldPosition-eye),sunDirection,.08),fog);
+        fragColor=vec4(photoOutput(result),alpha);
+        return;
+    }
     // Gentle highlight compression, with an sRGB output for the viewport FBO.
     result = result / (1.0 + result);
-    fragColor = vec4(srgb(result), alpha);
+    vec3 displayColor=srgb(result);
+    if (photographicGround) {
+        float farFade=smoothstep(photoFar*.3,photoFar*.85,length(eye-worldPosition));
+        displayColor=mix(displayColor,vec3(30.0,30.0,35.0)/255.0,farFade);
+    }
+    fragColor = vec4(displayColor, alpha);
 }
 """
 

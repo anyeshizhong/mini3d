@@ -484,6 +484,7 @@ class GLRenderer:
         self.last_render_plan = None
         self.render_stats = {}
         self._active_shadow = None
+        self._photo_ground = None
 
         # Grid
         self.grid = GLGrid(grid_size=200, step=20, z0=0.0)
@@ -510,6 +511,8 @@ class GLRenderer:
         return self.gpu_cache[key]
 
     def render(self, scene, camera):
+        from .atmosphere import prepare_photographic_scene
+        scene, self._photo_ground = prepare_photographic_scene(scene, camera, getattr(self, '_photo_ground', None))
         active = int(glGetIntegerv(GL_ACTIVE_TEXTURE))
         glActiveTexture(GL_TEXTURE0+ShadowMap.UNIT)
         binding = int(glGetIntegerv(GL_TEXTURE_BINDING_2D))
@@ -544,6 +547,8 @@ class GLRenderer:
     def close(self):
         self.last_render_plan = None
         self.shadow_map.close()
+        if hasattr(self, 'sky_renderer'):
+            self.sky_renderer.close()
         if hasattr(self, 'material_renderer'):
             self.material_renderer.close()
         for gpu in self.gpu_cache.values():
@@ -574,6 +579,12 @@ class GLRenderer:
         # Clear
         glClearColor(30/255, 30/255, 35/255, 1.0)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+        from .atmosphere import atmosphere_state
+        if atmosphere_state(scene)['enabled']:
+            if not hasattr(self, 'sky_renderer'):
+                from .sky_renderer import SkyRenderer
+                self.sky_renderer = SkyRenderer()
+            self.sky_renderer.render(scene, camera, float(self.w)/self.h)
 
         # Camera owns a standard OpenGL view/projection (Y-up, -Z forward).
         # Read viewport aspect every frame, including after a window resize.

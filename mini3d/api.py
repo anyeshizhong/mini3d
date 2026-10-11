@@ -104,6 +104,20 @@ class Mini3DAPI:
         """
         return self._app.set_lighting(mode, direction, diffuse, ambient)
 
+    def get_atmosphere(self):
+        from .atmosphere import atmosphere_state
+        return atmosphere_state(self._app.scene)
+
+    def set_atmosphere(self, enabled=None, ground=None, sun_temperature=None,
+                       exposure_ev=None, haze=None, ground_scale=None, ground_z=None,
+                       azimuth=None, elevation=None):
+        return self._app.set_atmosphere(enabled=enabled, ground=ground,
+            sun_temperature=sun_temperature, exposure_ev=exposure_ev, haze=haze,
+            ground_scale=ground_scale, ground_z=ground_z, azimuth=azimuth, elevation=elevation)
+
+    def sunset_preset(self):
+        return self._app.sunset_preset()
+
     def get_scene_state(self, include_bounds=False):
         return dict(entities=self.list_entities(include_bounds), groups=self.list_groups(),
             selected_ids=list(self._app.scene.selected_ids),
@@ -114,7 +128,7 @@ class Mini3DAPI:
             placement_plane=self._app.scene.placement_plane.to_dict(),
             shot_camera=self.get_shot_camera(),
             lighting=self.get_lighting(), shadows=self.get_shadows(),
-            environment=self.get_environment(),
+            environment=self.get_environment(), atmosphere=self.get_atmosphere(),
             history=dict(undo_count=self._commands.undo_count, redo_count=self._commands.redo_count,
                          active_transaction=self._commands.active_transaction))
 

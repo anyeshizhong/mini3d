@@ -10,7 +10,7 @@ from .shot_camera import render_shot, render_scene_view, capture_png
 
 
 def run(editor_class, initial_asset="auto", frames=None, screenshot=None, hidden=False,
-        capture_png=capture_png, render_shot=render_shot, ipc=True, ipc_directory=None):
+        capture_png=capture_png, render_shot=render_shot, ipc=True, ipc_directory=None, scene_path=None):
     import imgui
     from imgui.integrations.opengl import ProgrammablePipelineRenderer
     from imgui.integrations.pygame import PygameRenderer
@@ -115,6 +115,14 @@ def run(editor_class, initial_asset="auto", frames=None, screenshot=None, hidden
                 gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, gl.GL_LINEAR)
                 gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR)
                 asset['preview_texture'], asset['preview_size'] = texture, surface.get_size()
+        if scene_path is not None:
+            app.scene_path = Path(scene_path).expanduser().resolve()
+            app.load_scene()
+            initial_asset = None
+            if app.shot_camera is not None:
+                app.set_camera_view(True)
+                ui.workspace = 'Shot'
+                ui.assets_visible = False
         if initial_asset == "auto":
             initial_asset = next((i for i, asset in enumerate(app.assets)
                                   if Path(asset["path"]).stem == "roman_legionnaire"),

@@ -1,0 +1,121 @@
+{
+  "shadows": {
+    "enabled": true,
+    "resolution": 4096,
+    "bias": 2.5e-05,
+    "pcf": true
+  },
+  "version": 3,
+  "objects": [
+    {
+      "asset": "builtin:roman-soldier",
+      "name": "Proud Roman Soldier",
+      "entity_id": "ent_000001",
+      "position": [
+        0.0,
+        0.0,
+        -0.003000000026077032
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true
+    }
+  ],
+  "camera": {
+    "target": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "distance": 10.0,
+    "yaw": -0.9,
+    "pitch": 0.25,
+    "fov_y": 60.0,
+    "bounds_center": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "bounds_radius": 1.0,
+    "min_distance": 0.0001,
+    "max_distance": 100000000.0
+  },
+  "environment": {
+    "enabled": false,
+    "intensity": 0.35
+  },
+  "atmosphere": {
+    "enabled": true,
+    "ground": true,
+    "sun_temperature": 3500.0,
+    "exposure_ev": 0.25,
+    "haze": 0.009,
+    "ground_scale": 1.0,
+    "ground_z": 0.0
+  },
+  "shot_camera": {
+    "position": [
+      3.3,
+      -5.8,
+      2.05
+    ],
+    "rotation": [
+      [
+        0.9098672593217505,
+        -0.047996036834378135,
+        0.412114002264567
+      ],
+      [
+        0.41489947025071816,
+        0.10525446674205732,
+        -0.9037587768959804
+      ],
+      [
+        -0.0,
+        0.9932864026447952,
+        0.11568112344268547
+      ]
+    ],
+    "focal_mm": 50.0,
+    "aspect": "3:2",
+    "fov_y": 26.991466561591622,
+    "near": 0.025,
+    "far": 65.0,
+    "samples": 4
+  },
+  "render_mode": "Lit",
+  "show_grid": true,
+  "lighting": {
+    "mode": "Scene",
+    "light_dir": [
+      6.047846824324981e-17,
+      -0.9876883405951378,
+      0.15643446504023087
+    ],
+    "ambient": 0.09,
+    "diffuse": 6.0
+  },
+  "placement_plane": {
+    "z": 0.0,
+    "size": 2000.0,
+    "enabled": true
+  },
+  "next_entity_id": 2,
+  "groups": [],
+  "next_group_id": 1,
+  "selected_ids": [],
+  "primary_selection_id": null,
+  "selected_group_id": null
+}

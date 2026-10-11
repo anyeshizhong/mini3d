@@ -19,7 +19,7 @@ def save_scene(self, path=None, project=None):
     records = []
     for root in self.scene.root_entities:
         source = root.asset_path
-        if source != 'builtin:ground':
+        if not str(source).startswith('builtin:'):
             source = Path(source)
             try:
                 source = source.relative_to(project)
@@ -34,8 +34,9 @@ def save_scene(self, path=None, project=None):
     snapshot = {key: value.tolist() if isinstance(value, np.ndarray) else value for key, value in snapshot.items()}
     from .lighting import shadow_state
     from .environment import environment_state
+    from .atmosphere import atmosphere_state
     document = dict(shadows=shadow_state(self.scene), version=3, objects=records, camera=snapshot,
-                    environment=environment_state(self.scene),
+                    environment=environment_state(self.scene), atmosphere=atmosphere_state(self.scene),
                     shot_camera=None if self.shot_camera is None else self.shot_camera.to_dict(),
                     render_mode=self.render_mode, show_grid=self.show_grid,
                     lighting=dict(mode=self.scene.lighting_mode,
@@ -77,6 +78,11 @@ def load_scene(self, path=None, project=None):
     from .lighting import update_lighting
     update_lighting(loaded, lighting.get('mode'), lighting.get('light_dir'),
                     lighting.get('diffuse'), lighting.get('ambient'))
+    from .atmosphere import update_atmosphere, atmosphere_state
+    atmosphere = document.get('atmosphere', {})
+    if not isinstance(atmosphere, dict) or any(v is None for v in atmosphere.values()):
+        raise ValueError('Invalid atmosphere document')
+    update_atmosphere(loaded, **atmosphere)
     from .lighting import update_shadows
     shadows = document.get('shadows', {})
     if not isinstance(shadows, dict) or any(v is None for v in shadows.values()):
@@ -85,7 +91,7 @@ def load_scene(self, path=None, project=None):
     loaded.placement_plane = PlacementPlane(**document.get('placement_plane', {}))
     for record in document["objects"]:
         source = record["asset"]
-        if source != 'builtin:ground':
+        if not str(source).startswith('builtin:'):
             source = Path(source)
             if not source.is_absolute():
                 source = project / source
@@ -153,6 +159,7 @@ def load_scene(self, path=None, project=None):
     self.scene.light_dir = loaded.light_dir.copy()
     self.scene.ambient, self.scene.diffuse = loaded.ambient, loaded.diffuse
     update_environment(self.scene, **environment_state(loaded))
+    update_atmosphere(self.scene, **atmosphere_state(loaded))
     self.commands.clear_history()
     self.scene.update()
     self.commands.set_selection(loaded.selected_ids, primary_id=loaded.primary_selection_id,

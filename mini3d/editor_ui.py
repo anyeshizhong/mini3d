@@ -91,10 +91,10 @@ class EditorUI:
         style.colors[imgui.COLOR_HEADER_HOVERED] = (0.24, 0.43, 0.54, 1.0)
         style.colors[imgui.COLOR_CHECK_MARK] = (0.35, 0.78, 0.88, 1.0)
 
-    def _call(self, command, *args):
+    def _call(self, command, *args, **kwargs):
         """Keep a recoverable import/file error from terminating the editor."""
         try:
-            return getattr(self.app, command)(*args)
+            return getattr(self.app, command)(*args, **kwargs)
         except Exception as exc:
             self.app.status = f"{command.replace('_', ' ').capitalize()}: {exc}"
             return None
@@ -713,6 +713,31 @@ class EditorUI:
 
     def _inspector_lighting(self):
         scene = self.app.scene
+        from .atmosphere import atmosphere_state, sun_angles
+        settings = atmosphere_state(scene)
+        imgui.text("SKY / SUNSET PHOTOGRAPHY")
+        if imgui.button("Golden-hour preset", width=-1):
+            self._call("sunset_preset")
+        changed, value = imgui.checkbox("Procedural sky", settings['enabled'])
+        if changed: self._call("set_atmosphere", enabled=value)
+        changed, value = imgui.checkbox("Infinite textured ground", settings['ground'])
+        if changed: self._call("set_atmosphere", ground=value)
+        if settings['enabled']:
+            angles = sun_angles(scene)
+            for label, key, value, low, high in (
+                    ("Sun azimuth", "azimuth", angles['azimuth'], -180., 180.),
+                    ("Sun elevation", "elevation", angles['elevation'], 1., 80.),
+                    ("Sun temperature (K)", "sun_temperature", settings['sun_temperature'], 2000., 10000.),
+                    ("Exposure (EV)", "exposure_ev", settings['exposure_ev'], -3., 3.),
+                    ("Atmospheric haze", "haze", settings['haze'], 0., .1)):
+                changed, value = imgui.slider_float(label, float(value), low, high)
+                if changed: self._call("set_atmosphere", **{key:value})
+        if settings['ground']:
+            changed, value = imgui.slider_float("Ground texture scale", settings['ground_scale'], .1, 4.)
+            if changed: self._call("set_atmosphere", ground_scale=value)
+            changed, value = imgui.input_float("Ground height", settings['ground_z'], step=.1)
+            if changed: self._call("set_atmosphere", ground_z=value)
+        imgui.separator()
         imgui.text("SUN / DIRECTIONAL LIGHT")
         imgui.text_wrapped("Direction describes where the light is, not a physical lamp position.")
         modes = ("Studio", "Scene")

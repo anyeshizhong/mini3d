@@ -5,7 +5,7 @@ from pathlib import Path
 class Asset:
     """Loaded template whose instances share mesh and material resources."""
     def __init__(self, path, root, animation_names=None, skin_count=0):
-        self.path = str(path) if str(path) == 'builtin:ground' else str(Path(path).resolve())
+        self.path = str(path) if str(path).startswith('builtin:') else str(Path(path).resolve())
         self.name = Path(path).stem
         self.root = root
         self.animation_names = animation_names or []
@@ -22,6 +22,11 @@ class AssetCache:
         self._assets = {}
 
     def load(self, path):
+        if str(path) == 'builtin:roman-soldier':
+            if str(path) not in self._assets:
+                from .roman_soldier import create_roman_soldier
+                self._assets[str(path)] = Asset(str(path), create_roman_soldier())
+            return self._assets[str(path)]
         if str(path) == 'builtin:ground':
             if str(path) not in self._assets:
                 from .placement import create_ground
