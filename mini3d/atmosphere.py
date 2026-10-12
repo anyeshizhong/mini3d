@@ -12,7 +12,8 @@ from numbers import Real
 import numpy as np
 
 _DEFAULTS = dict(enabled=False, ground=False, sun_temperature=3500., exposure_ev=0.,
-                 haze=.025, ground_scale=1., ground_z=0.)
+                 haze=.025, ground_scale=1., ground_z=0., sky_texture="procedural",
+                 sky_intensity=1., ground_texture="procedural", sun_size=0., tone_mapping="reinhard")
 
 
 def atmosphere_state(scene):
@@ -28,7 +29,8 @@ def sun_angles(scene):
 
 def update_atmosphere(scene, enabled=None, ground=None, sun_temperature=None,
                       exposure_ev=None, haze=None, ground_scale=None, ground_z=None,
-                      azimuth=None, elevation=None):
+                      azimuth=None, elevation=None, sky_texture=None, sky_intensity=None,
+                      ground_texture=None, sun_size=None, tone_mapping=None):
     """Validate the complete update before changing settings or sun direction.
 
     Temperature is an artistic black-body approximation, EV is a real linear
@@ -41,10 +43,26 @@ def update_atmosphere(scene, enabled=None, ground=None, sun_temperature=None,
             if type(value) is not bool:
                 raise ValueError(key + ' must be a boolean')
             state[key] = value
-    values = dict(sun_temperature=sun_temperature, exposure_ev=exposure_ev,
+    for key, value, choices in (('ground_texture', ground_texture, ('procedural','gravel')),
+            ('tone_mapping', tone_mapping, ('reinhard','filmic'))):
+        if value is not None:
+            if not isinstance(value,str) or value not in choices:
+                raise ValueError(key+' must be one of '+str(choices))
+            state[key]=value
+    if sky_texture is not None:
+        if not isinstance(sky_texture,str) or not sky_texture or len(sky_texture)>4096:
+            raise ValueError('sky_texture must be procedural, sunset, or a Radiance HDR path')
+        if sky_texture not in ('procedural','sunset'):
+            from .photo_environment import sky_path
+            sky_texture=str(sky_path(sky_texture))
+        if sky_texture!='procedural':
+            from .photo_environment import load_sky
+            load_sky(sky_texture) # Validate bytes before changing any live state.
+        state['sky_texture']=sky_texture
+    values = dict(sky_intensity=sky_intensity, sun_size=sun_size, sun_temperature=sun_temperature, exposure_ev=exposure_ev,
                   haze=haze, ground_scale=ground_scale, ground_z=ground_z,
                   azimuth=azimuth, elevation=elevation)
-    limits = dict(sun_temperature=(2000, 12000), exposure_ev=(-10, 10),
+    limits = dict(sky_intensity=(0,20), sun_size=(0,3), sun_temperature=(2000, 12000), exposure_ev=(-10, 10),
                   haze=(0, 1), ground_scale=(.01, 100), ground_z=(-1e6, 1e6),
                   azimuth=(-360, 360), elevation=(-89, 89))
     for key, value in values.items():
@@ -81,13 +99,25 @@ def sun_color(kelvin):
 def sunset_preset(scene):
     from .lighting import update_lighting, update_shadows
     update_atmosphere(scene, enabled=True, ground=True, sun_temperature=3500,
-                      azimuth=-145, elevation=9, exposure_ev=.25, haze=.025)
+                      azimuth=-145, elevation=9, exposure_ev=.25, haze=.025, sky_texture="procedural", ground_texture="procedural",
+                      sun_size=0., tone_mapping="reinhard")
     update_lighting(scene, mode='Scene', diffuse=6., ambient=.09)
     update_shadows(scene, enabled=True, resolution=2048, bias=.0003, pcf=True)
     return atmosphere_state(scene)
 
 
-def _ground_material():
+from functools import lru_cache
+
+@lru_cache(maxsize=2)
+def _ground_material(source="procedural"):
+    if source=="gravel":
+        from .photo_environment import RESOURCES
+        arm=dict(image=(RESOURCES/"gravel_arm.png").read_bytes())
+        return dict(pbrMetallicRoughness=dict(baseColorFactor=[1,1,1,1],metallicFactor=0.,roughnessFactor=1.),
+            doubleSided=True,extras=dict(photographicGround=True),normalTexture=dict(scale=.7),
+            textures=dict(baseColor=dict(image=(RESOURCES/"gravel_color.jpg").read_bytes()),
+                normal=dict(image=(RESOURCES/"gravel_normal.png").read_bytes()),
+                metallicRoughness=arm,occlusion=arm))
     # Deterministic tileable stone/sand maps. No external assets or downloads.
     import pygame
     rng = np.random.default_rng(1701)
@@ -122,7 +152,10 @@ def prepare_photographic_scene(scene, camera, ground_entity=None):
         from .placement import create_ground
         ground_entity = create_ground(2)
         ground_entity.name = 'Photographic Ground (render-only)'
-        ground_entity.model.material = _ground_material()
+        ground_entity.model.material = _ground_material(state["ground_texture"])
+    if getattr(ground_entity,"_ground_source",None)!=state["ground_texture"]:
+        ground_entity.model.material=_ground_material(state["ground_texture"])
+        ground_entity._ground_source=state["ground_texture"]
     size = 2 * camera.far
     ground_entity.scale = np.array([size, size, 1.])
     ground_entity.pos = np.array([*camera.position[:2], state['ground_z']])

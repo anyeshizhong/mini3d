@@ -50,6 +50,8 @@ class MaterialRenderer:
         self._meshes = {}
         self._textures = {}
         self.environment = None
+        from .photo_environment import PhotoEnvironment
+        self.photo_environment = PhotoEnvironment()
         self._selection_program = 0
         self._selection_locations = {}
 
@@ -176,14 +178,15 @@ class MaterialRenderer:
         self._float('hazeDensity', atmosphere['haze'])
         self._float('groundScale', atmosphere['ground_scale'])
         self._float('photoFar', getattr(camera, 'far', 1000.))
-        enabled = getattr(scene, 'environment_enabled', False)
+        photo_hdr=atmosphere['enabled'] and atmosphere['sky_texture']!='procedural'
+        enabled = getattr(scene, 'environment_enabled', False) or photo_hdr
         self._int('environmentEnabled', enabled)
-        self._float('environmentIntensity', getattr(scene, 'environment_intensity', .35))
+        self._float('environmentIntensity', atmosphere['sky_intensity'] if photo_hdr else getattr(scene, 'environment_intensity', .35))
         # Assign distinct sampler types even when disabled: GL validates all samplers.
         self._int('diffuseEnv', 8)
         self._int('specularEnv', 9)
         self._int('brdfLut', 10)
-        if enabled:
+        if enabled and not photo_hdr:
             if self.environment is None:
                 self.environment = EnvironmentMap()
             self.environment.bind()
@@ -229,6 +232,8 @@ class MaterialRenderer:
                          camera.projection_matrix(float(width)/height))
             self._vec3("eye",camera.position)
             self._lighting(scene, camera)
+            from .sky_renderer import bind_photo_sky
+            bind_photo_sky(self.program,scene,self.photo_environment,lighting=True)
             ShadowMap.bind(self.program, shadow, scene)
             records = []
             prepared = ([(False, item) for item in plan.opaque if item.material is not None] +
@@ -354,6 +359,7 @@ class MaterialRenderer:
             gl.glDeleteTextures([texture])
         self._meshes.clear()
         self._textures.clear()
+        self.photo_environment.close()
         if self.environment is not None:
             self.environment.close()
             self.environment = None

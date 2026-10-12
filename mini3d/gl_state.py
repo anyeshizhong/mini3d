@@ -55,9 +55,11 @@ def save_state():
     state["polygon"] = np.asarray(gl.glGetIntegerv(gl.GL_POLYGON_MODE)).reshape(-1)
     state["textures"] = []
     state["cubemaps"] = []
-    for unit in range(11):
+    state["samplers"] = []
+    for unit in range(13):
         gl.glActiveTexture(gl.GL_TEXTURE0+unit)
         state["textures"].append(int(gl.glGetIntegerv(gl.GL_TEXTURE_BINDING_2D)))
+        state["samplers"].append(int(gl.glGetIntegerv(gl.GL_SAMPLER_BINDING)))
         if unit in (8,9):
             state["cubemaps"].append((unit,int(gl.glGetIntegerv(gl.GL_TEXTURE_BINDING_CUBE_MAP))))
     return state
@@ -86,6 +88,7 @@ def restore_state(state):
     for unit, texture in enumerate(state["textures"]):
         gl.glActiveTexture(gl.GL_TEXTURE0+unit)
         gl.glBindTexture(gl.GL_TEXTURE_2D,texture)
+        gl.glBindSampler(unit,state["samplers"][unit])
     for unit, texture in state["cubemaps"]:
         gl.glActiveTexture(gl.GL_TEXTURE0+unit)
         gl.glBindTexture(gl.GL_TEXTURE_CUBE_MAP,texture)

@@ -110,10 +110,13 @@ class Mini3DAPI:
 
     def set_atmosphere(self, enabled=None, ground=None, sun_temperature=None,
                        exposure_ev=None, haze=None, ground_scale=None, ground_z=None,
-                       azimuth=None, elevation=None):
+                       azimuth=None, elevation=None, sky_texture=None, sky_intensity=None,
+                       ground_texture=None, sun_size=None, tone_mapping=None):
         return self._app.set_atmosphere(enabled=enabled, ground=ground,
             sun_temperature=sun_temperature, exposure_ev=exposure_ev, haze=haze,
-            ground_scale=ground_scale, ground_z=ground_z, azimuth=azimuth, elevation=elevation)
+            ground_scale=ground_scale, ground_z=ground_z, azimuth=azimuth, elevation=elevation,
+            sky_texture=sky_texture,sky_intensity=sky_intensity,ground_texture=ground_texture,
+            sun_size=sun_size,tone_mapping=tone_mapping)
 
     def sunset_preset(self):
         return self._app.sunset_preset()

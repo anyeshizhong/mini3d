@@ -143,8 +143,10 @@ void main() {
     if (environmentEnabled) {
         // Classic split-sum IBL, following Khronos/Filament (Q1 source notes).
         // Mini3D Z-up -> environment/glTF Y-up. No camera-relative rotation.
-        vec3 envN = vec3(n.x,n.z,-n.y);
+        vec3 rotatedN=photoHDREnabled ? photoEnvRotation*n : n;
+        vec3 envN = vec3(rotatedN.x,rotatedN.z,-rotatedN.y);
         vec3 r = reflect(-v,n);
+        if (photoHDREnabled) r=photoEnvRotation*r;
         vec3 envR = vec3(r.x,r.z,-r.y);
         vec2 ab = texture(brdfLut,vec2(clamp(dot(n,v),0.0,1.0),rough)).rg;
         vec3 radiance = textureLod(specularEnv,envR,rough*8.0).rgb;
@@ -154,7 +156,7 @@ void main() {
         vec3 diffuse = irradianceOverPi * (1.0-f0) * (1.0-metal) * base.rgb;
         result += (diffuse+specular) * ao * environmentIntensity;
     }
-    if (atmosphereEnabled && sceneLighting) {
+    if (atmosphereEnabled && sceneLighting && !photoHDREnabled) {
         vec3 reflectedSky=skyRadiance(reflect(-v,n),sunDirection,rough*.15);
         result+=fresnel(max(dot(n,v),0.0),f0)*reflectedSky*ao*.7;
     }

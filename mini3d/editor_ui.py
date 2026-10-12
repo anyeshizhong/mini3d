@@ -718,21 +718,45 @@ class EditorUI:
         imgui.text("SKY / SUNSET PHOTOGRAPHY")
         if imgui.button("Golden-hour preset", width=-1):
             self._call("sunset_preset")
-        changed, value = imgui.checkbox("Procedural sky", settings['enabled'])
+        if imgui.button("Photographic sunset preset", width=-1):
+            self._call("sunset_preset")
+            self._call("set_atmosphere",sky_texture='sunset',ground_texture='gravel',
+                sky_intensity=.7,ground_scale=.4,sun_size=.53,tone_mapping='filmic',exposure_ev=-.25)
+        changed, value = imgui.checkbox("Sky background", settings['enabled'])
         if changed: self._call("set_atmosphere", enabled=value)
         changed, value = imgui.checkbox("Infinite textured ground", settings['ground'])
         if changed: self._call("set_atmosphere", ground=value)
         if settings['enabled']:
+            sources=['Procedural sky','Sunset HDRI','Custom HDRI']
+            source=settings['sky_texture']
+            index=0 if source=='procedural' else 1 if source=='sunset' else 2
+            changed,value=imgui.combo('Sky source',index,sources)
+            if changed and value<2: self._call('set_atmosphere',sky_texture=('procedural','sunset')[value])
+            if changed and value==2: self._sky_path_input='' if index<2 else source
+            path=getattr(self,'_sky_path_input','' if index<2 else source)
+            changed,path=imgui.input_text('HDR file',path,4096)
+            if changed:self._sky_path_input=path
+            if imgui.button('Load HDRI') and path:
+                self._call('set_atmosphere',sky_texture=path)
+            imgui.text_disabled('Sky dome and shadows follow the same sun direction.')
+            changed,value=imgui.combo('Tone curve',0 if settings['tone_mapping']=='reinhard' else 1,
+                                      ['Standard','Filmic'])
+            if changed:self._call('set_atmosphere',tone_mapping=('reinhard','filmic')[value])
             angles = sun_angles(scene)
             for label, key, value, low, high in (
                     ("Sun azimuth", "azimuth", angles['azimuth'], -180., 180.),
                     ("Sun elevation", "elevation", angles['elevation'], 1., 80.),
                     ("Sun temperature (K)", "sun_temperature", settings['sun_temperature'], 2000., 10000.),
+                    ("Sun diameter (deg)", "sun_size", settings['sun_size'], 0., 3.),
+                    ("Sky / fill strength", "sky_intensity", settings['sky_intensity'], 0., 3.),
                     ("Exposure (EV)", "exposure_ev", settings['exposure_ev'], -3., 3.),
                     ("Atmospheric haze", "haze", settings['haze'], 0., .1)):
                 changed, value = imgui.slider_float(label, float(value), low, high)
                 if changed: self._call("set_atmosphere", **{key:value})
         if settings['ground']:
+            changed,value=imgui.combo('Ground material',0 if settings['ground_texture']=='procedural' else 1,
+                                      ['Procedural sand','Photographed gravel'])
+            if changed:self._call('set_atmosphere',ground_texture=('procedural','gravel')[value])
             changed, value = imgui.slider_float("Ground texture scale", settings['ground_scale'], .1, 4.)
             if changed: self._call("set_atmosphere", ground_scale=value)
             changed, value = imgui.input_float("Ground height", settings['ground_z'], step=.1)

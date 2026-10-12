@@ -30,9 +30,9 @@ def update_environment(scene, enabled=None, intensity=None):
     return environment_state(scene)
 
 
-def load_environment():
+def load_environment(resource=RESOURCE):
     """Read only bundled numeric arrays; RGB is linear radiance, LUT is linear RG."""
-    with np.load(RESOURCE, allow_pickle=False) as data:
+    with np.load(resource, allow_pickle=False) as data:
         arrays = {name: np.ascontiguousarray(data[name], dtype=np.float16) for name in data.files}
     expected = dict(diffuse=(6,32,32,3), brdf=(256,256,2))
     expected.update({'specular_'+str(i): (6,256 >> i,256 >> i,3) for i in range(9)})
@@ -46,15 +46,17 @@ class EnvironmentMap:
     """Own three GL textures. Created lazily once per MaterialRenderer/context."""
     mip_count = 9
 
-    def __init__(self):
+    def __init__(self, arrays=None):
         from OpenGL import GL as gl
-        arrays = load_environment()
+        arrays = load_environment() if arrays is None else arrays
         self.texture_bytes = sum(a.nbytes for a in arrays.values())
         self.handles = [int(x) for x in gl.glGenTextures(3)]
         parameters = (gl.GL_UNPACK_ALIGNMENT, gl.GL_UNPACK_ROW_LENGTH,
                       gl.GL_UNPACK_SKIP_ROWS, gl.GL_UNPACK_SKIP_PIXELS)
         previous = [int(gl.glGetIntegerv(p)) for p in parameters]
+        unpack_buffer=int(gl.glGetIntegerv(gl.GL_PIXEL_UNPACK_BUFFER_BINDING))
         try:
+            gl.glBindBuffer(gl.GL_PIXEL_UNPACK_BUFFER,0)
             for p, v in zip(parameters, (1,0,0,0)):
                 gl.glPixelStorei(p, v)
             for unit, handle, name, levels in ((8,self.handles[0],'diffuse',1),
@@ -85,6 +87,7 @@ class EnvironmentMap:
         finally:
             for p, v in zip(parameters, previous):
                 gl.glPixelStorei(p, v)
+            gl.glBindBuffer(gl.GL_PIXEL_UNPACK_BUFFER,unpack_buffer)
 
     def bind(self):
         from OpenGL import GL as gl
@@ -93,6 +96,7 @@ class EnvironmentMap:
                                      (10,gl.GL_TEXTURE_2D,self.handles[2])):
             gl.glActiveTexture(gl.GL_TEXTURE0+unit)
             gl.glBindTexture(target, handle)
+            gl.glBindSampler(unit,0)
         gl.glEnable(gl.GL_TEXTURE_CUBE_MAP_SEAMLESS)
 
     def close(self):

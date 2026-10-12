@@ -86,6 +86,52 @@ class AtmosphereTests(unittest.TestCase):
         api.set_atmosphere(ground=False)
         self.assertIs(prepare_photographic_scene(scene,camera,ground)[0],scene)
 
+    def test_hdr_and_ground_switches_validate_atomically_and_roundtrip(self):
+        api=Mini3DAPI();api.sunset_preset()
+        api.set_atmosphere(sky_texture='sunset',ground_texture='gravel',sun_size=.53,
+                          sky_intensity=.7,tone_mapping='filmic')
+        before=api.get_scene_state()
+        for kwargs in ({'sky_texture':'missing-sky.hdr'},{'sky_texture':3},
+                {'ground_texture':'unknown'},{'tone_mapping':'unknown'},
+                {'sun_size':float('nan')},{'sky_intensity':-1}):
+            with self.assertRaises((ValueError,OSError)):
+                api.set_atmosphere(azimuth=20,**kwargs)
+            self.assertEqual(api.get_scene_state(),before)
+        camera=Camera((0,-5,2),far=65)
+        _,ground=prepare_photographic_scene(api._app.scene,camera)
+        photo=ground.model.material
+        self.assertIn('metallicRoughness',photo['textures'])
+        self.assertIn('occlusion',photo['textures'])
+        api.set_atmosphere(ground_texture='procedural')
+        _,same=prepare_photographic_scene(api._app.scene,camera,ground)
+        self.assertIs(ground,same);self.assertIsNot(ground.model.material,photo)
+        with tempfile.TemporaryDirectory() as directory:
+            path=Path(directory)/'scene.json';api.save_scene(path)
+            fresh=Mini3DAPI();fresh.load_scene(path)
+            self.assertEqual(fresh.get_atmosphere(),api.get_atmosphere())
+
+    def test_real_sky_rotation_preserves_solar_direction_for_all_views(self):
+        from mini3d.photo_environment import load_sky,sky_rotation
+        from mini3d.lighting import scene_light_direction
+        sun=load_sky('sunset')[2]
+        api=Mini3DAPI()
+        for azimuth,elevation in ((-170,2),(-90,9),(25,35),(180,80)):
+            api.set_atmosphere(azimuth=azimuth,elevation=elevation)
+            direction=scene_light_direction(api._app.scene)
+            rotation=sky_rotation('sunset',direction)
+            np.testing.assert_allclose(rotation@direction,sun,atol=1e-7)
+            np.testing.assert_allclose(rotation.T@rotation,np.eye(3),atol=1e-7)
+            self.assertAlmostEqual(np.linalg.det(rotation),1.)
+
+    def test_hdr_reader_rejects_truncated_and_oversized_files(self):
+        from mini3d.hdr import read_hdr
+        with tempfile.TemporaryDirectory() as directory:
+            path=Path(directory)/'bad.hdr'
+            for data in (b'#?RADIANCE\nFORMAT=32-bit_rle_rgbe\n\n-Y 8192 +X 16384\n',
+                    b'#?RADIANCE\nFORMAT=32-bit_rle_rgbe\n\n-Y 2 +X 8\n'):
+                path.write_bytes(data)
+                with self.assertRaises(ValueError):read_hdr(path)
+
     def test_builtin_model_shares_resources_and_needs_no_download(self):
         api=Mini3DAPI();a=api._app.cache.load('builtin:roman-soldier').instantiate()
         b=api._app.cache.load('builtin:roman-soldier').instantiate()

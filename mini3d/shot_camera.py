@@ -138,6 +138,7 @@ def capture_png(scene, camera, renderer, path):
 
 
 def _capture_png(scene, camera, renderer, path):
+    import io
     import pygame
     from OpenGL import GL as gl
     from .render_target import RenderTarget
@@ -155,7 +156,15 @@ def _capture_png(scene, camera, renderer, path):
         picture = pygame.image.fromstring(pixels, camera.size, 'RGB', True)
         path = Path(path)
         path.parent.mkdir(parents=True, exist_ok=True)
-        pygame.image.save(picture, str(path))
+        # Encode fully before exposing the destination to previews/file watchers.
+        output=io.BytesIO()
+        pygame.image.save(picture,output,'capture.png')
+        payload=output.getvalue()
+        if not payload.endswith(b'\x00\x00\x00\x00IEND\xaeB`\x82'):
+            raise OSError('PNG encoder returned incomplete data')
+        temporary=path.with_suffix(path.suffix+'.tmp')
+        temporary.write_bytes(payload)
+        temporary.replace(path)
         return path
     finally:
         target.close()

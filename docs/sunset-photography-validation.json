@@ -1,0 +1,27 @@
+{
+  "shadow_pixels": 10836,
+  "shadow_span_pixels": 265,
+  "soft_shadow_changed_ground_pixels": 2163,
+  "face_red_blue_warm": 2.1627797408716134,
+  "face_red_blue_cool": 1.5535917403097383,
+  "reload_max_channel_error": 0,
+  "sun_disc_contrast": 70.66666666666666,
+  "hdr_sun_centre_brightness": 255.0,
+  "hdr_filter_gl_state_preserved": true,
+  "renderer": "llvmpipe (LLVM 20.1.2, 256 bits)",
+  "unit_tests": {
+    "total": 304,
+    "passed": 296,
+    "skipped": 8
+  },
+  "imgui_vertices": {
+    "Lighting": 4392,
+    "Arrange": 3888,
+    "Shot": 3902
+  },
+  "resolution": [
+    1920,
+    1280
+  ],
+  "scope": "Actual EGL renderer; Windows MX130 not measured"
+}

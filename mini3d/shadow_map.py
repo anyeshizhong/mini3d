@@ -18,6 +18,9 @@ from .lighting import scene_light_direction
 SHADOW_GLSL = """
 uniform bool shadowEnabled, shadowPCF;
 uniform sampler2DShadow shadowDepth;
+uniform sampler2D shadowRaw;
+uniform float sunRadius;
+uniform vec3 shadowWorldScale;
 uniform mat4 shadowMatrix;
 uniform float shadowBias;
 float shadowVisibility(vec3 world, vec3 normal, vec3 light) {
@@ -27,6 +30,29 @@ float shadowVisibility(vec3 world, vec3 normal, vec3 light) {
     if (any(lessThan(q, vec3(0.0))) || any(greaterThan(q, vec3(1.0)))) return 1.0;
     float bias = shadowBias * (1.0 + 4.0 * (1.0 - max(dot(normal, light), 0.0)));
     vec2 texel = 1.0 / vec2(textureSize(shadowDepth, 0));
+    // Orthographic PCSS: search raw blocker depths, then filter comparisons.
+    // Sun radius is angular; blocker distance sets the penumbra in world units.
+    if (shadowPCF && sunRadius>0.0) {
+        const vec2 disk[16]=vec2[16](vec2(0,0),vec2(-.63,-.47),vec2(.67,.48),
+            vec2(.44,-.77),vec2(-.49,.73),vec2(-.89,.14),vec2(.87,-.16),
+            vec2(.15,.93),vec2(-.13,-.94),vec2(.29,.26),vec2(-.28,-.23),
+            vec2(-.37,.31),vec2(.32,-.34),vec2(.73,-.61),vec2(-.76,-.60),vec2(-.70,.60));
+        vec2 search=max(texel,shadowWorldScale.xy*sunRadius*q.z*shadowWorldScale.z);
+        search=min(search,vec2(.03));
+        float sum=0.0, count=0.0;
+        for (int i=0;i<16;++i) {
+            float depth=texture(shadowRaw,q.xy+disk[i]*search).r;
+            if (depth<q.z-bias) {sum+=depth;count+=1.0;}
+        }
+        if (count==0.0) return 1.0;
+        float separation=max(0.0,(q.z-sum/count)*shadowWorldScale.z);
+        vec2 width=max(texel*.65,shadowWorldScale.xy*sunRadius*separation);
+        width=min(width,vec2(.03));
+        float soft=0.0;
+        for (int i=0;i<16;++i)
+            soft+=texture(shadowDepth,vec3(q.xy+disk[i]*width,q.z-bias));
+        return soft/16.0;
+    }
     float visibility = 0.0;
     int radius = shadowPCF ? 1 : 0;
     // Filtering the comparison results (hardware PCF) keeps fractional texel
@@ -113,7 +139,7 @@ class ShadowMap:
     UNIT = 7  # MaterialRenderer uses units 0..6.
 
     def __init__(self):
-        self.fbo = self.texture = self.program = self.size = 0
+        self.fbo = self.texture = self.program = self.size = self.raw_sampler = 0
         self.matrix = None
         self._cache_key = None
         self.cache_hit = False
@@ -128,6 +154,13 @@ class ShadowMap:
             self.program = compileProgram(compileShader(DEPTH_VERTEX, gl.GL_VERTEX_SHADER),
                                           compileShader(DEPTH_FRAGMENT, gl.GL_FRAGMENT_SHADER))
             self.texture = int(gl.glGenTextures(1))
+            self.raw_sampler=int(gl.glGenSamplers(1))
+            gl.glSamplerParameteri(self.raw_sampler,gl.GL_TEXTURE_COMPARE_MODE,gl.GL_NONE)
+            for p in (gl.GL_TEXTURE_MIN_FILTER,gl.GL_TEXTURE_MAG_FILTER):
+                gl.glSamplerParameteri(self.raw_sampler,p,gl.GL_NEAREST)
+            for p in (gl.GL_TEXTURE_WRAP_S,gl.GL_TEXTURE_WRAP_T):
+                gl.glSamplerParameteri(self.raw_sampler,p,gl.GL_CLAMP_TO_BORDER)
+            gl.glSamplerParameterfv(self.raw_sampler,gl.GL_TEXTURE_BORDER_COLOR,np.ones(4,np.float32))
             gl.glActiveTexture(gl.GL_TEXTURE0+self.UNIT)
             gl.glBindTexture(gl.GL_TEXTURE_2D, self.texture)
             # Port of src/main.cpp depth attachment setup; depth-only FBO.
@@ -214,6 +247,8 @@ class ShadowMap:
             gl.glUniform1i(loc('baseMap'),0)
             for entity in entities:
                 material = getattr(entity.model, 'material', None)
+                if (material or {}).get('extras',{}).get('photographicGround'):
+                    continue # Infinite ground receives shadows, but cannot occlude objects above it.
                 if material is not None and material.get('alphaMode') == 'BLEND':
                     continue  # No physically meaningful transmissive shadow in V1.
                 masked = material is not None and material.get('alphaMode') == 'MASK'
@@ -253,12 +288,21 @@ class ShadowMap:
         active = shadow is not None and shadow.matrix is not None
         gl.glUniform1i(loc('shadowEnabled'),active)
         gl.glUniform1i(loc('shadowDepth'),ShadowMap.UNIT)
+        gl.glUniform1i(loc('shadowRaw'),12)
+        from .atmosphere import atmosphere_state
+        gl.glUniform1f(loc('sunRadius'),np.tan(np.radians(atmosphere_state(scene)['sun_size']*.5)))
         if active:
             gl.glUniformMatrix4fv(loc('shadowMatrix'),1,gl.GL_TRUE,np.asarray(shadow.matrix,np.float32))
             gl.glUniform1f(loc('shadowBias'),scene.shadow_bias)
             gl.glUniform1i(loc('shadowPCF'),scene.shadow_pcf)
             gl.glActiveTexture(gl.GL_TEXTURE0+ShadowMap.UNIT)
             gl.glBindTexture(gl.GL_TEXTURE_2D,shadow.texture)
+            gl.glBindSampler(ShadowMap.UNIT,0)
+            gl.glActiveTexture(gl.GL_TEXTURE12)
+            gl.glBindTexture(gl.GL_TEXTURE_2D,shadow.texture)
+            gl.glBindSampler(12,shadow.raw_sampler)
+            rows=np.linalg.norm(shadow.matrix[:3,:3],axis=1)
+            gl.glUniform3fv(loc('shadowWorldScale'),1,np.asarray([rows[0]*.5,rows[1]*.5,2/rows[2]],np.float32))
 
     def save_depth_png(self, path):
         """Raw orthographic depth [0,1] as grayscale, white = empty/far."""
@@ -286,8 +330,10 @@ class ShadowMap:
             gl.glDeleteFramebuffers(1,[self.fbo])
         if self.texture:
             gl.glDeleteTextures([self.texture])
+        if self.raw_sampler:
+            gl.glDeleteSamplers(1,[self.raw_sampler])
         if self.program:
             gl.glDeleteProgram(self.program)
-        self.fbo = self.texture = self.program = self.size = 0
+        self.fbo = self.texture = self.program = self.size = self.raw_sampler = 0
         self.matrix = None
         self._cache_key = None

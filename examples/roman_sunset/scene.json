@@ -60,10 +60,15 @@
     "enabled": true,
     "ground": true,
     "sun_temperature": 3500.0,
-    "exposure_ev": 0.25,
+    "exposure_ev": -0.25,
     "haze": 0.009,
-    "ground_scale": 1.0,
-    "ground_z": 0.0
+    "ground_scale": 0.4,
+    "ground_z": 0.0,
+    "sky_texture": "sunset",
+    "sky_intensity": 0.7,
+    "ground_texture": "gravel",
+    "sun_size": 0.53,
+    "tone_mapping": "filmic"
   },
   "shot_camera": {
     "position": [

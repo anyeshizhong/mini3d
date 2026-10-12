@@ -11,7 +11,10 @@ from .atmosphere import atmosphere_state, sun_color
 from .lighting import scene_light_direction
 
 ATMOSPHERE_GLSL = r'''
-uniform bool atmosphereEnabled;
+uniform bool atmosphereEnabled, photoHDREnabled, filmicTone;
+uniform sampler2D photoSky;
+uniform mat3 photoEnvRotation;
+uniform float skyIntensity;
 uniform vec3 sunColor, sunDirection;
 uniform float exposureEV, hazeDensity, groundScale, photoFar;
 float skyHash(vec3 p) { return fract(sin(dot(p,vec3(127.1,311.7,74.7)))*43758.5453); }
@@ -23,6 +26,11 @@ float skyNoise(vec3 p) {
                    mix(skyHash(i+vec3(0,1,1)),skyHash(i+vec3(1,1,1)),f.x),f.y),f.z);
 }
 vec3 skyRadiance(vec3 ray, vec3 sun, float blur) {
+    if (photoHDREnabled) {
+        vec3 r=photoEnvRotation*normalize(ray);
+        vec2 coords=vec2(.5+atan(-r.y,r.x)/6.28318530718,acos(clamp(r.z,-1.0,1.0))/3.14159265359);
+        return textureLod(photoSky,coords,blur*7.0).rgb*skyIntensity;
+    }
     float altitude=max(ray.z,0.0);
     float daylight=smoothstep(-.08,.5,sun.z);
     vec3 zenith=mix(vec3(.03,.065,.18),vec3(.075,.16,.32),daylight);
@@ -40,8 +48,9 @@ vec3 skyRadiance(vec3 ray, vec3 sun, float blur) {
     return sky;
 }
 vec3 photoOutput(vec3 linearColor) {
-    vec3 c=max(linearColor*exp2(exposureEV),vec3(0.0));
-    c=c/(1.0+c);
+    vec3 c=clamp(linearColor*exp2(exposureEV),vec3(0.0),vec3(1e10));
+    if (filmicTone) c=clamp((c*(2.51*c+.03))/(c*(2.43*c+.59)+.14),0.0,1.0);
+    else c=c/(1.0+c);
     return mix(c*12.92,1.055*pow(c,vec3(1.0/2.4))-.055,step(vec3(.0031308),c));
 }
 '''
@@ -70,12 +79,15 @@ class SkyRenderer:
         self.program = compileProgram(compileShader(VERTEX,gl.GL_VERTEX_SHADER),
                                       compileShader(FRAGMENT,gl.GL_FRAGMENT_SHADER))
         self.vao = int(gl.glGenVertexArrays(1))
+        from .photo_environment import PhotoEnvironment
+        self.environment=PhotoEnvironment()
 
     def render(self, scene, camera, aspect):
         state = save_state()
         try:
             settings=atmosphere_state(scene)
             gl.glUseProgram(self.program)
+            bind_photo_sky(self.program,scene,self.environment)
             loc=lambda name: gl.glGetUniformLocation(self.program,name)
             gl.glDisable(gl.GL_DEPTH_TEST); gl.glDepthMask(False)
             gl.glDisable(gl.GL_CULL_FACE); gl.glDisable(gl.GL_BLEND)
@@ -92,7 +104,24 @@ class SkyRenderer:
             restore_state(state)
 
     def close(self):
+        self.environment.close()
         if self.program:
             gl.glDeleteProgram(self.program); self.program=0
         if self.vao:
             gl.glDeleteVertexArrays(1,[self.vao]); self.vao=0
+
+
+def bind_photo_sky(program,scene,environment,lighting=False):
+    from .photo_environment import sky_rotation
+    settings=atmosphere_state(scene)
+    enabled=settings['enabled'] and settings['sky_texture']!='procedural'
+    loc=lambda name:gl.glGetUniformLocation(program,name)
+    gl.glUniform1i(loc('photoHDREnabled'),enabled)
+    gl.glUniform1i(loc('photoSky'),11)
+    gl.glUniform1i(loc('filmicTone'),settings['tone_mapping']=='filmic')
+    gl.glUniform1f(loc('skyIntensity'),settings['sky_intensity'])
+    if enabled:
+        environment.prepare(settings['sky_texture'],lighting=lighting)
+        gl.glUniformMatrix3fv(loc('photoEnvRotation'),1,gl.GL_TRUE,
+            np.asarray(sky_rotation(settings['sky_texture'],scene_light_direction(scene)),np.float32))
+    return enabled

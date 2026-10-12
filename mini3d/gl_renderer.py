@@ -516,6 +516,10 @@ class GLRenderer:
         active = int(glGetIntegerv(GL_ACTIVE_TEXTURE))
         glActiveTexture(GL_TEXTURE0+ShadowMap.UNIT)
         binding = int(glGetIntegerv(GL_TEXTURE_BINDING_2D))
+        sampler = int(glGetIntegerv(GL_SAMPLER_BINDING))
+        glActiveTexture(GL_TEXTURE12)
+        raw_binding=int(glGetIntegerv(GL_TEXTURE_BINDING_2D))
+        raw_sampler=int(glGetIntegerv(GL_SAMPLER_BINDING))
         glActiveTexture(active)
         plan = build_render_plan(scene, camera, self.w, self.h,
                                  self.frustum_culling, self.render_mode)
@@ -542,6 +546,10 @@ class GLRenderer:
         finally:
             glActiveTexture(GL_TEXTURE0+ShadowMap.UNIT)
             glBindTexture(GL_TEXTURE_2D,binding)
+            glBindSampler(ShadowMap.UNIT,sampler)
+            glActiveTexture(GL_TEXTURE12)
+            glBindTexture(GL_TEXTURE_2D,raw_binding)
+            glBindSampler(12,raw_sampler)
             glActiveTexture(active)
 
     def close(self):

@@ -1,0 +1,30 @@
+{
+  "license": "CC0-1.0",
+  "sky": "belfast_sunset_puresky",
+  "ground": "sandy_gravel_02",
+  "samples": 256,
+  "assets": {
+    "gravel_normal.png": {
+      "upstream_sha256": "63e9d88fb9f445a23de7bc1ff58a56c2db9af9114d7e3c0b37bf0d997273a6e8",
+      "bundled_sha256": "f6b10f97ef434267607bb24dc0ea6837c1ec46dbe9cb08373af0ee96a8e1abce",
+      "bytes": 2434588
+    },
+    "gravel_arm.png": {
+      "upstream_sha256": "f2ec375b823c47203dc539bf16e608f247af050d1d4023d8cb3e1552a2f311f1",
+      "bundled_sha256": "ec144b89e5a2eabb13ec01226487955ee0cbc5abcbcc711290f6de306ad1b775",
+      "bytes": 1502517
+    },
+    "gravel_color.jpg": {
+      "bundled_sha256": "c9d143db07db9a6be2eba285fae961d868520422ee5fa4d38d55da24f9968d51",
+      "bytes": 947222
+    },
+    "sunset.hdr": {
+      "bundled_sha256": "273003109ca1cfb798ce6b96e09ac8440f763d0ef0c376bbe77492613540b4a3",
+      "bytes": 4563204
+    },
+    "sunset_ibl.npz": {
+      "bundled_sha256": "1f0d4956c5051ae6e053c5c1889189900e81d7ef63197941c3f54bc6f609d551",
+      "bytes": 2370503
+    }
+  }
+}

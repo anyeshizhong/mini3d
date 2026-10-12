@@ -29,7 +29,7 @@ VS Code / Codex 连接当前运行的编辑器：`python -B -m mini3d.ipc_client
 
 Arrange / Lighting / Shot 工作区、截图修复和深度／阴影／40 士兵性能改进见 [Editor Quality](docs/editor-quality-improvements.md)，包含验证方式与剩余限制。
 
-第一阶段夕阳摄影已可直接运行：`python -m mini3d --scene examples/roman_sunset/scene.json`。
+第一阶段夕阳摄影已可直接运行：`python -m mini3d --scene examples/roman_sunset/hero.json`。
 天空、太阳角度/色温、带贴图的视野地面、长影与曝光见 [夕阳摄影交付与重拍](docs/sunset-photography-phase1.md)。
 
 ![Mini3D 编辑器实际渲染](docs/editor-preview.png)

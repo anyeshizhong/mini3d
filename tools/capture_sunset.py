@@ -14,7 +14,7 @@ from contextlib import contextmanager
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
 
 
-def build_scene(api, asset='builtin:roman-soldier'):
+def build_scene(api, asset='builtin:roman-soldier', hero=False):
     import numpy as np
     from mini3d.placement import geometry_bounds
     entity=api.spawn(asset,name='Proud Roman Soldier',placement_type='character',keep_upright=True)
@@ -25,9 +25,16 @@ def build_scene(api, asset='builtin:roman-soldier'):
         api.set_transform(entity['entity_id'],scale=[2.4/height]*3)
     api.place_on_ground(entity['entity_id'])
     api.sunset_preset()
-    api.set_atmosphere(azimuth=-90,elevation=9,haze=.009)
+    api.set_atmosphere(azimuth=-90,elevation=9,haze=.009,sky_texture='sunset',
+                       sky_intensity=.7,ground_texture='gravel',ground_scale=.4,
+                       sun_size=.53,tone_mapping='filmic',exposure_ev=-.25)
     api.create_shot_camera(position=(3.3,-5.8,2.05),target=(.45,.45,1.25),
                            focal_mm=50,aspect='3:2',near=.025,far=65)
+    if hero:
+        api.create_shot_camera(position=(3.3,-5.8,1.1),target=(.45,.45,1.4),
+                               focal_mm=50,aspect='3:2',near=.025,far=65)
+        api.set_atmosphere(exposure_ev=-.45,sky_intensity=.45)
+        api.set_lighting(diffuse=5.,ambient=.05)
     api.set_shadows(resolution=4096,bias=.000025)
     api.set_antialiasing(4)
     api._app.scene.update()
@@ -50,6 +57,7 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--headless',action='store_true')
     parser.add_argument('--asset',default='builtin:roman-soldier')
+    parser.add_argument('--hero',action='store_true',help='Low camera angle for the proud portrait')
     parser.add_argument('--output',type=Path,default=Path('captures/proud_roman_soldier.png'))
     parser.add_argument('--scene',type=Path,default=Path('scenes/proud_roman_soldier.json'))
     args=parser.parse_args()
@@ -65,7 +73,7 @@ def main():
         renderer=GLRenderer(1920,1280);renderer.render_mode='REALISTIC'
         try:
             api=Mini3DAPI(renderer=renderer)
-            build_scene(api,args.asset)
+            build_scene(api,args.asset,hero=args.hero)
             api.save_scene(args.scene)
             result=api.capture(args.output)
             result['renderer']=GL.glGetString(GL.GL_RENDERER).decode()
