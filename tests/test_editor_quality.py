@@ -14,6 +14,32 @@ def box(size=1):
 
 
 class EditorQualityTests(unittest.TestCase):
+    def test_retained_photo_invalidates_every_atmosphere_setting(self):
+        from mini3d.api import Mini3DAPI
+        api = Mini3DAPI()
+        api.create_shot_camera(position=[0, -3, 1], target=[0, 0, 1])
+        app = api._app
+        app.camera_view = True
+        api.sunset_preset()
+        def key():
+            return viewport_key(app, (800, 600), True, 'REALISTIC')
+        original = api.get_atmosphere()
+        baseline = key()
+        self.assertEqual(key(), baseline)
+        changes = dict(enabled=False, ground=False, sun_temperature=5000.,
+            exposure_ev=1., haze=.1, ground_scale=2., ground_z=.2,
+            sky_texture='sunset', sky_intensity=.5, ground_texture='gravel',
+            sun_size=.53, tone_mapping='filmic')
+        for name, value in changes.items():
+            with self.subTest(setting=name):
+                api.set_atmosphere(**{name: value})
+                self.assertNotEqual(key(), baseline)
+                api.set_atmosphere(**{name: original[name]})
+                self.assertEqual(key(), baseline)
+        # Value snapshots also catch direct in-place edits and preserve the old key.
+        app.scene._atmosphere['exposure_ev'] += .25
+        self.assertNotEqual(key(), baseline)
+
     def test_tiny_focus_then_dolly_with_crossing_ground_retains_depth_precision(self):
         for scale in (1e-5, 1, 1e5):
             app = Editor()

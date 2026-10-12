@@ -1,9 +1,9 @@
 {
   "date": "2026-10-12",
   "unit_tests": {
-    "total": 310,
+    "total": 311,
     "skipped": 0,
-    "passed": 310
+    "passed": 311
   },
   "gpu": {
     "gpu": "Intel(R) UHD Graphics 620",
@@ -92,5 +92,6 @@
     "read_framebuffer_restored": true,
     "clean_capture_preserved": true
   },
-  "legacy_photo_smoke": "Existing tests/photo_smoke.py still targets obsolete button layout; not counted as passed."
+  "legacy_photo_smoke": "Existing tests/photo_smoke.py still targets obsolete button layout; not counted as passed.",
+  "followup": "Atmosphere cache invalidation regression and real statue photograph checks passed; see statue-validation.json"
 }

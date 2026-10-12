@@ -1,0 +1,104 @@
+{
+  "gpu": "Intel(R) UHD Graphics 620",
+  "checks": {
+    "three_apertures_distinct": true,
+    "preview_png_exact": true,
+    "real_statue_focus_swap": true,
+    "scene_reload_exact": true,
+    "exposure_invalidates_preview_and_matches_png": true
+  },
+  "assets": {
+    "vespasian": {
+      "entity_id": "ent_000001",
+      "name": "vespasian",
+      "asset_path": "model/12_vespasian/vespasian.glb",
+      "position": [
+        -0.003986893848568443,
+        0.3879827055702609,
+        0.272815337732872
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.11038353664946086,
+        0.11038353664946086,
+        0.11038353664946086
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true,
+      "bounds": {
+        "minimum": [
+          -0.209706621692358,
+          -0.12570205429120476,
+          -3.469446951953614e-18
+        ],
+        "maximum": [
+          0.039706621692358,
+          0.1257020542912048,
+          0.45720000000000016
+        ]
+      }
+    },
+    "asclepius": {
+      "entity_id": "ent_000002",
+      "name": "asclepius",
+      "asset_path": "model/13_asclepius/asclepius.glb",
+      "position": [
+        0.3087535472782793,
+        1.52031848119372,
+        0.22744898109982908
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.01535971805023244,
+        0.01535971805023244,
+        0.01535971805023244
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "character",
+      "placement_anchor": "bounds_bottom",
+      "keep_upright": true,
+      "bounds": {
+        "minimum": [
+          0.13947161570729227,
+          1.3430967630629262,
+          0.0
+        ],
+        "maximum": [
+          0.4605283842927076,
+          1.6569032369370735,
+          0.6223
+        ]
+      }
+    }
+  },
+  "settings": {
+    "statues-f1.4.png": {
+      "focus_distance_m": 1.6195121165219446,
+      "f_number": 1.4,
+      "background_radius_px": 44.29446071080109
+    },
+    "statues-f2.8.png": {
+      "focus_distance_m": 1.6195121165219446,
+      "f_number": 2.8,
+      "background_radius_px": 22.147230355400545
+    },
+    "statues-f8.png": {
+      "focus_distance_m": 1.6195121165219446,
+      "f_number": 8,
+      "background_radius_px": 7.751530624390189
+    }
+  },
+  "fullbody_display_height_m": 2.4
+}

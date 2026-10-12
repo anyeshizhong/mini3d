@@ -43,7 +43,7 @@ def viewport_key(app, size, photo_preview, renderer_mode):
         'light_dir', 'ambient', 'diffuse', 'lighting_mode', 'shadows_enabled',
         'shadow_resolution', 'shadow_bias', 'shadow_pcf', 'environment_enabled',
         'environment_intensity', 'material_light_intensity', 'material_ambient_intensity',
-        'render_mode', 'show_grid', 'grid_scale', 'show_axes', '_hide_entity_axes'))
+        'render_mode', 'show_grid', 'grid_scale', 'show_axes', '_hide_entity_axes', '_atmosphere'))
     return (tuple(size), app.camera_view, photo_preview, renderer_mode, camera_key, shot_key,
             tuple(entities), tuple(materials.items()), tuple(meshes.items()), settings,
             None if app.camera_view or app.selection is None else id(app.selection))
