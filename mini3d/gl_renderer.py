@@ -88,6 +88,8 @@ void main(){
 }
 """
 
+from .photo_color import PHOTO_COLOR_GLSL, bind_photo_color
+
 FRAG_SRC = """
 #version 330 core
 in vec3 vNormalW;
@@ -100,7 +102,7 @@ uniform float uDiffuse;
 
 out vec4 FragColor;
 
-""" + SHADOW_GLSL + """
+""" + SHADOW_GLSL + PHOTO_COLOR_GLSL + """
 void main(){
     vec3 N = normalize(vNormalW);
     vec3 L = normalize(uLightDirW);
@@ -113,7 +115,7 @@ void main(){
     intensity = clamp(intensity, 0.0, 1.0);
     
     vec3 col = uBaseColor * intensity;
-    FragColor = vec4(col, 1.0);
+    FragColor = vec4(photoAdjustDisplay(col), 1.0);
 }
 """
 
@@ -132,7 +134,7 @@ uniform vec3 uCameraPos;
 
 out vec4 FragColor;
 
-""" + SHADOW_GLSL + """
+""" + SHADOW_GLSL + PHOTO_COLOR_GLSL + """
 void main(){
     vec3 N = normalize(vNormalW);
     vec3 L = normalize(uLightDirW);
@@ -171,7 +173,7 @@ void main(){
     col += vec3(0.3) * specular * shadowVisibility(vPosW, N, L); // White specular highlight
     col += uBaseColor * 0.5 * rimIntensity; // Rim light
     
-    FragColor = vec4(col, 1.0);
+    FragColor = vec4(photoAdjustDisplay(col), 1.0);
 }
 """
 
@@ -686,6 +688,7 @@ class GLRenderer:
     def _render_realistic_pass(self, entities, V, P, scene):
         """Standard realistic rendering"""
         glUseProgram(self.program)
+        bind_photo_color(self.program, scene)
         if hasattr(self, "_active_shadow"):
             ShadowMap.bind(self.program, self._active_shadow, scene)
         
@@ -729,6 +732,7 @@ class GLRenderer:
     def _render_toon_pass(self, entities, V, P, scene, cam_pos):
         """Toon/cel-shading rendering"""
         glUseProgram(self.toon_program)
+        bind_photo_color(self.toon_program, scene)
         if hasattr(self, "_active_shadow"):
             ShadowMap.bind(self.toon_program, self._active_shadow, scene)
         

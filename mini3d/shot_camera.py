@@ -20,6 +20,15 @@ class ShotCamera(Camera):
         self.dof_enabled = False
         self.focus_distance = 5.0
         self.f_number = 2.8
+        self.focus_point = None
+        self.white_balance_kelvin = 6500.
+        self.color_preset = 'Original'
+
+    def set_photo_color(self, white_balance_kelvin=None, preset=None):
+        from .photo_color import validate_color
+        temperature = self.white_balance_kelvin if white_balance_kelvin is None else white_balance_kelvin
+        style = self.color_preset if preset is None else preset
+        self.white_balance_kelvin, self.color_preset = validate_color(temperature, style)
 
     def set_depth_of_field(self, enabled=None, focus_distance=None, f_number=None):
         """Atomic lens settings. Scene distances use metres for photography."""
@@ -36,6 +45,8 @@ class ShotCamera(Camera):
         if enabled and focus <= self.focal_mm / 1000:
             raise ValueError('Focus distance must exceed focal length')
         self.dof_enabled, self.focus_distance, self.f_number = enabled, float(focus), float(aperture)
+        if focus_distance is not None:
+            self.focus_point = None
 
     def focus_at(self, point):
         raw = np.asarray(point, dtype=object)
@@ -47,6 +58,7 @@ class ShotCamera(Camera):
             raise ValueError('Focus point must be three finite numbers')
         depth = -float((self.view_matrix @ np.r_[point, 1])[2])
         self.set_depth_of_field(focus_distance=depth)
+        self.focus_point = point.copy()
         return self.focus_distance
 
     def circle_of_confusion(self, depth, width=None):
@@ -98,7 +110,8 @@ class ShotCamera(Camera):
                     focal_mm=self.focal_mm, aspect=self.aspect_name, fov_y=self.fov_y,
                     near=self.near, far=self.far, samples=self.samples,
                     dof_enabled=self.dof_enabled, focus_distance=self.focus_distance,
-                    f_number=self.f_number)
+                    f_number=self.f_number, focus_point=None if self.focus_point is None else self.focus_point.tolist(),
+                    white_balance_kelvin=self.white_balance_kelvin, color_preset=self.color_preset)
 
     @classmethod
     def from_dict(cls, data):
@@ -136,6 +149,15 @@ class ShotCamera(Camera):
                 shot.set_depth_of_field(enabled=data.get('dof_enabled', False),
                     focus_distance=data.get('focus_distance', 5.0),
                     f_number=data.get('f_number', 2.8))
+                if any(name in data and data[name] is None for name in ('white_balance_kelvin', 'color_preset')):
+                    raise ValueError('Photo color parameters cannot be null')
+                shot.set_photo_color(data.get('white_balance_kelvin', 6500.), data.get('color_preset', 'Original'))
+                if data.get('focus_point') is not None:
+                    stored_distance = shot.focus_distance
+                    shot.focus_at(data['focus_point'])
+                    if not math.isclose(shot.focus_distance, stored_distance, rel_tol=1e-6, abs_tol=1e-6):
+                        raise ValueError('Focus point must match saved focus distance')
+                    shot.focus_distance = stored_distance
                 if (values['focal_mm'] <= 0 or not math.isfinite(shot.focal_mm) or
                         not math.isclose(values['focal_mm'], shot.focal_mm, rel_tol=1e-12)):
                     raise ValueError('focal_mm must be positive and match fov_y/aspect')
@@ -158,13 +180,16 @@ def render_shot(scene, camera, renderer, target):
     render_scene_view(scene, camera, renderer, target, camera.size, camera.samples)
 
 
-def render_scene_view(scene, camera, renderer, target, size, samples=1):
+def render_scene_view(scene, camera, renderer, target, size, samples=1, photo_camera=None):
     """Clean Scene-lit preview, shared by both views in the Shot workspace."""
     from OpenGL import GL as gl
     clean = copy.copy(scene)
     clean.show_grid, clean.show_axes, clean.render_mode = False, False, 'Lit'
     clean._hide_entity_axes = True
     clean.lighting_mode = 'Scene'
+    settings_camera = camera if photo_camera is None else photo_camera
+    clean._photo_color = (getattr(settings_camera, 'white_balance_kelvin', 6500.),
+                          getattr(settings_camera, 'color_preset', 'Original'))
     target.resize(*size, samples=samples)
     target.bind()
     gl.glDisable(gl.GL_SCISSOR_TEST)

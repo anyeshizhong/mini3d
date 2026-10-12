@@ -9,8 +9,9 @@ from OpenGL.GL.shaders import compileShader, compileProgram
 from .gl_state import save_state, restore_state
 from .atmosphere import atmosphere_state, sun_color
 from .lighting import scene_light_direction
+from .photo_color import PHOTO_COLOR_GLSL, bind_photo_color
 
-ATMOSPHERE_GLSL = r'''
+ATMOSPHERE_GLSL = PHOTO_COLOR_GLSL + r'''
 uniform bool atmosphereEnabled, photoHDREnabled, filmicTone;
 uniform sampler2D photoSky;
 uniform mat3 photoEnvRotation;
@@ -48,7 +49,7 @@ vec3 skyRadiance(vec3 ray, vec3 sun, float blur) {
     return sky;
 }
 vec3 photoOutput(vec3 linearColor) {
-    vec3 c=clamp(linearColor*exp2(exposureEV),vec3(0.0),vec3(1e10));
+    vec3 c=clamp(photoAdjust(linearColor)*exp2(exposureEV),vec3(0.0),vec3(1e10));
     if (filmicTone) c=clamp((c*(2.51*c+.03))/(c*(2.43*c+.59)+.14),0.0,1.0);
     else c=c/(1.0+c);
     return mix(c*12.92,1.055*pow(c,vec3(1.0/2.4))-.055,step(vec3(.0031308),c));
@@ -112,6 +113,7 @@ class SkyRenderer:
 
 
 def bind_photo_sky(program,scene,environment,lighting=False):
+    bind_photo_color(program, scene)
     from .photo_environment import sky_rotation
     settings=atmosphere_state(scene)
     enabled=settings['enabled'] and settings['sky_texture']!='procedural'

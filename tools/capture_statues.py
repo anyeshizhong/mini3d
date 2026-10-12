@@ -74,6 +74,17 @@ def run(output):
             assert report['settings']['statues-f2.8.png']['background_radius_px'] < 32
             large, small = pixels(output/'statues-f1.4.png'), pixels(output/'statues-f8.png')
             assert np.count_nonzero(large != small) > 10000, 'Aperture did not change the real photograph'
+            middle = pixels(output/'statues-f2.8.png')
+            region = (slice(360, 800), slice(1120, 1360))
+            def detail(image):
+                patch = image[region].astype(float).mean(axis=2)
+                return float(np.mean(np.abs(np.diff(patch, axis=0))) + np.mean(np.abs(np.diff(patch, axis=1))))
+            values = [detail(image) for image in (large, middle, small)]
+            assert values[0] < values[1] < values[2], ('Background detail did not increase', values)
+            assert np.count_nonzero(large[region] != middle[region]) > 1000
+            assert np.count_nonzero(middle[region] != small[region]) > 1000
+            report['background_detail_f1.4_f2.8_f8'] = values
+            report['checks']['adjacent_apertures_and_background_detail_monotonic'] = True
             report['checks']['three_apertures_distinct'] = True
             api.set_depth_of_field(f_number=2.8)
             api.save_scene(output/'statues-portrait.scene.json')

@@ -104,7 +104,7 @@ void main() {
     }
     if (alphaMode == 1 && base.a < alphaCutoff) discard;
     float alpha = alphaMode == 2 ? base.a : 1.0;
-    if (shadingMode == 1) { fragColor = vec4(srgb(base.rgb), alpha); return; }
+    if (shadingMode == 1) { fragColor = vec4(srgb(photoAdjust(base.rgb)), alpha); return; }
     if (shadingMode == 2) { fragColor = vec4(0.72,0.83,0.94,alpha); return; }
     float metal = metallicFactor;
     float rough = roughnessFactor;
@@ -173,6 +173,7 @@ void main() {
         return;
     }
     // Gentle highlight compression, with an sRGB output for the viewport FBO.
+    result = photoAdjust(result);
     result = result / (1.0 + result);
     vec3 displayColor=srgb(result);
     if (photographicGround) {

@@ -1,5 +1,6 @@
 """Pygame/ImGui/GL lifecycle and frame loop for the unified editor."""
 import math
+import time
 from contextlib import ExitStack
 from datetime import datetime
 from pathlib import Path
@@ -68,6 +69,11 @@ def run(editor_class, initial_asset="auto", frames=None, screenshot=None, hidden
         cleanup.callback(backend.shutdown)
         target = RenderTarget()
         cleanup.callback(target.close)
+        display_target = target
+        rendered_photo = None
+        from .photo_focus import read_focus_point, PhotoPreviewQuality
+        from .camera import Camera
+        quality = PhotoPreviewQuality()
         previous_viewport_key = None
         # Compose the exact displayed editor frame into an owned FBO. Windows
         # may discard default-framebuffer pixels when the window is occluded or
@@ -100,6 +106,17 @@ def run(editor_class, initial_asset="auto", frames=None, screenshot=None, hidden
             pygame.image.save(image, str(path))
             return dict(path=str(path), format='PNG', width=width, height=height)
         app.api = Mini3DAPI(renderer, editor=app, screenshot=editor_screenshot)
+        def photo_focus_reader(point, rect):
+            if rendered_photo is None:
+                raise ValueError('Wait for the first photo frame')
+            pose, camera, photo_target = rendered_photo
+            if pose != photo_pose(app.shot_camera):
+                raise ValueError('Wait for the updated camera frame before focusing')
+            return read_focus_point(photo_target, camera, point, rect)
+        def photo_pose(camera):
+            return (camera.position.tobytes(), camera.rotation.tobytes(), camera.fov_y,
+                    camera.near, camera.far, camera.aspect_name)
+        app.photo_focus_reader = photo_focus_reader
         ui = EditorUI(app)
         previews = []
         cleanup.callback(lambda: gl.glDeleteTextures(previews) if previews else None)
@@ -163,7 +180,7 @@ def run(editor_class, initial_asset="auto", frames=None, screenshot=None, hidden
             backend.io.display_size = (max(1, width), max(1, height))
             backend.process_inputs()
             imgui.new_frame()
-            rect = ui.draw(width, height, target.texture)
+            rect = ui.draw(width, height, display_target.texture)
             for event in events:
                 try:
                     app.handle_event(event, ui)
@@ -186,14 +203,31 @@ def run(editor_class, initial_asset="auto", frames=None, screenshot=None, hidden
                     app.status = "Capture failed: " + str(exc)
             photo_preview = ui.workspace == 'Shot' and app.shot_camera is not None
             current_viewport_key = viewport_key(app, rect[2:], photo_preview, renderer.render_mode)
-            viewport_redrawn = current_viewport_key != previous_viewport_key
+            photo_size = None
+            if app.camera_view:
+                photo_size = quality.size(current_viewport_key, app.shot_camera.size,
+                    imgui.is_any_item_active(), time.monotonic())
+            render_key = (current_viewport_key, photo_size)
+            viewport_redrawn = render_key != previous_viewport_key
             if viewport_redrawn:
                 if app.camera_view:
-                    render_shot(app.scene, app.shot_camera, renderer, target)
+                    # Keep the ImGui image texture stable across quality changes:
+                    # UI commands are built before this frame's scene is rendered.
+                    current_target = target
+                    render_scene_view(app.scene, app.shot_camera, renderer, current_target,
+                                      photo_size, app.shot_camera.samples)
+                    shot = app.shot_camera
+                    camera = Camera(shot.position.copy(), shot.rotation.copy(), shot.fov_y, shot.near, shot.far)
+                    rendered_photo = (photo_pose(shot), camera, current_target)
+                    display_target = current_target
                 elif photo_preview:
                     render_scene_view(app.scene, app.viewer.camera, renderer, target, rect[2:],
-                                      app.shot_camera.samples)
+                                      app.shot_camera.samples, photo_camera=app.shot_camera)
+                    display_target = target
+                    rendered_photo = None
                 else:
+                    display_target = target
+                    rendered_photo = None
                     target.resize(rect[2], rect[3], samples=1)
                     target.bind()
                     gl.glDisable(gl.GL_SCISSOR_TEST)
@@ -204,7 +238,7 @@ def run(editor_class, initial_asset="auto", frames=None, screenshot=None, hidden
                     selected = Scene()
                     selected.add(app.selection)
                     renderer.material_renderer.render_selection(selected.get_flat_render_list(), app.viewer.camera, *rect[2:])
-                previous_viewport_key = current_viewport_key
+                previous_viewport_key = render_key
             renderer.render_stats['viewport_redrawn'] = viewport_redrawn
             editor_frame.resize(width, height)
             editor_frame.bind()

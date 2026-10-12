@@ -70,7 +70,8 @@ class LightingTests(unittest.TestCase):
         self.material._lighting(self.scene, self.camera)
         for method in ('_render_realistic_pass', '_render_toon_pass'):
             with patch.object(module, 'glUseProgram'), patch.object(module, 'glUniformMatrix4fv'), \
-                    patch.object(module, 'glUniform1f'), patch.object(module, 'glUniform3f') as upload:
+                    patch.object(module, 'glUniform1f'), patch.object(module, 'bind_photo_color'), \
+                    patch.object(module, 'glUniform3f') as upload:
                 args = ([], self.camera.view_matrix, np.eye(4), self.scene)
                 getattr(renderer, method)(*args, *([self.camera.position] if 'toon' in method else []))
                 np.testing.assert_allclose(upload.call_args_list[0][0][1:], self.uniforms['light0'])

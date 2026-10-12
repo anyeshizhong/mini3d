@@ -390,7 +390,7 @@ class EditorUI:
             if imgui.button("Camera View") and self.app.shot_camera is not None:
                 self._call("set_camera_view", True)
             imgui.same_line()
-            if imgui.button("Capture") and self.app.shot_camera is not None:
+            if imgui.button("Capture PNG") and self.app.shot_camera is not None:
                 self._call("request_capture")
             if self.app.shot_camera is None:
                 imgui.text_disabled("Start in Editor View, frame the scene, then Create Camera From View.")
@@ -822,8 +822,23 @@ class EditorUI:
         imgui.pop_item_width()
         if imgui.button('Focus selected subject', width=-1):
             self._call('focus_shot_selection')
+        imgui.text_wrapped('In Camera View, click a face or any visible surface to focus. Sky and black borders keep your focus.')
         imgui.text_wrapped('Smaller f-number gives stronger blur. Focus is measured along the camera view; 1 scene unit = 1 m.')
         imgui.text_wrapped('Use Camera View to preview depth of field. Editor View stays sharp for placement.')
+        imgui.separator()
+        imgui.text('PHOTO COLOR')
+        imgui.push_item_width(120)
+        changed, kelvin = imgui.slider_float('White balance (K)', shot.white_balance_kelvin, 2000, 12000, '%.0f K')
+        if changed:
+            self._call('set_shot_photo_color', white_balance_kelvin=kelvin)
+        from .photo_color import PRESETS
+        changed, preset = imgui.combo('Color preset', PRESETS.index(shot.color_preset), list(PRESETS))
+        if changed:
+            self._call('set_shot_photo_color', preset=PRESETS[preset])
+        imgui.pop_item_width()
+        if imgui.button('Reset photo color', width=-1):
+            self._call('set_shot_photo_color', white_balance_kelvin=6500., preset='Original')
+        imgui.text_wrapped('Camera color changes keep the scene lights unchanged. Preview settles to full quality when you stop adjusting.')
         imgui.separator()
         if imgui.button("Preview photo", width=-1):
             self._call("set_camera_view", True)

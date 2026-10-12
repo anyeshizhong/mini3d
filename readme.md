@@ -201,3 +201,7 @@ python -B tests/placement_v2_performance.py captures/placement-v2-validation/per
 ```
 
 单元测试覆盖投影、不同尺度的自动取景、层级包围盒、拖拽、预设、重置和 resize。第二条在隐藏 OpenGL 窗口中运行三个真实示例，注入导航事件并检查模型像素及 GL 错误；需本机图形驱动，可追加截图输出目录参数。
+
+## 点击对焦与相机色彩
+
+Shot / Camera View 可以点击脸部对焦，显示绿色焦点与米制距离；调整光圈、2000–12000K 白平衡及原样/暖色/低饱和预设，点击 Capture PNG 导出。交互时 960 宽预览，停止后恢复完整 1920；场景保存重载保留设置。操作、API、性能与验证见 [拍摄流程](docs/photo-workflow.md)。

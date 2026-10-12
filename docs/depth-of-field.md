@@ -34,7 +34,7 @@ api.capture('captures/portrait.png')
 signed radius_px = W/2 * f*f * (z-s) / (N * 0.036 * z * (s-f))
 ```
 
-公式来源：[NVIDIA GPU Gems 3 — Practical Post-Process Depth of Field](https://developer.nvidia.com/gpugems/gpugems3/part-iv-image-effects/chapter-28-practical-post-process-depth-field)。这里独立实现 48 点等面积圆盘采样，在线性颜色中加权后恢复 sRGB，使用深度约束避免背景模糊覆盖对焦主体。Camera View 和 PNG 使用同一函数、相同 1920 像素源图；不处理编辑网格、Gizmo 和 UI。
+公式来源：[NVIDIA GPU Gems 3 — Practical Post-Process Depth of Field](https://developer.nvidia.com/gpugems/gpugems3/part-iv-image-effects/chapter-28-practical-post-process-depth-field)。这里独立实现 48 点等面积圆盘采样，在线性颜色中加权后恢复 sRGB，使用深度约束避免背景模糊覆盖对焦主体。Camera View 静止预览和 PNG 使用同一函数、相同 1920 像素源图；交互时临时使用 960 像素，停止后恢复完整尺寸；不处理编辑网格、Gizmo 和 UI。
 
 只替换已 resolve 的颜色，保留深度/模板；过滤器缓存 GPU 资源，不在每帧读回 CPU。Renderer.close 释放所有资源，可重复关闭。恢复纹理、采样器、FBO、视口、program、VAO、深度/模板/混合等借用 GL 状态。
 
@@ -50,3 +50,5 @@ python -B tests/editor_screenshot_smoke.py captures/dof-ui-new
 ```
 
 GPU 验收使用真实导入的棋盘纹理平面，分别位于 2m、8m，验证对焦前后景互换、对焦平面保持清晰、小光圈恢复细节、MSAA 深度不被修改、1920×1280 预览/PNG/重载像素完全一致、GL 状态恢复与资源释放。`live_editor_ipc_smoke.py` 另验证实际本地扫描士兵通过 IPC 改对焦改变成片，以及带景深场景重载一致。
+
+点击脸部对焦、白平衡、色调预设与交互性能见 [拍摄流程](photo-workflow.md)。

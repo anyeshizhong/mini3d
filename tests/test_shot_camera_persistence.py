@@ -166,7 +166,8 @@ class ShotCameraPersistenceTests(unittest.TestCase):
         valid = document['shot_camera']
         candidates = [[], True, 12, 'camera', {}]
         for key in valid:
-            if key in ('samples', 'dof_enabled', 'focus_distance', 'f_number'):  # Legacy defaults.
+            if key in ('samples', 'dof_enabled', 'focus_distance', 'f_number', 'focus_point',
+                       'white_balance_kelvin', 'color_preset'):  # Legacy defaults.
                 continue
             missing = copy.deepcopy(valid)
             del missing[key]

@@ -282,6 +282,19 @@ class Mini3DAPI:
             raise ValueError('Focus entity has no visible geometry')
         return self.focus_at((bounds[0] + bounds[1]) * .5)
 
+    def focus_screen(self, screen_pos):
+        self._outside_transaction()
+        focused = self._app.focus_photo_screen(screen_pos)
+        return dict(focused=focused, shot_camera=self.get_shot_camera())
+
+    def set_photo_color(self, white_balance_kelvin=None, preset=None):
+        self._outside_transaction()
+        self._app.set_shot_photo_color(white_balance_kelvin, preset)
+        return self.get_shot_camera()
+
+    def reset_photo_color(self):
+        return self.set_photo_color(6500., 'Original')
+
     def get_shot_camera(self):
         camera = self._app.shot_camera
         if camera is None:

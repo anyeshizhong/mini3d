@@ -58,6 +58,7 @@ class Editor:
         self.capture_requested = False
         self.capture_directory = PROJECT / "captures"
         self.last_capture = None
+        self.photo_focus_reader = None
 
     def create_camera_from_view(self):
         self.viewer.update_clipping()
@@ -70,6 +71,26 @@ class Editor:
         if self.shot_camera is None:
             raise ValueError('Create Camera From View first')
         self.shot_camera.set_depth_of_field(enabled, focus_distance, f_number)
+
+    def set_shot_photo_color(self, white_balance_kelvin=None, preset=None):
+        if self.shot_camera is None:
+            raise ValueError('Create a Shot Camera first')
+        self.shot_camera.set_photo_color(white_balance_kelvin, preset)
+
+    def focus_photo_screen(self, screen_pos):
+        if self.commands.active_transaction:
+            raise ValueError('Complete the placement transaction before focusing')
+        if not self.camera_view or self.shot_camera is None:
+            raise ValueError('Use Camera View to click a focus point')
+        if self.photo_focus_reader is None:
+            raise ValueError('A displayed photo frame is required for click focus')
+        point = self.photo_focus_reader(screen_pos, self.viewport_rect)
+        if point is None:
+            self.status = 'No photo surface here; focus unchanged'
+            return False
+        self.shot_camera.focus_at(point)
+        self.status = 'Focused at {:.3f} m'.format(self.shot_camera.focus_distance)
+        return True
 
     def focus_shot_selection(self):
         if self.shot_camera is None or self.selection is None:
@@ -397,6 +418,17 @@ class Editor:
         # The UI provides the current image rectangle before overlay/drop events.
         self.viewport_rect = rect
         if self.camera_view:
+            if self.shot_camera.focus_point is not None:
+                from .picking import project_point
+                import imgui
+                screen = project_point(self.shot_camera, self.shot_camera.focus_point, rect)
+                if screen is not None:
+                    sx, sy = screen
+                    color = imgui.get_color_u32_rgba(.4, 1., .65, 1.)
+                    draw_list.add_circle(sx, sy, 9, color, 24, 2)
+                    draw_list.add_line(sx-13, sy, sx+13, sy, color, 1)
+                    draw_list.add_line(sx, sy-13, sx, sy+13, color, 1)
+                    draw_list.add_text(sx+14, sy-9, color, '{:.3f} m'.format(self.shot_camera.focus_distance))
             if self.composition_grid:
                 import imgui
                 x, y, width, height = rect
@@ -433,7 +465,11 @@ class Editor:
             self.place_selected_mode = False
             return
         if self.camera_view:
-            return  # Photo preview is fixed; scene placement/navigation uses Editor View.
+            if (event.type == pygame.MOUSEBUTTONDOWN and event.button == 1
+                    and not ui.modal_open and not ui.mouse_captured and not ui.asset_dragging
+                    and ui.viewport_hovered):
+                self.focus_photo_screen(event.pos)
+            return  # Photo pose remains fixed while a click changes only focus.
         mouse_event = event.type in (pygame.MOUSEMOTION, pygame.MOUSEBUTTONDOWN, pygame.MOUSEWHEEL)
         if ui.modal_open:
             self._orbiting = False
