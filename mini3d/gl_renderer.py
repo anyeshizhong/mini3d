@@ -413,10 +413,14 @@ class GLRenderer:
         # Render mode setting
         self.render_mode = RENDER_MODE  # "REALISTIC", "TOON", or "OUTLINE"
 
+        # Shadow comparison and raw-depth samplers start on unit zero after
+        # linking. bind_shadow assigns separate units before drawing, as in
+        # MaterialRenderer; pre-assignment validation fails on strict drivers.
         # Main mesh shader (realistic)
         self.program = compileProgram(
             compileShader(VERT_SRC, GL_VERTEX_SHADER),
             compileShader(FRAG_SRC, GL_FRAGMENT_SHADER),
+            validate=False,
         )
 
         # Get uniform locations
@@ -432,6 +436,7 @@ class GLRenderer:
         self.toon_program = compileProgram(
             compileShader(VERT_SRC, GL_VERTEX_SHADER),
             compileShader(TOON_FRAG, GL_FRAGMENT_SHADER),
+            validate=False,
         )
         self.toon_locModel = glGetUniformLocation(self.toon_program, "uModel")
         self.toon_locView = glGetUniformLocation(self.toon_program, "uView")

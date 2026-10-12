@@ -1,10 +1,11 @@
 """Real GPU acceptance: lit face, long shadow, aligned sun and lossless reload.
 
-Linux: python tests/sunset_gpu_smoke.py (surfaceless EGL / Mesa is sufficient).
+Run: python tests/sunset_gpu_smoke.py (Windows desktop GL or Linux EGL / Mesa).
 This deliberately exercises the application renderer, not an image generator.
 """
 import os
-os.environ['PYOPENGL_PLATFORM']='egl'
+if os.name != 'nt':
+    os.environ['PYOPENGL_PLATFORM']='egl'
 from pathlib import Path
 import sys
 import tempfile
@@ -12,7 +13,10 @@ import json
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
 import numpy as np
 from OpenGL import GL as gl
-from mini3d.headless_gl import egl_context
+if os.name == 'nt':
+    from tools.capture_sunset import desktop_context as egl_context
+else:
+    from mini3d.headless_gl import egl_context
 from mini3d.api import Mini3DAPI
 from mini3d.camera import Camera
 from mini3d.gl_renderer import GLRenderer
