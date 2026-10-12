@@ -804,6 +804,27 @@ class EditorUI:
         imgui.text_disabled("Frame: {}  /  {} x {}".format(shot.aspect_name, *shot.size))
         imgui.text_disabled("Preview: " + ("Shot Camera" if self.app.camera_view else "Editor Camera"))
         imgui.separator()
+        changed, enabled = imgui.checkbox('Depth of field', shot.dof_enabled)
+        if changed:
+            self._call('set_shot_depth_of_field', enabled=enabled)
+        imgui.push_item_width(120)
+        changed, distance = imgui.input_float('Focus (m)', shot.focus_distance, .1, 1, '%.3f')
+        if changed:
+            self._call('set_shot_depth_of_field', focus_distance=distance)
+        apertures = (1.4, 2., 2.8, 4., 5.6, 8., 11., 16., 22., 32., 64.)
+        labels = ['f/{:g}'.format(value) for value in apertures]
+        index = next((i for i, value in enumerate(apertures) if abs(value - shot.f_number) < 1e-6), len(apertures))
+        if index == len(apertures):
+            labels.append('f/{:g} (custom)'.format(shot.f_number))
+        changed, selected = imgui.combo('Aperture', index, labels)
+        if changed and selected < len(apertures):
+            self._call('set_shot_depth_of_field', f_number=apertures[selected])
+        imgui.pop_item_width()
+        if imgui.button('Focus selected subject', width=-1):
+            self._call('focus_shot_selection')
+        imgui.text_wrapped('Smaller f-number gives stronger blur. Focus is measured along the camera view; 1 scene unit = 1 m.')
+        imgui.text_wrapped('Use Camera View to preview depth of field. Editor View stays sharp for placement.')
+        imgui.separator()
         if imgui.button("Preview photo", width=-1):
             self._call("set_camera_view", True)
         if imgui.button("Return to editor view", width=-1):

@@ -231,7 +231,8 @@ class Mini3DAPI:
         return self.get_scene_state()
 
     def create_shot_camera(self, position=None, target=None, focal_mm=50, aspect='16:9',
-                           near=.01, far=1000):
+                           near=.01, far=1000, dof_enabled=False,
+                           focus_distance=None, f_number=2.8):
         self._outside_transaction()
         if (position is None) != (target is None):
             raise ValueError('Supply both camera position and target, or neither to frame the scene')
@@ -249,8 +250,37 @@ class Mini3DAPI:
                 raise ValueError('Cannot automatically frame an empty scene')
             controller = OrbitController(shot, yaw=-.9, pitch=.45)
             controller.focus_bounds(*bounds, aspect=shot.aspect)
+        if focus_distance is None:
+            if target is not None:
+                depth = -float((shot.view_matrix @ np.r_[target, 1])[2])
+                shot.set_depth_of_field(focus_distance=max(.1, depth))
+            elif position is None:
+                depth = -float((shot.view_matrix @ np.r_[controller.target, 1])[2])
+                shot.set_depth_of_field(focus_distance=max(.1, depth))
+        shot.set_depth_of_field(enabled=dof_enabled, focus_distance=focus_distance, f_number=f_number)
         self._app.shot_camera = shot
         return self.get_shot_camera()
+
+    def set_depth_of_field(self, enabled=None, focus_distance=None, f_number=None):
+        self._outside_transaction()
+        self._app.set_shot_depth_of_field(enabled, focus_distance, f_number)
+        return self.get_shot_camera()
+
+    def focus_at(self, point):
+        self._outside_transaction()
+        if self._app.shot_camera is None:
+            raise ValueError('Create a Shot Camera before focusing')
+        self._app.shot_camera.focus_at(point)
+        return self.get_shot_camera()
+
+    def focus_on(self, entity_id):
+        self._outside_transaction()
+        entity = self._entity(entity_id)
+        self._app.scene.update()
+        bounds = world_bounds([entity])
+        if bounds is None:
+            raise ValueError('Focus entity has no visible geometry')
+        return self.focus_at((bounds[0] + bounds[1]) * .5)
 
     def get_shot_camera(self):
         camera = self._app.shot_camera

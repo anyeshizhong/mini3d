@@ -166,7 +166,7 @@ class ShotCameraPersistenceTests(unittest.TestCase):
         valid = document['shot_camera']
         candidates = [[], True, 12, 'camera', {}]
         for key in valid:
-            if key == 'samples':  # Optional in legacy Scene v3 files.
+            if key in ('samples', 'dof_enabled', 'focus_distance', 'f_number'):  # Legacy defaults.
                 continue
             missing = copy.deepcopy(valid)
             del missing[key]

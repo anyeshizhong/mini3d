@@ -26,7 +26,8 @@ def viewport_key(app, size, photo_preview, renderer_mode):
     camera_key = (_value(camera.position), _value(camera.rotation),
                   camera.fov_y, camera.near, camera.far)
     shot_key = None if app.shot_camera is None else (
-        app.shot_camera.size, app.shot_camera.samples)
+        app.shot_camera.size, app.shot_camera.samples, app.shot_camera.dof_enabled,
+        app.shot_camera.focus_distance, app.shot_camera.f_number)
     # Material dictionaries are shared by clones; read each once per UI frame.
     materials, meshes, entities = {}, {}, []
     for entity in scene.get_flat_render_list():

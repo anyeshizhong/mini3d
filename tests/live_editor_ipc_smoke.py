@@ -125,7 +125,13 @@ def acceptance(output):
             call('set_lens', focal_mm=35)
             call('set_aspect', aspect='4:3')
             call('set_antialiasing', samples=4)
+            call('set_lens', focal_mm=85)
+            focus = call('focus_on', entity_id=entity_id)['focus_distance']
+            call('set_depth_of_field', enabled=True, f_number=1.4)
             call('capture', path=str(output / 'shot.png'))
+            call('set_depth_of_field', focus_distance=focus*.5)
+            call('capture', path=str(output / 'defocused-shot.png'))
+            call('set_depth_of_field', focus_distance=focus)
             saved = call('get_scene_state')
             call('save_scene', path=str(output / 'scene.json'))
             call('set_transform', entity_id=entity_id, position=[0, 0, 0])
@@ -135,6 +141,11 @@ def acceptance(output):
             call('capture', path=str(output / 'restored-shot.png'))
             import pygame
             import numpy as np
+            sharp = pygame.surfarray.array3d(pygame.image.load(str(output / 'shot.png')))
+            blurred = pygame.surfarray.array3d(pygame.image.load(str(output / 'defocused-shot.png')))
+            assert np.count_nonzero(sharp != blurred) > 1000, 'IPC focus change did not affect the photo'
+            np.testing.assert_array_equal(sharp, pygame.surfarray.array3d(
+                pygame.image.load(str(output / 'restored-shot.png'))))
             a = pygame.surfarray.array3d(pygame.image.load(str(output / 'manual.png')))
             b = pygame.surfarray.array3d(pygame.image.load(str(output / 'api-moved.png')))
             x, y, width, height = editor_camera['viewport']
@@ -146,7 +157,8 @@ def acceptance(output):
                 changed_viewport_channels=changed,
                 checks=['same live Scene', 'real soldier', 'UI mouse move visible through IPC',
                         'IPC transform visible in rendered viewport', 'shared undo/redo',
-                        'lighting/camera/4x MSAA/capture', 'scene and shot persistence'])
+                        'lighting/camera/4x MSAA/capture', 'scene and shot persistence',
+                        'IPC focus/aperture changes affect real photo', 'DOF reload pixels exactly match'])
             (output / 'results.json').write_text(json.dumps(results, indent=2), encoding='utf8')
             print(json.dumps(results, indent=2))
         finally:

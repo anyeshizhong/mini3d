@@ -558,6 +558,8 @@ class GLRenderer:
             glActiveTexture(active)
 
     def close(self):
+        if hasattr(self, 'depth_of_field'):
+            self.depth_of_field.close()
         self.last_render_plan = None
         self.shadow_map.close()
         if hasattr(self, 'sky_renderer'):

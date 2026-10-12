@@ -1,0 +1,96 @@
+{
+  "date": "2026-10-12",
+  "unit_tests": {
+    "total": 310,
+    "skipped": 0,
+    "passed": 310
+  },
+  "gpu": {
+    "gpu": "Intel(R) UHD Graphics 620",
+    "checks": {
+      "focus_swap_aperture_response_and_depth_unchanged": true,
+      "full_resolution_preview_png_reload_exact": true,
+      "filter_caller_gl_state_preserved": true,
+      "idempotent_resource_cleanup": true
+    },
+    "frame_ms": {
+      "disabled": 586.47,
+      "focus-near-f1.4": 161.7,
+      "focus-far-f1.4": 64.52,
+      "focus-near-f16": 61.46
+    },
+    "detail": {
+      "disabled": [
+        18.310031220306776,
+        18.310031220306776
+      ],
+      "near": [
+        18.310031220306776,
+        5.787013717866677
+      ],
+      "far": [
+        5.750884656156476,
+        18.310031220306776
+      ],
+      "f16": [
+        18.310031220306776,
+        16.484691869146193
+      ]
+    },
+    "passed": true
+  },
+  "ipc_checks": [
+    "same live Scene",
+    "real soldier",
+    "UI mouse move visible through IPC",
+    "IPC transform visible in rendered viewport",
+    "shared undo/redo",
+    "lighting/camera/4x MSAA/capture",
+    "scene and shot persistence",
+    "IPC focus/aperture changes affect real photo",
+    "DOF reload pixels exactly match"
+  ],
+  "ui": {
+    "passed": true,
+    "checks": {
+      "visible-arrange": {
+        "width": 1440,
+        "height": 900,
+        "nonzero_channels": 3888000
+      },
+      "minimized-arrange": {
+        "width": 1440,
+        "height": 900,
+        "nonzero_channels": 3888000
+      },
+      "minimized-lighting": {
+        "width": 1440,
+        "height": 900,
+        "nonzero_channels": 3888000
+      },
+      "minimized-shot-editor": {
+        "width": 1440,
+        "height": 900,
+        "nonzero_channels": 3888000
+      },
+      "minimized-shot": {
+        "width": 1440,
+        "height": 900,
+        "nonzero_channels": 3888000
+      },
+      "resized-arrange": {
+        "width": 900,
+        "height": 700,
+        "nonzero_channels": 1890000
+      },
+      "after-clean-capture": {
+        "width": 900,
+        "height": 700,
+        "nonzero_channels": 1890000
+      }
+    },
+    "read_framebuffer_restored": true,
+    "clean_capture_preserved": true
+  },
+  "legacy_photo_smoke": "Existing tests/photo_smoke.py still targets obsolete button layout; not counted as passed."
+}

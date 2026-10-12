@@ -1,5 +1,7 @@
 # Mini3D
 
+Shot 摄影已支持对焦距离和光圈景深：Camera View 与 PNG 共用真实深度过滤，场景保存和 Live Editor IPC 共用相同参数。操作、接口、单位与限制见 [对焦与景深](docs/depth-of-field.md)。
+
 基于 Python、Pygame、NumPy 和 OpenGL 的三维引擎，支持 STL、基础几何体、URDF 实体树，以及 glTF/GLB 模型与材质。新增 pyimgui 编辑器作为后续场景编辑功能的入口。
 
 ## Mini3D V2 统一入口

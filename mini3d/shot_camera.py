@@ -17,6 +17,47 @@ class ShotCamera(Camera):
         super().__init__(view.position, view.rotation, view.fov_y, view.near, view.far)
         self.aspect_name = '16:9'
         self.samples = 1
+        self.dof_enabled = False
+        self.focus_distance = 5.0
+        self.f_number = 2.8
+
+    def set_depth_of_field(self, enabled=None, focus_distance=None, f_number=None):
+        """Atomic lens settings. Scene distances use metres for photography."""
+        enabled = self.dof_enabled if enabled is None else enabled
+        focus = self.focus_distance if focus_distance is None else focus_distance
+        aperture = self.f_number if f_number is None else f_number
+        if not isinstance(enabled, bool):
+            raise ValueError('Depth of field enabled must be boolean')
+        for name, value, low, high in (('focus_distance', focus, .1, 1e6),
+                                       ('f_number', aperture, .7, 64)):
+            if (isinstance(value, (bool, np.bool_)) or not isinstance(value, Real)
+                    or not low <= value <= high or not math.isfinite(value)):
+                raise ValueError('{} must be finite and between {} and {}'.format(name, low, high))
+        if enabled and focus <= self.focal_mm / 1000:
+            raise ValueError('Focus distance must exceed focal length')
+        self.dof_enabled, self.focus_distance, self.f_number = enabled, float(focus), float(aperture)
+
+    def focus_at(self, point):
+        raw = np.asarray(point, dtype=object)
+        if raw.shape != (3,) or any(isinstance(v, (bool, np.bool_)) or
+                not isinstance(v, Real) for v in raw.flat):
+            raise ValueError('Focus point must be three finite numbers')
+        point = np.asarray(raw, dtype=float)
+        if not np.isfinite(point).all():
+            raise ValueError('Focus point must be three finite numbers')
+        depth = -float((self.view_matrix @ np.r_[point, 1])[2])
+        self.set_depth_of_field(focus_distance=depth)
+        return self.focus_distance
+
+    def circle_of_confusion(self, depth, width=None):
+        """Signed thin-lens blur radius in pixels (negative in front of focus)."""
+        depth = np.asarray(depth, dtype=float)
+        if not np.isfinite(depth).all() or np.any(depth <= 0):
+            raise ValueError('Depth must be positive and finite')
+        focal = self.focal_mm / 1000
+        scale = .5 * (self.size[0] if width is None else width) * focal**2
+        return scale * (depth - self.focus_distance) / (
+            self.f_number * .036 * depth * max(self.focus_distance - focal, 1e-6))
 
     def set_samples(self, samples):
         from .render_target import RenderTarget
@@ -55,7 +96,9 @@ class ShotCamera(Camera):
         """Detached Scene v3/API parameters; FOV preserves the exact projection."""
         return dict(position=self.position.tolist(), rotation=self.rotation.tolist(),
                     focal_mm=self.focal_mm, aspect=self.aspect_name, fov_y=self.fov_y,
-                    near=self.near, far=self.far, samples=self.samples)
+                    near=self.near, far=self.far, samples=self.samples,
+                    dof_enabled=self.dof_enabled, focus_distance=self.focus_distance,
+                    f_number=self.f_number)
 
     @classmethod
     def from_dict(cls, data):
@@ -87,6 +130,12 @@ class ShotCamera(Camera):
                                   values['near'], values['far']))
                 shot.aspect_name = aspect
                 shot.set_samples(data.get('samples', 1))
+                if any(name in data and data[name] is None for name in
+                       ('dof_enabled', 'focus_distance', 'f_number')):
+                    raise ValueError('Depth of field parameters cannot be null')
+                shot.set_depth_of_field(enabled=data.get('dof_enabled', False),
+                    focus_distance=data.get('focus_distance', 5.0),
+                    f_number=data.get('f_number', 2.8))
                 if (values['focal_mm'] <= 0 or not math.isfinite(shot.focal_mm) or
                         not math.isclose(values['focal_mm'], shot.focal_mm, rel_tol=1e-12)):
                     raise ValueError('focal_mm must be positive and match fov_y/aspect')
@@ -126,6 +175,11 @@ def render_scene_view(scene, camera, renderer, target, size, samples=1):
         gl.glEnable(gl.GL_MULTISAMPLE)
         renderer.render(clean, camera)
         target.resolve()
+        if getattr(camera, 'dof_enabled', False):
+            if not hasattr(renderer, 'depth_of_field'):
+                from .depth_of_field import DepthOfField
+                renderer.depth_of_field = DepthOfField()
+            renderer.depth_of_field.apply(target, camera)
     finally:
         if not multisample:
             gl.glDisable(gl.GL_MULTISAMPLE)

@@ -62,7 +62,24 @@ class Editor:
     def create_camera_from_view(self):
         self.viewer.update_clipping()
         self.shot_camera = ShotCamera(self.viewer.camera)
+        depth = -float((self.shot_camera.view_matrix @ np.r_[self.viewer.controller.target, 1])[2])
+        self.shot_camera.set_depth_of_field(focus_distance=max(.1, depth))
         self.status = "Shot Camera created from Editor View"
+
+    def set_shot_depth_of_field(self, enabled=None, focus_distance=None, f_number=None):
+        if self.shot_camera is None:
+            raise ValueError('Create Camera From View first')
+        self.shot_camera.set_depth_of_field(enabled, focus_distance, f_number)
+
+    def focus_shot_selection(self):
+        if self.shot_camera is None or self.selection is None:
+            raise ValueError('Create a Shot Camera and select a subject first')
+        self.scene.update()
+        bounds = world_bounds([self.selection])
+        if bounds is None:
+            raise ValueError('Selected subject has no visible geometry')
+        self.shot_camera.focus_at((bounds[0] + bounds[1]) * .5)
+        self.status = 'Focused on {} at {:.3f} m'.format(self.selection.name, self.shot_camera.focus_distance)
 
     def set_camera_view(self, enabled):
         if enabled and self.shot_camera is None:
