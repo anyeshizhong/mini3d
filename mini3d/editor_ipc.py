@@ -83,7 +83,7 @@ class EditorIPC:
                     self.reply(400, error('ValueError', str(exc)))
                     return
                 future = Future()
-                phase = 'frame' if command.get('command') == 'screenshot' else 'scene'
+                phase = 'frame' if command.get('command') in ('screenshot', 'get_view_state') else 'scene'
                 try:
                     with bridge.queue_lock:
                         if bridge.closed:

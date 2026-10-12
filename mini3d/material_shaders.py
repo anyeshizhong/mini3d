@@ -158,7 +158,11 @@ void main() {
     }
     if (atmosphereEnabled && sceneLighting && !photoHDREnabled) {
         vec3 reflectedSky=skyRadiance(reflect(-v,n),sunDirection,rough*.15);
-        result+=fresnel(max(dot(n,v),0.0),f0)*reflectedSky*ao*.7;
+        // Integrate the rough GGX response, as in the HDR split-sum path.
+        // A bare grazing-angle Fresnel term makes matte sand reflect like water.
+        vec2 skyBRDF=texture(brdfLut,vec2(clamp(dot(n,v),0.0,1.0),rough)).rg;
+        float skyF90=mix(clamp(specWeight,0.0,1.0),1.0,metal);
+        result+=(f0*skyBRDF.x+skyF90*skyBRDF.y)*reflectedSky*ao*.7;
     }
     vec3 emission = emissiveFactor;
     if (hasEmissive) emission *= linearize(texture(emissiveMap,surfaceUV()).rgb);
@@ -166,8 +170,6 @@ void main() {
     if (atmosphereEnabled) {
         float distanceToEye=length(eye-worldPosition);
         float fog=1.0-exp(-distanceToEye*hazeDensity);
-        if (photographicGround)
-            fog=max(fog,smoothstep(photoFar*.3,photoFar*.85,distanceToEye));
         result=mix(result,skyRadiance(normalize(worldPosition-eye),sunDirection,.08),fog);
         fragColor=vec4(photoOutput(result),alpha);
         return;
@@ -176,10 +178,6 @@ void main() {
     result = photoAdjust(result);
     result = result / (1.0 + result);
     vec3 displayColor=srgb(result);
-    if (photographicGround) {
-        float farFade=smoothstep(photoFar*.3,photoFar*.85,length(eye-worldPosition));
-        displayColor=mix(displayColor,vec3(30.0,30.0,35.0)/255.0,farFade);
-    }
     fragColor = vec4(displayColor, alpha);
 }
 """

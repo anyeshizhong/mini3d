@@ -24,6 +24,7 @@ class OrbitController:
         self.pitch_limit = np.deg2rad(89.5)
         self.min_distance = 1e-4
         self.max_distance = 1e8
+        self.min_far = 0.0
         self._bounds_center = self.target.copy()
         self._bounds_radius = 1.0
         # Optional Viewer-owned live geometry query, never serialized. Unbound
@@ -81,6 +82,9 @@ class OrbitController:
                         self.camera.near = min(self.camera.near, closest * .5)
                 margin = max(high * .01, (high-low) * .01, 1e-12)
                 self.camera.far = max(high + margin, self.camera.near * 2)
+
+        # A photo-to-editor handoff retains the photo's visible depth range.
+        self.camera.far = max(self.camera.far, self.min_far)
 
     def update_clipping(self):
         """Refresh geometry clipping while preserving pose, target and distance."""
@@ -157,10 +161,15 @@ class OrbitController:
             "bounds_center": self._bounds_center.copy(),
             "bounds_radius": self._bounds_radius,
             "min_distance": self.min_distance, "max_distance": self.max_distance,
+            "min_far": self.min_far,
         }
 
     def restore(self, state):
         """Restore a snapshot made by this controller."""
+        min_far = float(state.get('min_far', 0.0))
+        if not np.isfinite(min_far) or min_far < 0:
+            raise ValueError('Minimum far distance must be finite and nonnegative')
+        self.min_far = min_far
         self.target = _vector3(state["target"], "target")
         self.distance = float(state["distance"])
         self.yaw = float(state["yaw"])

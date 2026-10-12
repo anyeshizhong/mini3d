@@ -47,24 +47,25 @@ class ShotCameraTests(unittest.TestCase):
             self.assertLessEqual(y + h, 530)
             self.assertLess(abs(w / h - shot.aspect), .005)
 
-    def test_editor_navigation_and_photo_preview_do_not_move_shot(self):
+    def test_photo_navigation_continues_from_the_visible_pose_and_preview_updates_it(self):
         app = Editor()
         app.create_camera_from_view()
         shot_before = app.shot_camera.view_matrix.copy()
         app.viewer.controller.orbit(100, 20)
         np.testing.assert_allclose(app.shot_camera.view_matrix, shot_before)
-        editor_before = app.viewer.camera.view_matrix.copy()
         app.set_camera_view(True)
-        ui = SimpleNamespace()
+        ui = SimpleNamespace(viewport_hovered=True, modal_open=False, mouse_captured=False,
+                             asset_dragging=False, keyboard_captured=False)
         for event in (pygame.event.Event(pygame.MOUSEBUTTONDOWN, button=2, pos=(200, 200)),
                       pygame.event.Event(pygame.MOUSEMOTION, rel=(20, 10), buttons=(0, 1, 0)),
-                      pygame.event.Event(pygame.MOUSEWHEEL, y=2),
-                      pygame.event.Event(pygame.KEYDOWN, key=pygame.K_f, mod=0)):
+                      pygame.event.Event(pygame.MOUSEWHEEL, y=2)):
             app.handle_event(event, ui)
-        np.testing.assert_allclose(app.viewer.camera.view_matrix, editor_before)
+        self.assertFalse(app.camera_view)
+        self.assertFalse(np.allclose(app.viewer.camera.view_matrix, shot_before))
         np.testing.assert_allclose(app.shot_camera.view_matrix, shot_before)
-        app.set_camera_view(False)
-        np.testing.assert_allclose(app.viewer.camera.view_matrix, editor_before)
+        edited = app.viewer.camera.view_matrix.copy()
+        app.set_camera_view(True)
+        np.testing.assert_allclose(app.shot_camera.view_matrix, edited)
 
     def test_capture_and_camera_view_require_explicit_camera_creation(self):
         app = Editor()

@@ -14,6 +14,7 @@ offscreen render; its UVs are flipped here. The input router can inspect
 """
 
 from pathlib import Path
+import math
 
 import imgui
 import numpy as np
@@ -57,8 +58,6 @@ class EditorUI:
         self._show_lighting = False
         self.lighting_error = ''
         # Lightweight task workspaces: keep engine state and commands untouched.
-        self.workspace = "Arrange"
-        self.assets_visible = True
         self.scene_filter = ""
         self.formation_open = False
         self._edit_item_key = None
@@ -67,6 +66,22 @@ class EditorUI:
         self._group_name_id, self._group_name = None, ""
         self._group_saved_name = ""
         self._configure_style()
+
+    @property
+    def workspace(self):
+        return self.app.workspace
+
+    @workspace.setter
+    def workspace(self, value):
+        self.app.workspace = value
+
+    @property
+    def assets_visible(self):
+        return self.app.assets_visible
+
+    @assets_visible.setter
+    def assets_visible(self, value):
+        self.app.assets_visible = value
 
     @staticmethod
     def _configure_style():
@@ -291,11 +306,7 @@ class EditorUI:
         """Only the presentation changes; the scene and selection remain shared."""
         if workspace == self.workspace:
             return
-        self._call("finish_edit")
-        if workspace != "Shot" and self.app.camera_view:
-            self._call("set_camera_view", False)
-        self.workspace = workspace
-        self.assets_visible = workspace == "Arrange"
+        self._call('set_workspace', workspace)
 
     def _viewport(self, x, y, width, height, texture_id):
         self._panel("Viewport", x, y, width, height,
@@ -381,7 +392,8 @@ class EditorUI:
             if imgui.button("Frame all"):
                 self._call("frame_all")
         else:
-            if imgui.button("Create Camera From View"):
+            label = 'Create Camera From View' if self.app.shot_camera is None else 'Update Camera From View'
+            if imgui.button(label) and not self.app.camera_view:
                 self._call("create_camera_from_view")
             imgui.same_line()
             if imgui.button("Editor View"):
@@ -396,7 +408,8 @@ class EditorUI:
                 imgui.text_disabled("Start in Editor View, frame the scene, then Create Camera From View.")
             else:
                 lens_options = (24, 35, 50, 85)
-                focal_mm = self.app.shot_camera.focal_mm
+                focal_mm = (self.app.shot_camera.focal_mm if self.app.camera_view else
+                    36 / (2 * self.app.shot_camera.aspect * math.tan(math.radians(self.app.viewer.camera.fov_y) / 2)))
                 lens_labels = [str(v) + " mm" for v in lens_options]
                 lens_value = next((i for i, lens in enumerate(lens_options)
                                    if abs(lens - focal_mm) < 1e-6), len(lens_options))
@@ -406,7 +419,7 @@ class EditorUI:
                 changed, index = imgui.combo("Lens##shot", lens_value,
                                               lens_labels)
                 if changed and index < len(lens_options):
-                    self._call("set_shot_lens", lens_options[index])
+                    self._call("set_view_lens", lens_options[index])
                 imgui.pop_item_width()
                 imgui.same_line()
                 ratios = ("16:9", "3:2", "4:3", "1:1")
@@ -414,13 +427,13 @@ class EditorUI:
                 changed, index = imgui.combo("Aspect##shot",
                                               ratios.index(self.app.shot_camera.aspect_name), list(ratios))
                 if changed:
-                    self._call("set_shot_aspect", ratios[index])
+                    self._call("set_view_aspect", ratios[index])
                 imgui.pop_item_width()
                 imgui.same_line()
                 if imgui.button("Guides on" if self.app.composition_grid else "Guides off"):
                     self.app.composition_grid = not self.app.composition_grid
                 imgui.same_line()
-                imgui.text_disabled("Scene lighting in both views; Camera View keeps its saved pose.")
+                imgui.text_disabled('Editor View changes framing; Camera View previews your edits.')
 
         imgui.separator()
         image_x, image_y = imgui.get_cursor_screen_pos()
@@ -847,9 +860,8 @@ class EditorUI:
         if imgui.button("Capture PNG", width=-1):
             self._call("request_capture")
         imgui.separator()
-        imgui.text_wrapped("The shot camera is independent from the editor camera. "
-                           "To change framing, return to Editor View and click "
-                           "Create Camera From View again.")
+        imgui.text_wrapped('Middle drag or scroll to adjust framing from this view. '
+                           'Camera View previews the edited framing and keeps your photo settings.')
         imgui.text_wrapped("Photos exclude editing grid, gizmos and selection axes.")
         if self.app.last_capture is not None:
             imgui.separator()

@@ -90,9 +90,14 @@ class ShotCamera(Camera):
         return 36 / (2 * self.aspect * math.tan(math.radians(self.fov_y) / 2))
 
     def set_lens(self, focal_mm):
-        if focal_mm not in (24, 35, 50, 85):
+        if (isinstance(focal_mm, (bool, np.bool_)) or not isinstance(focal_mm, Real)
+                or not math.isfinite(focal_mm)):
             raise ValueError('Choose 24mm, 35mm, 50mm or 85mm')
-        self._set_focal(focal_mm)
+        preset = next((value for value in (24, 35, 50, 85)
+                       if math.isclose(focal_mm, value, rel_tol=0, abs_tol=1e-6)), None)
+        if preset is None:
+            raise ValueError('Choose 24mm, 35mm, 50mm or 85mm')
+        self._set_focal(preset)
 
     def _set_focal(self, focal_mm):
         self.fov_y = math.degrees(2 * math.atan(36 / (2 * self.aspect * focal_mm)))

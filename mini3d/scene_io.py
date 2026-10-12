@@ -169,6 +169,7 @@ def load_scene(self, path=None, project=None):
     self.viewer.controller.restore(document["camera"])
     self.viewer.save_camera()
     self.shot_camera = shot
+    self._editing_shot = False
     self.camera_view = self.camera_view and shot is not None
     self.capture_requested = False
     self.last_capture = None

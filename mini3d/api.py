@@ -5,6 +5,7 @@ All placement changes delegate to PlacementCommands. Capture requires a caller-
 owned GLRenderer and a current desktop OpenGL context on the calling thread.
 """
 from contextlib import contextmanager
+from copy import deepcopy
 from pathlib import Path
 
 import numpy as np
@@ -138,9 +139,134 @@ class Mini3DAPI:
     def get_editor_camera(self):
         """Live navigation camera, separate from the persisted Shot Camera."""
         camera = self._app.viewer.camera
+        navigation = self._app.viewer.controller.snapshot()
+        navigation = {key: value.tolist() if isinstance(value, np.ndarray) else value
+                      for key, value in navigation.items()}
         return dict(position=camera.position.tolist(), rotation=camera.rotation.tolist(),
                     fov_y=camera.fov_y, near=camera.near, far=camera.far,
-                    viewport=list(self._app.viewport_rect), camera_view=bool(self._app.camera_view))
+                    viewport=list(self._app.viewport_rect), camera_view=bool(self._app.camera_view),
+                    navigation=navigation)
+
+    def _view_state(self):
+        editor = self.get_editor_camera()
+        shot = self.get_shot_camera()
+        active = shot if self._app.camera_view else editor
+        return dict(workspace=self._app.workspace,
+                    view='Camera' if self._app.camera_view else 'Editor',
+                    active_camera=deepcopy(active), editor_camera=editor, shot_camera=shot,
+                    viewport=list(self._app.viewport_rect), render_mode=self._app.render_mode,
+                    selected_ids=list(self._app.scene.selected_ids))
+
+    def get_view_state(self):
+        """Current shared view plus the camera/layout of the completed UI frame.
+
+        Live IPC schedules this read after rendering. Independently constructed
+        APIs have no displayed frame, rather than claiming to show a window.
+        """
+        state = self._view_state()
+        displayed = deepcopy(self._app.displayed_frame)
+        return dict(state, displayed_frame=displayed,
+                    view_matches_displayed_frame=(displayed is not None and
+                        displayed['view_state'] == state))
+
+    def set_workspace(self, workspace):
+        self._outside_transaction()
+        self._app.set_workspace(workspace)
+        return self.get_view_state()
+
+    def set_view(self, view):
+        self._outside_transaction()
+        if view not in ('Editor', 'Camera'):
+            raise ValueError('Choose Editor or Camera view')
+        if view == 'Camera' and self._app.shot_camera is None:
+            raise ValueError('Create a Shot Camera before showing Camera view')
+        if view == 'Camera':
+            self._app.set_workspace('Shot')
+        self._app.set_camera_view(view == 'Camera')
+        return self.get_view_state()
+
+    def select_entities(self, entity_ids, primary_id=None):
+        self._outside_transaction()
+        self._commands.set_selection(entity_ids, primary_id=primary_id)
+        self._app.sync_selection()
+        return self.get_view_state()
+
+    def frame_all(self):
+        """Frame the visible scene in the editor camera and display that camera."""
+        self._outside_transaction()
+        self._app.scene.update()
+        if world_bounds(self._app.scene.root_entities, visible_only=True) is None:
+            raise ValueError('Cannot frame an empty scene')
+        self._app.set_camera_view(False)
+        self._app.frame_all()
+        return self.get_view_state()
+
+    def focus_entity(self, entity_id):
+        self._outside_transaction()
+        entity = self._entity(entity_id)
+        self._app.scene.update()
+        if world_bounds([entity], visible_only=True) is None:
+            raise ValueError('Focus entity has no visible geometry')
+        self._app.select(entity)
+        self._app.set_camera_view(False)
+        self._app.focus_selected()
+        return self.get_view_state()
+
+    def set_editor_view(self, preset):
+        self._outside_transaction()
+        if preset not in ('front', 'back', 'left', 'right', 'top', 'bottom'):
+            raise ValueError('Unknown editor view preset')
+        self._app.set_camera_view(False)
+        self._app.set_view(preset)
+        return self.get_view_state()
+
+    def set_editor_camera(self, position, target, fov_y=None):
+        """Set the live orbit camera, retaining working mouse navigation.
+
+        Validate on an unbound controller first. Clipping remains managed by
+        the existing Viewer so the new pose includes current scene geometry.
+        """
+        self._outside_transaction()
+        controller = self._app.viewer.controller
+        snapshot = controller.snapshot()
+        active = self._app.shot_camera if self._app.camera_view else self._app.viewer.camera
+        candidate = Camera(fov_y=active.fov_y if fov_y is None else fov_y)
+        candidate.position = position
+        candidate.look_at(target)
+        target = np.asarray(target, dtype=float)
+        offset = candidate.position - target
+        distance = float(np.linalg.norm(offset))
+        snapshot.update(target=target, distance=distance,
+                        yaw=float(np.arctan2(offset[1], offset[0])),
+                        pitch=float(np.arctan2(offset[2], np.linalg.norm(offset[:2]))),
+                        fov_y=candidate.fov_y,
+                        min_distance=min(snapshot['min_distance'], distance),
+                        max_distance=max(snapshot['max_distance'], distance))
+        if self._app.camera_view:
+            snapshot['min_far'] = max(snapshot['min_far'], self._app.shot_camera.far)
+        probe = OrbitController(Camera())
+        probe.restore(snapshot)
+        self._app.set_camera_view(False)
+        controller.restore(snapshot)
+        return self.get_view_state()
+
+    def set_view_lens(self, focal_mm):
+        self._outside_transaction()
+        self._app.set_view_lens(focal_mm)
+        return self.get_view_state()
+
+    def set_view_aspect(self, aspect):
+        self._outside_transaction()
+        self._app.set_view_aspect(aspect)
+        return self.get_view_state()
+
+    def create_camera_from_view(self):
+        """Use exactly the navigation pose visible in Editor view, like the UI button."""
+        self._outside_transaction()
+        if self._app.camera_view:
+            raise ValueError('Switch to Editor view before copying its camera')
+        self._app.create_camera_from_view()
+        return self.get_shot_camera()
 
     def screenshot(self, path):
         """Read the current editor frame via its runtime; no extra GL context."""
@@ -259,6 +385,7 @@ class Mini3DAPI:
                 shot.set_depth_of_field(focus_distance=max(.1, depth))
         shot.set_depth_of_field(enabled=dof_enabled, focus_distance=focus_distance, f_number=f_number)
         self._app.shot_camera = shot
+        self._app._editing_shot = False
         return self.get_shot_camera()
 
     def set_depth_of_field(self, enabled=None, focus_distance=None, f_number=None):

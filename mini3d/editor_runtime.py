@@ -104,7 +104,9 @@ def run(editor_class, initial_asset="auto", frames=None, screenshot=None, hidden
             image = pygame.image.fromstring(pixels, (width, height), 'RGB', True)
             path.parent.mkdir(parents=True, exist_ok=True)
             pygame.image.save(image, str(path))
-            return dict(path=str(path), format='PNG', width=width, height=height)
+            from copy import deepcopy
+            return dict(path=str(path), format='PNG', width=width, height=height,
+                        displayed_frame=deepcopy(app.displayed_frame))
         app.api = Mini3DAPI(renderer, editor=app, screenshot=editor_screenshot)
         def photo_focus_reader(point, rect):
             if rendered_photo is None:
@@ -179,6 +181,11 @@ def run(editor_class, initial_asset="auto", frames=None, screenshot=None, hidden
             width, height = pygame.display.get_window_size()
             backend.io.display_size = (max(1, width), max(1, height))
             backend.process_inputs()
+            # Apply external edits before building the UI layout, so API view
+            # switches and the rendered texture belong to the same workspace.
+            if bridge is not None:
+                bridge.pump()
+                app.sync_selection()
             imgui.new_frame()
             rect = ui.draw(width, height, display_target.texture)
             for event in events:
@@ -186,9 +193,6 @@ def run(editor_class, initial_asset="auto", frames=None, screenshot=None, hidden
                     app.handle_event(event, ui)
                 except (ValueError, OSError) as exc:
                     app.status = str(exc)
-            if bridge is not None:
-                bridge.pump()
-                app.sync_selection()
             app.scene.update()
             app.viewer.update_clipping()
             app.scene.render_mode, app.scene.show_grid = app.render_mode, app.show_grid
@@ -204,9 +208,9 @@ def run(editor_class, initial_asset="auto", frames=None, screenshot=None, hidden
             photo_preview = ui.workspace == 'Shot' and app.shot_camera is not None
             current_viewport_key = viewport_key(app, rect[2:], photo_preview, renderer.render_mode)
             photo_size = None
-            if app.camera_view:
+            if app.camera_view or photo_preview:
                 photo_size = quality.size(current_viewport_key, app.shot_camera.size,
-                    imgui.is_any_item_active(), time.monotonic())
+                    imgui.is_any_item_active() or app._orbiting, time.monotonic())
             render_key = (current_viewport_key, photo_size)
             viewport_redrawn = render_key != previous_viewport_key
             if viewport_redrawn:
@@ -221,7 +225,7 @@ def run(editor_class, initial_asset="auto", frames=None, screenshot=None, hidden
                     rendered_photo = (photo_pose(shot), camera, current_target)
                     display_target = current_target
                 elif photo_preview:
-                    render_scene_view(app.scene, app.viewer.camera, renderer, target, rect[2:],
+                    render_scene_view(app.scene, app.viewer.camera, renderer, target, photo_size,
                                       app.shot_camera.samples, photo_camera=app.shot_camera)
                     display_target = target
                     rendered_photo = None
@@ -248,6 +252,8 @@ def run(editor_class, initial_asset="auto", frames=None, screenshot=None, hidden
             imgui.render()
             backend.render(imgui.get_draw_data())
             frame_ready = True
+            app.displayed_frame = dict(frame_id=frame + 1, width=width, height=height,
+                                       view_state=app.api._view_state())
             if bridge is not None:
                 bridge.pump('frame')
             frame += 1

@@ -17,6 +17,50 @@ def _corners(bounds):
     return (lo+hi)*.5 + _SIGNS*(hi-lo)*.5
 
 
+def _receiver_boxes(entities, light):
+    """Bound an infinite ground by possible caster footprints, in world space.
+
+    Distant unshadowed ground needs no shadow texels. Project every ordinary
+    caster AABB along the directional light onto each photographic plane, so
+    offscreen casters and long low-sun shadows remain conservatively included.
+    Ordinary receiver geometry keeps its existing exact local bounds.
+    """
+    boxes, grounds, caster_points = [], [], []
+    for entity in entities:
+        bounds = getattr(entity.model, 'bounds', None)
+        if bounds is None:
+            continue
+        world = np.asarray(entity.world_matrix, dtype=float)
+        material = getattr(entity.model, 'material', None) or {}
+        if material.get('extras', {}).get('photographicGround'):
+            grounds.append((bounds, world))
+        else:
+            boxes.append((bounds, world))
+    if not grounds:
+        return boxes
+    for bounds, world in boxes:
+        caster_points.append(_corners(bounds) @ world[:3,:3].T + world[:3,3])
+    if not caster_points:
+        return boxes  # Nothing can cast a shadow onto the photographic ground.
+    points = np.concatenate(caster_points)
+    for bounds, world in grounds:
+        normal = np.linalg.inv(world[:3,:3]).T @ np.array([0.,0.,1.])
+        denominator = float(normal @ light)
+        if abs(denominator) < 1e-10:
+            boxes.append((bounds, world))  # Parallel sun: preserve conservative fallback.
+            continue
+        plane = world[:3,:3] @ np.asarray(bounds, dtype=float).mean(axis=0) + world[:3,3]
+        projected = points - ((points-plane) @ normal / denominator)[:,None] * light
+        # Use local bounds of this finite footprint; the ground itself is unchanged.
+        inverse = np.linalg.inv(world)
+        local = projected @ inverse[:3,:3].T + inverse[:3,3]
+        lo, hi = local.min(axis=0), local.max(axis=0)
+        # Exact planar Z avoids growing the fit from numerical projection noise.
+        lo[2] = hi[2] = np.asarray(bounds, dtype=float).mean(axis=0)[2]
+        boxes.append((np.stack((lo,hi)), world))
+    return boxes
+
+
 def _planes(lo, hi):
     return np.concatenate((np.column_stack((np.eye(3), -lo)),
                            np.column_stack((-np.eye(3), hi))))
@@ -104,13 +148,7 @@ def receiver_matrix(entities, direction, camera, resolution, aspect=None):
         planes = np.array([vp[3]+sign*vp[axis] for axis in range(3) for sign in (1,-1)])
         homogeneous = np.column_stack((_SIGNS,np.ones(8))) @ np.linalg.inv(vp).T
         frustum = homogeneous[:,:3]/homogeneous[:,3,None]
-        boxes = []
-        for entity in entities:
-            bounds = getattr(entity.model,'bounds',None)
-            if bounds is None:
-                continue
-            world = np.asarray(entity.world_matrix,dtype=float)
-            boxes.append((bounds,world))
+        boxes = _receiver_boxes(entities, light)
         if not boxes:
             return None
         bounds = np.asarray([box[0] for box in boxes], dtype=float)

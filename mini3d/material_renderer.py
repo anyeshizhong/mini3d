@@ -186,7 +186,9 @@ class MaterialRenderer:
         self._int('diffuseEnv', 8)
         self._int('specularEnv', 9)
         self._int('brdfLut', 10)
-        if enabled and not photo_hdr:
+        # The procedural sky also uses the bundled GGX BRDF integration LUT.
+        # Binding it does not enable the neutral studio's lighting contribution.
+        if not photo_hdr and (enabled or atmosphere['enabled']):
             if self.environment is None:
                 self.environment = EnvironmentMap()
             self.environment.bind()

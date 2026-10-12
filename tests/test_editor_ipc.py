@@ -40,7 +40,7 @@ class EditorIPCTests(unittest.TestCase):
     def queued(self, command, **args):
         future = self.pool.submit(self.client.call, command, **args)
         deadline = time.monotonic() + 2
-        phase = 'frame' if command == 'screenshot' else 'scene'
+        phase = 'frame' if command in ('screenshot', 'get_view_state') else 'scene'
         while self.bridge.queues[phase].empty() and not future.done() and time.monotonic() < deadline:
             time.sleep(.002)
         self.assertFalse(self.bridge.queues[phase].empty())
@@ -118,16 +118,22 @@ class EditorIPCTests(unittest.TestCase):
         self.assertEqual(calls, [threading.get_ident()])
 
     def test_auth_origin_size_and_nonfinite_json_rejected_before_queue(self):
-        for headers, body in [({}, '{}'),
-                ({'Authorization': 'Bearer ' + self.bridge.token, 'Origin': 'http://localhost'}, '{}'),
-                ({'Authorization': 'Bearer ' + self.bridge.token}, '{"args":{"x":NaN}}'),
+        # Header rejection deliberately happens without reading the body. Send
+        # headers only in those cases: closing with unread bytes may cause a
+        # Windows TCP reset that hides an otherwise correct HTTP error reply.
+        for headers, body, status, kind in [({'Content-Length': '2'}, '', 403, 'Unauthorized'),
+                ({'Authorization': 'Bearer ' + self.bridge.token, 'Origin': 'http://localhost',
+                  'Content-Length': '2'}, '', 403, 'Unauthorized'),
+                ({'Authorization': 'Bearer ' + self.bridge.token}, '{"args":{"x":NaN}}', 400, 'ValueError'),
                 ({'Authorization': 'Bearer ' + self.bridge.token,
-                  'Content-Length': str(1024 * 1024 + 1)}, '{}')]:
+                  'Content-Length': str(1024 * 1024 + 1)}, '', 400, 'ValueError')]:
             connection = http.client.HTTPConnection('127.0.0.1', self.bridge.info['port'], timeout=2)
             connection.request('POST', '/dispatch', body, headers)
             response = connection.getresponse()
-            self.assertIn(response.status, (400, 403))
-            self.assertFalse(json.loads(response.read())['ok'])
+            self.assertEqual(response.status, status)
+            result = json.loads(response.read())
+            self.assertFalse(result['ok'])
+            self.assertEqual(result['error']['type'], kind)
             connection.close()
             self.assertTrue(self.bridge.queues['scene'].empty())
 
@@ -159,6 +165,20 @@ class EditorIPCTests(unittest.TestCase):
         result = self.request([])
         self.assertEqual(result['error']['type'], 'EditorBusy')
         self.assertTrue(self.app.commands.active_transaction)
+        self.app.commands.cancel_transaction()
+
+    def test_view_observation_waits_for_frame_and_view_writes_reject_active_gestures(self):
+        future = self.queued('get_view_state')
+        self.bridge.pump()
+        self.assertFalse(future.done())
+        self.bridge.pump('frame')
+        self.assertEqual(future.result(2)['result']['view'], 'Editor')
+        self.app.commands.begin_transaction('Manual drag')
+        before = self.app.workspace
+        result = self.request('set_workspace', workspace='Shot')
+        self.assertEqual(result['error']['type'], 'EditorBusy')
+        self.assertEqual(self.app.workspace, before)
+        self.assertTrue(self.request('get_view_state')['ok'])
         self.app.commands.cancel_transaction()
 
     def test_discovery_stale_files_and_multiple_instances(self):

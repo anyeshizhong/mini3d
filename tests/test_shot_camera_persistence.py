@@ -101,7 +101,7 @@ class ShotCameraPersistenceTests(unittest.TestCase):
         self.assertEqual(fresh.shot_camera.to_dict(), expected)
         np.testing.assert_array_equal(fresh.shot_camera.view_matrix, app.shot_camera.view_matrix)
 
-    def test_editor_navigation_view_switch_and_resave_preserve_shot(self):
+    def test_editor_navigation_preview_updates_pose_and_resave_preserves_photo_settings(self):
         self.api.save_scene(self.path)
         fresh = Mini3DAPI()
         fresh.load_scene(self.path)
@@ -115,9 +115,12 @@ class ShotCameraPersistenceTests(unittest.TestCase):
         app.viewer.controller.zoom(-1)
         self.assertNotEqual(editor_state(app), before)
         app.set_camera_view(True)
-        self.assertEqual(fresh.get_shot_camera(), expected)
+        updated = fresh.get_shot_camera()
+        for key in ('aspect', 'samples', 'dof_enabled', 'f_number', 'white_balance_kelvin', 'color_preset'):
+            self.assertEqual(updated[key], expected[key])
+        self.assertNotEqual(updated['position'], expected['position'])
         fresh.save_scene(self.path)
-        self.assertEqual(Mini3DAPI().load_scene(self.path)['shot_camera'], expected)
+        self.assertEqual(Mini3DAPI().load_scene(self.path)['shot_camera'], updated)
 
     def test_missing_field_v1_v2_v3_clears_stale_camera_and_photo_state(self):
         document = self.document()

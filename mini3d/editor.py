@@ -1,6 +1,7 @@
 """Editor application state and window loop, separate from ImGui presentation."""
 import json
 import math
+import copy
 from datetime import datetime
 from pathlib import Path
 
@@ -54,6 +55,10 @@ class Editor:
         self.model_dialog = ModelFileDialog(PROJECT / "model")
         self.shot_camera = None
         self.camera_view = False
+        self.workspace = 'Arrange'
+        self.assets_visible = True
+        self.displayed_frame = None
+        self._editing_shot = False
         self.composition_grid = True
         self.capture_requested = False
         self.capture_directory = PROJECT / "captures"
@@ -61,11 +66,46 @@ class Editor:
         self.photo_focus_reader = None
 
     def create_camera_from_view(self):
+        if self.camera_view:
+            raise ValueError('Use Editor View to update framing')
         self.viewer.update_clipping()
-        self.shot_camera = ShotCamera(self.viewer.camera)
-        depth = -float((self.shot_camera.view_matrix @ np.r_[self.viewer.controller.target, 1])[2])
-        self.shot_camera.set_depth_of_field(focus_distance=max(.1, depth))
-        self.status = "Shot Camera created from Editor View"
+        view = self.viewer.camera
+        old = self.shot_camera
+        shot = ShotCamera(view) if old is None else copy.deepcopy(old)
+        shot.position, shot.rotation = view.position, view.rotation
+        shot.fov_y, shot.near, shot.far = view.fov_y, view.near, view.far
+        if old is None:
+            depth = -float((shot.view_matrix @ np.r_[self.viewer.controller.target, 1])[2])
+            shot.set_depth_of_field(focus_distance=max(.1, depth))
+        elif shot.focus_point is not None:
+            point = shot.focus_point.copy()
+            try:
+                shot.focus_at(point)
+            except ValueError:
+                shot.focus_point = None
+        self.shot_camera = shot
+        self._editing_shot = False
+        self.status = 'Photo framing updated from Editor View'
+
+    def _edit_photo_framing(self):
+        shot = self.shot_camera
+        controller = self.viewer.controller
+        distance = max(shot.focus_distance, shot.near * 2, .1)
+        target = shot.position + shot.forward * distance
+        backward = -shot.forward
+        state = controller.snapshot()
+        state.update(target=target, distance=distance,
+                     yaw=float(np.arctan2(backward[1], backward[0])),
+                     pitch=float(np.arctan2(backward[2], np.linalg.norm(backward[:2]))),
+                     fov_y=shot.fov_y, min_far=shot.far,
+                     min_distance=min(state['min_distance'], distance),
+                     max_distance=max(state['max_distance'], distance))
+        controller.restore(state)
+        # Preserve the exact initial pose, including imported roll.
+        self.viewer.camera.position = shot.position
+        self.viewer.camera.rotation = shot.rotation
+        self.viewer.camera.near, self.viewer.camera.far = shot.near, shot.far
+        self._editing_shot = True
 
     def set_shot_depth_of_field(self, enabled=None, focus_distance=None, f_number=None):
         if self.shot_camera is None:
@@ -107,7 +147,41 @@ class Editor:
             raise ValueError("Create Camera From View first")
         self._orbiting = False
         self.finish_edit()
+        if not enabled and self.camera_view and self.shot_camera is not None:
+            self._edit_photo_framing()
+        elif enabled and not self.camera_view and self._editing_shot:
+            self.create_camera_from_view()
         self.camera_view = enabled
+
+    def set_view_lens(self, focal_mm):
+        if self.shot_camera is None or self.camera_view:
+            return self.set_shot_lens(focal_mm)
+        probe = ShotCamera(self.viewer.camera)
+        probe.aspect_name = self.shot_camera.aspect_name
+        probe.set_lens(focal_mm)
+        self.viewer.camera.fov_y = probe.fov_y
+        self.viewer.controller.update()
+        self._editing_shot = True
+
+    def set_view_aspect(self, name):
+        if self.shot_camera is None or self.camera_view:
+            return self.set_shot_aspect(name)
+        focal = 36 / (2 * self.shot_camera.aspect * math.tan(math.radians(self.viewer.camera.fov_y) / 2))
+        self.shot_camera.set_aspect(name)
+        self.viewer.camera.fov_y = math.degrees(2 * math.atan(36 / (2 * self.shot_camera.aspect * focal)))
+        self.viewer.controller.update()
+        self._editing_shot = True
+
+    def set_workspace(self, workspace):
+        if workspace not in ('Arrange', 'Lighting', 'Shot'):
+            raise ValueError('Choose Arrange, Lighting or Shot')
+        if workspace == self.workspace:
+            return
+        self.finish_edit()
+        if workspace != 'Shot' and self.camera_view:
+            self.set_camera_view(False)
+        self.workspace = workspace
+        self.assets_visible = workspace == 'Arrange'
 
     def set_shot_lens(self, focal_mm):
         if self.shot_camera is None:
@@ -465,11 +539,20 @@ class Editor:
             self.place_selected_mode = False
             return
         if self.camera_view:
-            if (event.type == pygame.MOUSEBUTTONDOWN and event.button == 1
-                    and not ui.modal_open and not ui.mouse_captured and not ui.asset_dragging
-                    and ui.viewport_hovered):
-                self.focus_photo_screen(event.pos)
-            return  # Photo pose remains fixed while a click changes only focus.
+            navigate = (not getattr(ui, 'modal_open', False)
+                        and not getattr(ui, 'mouse_captured', False)
+                        and not getattr(ui, 'asset_dragging', False)
+                        and getattr(ui, 'viewport_hovered', False)
+                        and (event.type == pygame.MOUSEWHEEL or
+                             (event.type == pygame.MOUSEBUTTONDOWN and event.button == 2)))
+            if navigate:
+                self.set_camera_view(False)
+            else:
+                if (event.type == pygame.MOUSEBUTTONDOWN and event.button == 1
+                        and not ui.modal_open and not ui.mouse_captured and not ui.asset_dragging
+                        and ui.viewport_hovered):
+                    self.focus_photo_screen(event.pos)
+                return
         mouse_event = event.type in (pygame.MOUSEMOTION, pygame.MOUSEBUTTONDOWN, pygame.MOUSEWHEEL)
         if ui.modal_open:
             self._orbiting = False
