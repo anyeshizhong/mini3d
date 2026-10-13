@@ -1,5 +1,7 @@
 # Mini3D V2 架构与数据流
 
+SPQR Phase 1 在摄影基线 `18a4269` 上增加 `roman_assets` 固定内置模板与 `street` 有限布局。UI/API → PlacementCommands → street → 现有 spawn/分组/事务；AssetCache 缓存共享 Mesh，scene_io 继续使用 v3，无新增渲染或场景系统。[本阶段说明](SPQR-PHASE1.md)。以下 V2 基线说明为历史架构记录，当前摄影视图语义见 [AI View API](ai-view-api.md)。
+
 稳定候选：`refactor/v2-consolidation`，以 Q2 `efd5ddc` 起步，保留 Rome `476a799` 历史。3+1 指 **Placement、Rendering、Photography、AI API**，共用一个 Scene、控制器、命令历史和 renderer。
 推荐从项目根运行 `python -B -m mini3d`；`editor_app.py`、`editor.py` 仍转发同一程序。数字入口仅为兼容示例。
 

@@ -63,6 +63,11 @@ class EditorUI:
         self._edit_item_key = None
         self.formation_rows, self.formation_columns = 5, 8
         self.formation_spacing_x, self.formation_spacing_y = 1.2, 1.4
+        self._open_street = False
+        self.street_segments, self.street_width = 6, 6.0
+        self.street_origin, self.street_facing = (0.0, 0.0, 0.0), 0.0
+        self.street_variation, self.street_seed, self.street_extension = False, 0, 0
+        self.street_error = ''
         self._group_name_id, self._group_name = None, ""
         self._group_saved_name = ""
         self._configure_style()
@@ -146,6 +151,7 @@ class EditorUI:
                         right, available_height - outliner_height)
         self._status(width, height, status_height)
         self._popups()
+        self._street_popup()
         self._lighting_window()
         io = imgui.get_io()
         viewport_input = self.viewport_hovered and self.viewport_focused and not imgui.is_any_item_active()
@@ -195,6 +201,8 @@ class EditorUI:
                     self._call("focus_selected")
                 imgui.end_menu()
             if imgui.begin_menu("Add").opened:
+                if imgui.menu_item("Roman Street...")[0]:
+                    self._open_street = True
                 if imgui.menu_item("Ground Mesh")[0]:
                     self._call("add_ground_mesh")
                 for index, asset in enumerate(self.app.assets):
@@ -228,6 +236,11 @@ class EditorUI:
 
     def _assets(self, x, y, width, height):
         self._panel("Assets", x, y, width, height)
+        if self.workspace == 'Arrange':
+            imgui.text_disabled("PROJECT SPQR")
+            if imgui.button("+ Roman Street...", width=-1):
+                self._open_street = True
+            imgui.separator()
         imgui.text_disabled("MODEL LIBRARY")
         imgui.push_item_width(-1)
         _, self.asset_filter = imgui.input_text("##asset_filter", self.asset_filter, 128)
@@ -277,7 +290,8 @@ class EditorUI:
             asset = self.app.assets[self.selected_asset]
             imgui.text_wrapped(asset["name"])
             self._asset_preview(asset)
-            imgui.text_disabled(Path(asset["path"]).suffix.upper().lstrip("."))
+            imgui.text_disabled('BUILT-IN' if str(asset['path']).startswith('builtin:')
+                                else Path(asset["path"]).suffix.upper().lstrip("."))
             if asset.get("description"):
                 imgui.text_wrapped(str(asset["description"]))
             imgui.text_wrapped(str(asset.get("license", "")))
@@ -880,6 +894,45 @@ class EditorUI:
             imgui.end_tooltip()
         imgui.end()
         imgui.pop_style_var()
+
+    def _street_popup(self):
+        if self._open_street:
+            self.app.finish_edit()
+            imgui.open_popup('Roman Street')
+            self._open_street = False
+            self.street_error = ''
+        imgui.set_next_window_size(470, 0, condition=imgui.APPEARING)
+        if imgui.begin_popup_modal('Roman Street', flags=imgui.WINDOW_ALWAYS_AUTO_RESIZE).opened:
+            self.modal_open = True
+            imgui.text_wrapped('Build a straight Roman street with paving, sidewalks, houses and an arch.')
+            imgui.push_item_width(260)
+            _, self.street_segments = imgui.input_int('Segments (2-12)', self.street_segments)
+            _, self.street_width = imgui.input_float('Road width (m)', self.street_width, format='%.1f')
+            _, self.street_origin = imgui.input_float3('Center (m)', *self.street_origin, format='%.2f')
+            _, self.street_facing = imgui.input_float('Heading (degrees)', self.street_facing, format='%.1f')
+            _, self.street_variation = imgui.checkbox('Vary buildings', self.street_variation)
+            _, self.street_seed = imgui.input_int('Variation seed', self.street_seed)
+            _, self.street_extension = imgui.input_int('Beyond arch (0-6)', self.street_extension)
+            imgui.pop_item_width()
+            imgui.text_wrapped('Each segment is 4 m long. Road width: 4-10 m. Heading 0 follows +Y.')
+            if 2 <= self.street_segments <= 12:
+                imgui.text('Length: {} m | Modules: {}'.format(self.street_segments * 4,
+                                                             (self.street_segments + self.street_extension) * 8 + 1 + (4 if self.street_extension else 0)))
+            imgui.text_wrapped('Adds to the current scene. Edit individual modules or select a street group in Outliner. Undo removes this addition in one step.')
+            if self.street_error:
+                imgui.text_wrapped(self.street_error)
+            if imgui.button('Create street'):
+                try:
+                    self.app.create_roman_street(self.street_segments, self.street_width,
+                        self.street_origin, math.radians(self.street_facing),
+                        self.street_variation, self.street_seed, self.street_extension)
+                    imgui.close_current_popup()
+                except Exception as exc:
+                    self.street_error = str(exc)
+            imgui.same_line()
+            if imgui.button('Cancel##street'):
+                imgui.close_current_popup()
+            imgui.end_popup()
 
     def _popups(self):
         if self._open_import:

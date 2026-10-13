@@ -1,5 +1,7 @@
 # Mini3D V2 统一功能清单
 
+新增 [SPQR Phase 1 罗马街道搭建](SPQR-PHASE1.md)：7种内置低模资产、2–12段直街、普通模块与平面组编辑、一次创建撤销、Python/JSON/IPC共用命令；沿用v3保存和Shot摄影。
+
 正式候选分支：`refactor/v2-consolidation`，开发起点Q2 `efd5ddc`，包含审计`c198546`。
 3+1指 **Placement、Rendering、Photography、AI API**。四者共用同一个程序和Scene。
 状态：代码/Git/Issue已核实；277单测、实际UI/GPU及原图结果见 [验证](V2-VALIDATION.md)。质量限制另列。

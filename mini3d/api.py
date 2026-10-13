@@ -334,6 +334,14 @@ class Mini3DAPI:
             spacing_x, spacing_y, facing=facing, include_source=include_source)
         return self.get_group(group.group_id)
 
+    def create_roman_street(self, segments=6, road_width=6.0, origin=None, facing=0.0,
+                            variation=False, seed=0, extension_segments=0):
+        """Append a grouped, editable street without changing the current view."""
+        self._outside_transaction()
+        result = self._commands.create_roman_street(segments, road_width, origin, facing, variation, seed, extension_segments)
+        self._app.sync_selection()
+        return result
+
     def undo(self):
         return dict(changed=self._commands.undo())
 

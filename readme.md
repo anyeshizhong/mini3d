@@ -1,5 +1,7 @@
 # Mini3D
 
+Project SPQR Phase 1 已提供可编辑的罗马街道原型：Arrange → **+ Roman Street...**，或直接运行 `python -B -m mini3d --scene examples/roman_street/street.json`。内置低模套件无需下载，支持整街撤销、独立模块编辑、场景保存加载及现有 Shot 拍照。[使用与验收](docs/SPQR-PHASE1.md)。
+
 Shot 摄影已支持对焦距离和光圈景深：Camera View 与 PNG 共用真实深度过滤，场景保存和 Live Editor IPC 共用相同参数。操作、接口、单位与限制见 [对焦与景深](docs/depth-of-field.md)。
 
 基于 Python、Pygame、NumPy 和 OpenGL 的三维引擎，支持 STL、基础几何体、URDF 实体树，以及 glTF/GLB 模型与材质。新增 pyimgui 编辑器作为后续场景编辑功能的入口。

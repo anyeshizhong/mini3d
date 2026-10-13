@@ -22,6 +22,11 @@ class AssetCache:
         self._assets = {}
 
     def load(self, path):
+        from .roman_assets import ROMAN_ASSETS, create_roman_asset
+        if str(path) in {item['path'] for item in ROMAN_ASSETS}:
+            if str(path) not in self._assets:
+                self._assets[str(path)] = Asset(str(path), create_roman_asset(path))
+            return self._assets[str(path)]
         if str(path) == 'builtin:roman-soldier':
             if str(path) not in self._assets:
                 from .roman_soldier import create_roman_soldier

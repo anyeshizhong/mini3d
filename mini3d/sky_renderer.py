@@ -18,7 +18,15 @@ uniform mat3 photoEnvRotation;
 uniform float skyIntensity;
 uniform vec3 sunColor, sunDirection;
 uniform float exposureEV, hazeDensity, groundScale, photoFar;
-float skyHash(vec3 p) { return fract(sin(dot(p,vec3(127.1,311.7,74.7)))*43758.5453); }
+// Integer lattice hashing avoids magnifying driver-dependent sin rounding.
+float skyHash(vec3 p) {
+    uvec3 q=uvec3(ivec3(p));
+    uint h=q.x*1597334677u ^ q.y*3812015801u ^ q.z*2798796415u;
+    h=(h ^ (h >> 16u))*2246822519u;
+    h=(h ^ (h >> 13u))*3266489917u;
+    h=h ^ (h >> 16u);
+    return float(h >> 8u)/16777216.0;
+}
 float skyNoise(vec3 p) {
     vec3 i=floor(p), f=fract(p); f=f*f*(3.0-2.0*f);
     return mix(mix(mix(skyHash(i),skyHash(i+vec3(1,0,0)),f.x),

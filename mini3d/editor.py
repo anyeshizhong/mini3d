@@ -35,6 +35,8 @@ class Editor:
                        (PROJECT / "model" / key / info["entry"]).is_file()]
         self.assets.insert(0, dict(path='builtin:roman-soldier', name='Roman Soldier (built-in study)',
                                    format='procedural', entry='builtin:roman-soldier', status='builtin'))
+        from .roman_assets import ROMAN_ASSETS
+        self.assets.extend(dict(record) for record in ROMAN_ASSETS)
         self.viewer = Viewer(self.scene, width, height, input_enabled=False)
         self.viewer.controller.yaw = -.9
         self.viewer.controller.pitch = .25
@@ -422,6 +424,20 @@ class Editor:
         self.sync_selection()
         self.status = "Created {}: {} members".format(group.name, len(group.member_ids))
         return group
+
+    def create_roman_street(self, segments=6, road_width=6.0, origin=None, facing=0.0,
+                            variation=False, seed=0, extension_segments=0):
+        """Append the street through Commands; only the UI wrapper reframes."""
+        self.finish_edit()
+        result = self.commands.create_roman_street(segments, road_width, origin, facing, variation, seed, extension_segments)
+        self.sync_selection()
+        self.place_selected_mode = False
+        self.set_workspace('Arrange')
+        self.assets_visible = True
+        self.focus_selected()
+        self.status = 'Roman street: {:g} m, {} editable modules | Ctrl+Z undoes the whole street'.format(
+            result['length'], result['entity_count'])
+        return result
 
     def begin_surface_placement(self):
         self.finish_edit()

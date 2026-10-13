@@ -1,0 +1,2428 @@
+{
+  "shadows": {
+    "enabled": true,
+    "resolution": 2048,
+    "bias": 0.00015,
+    "pcf": true
+  },
+  "version": 3,
+  "objects": [
+    {
+      "asset": "builtin:roman-road",
+      "name": "Roman_Street_001_Road_01",
+      "entity_id": "ent_000001",
+      "position": [
+        0.0,
+        -10.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-sidewalk",
+      "name": "Roman_Street_001_Left_Sidewalk_01",
+      "entity_id": "ent_000002",
+      "position": [
+        -4.0,
+        -10.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-house-ochre",
+      "name": "Roman_Street_001_Left_House-Ochre_01",
+      "entity_id": "ent_000003",
+      "position": [
+        -7.523765125366952,
+        -10.0,
+        0.18
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        1.5707963267948966
+      ],
+      "scale": [
+        0.9342821457847412,
+        1.0,
+        0.9012866518231983
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-column",
+      "name": "Roman_Street_001_Left_Column_01",
+      "entity_id": "ent_000004",
+      "position": [
+        -3.45,
+        -8.727808724000052,
+        0.18
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-sidewalk",
+      "name": "Roman_Street_001_Right_Sidewalk_01",
+      "entity_id": "ent_000005",
+      "position": [
+        4.0,
+        -10.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-shop",
+      "name": "Roman_Street_001_Right_Shop_01",
+      "entity_id": "ent_000006",
+      "position": [
+        7.800973428228756,
+        -10.0,
+        0.18
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        -1.5707963267948966
+      ],
+      "scale": [
+        0.8907301400645405,
+        1.0,
+        1.041522436235101
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-column",
+      "name": "Roman_Street_001_Right_Column_01",
+      "entity_id": "ent_000007",
+      "position": [
+        3.45,
+        -9.175236460809336,
+        0.18
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-amphora",
+      "name": "Roman_Street_001_Amphora_01",
+      "entity_id": "ent_000008",
+      "position": [
+        -4.4,
+        -10.8,
+        0.18
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-road",
+      "name": "Roman_Street_001_Road_02",
+      "entity_id": "ent_000009",
+      "position": [
+        0.0,
+        -6.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-sidewalk",
+      "name": "Roman_Street_001_Left_Sidewalk_02",
+      "entity_id": "ent_000010",
+      "position": [
+        -4.0,
+        -6.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-shop-rose",
+      "name": "Roman_Street_001_Left_Shop-Rose_02",
+      "entity_id": "ent_000011",
+      "position": [
+        -7.670649155813057,
+        -6.0,
+        0.18
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        1.5707963267948966
+      ],
+      "scale": [
+        0.8648038470955243,
+        1.0,
+        0.908964228752121
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-column",
+      "name": "Roman_Street_001_Left_Column_02",
+      "entity_id": "ent_000012",
+      "position": [
+        -3.45,
+        -5.03637648574225,
+        0.18
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-sidewalk",
+      "name": "Roman_Street_001_Right_Sidewalk_02",
+      "entity_id": "ent_000013",
+      "position": [
+        4.0,
+        -6.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-house-ochre",
+      "name": "Roman_Street_001_Right_House-Ochre_02",
+      "entity_id": "ent_000014",
+      "position": [
+        7.500393364982337,
+        -6.0,
+        0.18
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        -1.5707963267948966
+      ],
+      "scale": [
+        0.9019487712360472,
+        1.0,
+        0.9609132988047318
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-column",
+      "name": "Roman_Street_001_Right_Column_02",
+      "entity_id": "ent_000015",
+      "position": [
+        3.45,
+        -4.913420913093497,
+        0.18
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-amphora",
+      "name": "Roman_Street_001_Amphora_02",
+      "entity_id": "ent_000016",
+      "position": [
+        4.4,
+        -6.8,
+        0.18
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-road",
+      "name": "Roman_Street_001_Road_03",
+      "entity_id": "ent_000017",
+      "position": [
+        0.0,
+        -2.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-sidewalk",
+      "name": "Roman_Street_001_Left_Sidewalk_03",
+      "entity_id": "ent_000018",
+      "position": [
+        -4.0,
+        -2.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-shop-ochre",
+      "name": "Roman_Street_001_Left_Shop-Ochre_03",
+      "entity_id": "ent_000019",
+      "position": [
+        -7.641610034930455,
+        -2.0,
+        0.18
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        1.5707963267948966
+      ],
+      "scale": [
+        0.8665040089966215,
+        1.0,
+        0.944028645559512
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-column",
+      "name": "Roman_Street_001_Left_Column_03",
+      "entity_id": "ent_000020",
+      "position": [
+        -3.45,
+        -1.0219460912753342,
+        0.18
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-sidewalk",
+      "name": "Roman_Street_001_Right_Sidewalk_03",
+      "entity_id": "ent_000021",
+      "position": [
+        4.0,
+        -2.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-house",
+      "name": "Roman_Street_001_Right_House_03",
+      "entity_id": "ent_000022",
+      "position": [
+        7.5617806149242135,
+        -2.0,
+        0.18
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        -1.5707963267948966
+      ],
+      "scale": [
+        0.9324668264428169,
+        1.0,
+        1.0826877577121672
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-column",
+      "name": "Roman_Street_001_Right_Column_03",
+      "entity_id": "ent_000023",
+      "position": [
+        3.45,
+        -0.8925045497803512,
+        0.18
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-amphora",
+      "name": "Roman_Street_001_Amphora_03",
+      "entity_id": "ent_000024",
+      "position": [
+        -4.4,
+        -2.8,
+        0.18
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-road",
+      "name": "Roman_Street_001_Road_04",
+      "entity_id": "ent_000025",
+      "position": [
+        0.0,
+        2.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-sidewalk",
+      "name": "Roman_Street_001_Left_Sidewalk_04",
+      "entity_id": "ent_000026",
+      "position": [
+        -4.0,
+        2.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-house",
+      "name": "Roman_Street_001_Left_House_04",
+      "entity_id": "ent_000027",
+      "position": [
+        -7.624677461800244,
+        2.0,
+        0.18
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        1.5707963267948966
+      ],
+      "scale": [
+        0.9459062355125514,
+        1.0,
+        0.8602844704270328
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-column",
+      "name": "Roman_Street_001_Left_Column_04",
+      "entity_id": "ent_000028",
+      "position": [
+        -3.45,
+        3.124931234166454,
+        0.18
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-sidewalk",
+      "name": "Roman_Street_001_Right_Sidewalk_04",
+      "entity_id": "ent_000029",
+      "position": [
+        4.0,
+        2.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-shop",
+      "name": "Roman_Street_001_Right_Shop_04",
+      "entity_id": "ent_000030",
+      "position": [
+        7.785771098576812,
+        2.0,
+        0.18
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        -1.5707963267948966
+      ],
+      "scale": [
+        0.8912317378990311,
+        1.0,
+        1.1483434960555612
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-column",
+      "name": "Roman_Street_001_Right_Column_04",
+      "entity_id": "ent_000031",
+      "position": [
+        3.45,
+        2.996612792020941,
+        0.18
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-amphora",
+      "name": "Roman_Street_001_Amphora_04",
+      "entity_id": "ent_000032",
+      "position": [
+        4.4,
+        1.2,
+        0.18
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-road",
+      "name": "Roman_Street_001_Road_05",
+      "entity_id": "ent_000033",
+      "position": [
+        0.0,
+        6.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-sidewalk",
+      "name": "Roman_Street_001_Left_Sidewalk_05",
+      "entity_id": "ent_000034",
+      "position": [
+        -4.0,
+        6.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-house-ochre",
+      "name": "Roman_Street_001_Left_House-Ochre_05",
+      "entity_id": "ent_000035",
+      "position": [
+        -7.810707723159973,
+        6.0,
+        0.18
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        1.5707963267948966
+      ],
+      "scale": [
+        0.9606286516514209,
+        1.0,
+        1.077944564842911
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-column",
+      "name": "Roman_Street_001_Left_Column_05",
+      "entity_id": "ent_000036",
+      "position": [
+        -3.45,
+        6.880367400545476,
+        0.18
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-sidewalk",
+      "name": "Roman_Street_001_Right_Sidewalk_05",
+      "entity_id": "ent_000037",
+      "position": [
+        4.0,
+        6.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-house-rose",
+      "name": "Roman_Street_001_Right_House-Rose_05",
+      "entity_id": "ent_000038",
+      "position": [
+        7.6366310719468045,
+        6.0,
+        0.18
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        -1.5707963267948966
+      ],
+      "scale": [
+        0.97610266694718,
+        1.0,
+        0.8493302388863389
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-column",
+      "name": "Roman_Street_001_Right_Column_05",
+      "entity_id": "ent_000039",
+      "position": [
+        3.45,
+        7.062351195300824,
+        0.18
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-amphora",
+      "name": "Roman_Street_001_Amphora_05",
+      "entity_id": "ent_000040",
+      "position": [
+        -4.4,
+        5.2,
+        0.18
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-road",
+      "name": "Roman_Street_001_Road_06",
+      "entity_id": "ent_000041",
+      "position": [
+        0.0,
+        10.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-sidewalk",
+      "name": "Roman_Street_001_Left_Sidewalk_06",
+      "entity_id": "ent_000042",
+      "position": [
+        -4.0,
+        10.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-house-rose",
+      "name": "Roman_Street_001_Left_House-Rose_06",
+      "entity_id": "ent_000043",
+      "position": [
+        -7.844534235848065,
+        10.0,
+        0.18
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        1.5707963267948966
+      ],
+      "scale": [
+        0.9290021743831958,
+        1.0,
+        0.881737370306758
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-column",
+      "name": "Roman_Street_001_Left_Column_06",
+      "entity_id": "ent_000044",
+      "position": [
+        -3.45,
+        10.83942139315085,
+        0.18
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-sidewalk",
+      "name": "Roman_Street_001_Right_Sidewalk_06",
+      "entity_id": "ent_000045",
+      "position": [
+        4.0,
+        10.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-shop-rose",
+      "name": "Roman_Street_001_Right_Shop-Rose_06",
+      "entity_id": "ent_000046",
+      "position": [
+        7.569105322129786,
+        10.0,
+        0.18
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        -1.5707963267948966
+      ],
+      "scale": [
+        0.9413084755121419,
+        1.0,
+        1.1453881169782156
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-column",
+      "name": "Roman_Street_001_Right_Column_06",
+      "entity_id": "ent_000047",
+      "position": [
+        3.45,
+        10.849995240378243,
+        0.18
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-amphora",
+      "name": "Roman_Street_001_Amphora_06",
+      "entity_id": "ent_000048",
+      "position": [
+        4.4,
+        9.2,
+        0.18
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-road",
+      "name": "Roman_Street_001_Road_07",
+      "entity_id": "ent_000049",
+      "position": [
+        0.0,
+        14.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-sidewalk",
+      "name": "Roman_Street_001_Left_Sidewalk_07",
+      "entity_id": "ent_000050",
+      "position": [
+        -4.0,
+        14.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-house",
+      "name": "Roman_Street_001_Left_House_07",
+      "entity_id": "ent_000051",
+      "position": [
+        -7.768866653799909,
+        14.0,
+        0.18
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        1.5707963267948966
+      ],
+      "scale": [
+        0.8621974670131322,
+        1.0,
+        1.0945902871531277
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-column",
+      "name": "Roman_Street_001_Left_Column_07",
+      "entity_id": "ent_000052",
+      "position": [
+        -3.45,
+        15.323226271571903,
+        0.18
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-sidewalk",
+      "name": "Roman_Street_001_Right_Sidewalk_07",
+      "entity_id": "ent_000053",
+      "position": [
+        4.0,
+        14.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-shop-ochre",
+      "name": "Roman_Street_001_Right_Shop-Ochre_07",
+      "entity_id": "ent_000054",
+      "position": [
+        7.819549710679614,
+        14.0,
+        0.18
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        -1.5707963267948966
+      ],
+      "scale": [
+        0.9509790987751883,
+        1.0,
+        1.0720490772974962
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-column",
+      "name": "Roman_Street_001_Right_Column_07",
+      "entity_id": "ent_000055",
+      "position": [
+        3.45,
+        14.962331992757628,
+        0.18
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-amphora",
+      "name": "Roman_Street_001_Amphora_07",
+      "entity_id": "ent_000056",
+      "position": [
+        -4.4,
+        13.2,
+        0.18
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-road",
+      "name": "Roman_Street_001_Road_08",
+      "entity_id": "ent_000057",
+      "position": [
+        0.0,
+        18.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-sidewalk",
+      "name": "Roman_Street_001_Left_Sidewalk_08",
+      "entity_id": "ent_000058",
+      "position": [
+        -4.0,
+        18.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-house-rose",
+      "name": "Roman_Street_001_Left_House-Rose_08",
+      "entity_id": "ent_000059",
+      "position": [
+        -7.683538858404601,
+        18.0,
+        0.18
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        1.5707963267948966
+      ],
+      "scale": [
+        0.9544797886922468,
+        1.0,
+        0.9963820831606313
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-column",
+      "name": "Roman_Street_001_Left_Column_08",
+      "entity_id": "ent_000060",
+      "position": [
+        -3.45,
+        18.998778846949108,
+        0.18
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-sidewalk",
+      "name": "Roman_Street_001_Right_Sidewalk_08",
+      "entity_id": "ent_000061",
+      "position": [
+        4.0,
+        18.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-shop-rose",
+      "name": "Roman_Street_001_Right_Shop-Rose_08",
+      "entity_id": "ent_000062",
+      "position": [
+        7.555698264184928,
+        18.0,
+        0.18
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        -1.5707963267948966
+      ],
+      "scale": [
+        0.8922937404688607,
+        1.0,
+        1.0836596887765229
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-column",
+      "name": "Roman_Street_001_Right_Column_08",
+      "entity_id": "ent_000063",
+      "position": [
+        3.45,
+        19.38838067257585,
+        0.18
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-amphora",
+      "name": "Roman_Street_001_Amphora_08",
+      "entity_id": "ent_000064",
+      "position": [
+        4.4,
+        17.2,
+        0.18
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-road",
+      "name": "Roman_Street_001_Road_09",
+      "entity_id": "ent_000065",
+      "position": [
+        0.0,
+        22.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-sidewalk",
+      "name": "Roman_Street_001_Left_Sidewalk_09",
+      "entity_id": "ent_000066",
+      "position": [
+        -4.0,
+        22.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-shop-ochre",
+      "name": "Roman_Street_001_Left_Shop-Ochre_09",
+      "entity_id": "ent_000067",
+      "position": [
+        -7.552001168212023,
+        22.0,
+        0.18
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        1.5707963267948966
+      ],
+      "scale": [
+        0.8821726418265885,
+        1.0,
+        1.0129368331579418
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-column",
+      "name": "Roman_Street_001_Left_Column_09",
+      "entity_id": "ent_000068",
+      "position": [
+        -3.45,
+        23.16592594814455,
+        0.18
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-sidewalk",
+      "name": "Roman_Street_001_Right_Sidewalk_09",
+      "entity_id": "ent_000069",
+      "position": [
+        4.0,
+        22.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-house",
+      "name": "Roman_Street_001_Right_House_09",
+      "entity_id": "ent_000070",
+      "position": [
+        7.627743616636878,
+        22.0,
+        0.18
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        -1.5707963267948966
+      ],
+      "scale": [
+        0.9786969846470319,
+        1.0,
+        0.8456006645870368
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-column",
+      "name": "Roman_Street_001_Right_Column_09",
+      "entity_id": "ent_000071",
+      "position": [
+        3.45,
+        23.173323076210067,
+        0.18
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-amphora",
+      "name": "Roman_Street_001_Amphora_09",
+      "entity_id": "ent_000072",
+      "position": [
+        -4.4,
+        21.2,
+        0.18
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-road",
+      "name": "Roman_Street_001_Road_10",
+      "entity_id": "ent_000073",
+      "position": [
+        0.0,
+        26.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-sidewalk",
+      "name": "Roman_Street_001_Left_Sidewalk_10",
+      "entity_id": "ent_000074",
+      "position": [
+        -4.0,
+        26.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-house-rose",
+      "name": "Roman_Street_001_Left_House-Rose_10",
+      "entity_id": "ent_000075",
+      "position": [
+        -7.738689812319273,
+        26.0,
+        0.18
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        1.5707963267948966
+      ],
+      "scale": [
+        0.9249978670622898,
+        1.0,
+        1.0078811996295127
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-column",
+      "name": "Roman_Street_001_Left_Column_10",
+      "entity_id": "ent_000076",
+      "position": [
+        -3.45,
+        26.874793406532497,
+        0.18
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-sidewalk",
+      "name": "Roman_Street_001_Right_Sidewalk_10",
+      "entity_id": "ent_000077",
+      "position": [
+        4.0,
+        26.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-house-ochre",
+      "name": "Roman_Street_001_Right_House-Ochre_10",
+      "entity_id": "ent_000078",
+      "position": [
+        7.546316754077388,
+        26.0,
+        0.18
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        -1.5707963267948966
+      ],
+      "scale": [
+        0.9250628996793833,
+        1.0,
+        1.0007253142512833
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-column",
+      "name": "Roman_Street_001_Right_Column_10",
+      "entity_id": "ent_000079",
+      "position": [
+        3.45,
+        27.36123838414477,
+        0.18
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-amphora",
+      "name": "Roman_Street_001_Amphora_10",
+      "entity_id": "ent_000080",
+      "position": [
+        4.4,
+        25.2,
+        0.18
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-arch",
+      "name": "Roman_Street_001_Street_Arch",
+      "entity_id": "ent_000081",
+      "position": [
+        0.0,
+        12.5,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-road",
+      "name": "Roman_Street_001_Small_Square",
+      "entity_id": "ent_000082",
+      "position": [
+        0.0,
+        32.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        3.3333333333333335,
+        2.0,
+        1.0
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-house-ochre",
+      "name": "Roman_Street_001_Square_House_1",
+      "entity_id": "ent_000083",
+      "position": [
+        -6.0,
+        38.5,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-house-ochre",
+      "name": "Roman_Street_001_Square_House_2",
+      "entity_id": "ent_000084",
+      "position": [
+        0.0,
+        38.5,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    },
+    {
+      "asset": "builtin:roman-house-ochre",
+      "name": "Roman_Street_001_Square_House_3",
+      "entity_id": "ent_000085",
+      "position": [
+        6.0,
+        38.5,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "visible": true,
+      "locked": false,
+      "placement_type": "prop",
+      "placement_anchor": "pivot",
+      "keep_upright": false
+    }
+  ],
+  "camera": {
+    "target": [
+      0.0,
+      0.0,
+      2.0
+    ],
+    "distance": 50.00999900019995,
+    "yaw": -0.9453112865556675,
+    "pitch": 0.47789161930671253,
+    "fov_y": 48.0,
+    "bounds_center": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "bounds_radius": 1.0,
+    "min_distance": 0.0001,
+    "max_distance": 100000000.0,
+    "min_far": 0.0
+  },
+  "environment": {
+    "enabled": false,
+    "intensity": 0.35
+  },
+  "atmosphere": {
+    "enabled": true,
+    "ground": false,
+    "sun_temperature": 5200.0,
+    "exposure_ev": 0.0,
+    "haze": 0.003,
+    "ground_scale": 1.0,
+    "ground_z": 0.0,
+    "sky_texture": "procedural",
+    "sky_intensity": 0.8,
+    "ground_texture": "procedural",
+    "sun_size": 0.0,
+    "tone_mapping": "filmic"
+  },
+  "shot_camera": {
+    "position": [
+      1.1,
+      -11.2,
+      1.7
+    ],
+    "rotation": [
+      [
+        0.9989246305307035,
+        0.002536610713006824,
+        0.046294147850329745
+      ],
+      [
+        0.04636359044657275,
+        -0.05465243081660156,
+        -0.9974284582298316
+      ],
+      [
+        -0.0,
+        0.9985022170290495,
+        -0.05471126564129879
+      ]
+    ],
+    "focal_mm": 24.000000000000004,
+    "aspect": "16:9",
+    "fov_y": 45.74733038125343,
+    "near": 0.05,
+    "far": 200.0,
+    "samples": 4,
+    "dof_enabled": false,
+    "focus_distance": 23.76110266801606,
+    "f_number": 2.8,
+    "focus_point": null,
+    "white_balance_kelvin": 6500.0,
+    "color_preset": "Original"
+  },
+  "render_mode": "Lit",
+  "show_grid": false,
+  "lighting": {
+    "mode": "Scene",
+    "light_dir": [
+      0.5572077475232348,
+      -0.5572077475232348,
+      0.6156614753256583
+    ],
+    "ambient": 0.28,
+    "diffuse": 3.0
+  },
+  "placement_plane": {
+    "z": 0.0,
+    "size": 2000.0,
+    "enabled": true
+  },
+  "next_entity_id": 86,
+  "groups": [
+    {
+      "group_id": "grp_000001",
+      "name": "Roman_Street_001",
+      "member_ids": [
+        "ent_000001",
+        "ent_000002",
+        "ent_000003",
+        "ent_000004",
+        "ent_000005",
+        "ent_000006",
+        "ent_000007",
+        "ent_000008",
+        "ent_000009",
+        "ent_000010",
+        "ent_000011",
+        "ent_000012",
+        "ent_000013",
+        "ent_000014",
+        "ent_000015",
+        "ent_000016",
+        "ent_000017",
+        "ent_000018",
+        "ent_000019",
+        "ent_000020",
+        "ent_000021",
+        "ent_000022",
+        "ent_000023",
+        "ent_000024",
+        "ent_000025",
+        "ent_000026",
+        "ent_000027",
+        "ent_000028",
+        "ent_000029",
+        "ent_000030",
+        "ent_000031",
+        "ent_000032",
+        "ent_000033",
+        "ent_000034",
+        "ent_000035",
+        "ent_000036",
+        "ent_000037",
+        "ent_000038",
+        "ent_000039",
+        "ent_000040",
+        "ent_000041",
+        "ent_000042",
+        "ent_000043",
+        "ent_000044",
+        "ent_000045",
+        "ent_000046",
+        "ent_000047",
+        "ent_000048",
+        "ent_000049",
+        "ent_000050",
+        "ent_000051",
+        "ent_000052",
+        "ent_000053",
+        "ent_000054",
+        "ent_000055",
+        "ent_000056",
+        "ent_000057",
+        "ent_000058",
+        "ent_000059",
+        "ent_000060",
+        "ent_000061",
+        "ent_000062",
+        "ent_000063",
+        "ent_000064",
+        "ent_000065",
+        "ent_000066",
+        "ent_000067",
+        "ent_000068",
+        "ent_000069",
+        "ent_000070",
+        "ent_000071",
+        "ent_000072",
+        "ent_000073",
+        "ent_000074",
+        "ent_000075",
+        "ent_000076",
+        "ent_000077",
+        "ent_000078",
+        "ent_000079",
+        "ent_000080",
+        "ent_000081",
+        "ent_000082",
+        "ent_000083",
+        "ent_000084",
+        "ent_000085"
+      ]
+    },
+    {
+      "group_id": "grp_000002",
+      "name": "Roman_Street_001_Roads",
+      "member_ids": [
+        "ent_000001",
+        "ent_000002",
+        "ent_000005",
+        "ent_000009",
+        "ent_000010",
+        "ent_000013",
+        "ent_000017",
+        "ent_000018",
+        "ent_000021",
+        "ent_000025",
+        "ent_000026",
+        "ent_000029",
+        "ent_000033",
+        "ent_000034",
+        "ent_000037",
+        "ent_000041",
+        "ent_000042",
+        "ent_000045",
+        "ent_000049",
+        "ent_000050",
+        "ent_000053",
+        "ent_000057",
+        "ent_000058",
+        "ent_000061",
+        "ent_000065",
+        "ent_000066",
+        "ent_000069",
+        "ent_000073",
+        "ent_000074",
+        "ent_000077",
+        "ent_000082"
+      ]
+    },
+    {
+      "group_id": "grp_000003",
+      "name": "Roman_Street_001_Buildings",
+      "member_ids": [
+        "ent_000003",
+        "ent_000006",
+        "ent_000011",
+        "ent_000014",
+        "ent_000019",
+        "ent_000022",
+        "ent_000027",
+        "ent_000030",
+        "ent_000035",
+        "ent_000038",
+        "ent_000043",
+        "ent_000046",
+        "ent_000051",
+        "ent_000054",
+        "ent_000059",
+        "ent_000062",
+        "ent_000067",
+        "ent_000070",
+        "ent_000075",
+        "ent_000078",
+        "ent_000083",
+        "ent_000084",
+        "ent_000085"
+      ]
+    },
+    {
+      "group_id": "grp_000004",
+      "name": "Roman_Street_001_Details",
+      "member_ids": [
+        "ent_000004",
+        "ent_000007",
+        "ent_000008",
+        "ent_000012",
+        "ent_000015",
+        "ent_000016",
+        "ent_000020",
+        "ent_000023",
+        "ent_000024",
+        "ent_000028",
+        "ent_000031",
+        "ent_000032",
+        "ent_000036",
+        "ent_000039",
+        "ent_000040",
+        "ent_000044",
+        "ent_000047",
+        "ent_000048",
+        "ent_000052",
+        "ent_000055",
+        "ent_000056",
+        "ent_000060",
+        "ent_000063",
+        "ent_000064",
+        "ent_000068",
+        "ent_000071",
+        "ent_000072",
+        "ent_000076",
+        "ent_000079",
+        "ent_000080",
+        "ent_000081"
+      ]
+    }
+  ],
+  "next_group_id": 5,
+  "selected_ids": [],
+  "primary_selection_id": null,
+  "selected_group_id": null
+}

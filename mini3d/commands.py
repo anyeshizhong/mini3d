@@ -361,6 +361,11 @@ class PlacementCommands:
                                             spacing_x, spacing_y, facing=facing,
                                             include_source=include_source)
 
+    def create_roman_street(self, segments=6, road_width=6.0, origin=None, facing=0.0,
+                            variation=False, seed=0, extension_segments=0):
+        from .street import create_roman_street
+        return create_roman_street(self, segments, road_width, origin, facing, variation, seed, extension_segments)
+
     def begin_surface_drag(self, entity_id):
         from .surface_drag import SurfaceDrag
         return SurfaceDrag(self, entity_id)
