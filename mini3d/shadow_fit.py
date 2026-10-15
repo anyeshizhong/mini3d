@@ -92,8 +92,13 @@ def _intersection(bounds, world, planes, clip_corners):
     if np.any(np.max(distances,axis=0) < -tol):
         return np.empty((0,3))
     inverse = np.linalg.inv(world)
+    return _partial(corners, world, local_planes, clip_corners,
+                    _planes(*np.asarray(bounds,dtype=float)), inverse, tol)
+
+
+def _partial(corners, world, local_planes, clip_corners, box_planes, inverse, tol):
+    """Exact crossing path, with transform-only data prepared by the caller."""
     clip_local = clip_corners @ inverse[:3,:3].T + inverse[:3,3]
-    box_planes = _planes(*np.asarray(bounds,dtype=float))
     candidates = np.concatenate((corners,clip_local,_crossings(corners,local_planes),
                                  _crossings(clip_local,box_planes)))
     inside = ((candidates @ local_planes[:,:3].T + local_planes[:,3] >= -tol).all(axis=1) &
@@ -102,11 +107,47 @@ def _intersection(bounds, world, planes, clip_corners):
     return points @ world[:3,:3].T + world[:3,3]
 
 
-def _intersections(bounds, worlds, corners, world_corners, tolerances, planes, clip_corners):
+def _batch_crossings(corners, planes):
+    starts = corners[:, _EDGES[:,0]]
+    deltas = corners[:, _EDGES[:,1]] - starts
+    distances = starts @ planes[:, :,:3].transpose(0,2,1) + planes[:, None,:,3]
+    denominator = deltas @ planes[:, :,:3].transpose(0,2,1)
+    t = np.divide(-distances, denominator, out=np.full_like(distances, np.nan),
+                  where=np.abs(denominator)>1e-15)
+    t[~(np.isfinite(t) & (t >= -1e-10) & (t <= 1+1e-10))] = np.nan
+    return (starts[:,:,None,:] + t[:,:,:,None]*deltas[:,:,None,:]).reshape(-1,72,3)
+
+
+def _batch_partials(bounds, worlds, corners, local_planes, clip_corners, tolerances, prepared):
+    inverses, box_planes = [], []
+    for i in range(len(bounds)):
+        if prepared is None:
+            inverses.append(np.linalg.inv(worlds[i]))
+            box_planes.append(_planes(*bounds[i]))
+        else:
+            record = prepared[i]
+            if record['inverse'] is None:
+                record['inverse'] = np.linalg.inv(worlds[i])
+            inverses.append(record['inverse'])
+            box_planes.append(record['planes'])
+    inverses, box_planes = np.asarray(inverses), np.asarray(box_planes)
+    clip_local = clip_corners @ inverses[:,:3,:3].transpose(0,2,1) + inverses[:,None,:3,3]
+    candidates = np.concatenate((corners, clip_local, _batch_crossings(corners, local_planes),
+                                 _batch_crossings(clip_local, box_planes)), axis=1)
+    inside = ((candidates @ local_planes[:,:,:3].transpose(0,2,1) + local_planes[:,None,:,3]
+               >= -tolerances[:,None,None]).all(axis=2) &
+              (candidates @ box_planes[:,:,:3].transpose(0,2,1) + box_planes[:,None,:,3]
+               >= -tolerances[:,None,None]).all(axis=2))
+    return [points[keep] @ world[:3,:3].T + world[:3,3]
+            for points, keep, world in zip(candidates, inside, worlds)]
+
+
+def _intersections(bounds, worlds, corners, world_corners, tolerances, planes, clip_corners,
+                   prepared=None):
     """Batch the unchanged corner/plane early-outs; exact clipping for partials.
 
-    Prepared geometry belongs to this fit only. It is rebuilt from current
-    bounds/world matrix values, so in-place changes need no dirty flags or IDs.
+    Prepared geometry is checked against current bounds/world values. Camera
+    planes and exact intersections are always recomputed for the current fit.
     Both receiver and caster classification use the same local corners and
     world corners; the camera-visible set never replaces the caster set.
     """
@@ -118,16 +159,41 @@ def _intersections(bounds, worlds, corners, world_corners, tolerances, planes, c
     distances = corners @ local_planes[:, :, :3].transpose(0, 2, 1) + local_planes[:, None, :, 3]
     contained = np.all(distances >= -tolerances[:, None, None], axis=(1, 2))
     rejected = np.any(np.max(distances, axis=1) < -tolerances[:, None], axis=1)
+    partial = np.flatnonzero(~contained & ~rejected)
+    clipped = iter(_batch_partials(bounds[partial], worlds[partial], corners[partial],
+                   local_planes[partial], clip_corners, tolerances[partial],
+                   None if prepared is None else [prepared[i] for i in partial])) if len(partial) else iter(())
     result = []
     for i in range(len(bounds)):
         if contained[i]:
             result.append(world_corners[i])
         elif not rejected[i]:
-            result.append(_intersection(bounds[i], worlds[i], planes, clip_corners))
+            result.append(next(clipped))
     return result
 
 
-def receiver_matrix(entities, direction, camera, resolution, aspect=None):
+def _prepare_boxes(boxes, cache):
+    """Cache bounded transform-only data, never camera-dependent fit results."""
+    records = []
+    for bound, world in boxes:
+        bound, world = np.asarray(bound, float), np.asarray(world, float)
+        key = (bound.shape, bound.tobytes(), world.shape, world.tobytes())
+        record = cache.get(key)
+        if record is None:
+            bound, world = bound.copy(), world.copy()
+            corners = _corners(bound)
+            record = dict(bounds=bound, world=world, corners=corners,
+                          world_corners=corners @ world[:3,:3].T + world[:3,3],
+                          tolerance=max(float(np.max(np.abs(corners)))*1e-9,1e-12),
+                          planes=_planes(*bound), inverse=None)
+            if len(cache) >= 2048:
+                cache.clear()
+            cache[key] = record
+        records.append(record)
+    return records
+
+
+def receiver_matrix(entities, direction, camera, resolution, aspect=None, geometry_cache=None):
     """Return a conservative fit or None, signaling whole-scene fallback.
 
     Directional rays keep light-space XY constant. Bounds clipped to a padded
@@ -151,15 +217,14 @@ def receiver_matrix(entities, direction, camera, resolution, aspect=None):
         boxes = _receiver_boxes(entities, light)
         if not boxes:
             return None
-        bounds = np.asarray([box[0] for box in boxes], dtype=float)
-        worlds = np.asarray([box[1] for box in boxes], dtype=float)
-        lo_local, hi_local = bounds[:, 0], bounds[:, 1]
-        corners = ((lo_local + hi_local)[:, None, :] * .5 +
-                   _SIGNS * (hi_local - lo_local)[:, None, :] * .5)
-        world_corners = corners @ worlds[:, :3, :3].transpose(0, 2, 1) + worlds[:, None, :3, 3]
-        tolerances = np.maximum(np.max(np.abs(corners), axis=(1, 2)) * 1e-9, 1e-12)
+        prepared = _prepare_boxes(boxes, {} if geometry_cache is None else geometry_cache)
+        bounds = np.asarray([r['bounds'] for r in prepared])
+        worlds = np.asarray([r['world'] for r in prepared])
+        corners = np.asarray([r['corners'] for r in prepared])
+        world_corners = np.asarray([r['world_corners'] for r in prepared])
+        tolerances = np.asarray([r['tolerance'] for r in prepared])
         receivers = [points @ rotation.T for points in
-                     _intersections(bounds, worlds, corners, world_corners, tolerances, planes, frustum)
+                     _intersections(bounds, worlds, corners, world_corners, tolerances, planes, frustum, prepared)
                      if len(points)]
         if not receivers:
             return None
@@ -175,7 +240,7 @@ def receiver_matrix(entities, direction, camera, resolution, aspect=None):
         clip_corners = _corners((lo,hi)) @ rotation
         light_planes = _planes(lo,hi)
         light_planes[:,:3] = light_planes[:,:3] @ rotation
-        casters = _intersections(bounds, worlds, corners, world_corners, tolerances, light_planes, clip_corners)
+        casters = _intersections(bounds, worlds, corners, world_corners, tolerances, light_planes, clip_corners, prepared)
         caster_points = np.concatenate([p for p in casters if len(p)]) @ rotation.T
         lo[2],hi[2] = caster_points[:,2].min(),caster_points[:,2].max()
         depth_margin = max(float((hi-lo).max())*.02,1e-12)

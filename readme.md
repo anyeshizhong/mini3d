@@ -1,5 +1,9 @@
 # Mini3D
 
+SPQR Performance 本地待验收：阴影与兼容不透明模块已使用 GPU 实例化，复用静态几何准备并批量裁剪阴影；保持独立编辑和原有摄影画质。[实现边界与复测](docs/SPQR-PERFORMANCE.md)。
+
+SPQR Phase 2 本地待验收：Lighting新增星空/月光与太阳全高度角，Arrange多选后可按包围盒相邻排列；批量包围盒与阴影范围剔除减少导航开销。[操作与验收](docs/SPQR-PHASE2.md)。
+
 Project SPQR Phase 1 已提供可编辑的罗马街道原型：Arrange → **+ Roman Street...**，或直接运行 `python -B -m mini3d --scene examples/roman_street/street.json`。内置低模套件无需下载，支持整街撤销、独立模块编辑、场景保存加载及现有 Shot 拍照。[使用与验收](docs/SPQR-PHASE1.md)。
 
 Shot 摄影已支持对焦距离和光圈景深：Camera View 与 PNG 共用真实深度过滤，场景保存和 Live Editor IPC 共用相同参数。操作、接口、单位与限制见 [对焦与景深](docs/depth-of-field.md)。

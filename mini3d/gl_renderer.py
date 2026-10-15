@@ -4,6 +4,7 @@ from OpenGL.GL.shaders import compileShader, compileProgram
 import ctypes
 from .shadow_map import ShadowMap, SHADOW_GLSL
 from .render_plan import build_render_plan
+from .atmosphere import direct_light_strength, atmosphere_state, sun_color
 
 
 DTYPE = np.float32
@@ -99,6 +100,7 @@ uniform vec3 uBaseColor;
 uniform vec3 uLightDirW;
 uniform float uAmbient;
 uniform float uDiffuse;
+uniform vec3 uLightTint;
 
 out vec4 FragColor;
 
@@ -114,7 +116,7 @@ void main(){
     float intensity = uAmbient + uDiffuse * ndl * shadowVisibility(vPosW, N, L);
     intensity = clamp(intensity, 0.0, 1.0);
     
-    vec3 col = uBaseColor * intensity;
+    vec3 col = uBaseColor * intensity * uLightTint;
     FragColor = vec4(photoAdjustDisplay(col), 1.0);
 }
 """
@@ -130,6 +132,7 @@ uniform vec3 uBaseColor;
 uniform vec3 uLightDirW;
 uniform float uAmbient;
 uniform float uDiffuse;
+uniform vec3 uLightTint;
 uniform vec3 uCameraPos;
 
 out vec4 FragColor;
@@ -169,7 +172,7 @@ void main(){
     rimIntensity = smoothstep(0.6, 1.0, rimIntensity);
     
     // Combine
-    vec3 col = uBaseColor * intensity;
+    vec3 col = uBaseColor * intensity * uLightTint;
     col += vec3(0.3) * specular * shadowVisibility(vPosW, N, L); // White specular highlight
     col += uBaseColor * 0.5 * rimIntensity; // Rim light
     
@@ -488,6 +491,7 @@ class GLRenderer:
         self.gpu_cache = {}
         self.shadow_map = ShadowMap()
         self.frustum_culling = True
+        self.gpu_instancing = True
         self.last_render_plan = None
         self.render_stats = {}
         self._active_shadow = None
@@ -539,6 +543,7 @@ class GLRenderer:
                 if any(getattr(e.model, 'material', None) is not None for e in entities) and not hasattr(self, 'material_renderer'):
                     from .material_renderer import MaterialRenderer
                     self.material_renderer = MaterialRenderer()
+                self.shadow_map.gpu_instancing = self.gpu_instancing
                 self.shadow_map.render(entities, scene, self,
                                        camera=camera, aspect=float(self.w)/self.h)
                 self._active_shadow = self.shadow_map
@@ -630,6 +635,7 @@ class GLRenderer:
             if not hasattr(self, "material_renderer"):
                 from .material_renderer import MaterialRenderer
                 self.material_renderer = MaterialRenderer()
+            self.material_renderer.gpu_instancing = self.gpu_instancing
             self.material_renderer.render(imported, camera, scene, self.w, self.h,
                                           mode=getattr(scene, "render_mode", "Lit"), shadow=self._active_shadow,
                                           plan=plan)
@@ -701,7 +707,9 @@ class GLRenderer:
         ldir = scene_light_direction(scene)
         glUniform3f(self.locLdir, float(ldir[0]), float(ldir[1]), float(ldir[2]))
         glUniform1f(self.locAmb, float(scene.ambient))
-        glUniform1f(self.locDif, float(scene.diffuse))
+        glUniform1f(self.locDif, direct_light_strength(scene))
+        state = atmosphere_state(scene)
+        glUniform3fv(glGetUniformLocation(self.program, 'uLightTint'), 1, np.asarray(sun_color(state['sun_temperature']) if state['enabled'] and state['celestial_body']=='moon' else [1,1,1],np.float32))
 
         # Render entities
         for ent in entities:
@@ -745,7 +753,9 @@ class GLRenderer:
         ldir = scene_light_direction(scene)
         glUniform3f(self.toon_locLdir, float(ldir[0]), float(ldir[1]), float(ldir[2]))
         glUniform1f(self.toon_locAmb, float(scene.ambient))
-        glUniform1f(self.toon_locDif, float(scene.diffuse))
+        glUniform1f(self.toon_locDif, direct_light_strength(scene))
+        state = atmosphere_state(scene)
+        glUniform3fv(glGetUniformLocation(self.toon_program, 'uLightTint'), 1, np.asarray(sun_color(state['sun_temperature']) if state['enabled'] and state['celestial_body']=='moon' else [1,1,1],np.float32))
         
         # Set camera position
         glUniform3f(self.toon_locCamPos, float(cam_pos[0]), float(cam_pos[1]), float(cam_pos[2]))

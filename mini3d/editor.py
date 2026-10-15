@@ -425,6 +425,16 @@ class Editor:
         self.status = "Created {}: {} members".format(group.name, len(group.member_ids))
         return group
 
+    def align_selected_adjacent(self, axis='x', side=1, gap=0.0):
+        self.finish_edit()
+        if self.selection is None or len(self.selected_entities) < 2:
+            raise ValueError('Select modules; the last selected is the fixed reference')
+        entities = self.commands.align_adjacent(self.scene.selected_ids,
+            self.selection.entity_id, axis, side, gap)
+        self.sync_selection()
+        self.status = 'Aligned {} modules beside {}'.format(len(entities), self.selection.name)
+        return entities
+
     def create_roman_street(self, segments=6, road_width=6.0, origin=None, facing=0.0,
                             variation=False, seed=0, extension_segments=0):
         """Append the street through Commands; only the UI wrapper reframes."""
@@ -465,6 +475,12 @@ class Editor:
         if self.commands.active_transaction:
             raise ValueError('Atmosphere changes require a completed placement transaction')
         return update_atmosphere(self.scene, **changes)
+
+    def sky_preset(self, name):
+        from .atmosphere import sky_preset
+        if self.commands.active_transaction:
+            raise ValueError('Finish placement before changing sky')
+        return sky_preset(self.scene, name)
 
     def sunset_preset(self):
         from .atmosphere import sunset_preset

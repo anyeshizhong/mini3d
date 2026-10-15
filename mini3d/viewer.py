@@ -38,6 +38,11 @@ def _world_boxes(entities, visible_only=False):
             model.bounds = (points.min(axis=0), points.max(axis=0)) if len(points) else None
         if model.bounds is None:
             continue
+        from .geometry_cache import box_geometry
+        geometry = box_geometry(entity)
+        if geometry is not None:
+            yield geometry[2]
+            continue
         bounds_key = np.asarray(model.bounds, dtype=np.float64).tobytes()
         cached = getattr(model, '_viewer_box_corners', None)
         if cached is None or cached[0] != bounds_key:
@@ -101,19 +106,17 @@ class Viewer:
         rotated scene's range unnecessarily. Entirely rearward boxes are ignored.
         """
         self.scene.update()
-        minimum = maximum = None
-        closest_positive = None
-        eye, forward = self.camera.position, self.camera.forward
-        for points in _world_boxes(self.scene.root_entities, visible_only=True):
-            depths = (points-eye) @ forward
-            lo, hi = float(depths.min()), float(depths.max())
-            if hi <= 0:
-                continue
-            if lo > 0:
-                closest_positive = lo if closest_positive is None else min(closest_positive, lo)
-            minimum = lo if minimum is None else min(minimum, lo)
-            maximum = hi if maximum is None else max(maximum, hi)
-        return None if maximum is None else DepthRange(minimum, maximum, closest_positive)
+        boxes = list(_world_boxes(self.scene.root_entities, visible_only=True))
+        if not boxes:
+            return None
+        depths = (np.asarray(boxes) - self.camera.position) @ self.camera.forward
+        lo, hi = depths.min(axis=1), depths.max(axis=1)
+        forward = hi > 0
+        if not forward.any():
+            return None
+        positive = lo[forward & (lo > 0)]
+        closest = None if not len(positive) else float(positive.min())
+        return DepthRange(float(lo[forward].min()), float(hi[forward].max()), closest)
 
     def update_clipping(self):
         """Refresh before rendering after scene edits, without moving the camera."""

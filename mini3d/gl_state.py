@@ -62,6 +62,7 @@ def save_state():
         state["samplers"].append(int(gl.glGetIntegerv(gl.GL_SAMPLER_BINDING)))
         if unit in (8,9):
             state["cubemaps"].append((unit,int(gl.glGetIntegerv(gl.GL_TEXTURE_BINDING_CUBE_MAP))))
+    gl.glActiveTexture(state["ACTIVE_TEXTURE"])
     return state
 
 def restore_state(state):

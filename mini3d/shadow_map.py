@@ -70,12 +70,14 @@ DEPTH_VERTEX = """#version 330 core
 layout(location=0) in vec3 position;
 layout(location=2) in vec2 texcoord;
 layout(location=3) in vec4 color;
+layout(location=4) in mat4 instanceModel;
 uniform mat4 model, lightMatrix;
+uniform bool useInstances;
 out vec2 uv;
 out float alpha;
 void main() {
     uv = texcoord; alpha = color.a;
-    gl_Position = lightMatrix * model * vec4(position, 1.0);
+    gl_Position = lightMatrix * (useInstances ? instanceModel : model) * vec4(position, 1.0);
 }
 """
 DEPTH_FRAGMENT = """#version 330 core
@@ -94,12 +96,13 @@ void main() {
 """
 
 
-def light_matrix(entities, direction, camera=None, resolution=1024, aspect=None):
+def light_matrix(entities, direction, camera=None, resolution=1024, aspect=None, geometry_cache=None):
     """Cached AABBs; optional Shot receiver fit with whole-scene fallback."""
     if camera is not None:
         from .shadow_fit import receiver_matrix
         entities = list(entities)
-        fitted = receiver_matrix(entities, direction, camera, resolution, aspect=aspect)
+        fitted = receiver_matrix(entities, direction, camera, resolution, aspect=aspect,
+                                 geometry_cache=geometry_cache)
         if fitted is not None:
             return fitted
     light = np.array(direction, dtype=np.float64, copy=True)
@@ -143,6 +146,9 @@ class ShadowMap:
         self.matrix = None
         self._cache_key = None
         self.cache_hit = False
+        self.gpu_instancing = True
+        self._locations = {}
+        self._geometry_cache = {}
 
     def _allocate(self, size):
         if self.size == size:
@@ -211,7 +217,8 @@ class ShadowMap:
             self.cache_hit = True
             return
         self._cache_key = None
-        matrix = light_matrix(entities, direction, camera, scene.shadow_resolution, aspect=aspect)
+        matrix = light_matrix(entities, direction, camera, scene.shadow_resolution,
+                              aspect=aspect, geometry_cache=self._geometry_cache)
         if matrix is None:
             self.matrix = None
             return
@@ -240,17 +247,49 @@ class ShadowMap:
             gl.glClearDepth(1)
             gl.glClear(gl.GL_DEPTH_BUFFER_BIT)
             gl.glUseProgram(self.program)
-            locations = {name: gl.glGetUniformLocation(self.program, name) for name in
-                         ('lightMatrix', 'baseMap', 'alphaMask', 'hasBase', 'baseAlpha', 'cutoff', 'model')}
-            loc = locations.__getitem__
+            if not self._locations:
+                self._locations = {name: gl.glGetUniformLocation(self.program, name) for name in
+                    ('lightMatrix', 'baseMap', 'alphaMask', 'hasBase', 'baseAlpha', 'cutoff', 'model', 'useInstances')}
+            loc = self._locations.__getitem__
             gl.glUniformMatrix4fv(loc('lightMatrix'),1,gl.GL_TRUE,np.asarray(matrix,np.float32))
             gl.glUniform1i(loc('baseMap'),0)
-            for entity in entities:
+            # Only reject geometry outside the actual light clip volume.
+            # Color-camera visibility must never remove offscreen casters.
+            from .render_plan import batch_world_bounds, aabb_visible, frustum_planes
+            bounds = batch_world_bounds(entities)
+            tested = [i for i, bound in enumerate(bounds) if bound is not None]
+            visible = np.ones(len(entities), dtype=bool)
+            if tested:
+                visible[tested] = aabb_visible([bounds[i] for i in tested],
+                                              frustum_planes(np.eye(4), matrix))
+            self.culled_casters = int((~visible).sum())
+            groups, individual = {}, []
+            for entity, keep in zip(entities, visible):
+                if not keep:
+                    continue
                 material = getattr(entity.model, 'material', None)
                 if (material or {}).get('extras',{}).get('photographicGround'):
-                    continue # Infinite ground receives shadows, but cannot occlude objects above it.
+                    continue  # Receives shadows, never occludes geometry above.
                 if material is not None and material.get('alphaMode') == 'BLEND':
-                    continue  # No physically meaningful transmissive shadow in V1.
+                    continue
+                if (self.gpu_instancing and material is not None and
+                        material.get('alphaMode', 'OPAQUE') == 'OPAQUE'):
+                    groups.setdefault(id(entity.model), []).append(entity)
+                else:
+                    individual.append(entity)
+            gl.glUniform1i(loc('alphaMask'),False)
+            for batch in groups.values():
+                if len(batch) < 2:
+                    individual.extend(batch)
+                    continue
+                mesh = renderer.material_renderer._mesh(batch[0].model)
+                gl.glUniform1i(loc('useInstances'),True)
+                renderer.material_renderer.draw_instances(mesh, [e.world_matrix for e in batch])
+                self.draw_calls += 1
+                self.triangles += mesh[4] // 3 * len(batch)
+            gl.glUniform1i(loc('useInstances'),False)
+            for entity in individual:
+                material = getattr(entity.model, 'material', None)
                 masked = material is not None and material.get('alphaMode') == 'MASK'
                 gl.glUniform1i(loc('alphaMask'),masked)
                 if material is not None:
@@ -337,3 +376,5 @@ class ShadowMap:
         self.fbo = self.texture = self.program = self.size = self.raw_sampler = 0
         self.matrix = None
         self._cache_key = None
+        self._locations.clear()
+        self._geometry_cache.clear()

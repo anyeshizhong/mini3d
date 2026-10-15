@@ -5,10 +5,10 @@ import json
 
 METHODS = frozenset(('list_entities', 'get_entity', 'list_groups', 'get_group', 'get_scene_state',
     'spawn', 'delete', 'duplicate', 'set_transform', 'transform_many', 'place_on_ground', 'place_at',
-    'lock', 'unlock', 'create_group', 'create_rectangular_formation', 'create_roman_street', 'undo', 'redo',
+    'align_adjacent', 'lock', 'unlock', 'create_group', 'create_rectangular_formation', 'create_roman_street', 'undo', 'redo',
     'save_scene', 'load_scene', 'create_shot_camera', 'get_shot_camera', 'set_lens', 'set_aspect', 'capture',
     'get_lighting', 'set_lighting', 'get_shadows', 'set_shadows', 'get_environment', 'set_environment',
-    'get_atmosphere', 'set_atmosphere', 'sunset_preset',
+    'get_atmosphere', 'set_atmosphere', 'sunset_preset', 'sky_preset',
     'set_antialiasing', 'get_editor_camera', 'screenshot', 'set_depth_of_field', 'focus_at', 'focus_on',
     'focus_screen', 'set_photo_color', 'reset_photo_color',
     'get_view_state', 'set_view', 'set_workspace', 'select_entities', 'frame_all',
@@ -19,7 +19,7 @@ READ_METHODS = frozenset(('list_entities', 'get_entity', 'list_groups', 'get_gro
     'get_shadows', 'get_environment', 'get_atmosphere', 'screenshot', 'get_view_state'))
 BATCH_METHODS = METHODS - {'undo', 'redo', 'save_scene', 'load_scene', 'create_shot_camera',
                          'set_lens', 'set_aspect', 'capture', 'create_rectangular_formation', 'create_roman_street', 'set_lighting', 'set_shadows',
-                         'set_environment', 'set_atmosphere', 'sunset_preset', 'set_antialiasing', 'screenshot',
+                         'set_environment', 'set_atmosphere', 'sunset_preset', 'sky_preset', 'set_antialiasing', 'screenshot',
                          'set_depth_of_field', 'focus_at', 'focus_on', 'focus_screen',
                          'set_photo_color', 'reset_photo_color', 'set_view', 'set_workspace',
                          'select_entities', 'frame_all', 'focus_entity', 'set_editor_view',

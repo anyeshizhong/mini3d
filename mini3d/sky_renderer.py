@@ -7,7 +7,7 @@ import numpy as np
 from OpenGL import GL as gl
 from OpenGL.GL.shaders import compileShader, compileProgram
 from .gl_state import save_state, restore_state
-from .atmosphere import atmosphere_state, sun_color
+from .atmosphere import atmosphere_state, sun_color, PROCEDURAL_SKIES
 from .lighting import scene_light_direction
 from .photo_color import PHOTO_COLOR_GLSL, bind_photo_color
 
@@ -15,7 +15,9 @@ ATMOSPHERE_GLSL = PHOTO_COLOR_GLSL + r'''
 uniform bool atmosphereEnabled, photoHDREnabled, filmicTone;
 uniform sampler2D photoSky;
 uniform mat3 photoEnvRotation;
-uniform float skyIntensity;
+uniform float skyIntensity, celestialDiameter;
+uniform int nightSky;
+uniform bool moonEmitter;
 uniform vec3 sunColor, sunDirection;
 uniform float exposureEV, hazeDensity, groundScale, photoFar;
 // Integer lattice hashing avoids magnifying driver-dependent sin rounding.
@@ -34,12 +36,48 @@ float skyNoise(vec3 p) {
                mix(mix(skyHash(i+vec3(0,0,1)),skyHash(i+vec3(1,0,1)),f.x),
                    mix(skyHash(i+vec3(0,1,1)),skyHash(i+vec3(1,1,1)),f.x),f.y),f.z);
 }
+vec3 nightRadiance(vec3 ray, vec3 emitter, float blur) {
+    float altitude=max(ray.z,0.0);
+    vec3 sky=mix(vec3(.003,.004,.009),vec3(.0007,.0014,.004),sqrt(altitude));
+    vec2 coord=vec2((atan(ray.y,ray.x)/6.28318530718+.5)*512.,
+                    acos(clamp(ray.z,-1.,1.))/3.14159265359*256.);
+    vec2 cell=floor(coord);
+    float stars=0.;
+    #ifdef SKY_BACKDROP
+    if (ray.z>0. && blur<.03) {
+        for(int x=-1;x<=1;++x) for(int y=-1;y<=1;++y) {
+            vec2 index=cell+vec2(x,y);
+            vec3 id=vec3(mod(index.x,512.),clamp(index.y,0.,255.),17.);
+            float h=skyHash(id);
+            if(h<.975) continue;
+            vec2 point=index+vec2(.15+.7*skyHash(id+31.),.15+.7*skyHash(id+57.));
+            float az=(point.x/512.-.5)*6.28318530718;
+            float polar=point.y/256.*3.14159265359;
+            vec3 star=vec3(sin(polar)*cos(az),sin(polar)*sin(az),cos(polar));
+            float distance=length(ray-star);
+            float width=max(length(fwidth(ray)),.0004);
+            stars+=exp(-pow(distance/max(.00065,width*.65),2.))*pow((h-.975)/.025,2.);
+        }
+    }
+    #endif
+    sky+=vec3(.8,.88,1.)*stars*.5*smoothstep(0.,.08,altitude);
+    if(moonEmitter && emitter.z>0.) {
+        float angle=acos(clamp(dot(ray,emitter),-1.,1.));
+        float radius=radians(max(celestialDiameter,.1)*.5);
+        float edge=max(length(fwidth(ray)),.00012)+blur;
+        float disc=1.-smoothstep(radius-edge,radius+edge,angle);
+        float textureShade=.78+.22*skyNoise(ray*600.);
+        sky+=sunColor*(disc*textureShade*.55+ .012*exp(-angle*18.));
+    }
+    return sky*skyIntensity;
+}
 vec3 skyRadiance(vec3 ray, vec3 sun, float blur) {
     if (photoHDREnabled) {
         vec3 r=photoEnvRotation*normalize(ray);
         vec2 coords=vec2(.5+atan(-r.y,r.x)/6.28318530718,acos(clamp(r.z,-1.0,1.0))/3.14159265359);
         return textureLod(photoSky,coords,blur*7.0).rgb*skyIntensity;
     }
+    if(nightSky>0) return nightRadiance(ray,sun,blur);
     float altitude=max(ray.z,0.0);
     float daylight=smoothstep(-.08,.5,sun.z);
     vec3 zenith=mix(vec3(.03,.065,.18),vec3(.075,.16,.32),daylight);
@@ -71,6 +109,7 @@ void main() {
     gl_Position=vec4(ndc,1.0,1.0);
 }'''
 FRAGMENT = '''#version 330 core
+#define SKY_BACKDROP
 in vec2 ndc;
 out vec4 fragColor;
 uniform mat4 inverseProjection;
@@ -124,12 +163,15 @@ def bind_photo_sky(program,scene,environment,lighting=False):
     bind_photo_color(program, scene)
     from .photo_environment import sky_rotation
     settings=atmosphere_state(scene)
-    enabled=settings['enabled'] and settings['sky_texture']!='procedural'
+    enabled=settings['enabled'] and settings['sky_texture'] not in PROCEDURAL_SKIES
     loc=lambda name:gl.glGetUniformLocation(program,name)
     gl.glUniform1i(loc('photoHDREnabled'),enabled)
     gl.glUniform1i(loc('photoSky'),11)
     gl.glUniform1i(loc('filmicTone'),settings['tone_mapping']=='filmic')
     gl.glUniform1f(loc('skyIntensity'),settings['sky_intensity'])
+    gl.glUniform1i(loc('nightSky'),settings['sky_texture'] in ('stars','moonlit'))
+    gl.glUniform1i(loc('moonEmitter'),settings['celestial_body']=='moon')
+    gl.glUniform1f(loc('celestialDiameter'), settings['sun_size'] or .53)
     if enabled:
         environment.prepare(settings['sky_texture'],lighting=lighting)
         gl.glUniformMatrix3fv(loc('photoEnvRotation'),1,gl.GL_TRUE,

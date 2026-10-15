@@ -1,7 +1,7 @@
 """Per-frame draw preparation. Color visibility never filters shadow candidates.
 
 Matrices act on column vectors; OpenGL clip depth is [-w, w]. Bounds and
-transforms are read anew after Scene.update: no persistent cache to invalidate.
+transforms are value-checked after Scene.update, including in-place edits.
 GPU uploads remain lazy in the existing renderer mesh/texture caches.
 """
 from dataclasses import dataclass
@@ -54,6 +54,14 @@ def world_bounds(mesh, matrix):
     return np.stack((center - radius, center + radius))
 
 
+def batch_world_bounds(entities):
+    """Reuse value-checked affine AABBs; invalid bounds stay uncullable."""
+    from .geometry_cache import box_geometry
+    return [None if geometry is None else geometry[3]
+            for geometry in (box_geometry(entity) for entity in entities)]
+
+
+
 @dataclass
 class DrawItem:
     entity: object
@@ -86,11 +94,11 @@ def build_render_plan(scene, camera, width, height, culling=True, legacy_mode='R
     view = np.asarray(camera.view_matrix, np.float32)
     projection = np.asarray(camera.projection_matrix(float(width) / height), np.float32)
     items, boxes, tested = [], [], []
-    for entity in entities:
+    prepared_bounds = batch_world_bounds(entities) if culling else [None] * len(entities)
+    for entity, bounds in zip(entities, prepared_bounds):
         mesh = entity.model
         matrix = np.asarray(entity.world_matrix, np.float32)
         material = getattr(mesh, 'material', None)
-        bounds = world_bounds(mesh, matrix) if culling else None
         item = DrawItem(entity, mesh, matrix, material, bounds)
         items.append(item)
         # The legacy outline shader expands geometry by 0.15 in model space;

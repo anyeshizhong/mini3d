@@ -354,6 +354,45 @@ class PlacementCommands:
                 entity.scale = size * factors
         return entities
 
+    def align_adjacent(self, ids, reference_id, axis='x', side=1, gap=0.0):
+        """Arrange editable members beside a fixed reference using world bounds."""
+        from numbers import Real
+        from .placement import geometry_bounds
+        if axis not in ('x', 'y', 'z'):
+            raise ValueError('axis must be x, y or z')
+        if type(side) is not int or side not in (-1, 1):
+            raise ValueError('side must be -1 or 1')
+        if isinstance(gap, (bool, np.bool_)) or not isinstance(gap, Real) or not np.isfinite(gap) or gap < 0:
+            raise ValueError('gap must be finite and nonnegative')
+        if isinstance(ids, str):
+            raise ValueError('ids must be a sequence')
+        reference = self._entity(reference_id)
+        entities, seen = [], set()
+        for value in ids:
+            entity = self._entity(value)
+            if entity is not reference and not entity.locked and value not in seen:
+                entities.append(entity); seen.add(value)
+        self.scene.update()
+        reference_bounds = geometry_bounds(reference)
+        bounds = [geometry_bounds(entity) for entity in entities]
+        if reference_bounds is None or any(bound is None for bound in bounds):
+            raise ValueError('All aligned modules need geometry bounds')
+        component = ('x', 'y', 'z').index(axis)
+        edge = 1 if side == 1 else 0
+        frontier = reference_bounds[edge][component]
+        positions = []
+        for entity, bound in zip(entities, bounds):
+            shift = frontier + side * gap - bound[1-edge][component]
+            pos = entity.pos.copy(); pos[component] += shift
+            if not np.isfinite(pos).all():
+                raise ValueError('Alignment exceeds finite coordinates')
+            positions.append(pos)
+            frontier = bound[edge][component] + shift
+        with self._operation('Align adjacent modules'):
+            for entity, pos in zip(entities, positions):
+                entity.pos = pos
+        return entities
+
     def create_rectangular_formation(self, source_id, rows, columns, spacing_x,
                                      spacing_y, facing=None, include_source=True):
         from .formation import create_rectangular_formation

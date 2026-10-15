@@ -48,6 +48,9 @@ class MaterialRenderer:
         # cube/2D units before any draw; pre-assignment validation would fail.
         self._locations = {}
         self._meshes = {}
+        self._instances = {}
+        self._normal_cache = {}
+        self.gpu_instancing = True
         self._textures = {}
         self.environment = None
         from .photo_environment import PhotoEnvironment
@@ -109,6 +112,44 @@ class MaterialRenderer:
         self._meshes[key] = record
         return record
 
+    def draw_instances(self, mesh, matrices, normals=None):
+        """Borrow mesh buffers; own the instance VAO/VBO until release().
+
+        Matrix columns occupy attributes 4..10 (GL 3.3 guarantees at least 16).
+        Separate VAOs keep divisors off the selection and individual paths.
+        Orphaning the stream buffer avoids waiting on a previous GPU reader.
+        """
+        key = (id(mesh[0]), normals is not None)
+        if key not in self._instances:
+            vao = int(gl.glGenVertexArrays(1))
+            buffer = int(gl.glGenBuffers(1))
+            self._instances[key] = [vao, buffer, None]
+            gl.glBindVertexArray(vao)
+            gl.glBindBuffer(gl.GL_ARRAY_BUFFER, mesh[2])
+            gl.glBindBuffer(gl.GL_ELEMENT_ARRAY_BUFFER, mesh[3])
+            for location, size, offset in ((0,3,0), (1,3,12), (2,2,24), (3,4,32)):
+                gl.glEnableVertexAttribArray(location)
+                gl.glVertexAttribPointer(location,size,gl.GL_FLOAT,False,48,ctypes.c_void_p(offset))
+            gl.glBindBuffer(gl.GL_ARRAY_BUFFER, buffer)
+            for location, size, offset in ([(4+i,4,16*i) for i in range(4)] +
+                                           [(8+i,3,64+12*i) for i in range(3)]):
+                gl.glEnableVertexAttribArray(location)
+                gl.glVertexAttribPointer(location,size,gl.GL_FLOAT,False,100,ctypes.c_void_p(offset))
+                gl.glVertexAttribDivisor(location,1)
+        resource = self._instances[key]
+        vao, buffer = resource[:2]
+        data = np.zeros((len(matrices), 25), np.float32)
+        data[:, :16] = np.asarray(matrices, np.float32).transpose(0,2,1).reshape(-1,16)
+        if normals is not None:
+            data[:, 16:] = np.asarray(normals, np.float32).transpose(0,2,1).reshape(-1,9)
+        gl.glBindVertexArray(vao)
+        payload = data.tobytes()
+        if payload != resource[2]:
+            gl.glBindBuffer(gl.GL_ARRAY_BUFFER,buffer)
+            gl.glBufferData(gl.GL_ARRAY_BUFFER,data.nbytes,data,gl.GL_STREAM_DRAW)
+            resource[2] = payload
+        gl.glDrawElementsInstanced(gl.GL_TRIANGLES,mesh[4],gl.GL_UNSIGNED_INT,None,len(data))
+
     def _texture(self, texture):
         encoded = texture["image"]
         sampler = texture.get("sampler", {})
@@ -169,7 +210,7 @@ class MaterialRenderer:
             gl.glBindTexture(gl.GL_TEXTURE_2D,self._texture(texture) if texture is not None else 0)
 
     def _lighting(self, scene, camera):
-        from .atmosphere import atmosphere_state, sun_color
+        from .atmosphere import atmosphere_state, sun_color, direct_light_strength, PROCEDURAL_SKIES
         atmosphere = atmosphere_state(scene)
         self._int('atmosphereEnabled', atmosphere['enabled'])
         self._vec3('sunColor', sun_color(atmosphere['sun_temperature']))
@@ -178,7 +219,7 @@ class MaterialRenderer:
         self._float('hazeDensity', atmosphere['haze'])
         self._float('groundScale', atmosphere['ground_scale'])
         self._float('photoFar', getattr(camera, 'far', 1000.))
-        photo_hdr=atmosphere['enabled'] and atmosphere['sky_texture']!='procedural'
+        photo_hdr=atmosphere['enabled'] and atmosphere['sky_texture'] not in PROCEDURAL_SKIES
         enabled = getattr(scene, 'environment_enabled', False) or photo_hdr
         self._int('environmentEnabled', enabled)
         self._float('environmentIntensity', atmosphere['sky_intensity'] if photo_hdr else getattr(scene, 'environment_intensity', .35))
@@ -198,7 +239,7 @@ class MaterialRenderer:
         self._int('sceneLighting', mode == 'Scene')
         if mode == 'Scene':
             self._vec3('light0', scene_light_direction(scene))
-            self._float('lightIntensity', scene.diffuse)
+            self._float('lightIntensity', direct_light_strength(scene))
             self._float('ambientIntensity', scene.ambient)
         else:
             right, up, back = camera.rotation[:,0],camera.rotation[:,1],camera.rotation[:,2]
@@ -245,44 +286,74 @@ class MaterialRenderer:
             for transparent, entity in prepared:
                 mesh = self._mesh(self._entity_mesh(entity))
                 matrix = np.asarray(entity.world_matrix,np.float32)
-                center = matrix @ np.append(mesh[5],1)
-                depth = float((view @ center)[2])
+                # Only transparent records need camera-depth sorting.
+                depth = float((view @ (matrix @ np.append(mesh[5],1)))[2]) if transparent else 0.
                 records.append((transparent,depth,entity,matrix,mesh))
             # Camera looks along -Z: more negative depth is farther away.
-            records.sort(key=lambda row:(row[0],row[1] if row[0] else id(row[4][0].material)))
+            # Memory addresses change on reload and can change which coplanar
+            # facade wins the depth test. Group materials by stable scene order.
+            order = {}
+            for entity in (plan.shadow_candidates if plan is not None else entities):
+                model = self._entity_mesh(entity)
+                if model is not None and getattr(model, 'material', None) is not None:
+                    order.setdefault(id(model.material), len(order))
+            records.sort(key=lambda row:(row[0],row[1] if row[0] else order[id(row[4][0].material)]))
             last_material = None
-            normal_matrices = {}
-            for transparent, _, entity, matrix, mesh in records:
+            from .geometry_cache import normal_transform
+            batches = []
+            for row in records:
+                transparent, _, entity, matrix, mesh = row
+                normal, mirrored = normal_transform(matrix, self._normal_cache)
+                # Preserve stable draw order, including coplanar ties. Never
+                # regroup across another mesh, winding or special alpha path.
+                compatible = (self.gpu_instancing and not transparent and
+                              mesh[0].material.get('alphaMode', 'OPAQUE') == 'OPAQUE')
+                key = (id(mesh[0]), mirrored) if compatible else None
+                if key is not None and batches and batches[-1][0] == key:
+                    batches[-1][1].append((row, normal, mirrored))
+                else:
+                    batches.append((key, [(row, normal, mirrored)]))
+            last_transparent = last_cull = last_mirrored = last_instanced = None
+            for _, batch in batches:
+                (transparent, _, entity, matrix, mesh), normal_matrix, mirrored = batch[0]
                 material = mesh[0].material
-                if transparent:
-                    gl.glEnable(gl.GL_BLEND)
-                    gl.glBlendEquation(gl.GL_FUNC_ADD)
-                    gl.glBlendFuncSeparate(gl.GL_SRC_ALPHA,gl.GL_ONE_MINUS_SRC_ALPHA,
-                                           gl.GL_ONE,gl.GL_ONE_MINUS_SRC_ALPHA)
-                else:
-                    gl.glDisable(gl.GL_BLEND)
-                gl.glDepthMask(not transparent)
-                if material.get("doubleSided",False):
-                    gl.glDisable(gl.GL_CULL_FACE)
-                else:
-                    gl.glEnable(gl.GL_CULL_FACE)
-                    gl.glCullFace(gl.GL_BACK)
-                gl.glFrontFace(gl.GL_CW if np.linalg.det(matrix[:3,:3])<0 else gl.GL_CCW)
-                self._matrix("model",matrix)
-                # Pseudoinverse handles intentionally flattened editor objects.
-                linear_key = matrix[:3,:3].tobytes()
-                normal_matrix = normal_matrices.get(linear_key)
-                if normal_matrix is None:
-                    normal_matrix = np.linalg.pinv(matrix[:3,:3]).T
-                    normal_matrices[linear_key] = normal_matrix
-                gl.glUniformMatrix3fv(self._loc("normalMatrix"),1,gl.GL_TRUE,np.asarray(normal_matrix,np.float32))
+                if transparent != last_transparent:
+                    if transparent:
+                        gl.glEnable(gl.GL_BLEND)
+                        gl.glBlendEquation(gl.GL_FUNC_ADD)
+                        gl.glBlendFuncSeparate(gl.GL_SRC_ALPHA,gl.GL_ONE_MINUS_SRC_ALPHA,
+                                               gl.GL_ONE,gl.GL_ONE_MINUS_SRC_ALPHA)
+                    else:
+                        gl.glDisable(gl.GL_BLEND)
+                    gl.glDepthMask(not transparent)
+                    last_transparent = transparent
+                cull = not material.get("doubleSided",False)
+                if cull != last_cull:
+                    if cull:
+                        gl.glEnable(gl.GL_CULL_FACE)
+                        gl.glCullFace(gl.GL_BACK)
+                    else:
+                        gl.glDisable(gl.GL_CULL_FACE)
+                    last_cull = cull
+                if mirrored != last_mirrored:
+                    gl.glFrontFace(gl.GL_CW if mirrored else gl.GL_CCW)
+                    last_mirrored = mirrored
                 if material is not last_material:
                     self._material(material,mode)
                     last_material = material
-                gl.glBindVertexArray(mesh[1])
-                gl.glDrawElements(gl.GL_TRIANGLES,mesh[4],gl.GL_UNSIGNED_INT,None)
+                instanced = len(batch) > 1
+                if instanced != last_instanced:
+                    self._int('useInstances', instanced)
+                    last_instanced = instanced
+                if instanced:
+                    self.draw_instances(mesh, [row[0][3] for row in batch], [row[1] for row in batch])
+                else:
+                    self._matrix("model",matrix)
+                    gl.glUniformMatrix3fv(self._loc("normalMatrix"),1,gl.GL_TRUE,normal_matrix)
+                    gl.glBindVertexArray(mesh[1])
+                    gl.glDrawElements(gl.GL_TRIANGLES,mesh[4],gl.GL_UNSIGNED_INT,None)
                 self.draw_calls += 1
-                self.triangles += mesh[4] // 3
+                self.triangles += mesh[4] // 3 * len(batch)
         finally:
             self._restore_state(state)
 
@@ -354,6 +425,11 @@ class MaterialRenderer:
 
     def release(self):
         """Release cached geometry/images with the owning GL context current."""
+        for vao, buffer, _ in self._instances.values():
+            gl.glDeleteVertexArrays(1,[vao])
+            gl.glDeleteBuffers(1,[buffer])
+        self._instances.clear()
+        self._normal_cache.clear()
         for _, vao, vbo, ebo, _, _ in self._meshes.values():
             gl.glDeleteVertexArrays(1,[vao])
             gl.glDeleteBuffers(2,[vbo,ebo])

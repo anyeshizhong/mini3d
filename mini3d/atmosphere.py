@@ -13,7 +13,10 @@ import numpy as np
 
 _DEFAULTS = dict(enabled=False, ground=False, sun_temperature=3500., exposure_ev=0.,
                  haze=.025, ground_scale=1., ground_z=0., sky_texture="procedural",
-                 sky_intensity=1., ground_texture="procedural", sun_size=0., tone_mapping="reinhard")
+                 sky_intensity=1., ground_texture="procedural", sun_size=0., tone_mapping="reinhard", celestial_body="sun")
+
+
+PROCEDURAL_SKIES = ("procedural", "stars", "moonlit")
 
 
 def atmosphere_state(scene):
@@ -30,7 +33,7 @@ def sun_angles(scene):
 def update_atmosphere(scene, enabled=None, ground=None, sun_temperature=None,
                       exposure_ev=None, haze=None, ground_scale=None, ground_z=None,
                       azimuth=None, elevation=None, sky_texture=None, sky_intensity=None,
-                      ground_texture=None, sun_size=None, tone_mapping=None):
+                      ground_texture=None, sun_size=None, tone_mapping=None, celestial_body=None):
     """Validate the complete update before changing settings or sun direction.
 
     Temperature is an artistic black-body approximation, EV is a real linear
@@ -44,6 +47,7 @@ def update_atmosphere(scene, enabled=None, ground=None, sun_temperature=None,
                 raise ValueError(key + ' must be a boolean')
             state[key] = value
     for key, value, choices in (('ground_texture', ground_texture, ('procedural','gravel')),
+            ('celestial_body', celestial_body, ('sun','moon')),
             ('tone_mapping', tone_mapping, ('reinhard','filmic'))):
         if value is not None:
             if not isinstance(value,str) or value not in choices:
@@ -51,11 +55,11 @@ def update_atmosphere(scene, enabled=None, ground=None, sun_temperature=None,
             state[key]=value
     if sky_texture is not None:
         if not isinstance(sky_texture,str) or not sky_texture or len(sky_texture)>4096:
-            raise ValueError('sky_texture must be procedural, sunset, or a Radiance HDR path')
-        if sky_texture not in ('procedural','sunset'):
+            raise ValueError('sky_texture must be procedural, stars, moonlit, sunset, or a Radiance HDR path')
+        if sky_texture not in PROCEDURAL_SKIES + ('sunset',):
             from .photo_environment import sky_path
             sky_texture=str(sky_path(sky_texture))
-        if sky_texture!='procedural':
+        if sky_texture not in PROCEDURAL_SKIES:
             from .photo_environment import load_sky
             load_sky(sky_texture) # Validate bytes before changing any live state.
         state['sky_texture']=sky_texture
@@ -64,7 +68,7 @@ def update_atmosphere(scene, enabled=None, ground=None, sun_temperature=None,
                   azimuth=azimuth, elevation=elevation)
     limits = dict(sky_intensity=(0,20), sun_size=(0,3), sun_temperature=(2000, 12000), exposure_ev=(-10, 10),
                   haze=(0, 1), ground_scale=(.01, 100), ground_z=(-1e6, 1e6),
-                  azimuth=(-360, 360), elevation=(-89, 89))
+                  azimuth=(-360, 360), elevation=(-90, 90))
     for key, value in values.items():
         if value is None:
             continue
@@ -100,9 +104,40 @@ def sunset_preset(scene):
     from .lighting import update_lighting, update_shadows
     update_atmosphere(scene, enabled=True, ground=True, sun_temperature=3500,
                       azimuth=-145, elevation=9, exposure_ev=.25, haze=.025, sky_texture="procedural", ground_texture="procedural",
-                      sun_size=0., tone_mapping="reinhard")
+                      sun_size=0., tone_mapping="reinhard", celestial_body="sun")
     update_lighting(scene, mode='Scene', diffuse=6., ambient=.09)
     update_shadows(scene, enabled=True, resolution=2048, bias=.0003, pcf=True)
+    return atmosphere_state(scene)
+
+
+def direct_light_strength(scene):
+    """Suppress a below-horizon celestial emitter without changing stored intensity."""
+    state = atmosphere_state(scene)
+    if state['enabled']:
+        from .lighting import scene_light_direction
+        z = float(scene_light_direction(scene)[2])
+        # Fade over the last half degree above the horizon; no underground sunlight.
+        return float(scene.diffuse) * min(1., max(0., z / .0087265355))
+    return float(scene.diffuse)
+
+
+def sky_preset(scene, name):
+    """One active directional emitter; artistic presets, no astronomical simulation."""
+    if name not in ('day', 'sunset', 'stars', 'moonlit'):
+        raise ValueError('Choose day, sunset, stars or moonlit')
+    if name == 'sunset':
+        return sunset_preset(scene)
+    from .lighting import update_lighting, update_shadows
+    night = name in ('stars', 'moonlit')
+    moon = name == 'moonlit'
+    update_atmosphere(scene, enabled=True, sky_texture=name if night else 'procedural',
+        celestial_body='moon' if moon else 'sun', sun_temperature=8500 if moon else 5500,
+        azimuth=-90, elevation=35 if moon else -30 if night else 40,
+        sky_intensity=1., exposure_ev=0., haze=.002 if night else .005,
+        sun_size=.53 if moon else 0., tone_mapping='filmic')
+    update_lighting(scene, mode='Scene', diffuse=.7 if moon else 0. if night else 3.,
+                    ambient=.025 if night else .25)
+    update_shadows(scene, enabled=True)
     return atmosphere_state(scene)
 
 

@@ -60,6 +60,7 @@ class EditorUI:
         # Lightweight task workspaces: keep engine state and commands untouched.
         self.scene_filter = ""
         self.formation_open = False
+        self.align_gap = 0.0
         self._edit_item_key = None
         self.formation_rows, self.formation_columns = 5, 8
         self.formation_spacing_x, self.formation_spacing_y = 1.2, 1.4
@@ -642,6 +643,12 @@ class EditorUI:
                                self.formation_spacing_x, self.formation_spacing_y)
             imgui.separator()
         if count > 1:
+            imgui.text_wrapped('Align beside primary (last selected); locked members stay fixed.')
+            _, self.align_gap = imgui.input_float('Gap (world units)', self.align_gap, format='%.3f')
+            for index, (label, axis, side) in enumerate((('+X', 'x', 1), ('-X', 'x', -1), ('+Y', 'y', 1), ('-Y', 'y', -1))):
+                if index: imgui.same_line()
+                if imgui.button(label + '##adjacent'):
+                    self._call('align_selected_adjacent', axis, side, self.align_gap)
             imgui.text("{} selected | {} editable".format(count, len(self.app.editable_selection)))
             imgui.text_wrapped("World axes / Selection Center. Inspector shows the primary; edits apply to all editable members.")
         group = self.app.scene.find_group_by_id(self.app.scene.selected_group_id)
@@ -742,39 +749,46 @@ class EditorUI:
         scene = self.app.scene
         from .atmosphere import atmosphere_state, sun_angles
         settings = atmosphere_state(scene)
-        imgui.text("SKY / SUNSET PHOTOGRAPHY")
+        imgui.text("SKY / CELESTIAL LIGHT")
         if imgui.button("Golden-hour preset", width=-1):
             self._call("sunset_preset")
         if imgui.button("Photographic sunset preset", width=-1):
             self._call("sunset_preset")
             self._call("set_atmosphere",sky_texture='sunset',ground_texture='gravel',
                 sky_intensity=.7,ground_scale=.4,sun_size=.53,tone_mapping='filmic',exposure_ev=-.25)
+        for index, (label, name) in enumerate((('Day', 'day'), ('Stars', 'stars'), ('Moonlight', 'moonlit'))):
+            if index: imgui.same_line()
+            if imgui.button(label + '##sky_preset'):
+                self._call('sky_preset', name)
         changed, value = imgui.checkbox("Sky background", settings['enabled'])
         if changed: self._call("set_atmosphere", enabled=value)
         changed, value = imgui.checkbox("Infinite textured ground", settings['ground'])
         if changed: self._call("set_atmosphere", ground=value)
         if settings['enabled']:
-            sources=['Procedural sky','Sunset HDRI','Custom HDRI']
+            sources=['Procedural sky','Sunset HDRI','Starry sky','Moonlit sky','Custom HDRI']
+            keys=('procedural','sunset','stars','moonlit')
             source=settings['sky_texture']
-            index=0 if source=='procedural' else 1 if source=='sunset' else 2
+            index=keys.index(source) if source in keys else 4
             changed,value=imgui.combo('Sky source',index,sources)
-            if changed and value<2: self._call('set_atmosphere',sky_texture=('procedural','sunset')[value])
-            if changed and value==2: self._sky_path_input='' if index<2 else source
-            path=getattr(self,'_sky_path_input','' if index<2 else source)
+            if changed and value<4: self._call('set_atmosphere',sky_texture=keys[value])
+            if changed and value==4: self._sky_path_input='' if index<4 else source
+            path=getattr(self,'_sky_path_input','' if index<4 else source)
             changed,path=imgui.input_text('HDR file',path,4096)
             if changed:self._sky_path_input=path
             if imgui.button('Load HDRI') and path:
                 self._call('set_atmosphere',sky_texture=path)
-            imgui.text_disabled('Sky dome and shadows follow the same sun direction.')
+            changed, body=imgui.combo('Main light',0 if settings['celestial_body']=='sun' else 1,['Sun','Moon'])
+            if changed: self._call('set_atmosphere',celestial_body=('sun','moon')[body])
+            imgui.text_wrapped('One active light. Azimuth/elevation control its world direction. Below the horizon, direct light is off.')
             changed,value=imgui.combo('Tone curve',0 if settings['tone_mapping']=='reinhard' else 1,
                                       ['Standard','Filmic'])
             if changed:self._call('set_atmosphere',tone_mapping=('reinhard','filmic')[value])
             angles = sun_angles(scene)
             for label, key, value, low, high in (
-                    ("Sun azimuth", "azimuth", angles['azimuth'], -180., 180.),
-                    ("Sun elevation", "elevation", angles['elevation'], 1., 80.),
-                    ("Sun temperature (K)", "sun_temperature", settings['sun_temperature'], 2000., 10000.),
-                    ("Sun diameter (deg)", "sun_size", settings['sun_size'], 0., 3.),
+                    ("Light azimuth", "azimuth", angles['azimuth'], -180., 180.),
+                    ("Light elevation", "elevation", angles['elevation'], -90., 90.),
+                    ("Light temperature (K)", "sun_temperature", settings['sun_temperature'], 2000., 10000.),
+                    ("Disc diameter (deg)", "sun_size", settings['sun_size'], 0., 3.),
                     ("Sky / fill strength", "sky_intensity", settings['sky_intensity'], 0., 3.),
                     ("Exposure (EV)", "exposure_ev", settings['exposure_ev'], -3., 3.),
                     ("Atmospheric haze", "haze", settings['haze'], 0., .1)):

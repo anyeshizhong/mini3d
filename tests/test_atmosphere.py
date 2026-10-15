@@ -21,7 +21,7 @@ class AtmosphereTests(unittest.TestCase):
         before=api.get_scene_state()
         for key, value in (('enabled',1),('ground','yes'),('haze',-1),
                 ('sun_temperature',1999),('exposure_ev',float('nan')),
-                ('ground_scale',0),('azimuth',True),('elevation',90),('ground_z',float('inf'))):
+                ('ground_scale',0),('azimuth',True),('elevation',90.1),('ground_z',float('inf'))):
             with self.assertRaises(ValueError):
                 api.set_atmosphere(**{key:value,'azimuth':False if key=='azimuth' else 20})
             self.assertEqual(api.get_scene_state(),before)

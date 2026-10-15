@@ -58,10 +58,10 @@ geometry示例Scene只输出model节点，URDF另保留axes-only link；原规�
 
 ## Rendering
 
-1. Scene.update 更新世界矩阵；RenderPlan读取本帧矩阵和bounds，准备view/projection、保守六面AABB剔除、legacy/imported与opaque/BLEND分区及统计。
+1. Scene.update 更新世界矩阵；RenderPlan值检查本帧矩阵和bounds，复用未变化的世界包围盒，准备view/projection、保守六面AABB剔除、legacy/imported与opaque/BLEND分区及统计。
 2. Color可见性不限制shadow_candidates。ShadowMap保留画外caster，shadow_fit按receiver/caster不同几何条件拟合；无有效fit时回退全场景。
 3. ShadowMap写自有depth FBO；MASK测alpha，Unlit可投但不受，BLEND不投透射阴影。它借用MR上传缓存，不拥有该缓存。
-4. GLRenderer绘制legacy REALISTIC/TOON/OUTLINE，再让MaterialRenderer消费Plan；独立entity-list调用仍可使用。GLSL在material_shaders，GPU上传/材质/uniform由MR所有。
+4. GLRenderer绘制legacy REALISTIC/TOON/OUTLINE，再让MaterialRenderer消费Plan；独立entity-list调用仍可使用。GLSL在material_shaders，GPU上传/材质/uniform由MR所有。兼容不透明重复网格在阴影与颜色中实例化，MASK/BLEND及legacy保留原路径；不改变Scene实体与选择结构。[性能边界](SPQR-PERFORMANCE.md)。
 5. BLEND仍按mesh中心深度排序，normal仍用原pseudoinverse；EnvironmentMap管理固定离线split-sum cube/LUT，Scene只保存开关/强度。
 6. Editor绘制grid/axes/selection，Gizmo是UI overlay。clean Shot隐藏辅助元素，不改原Scene。
 
@@ -84,7 +84,7 @@ scene_io保持v1/v2/v3载入、v3保存、临时文件原子替换；Editor原sa
 | 状态、selection、业务历史 | Editor / Scene / Commands；UI与API同一个控制器 |
 | SDL、ImGui、previews | editor_runtime的ExitStack，构造失败也回收已创建资源 |
 | legacy VAO/VBO/EBO、guides | GLRenderer.close，销毁context之前 |
-| 材质网格/贴图/program/selection | MaterialRenderer.release/close；旧Shader常量和状态方法仍re-export |
+| 材质网格/贴图/program/selection/实例VAO与VBO | MaterialRenderer.release/close；旧Shader常量和状态方法仍re-export |
 | IBL cube/LUT | EnvironmentMap，由MR持有并close |
 | shadow depth/FBO/program | ShadowMap.close；只借用MR上传结果 |
 | viewport/MSAA附件 | RenderTarget.resize/close；调用者持有 |

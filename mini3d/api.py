@@ -112,12 +112,15 @@ class Mini3DAPI:
     def set_atmosphere(self, enabled=None, ground=None, sun_temperature=None,
                        exposure_ev=None, haze=None, ground_scale=None, ground_z=None,
                        azimuth=None, elevation=None, sky_texture=None, sky_intensity=None,
-                       ground_texture=None, sun_size=None, tone_mapping=None):
+                       ground_texture=None, sun_size=None, tone_mapping=None, celestial_body=None):
         return self._app.set_atmosphere(enabled=enabled, ground=ground,
             sun_temperature=sun_temperature, exposure_ev=exposure_ev, haze=haze,
             ground_scale=ground_scale, ground_z=ground_z, azimuth=azimuth, elevation=elevation,
             sky_texture=sky_texture,sky_intensity=sky_intensity,ground_texture=ground_texture,
-            sun_size=sun_size,tone_mapping=tone_mapping)
+            sun_size=sun_size,tone_mapping=tone_mapping,celestial_body=celestial_body)
+
+    def sky_preset(self, name):
+        return self._app.sky_preset(name)
 
     def sunset_preset(self):
         return self._app.sunset_preset()
@@ -333,6 +336,11 @@ class Mini3DAPI:
         group = self._commands.create_rectangular_formation(source_id, rows, columns,
             spacing_x, spacing_y, facing=facing, include_source=include_source)
         return self.get_group(group.group_id)
+
+    def align_adjacent(self, entity_ids, reference_id, axis='x', side=1, gap=0.0):
+        entities = self._commands.align_adjacent(entity_ids, reference_id, axis, side, gap)
+        self._app.sync_selection()
+        return [self.get_entity(entity.entity_id) for entity in entities]
 
     def create_roman_street(self, segments=6, road_width=6.0, origin=None, facing=0.0,
                             variation=False, seed=0, extension_segments=0):
