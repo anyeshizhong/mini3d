@@ -10,6 +10,6 @@
 
 新增GPU验证：`python -B tests/spqr_sky_quality_smoke.py --output captures/sky-quality`。
 太阳从0.53度调到2度时，测试机位亮盘面积由188增至2340像素；GL错误0。
-完整性能和图像对照采用已有spqr_performance_benchmark、spqr_editor_performance和spqr_performance_smoke脚本，以修改前源码快照为基线。天空本身预期改变颜色，不能要求与旧天空逐像素相同；只验证贴图状态优化时，参考必须使用相同天空shader。
+完整性能和图像对照采用统一的 `spqr_engine_benchmark.py`（需要街道规模时传 `--sizes 85 118 170 340`）、`spqr_editor_performance.py` 和 `spqr_performance_smoke.py` 脚本，以修改前源码快照为基线。天空本身预期改变颜色，不能要求与旧天空逐像素相同；只验证贴图状态优化时，参考必须使用相同天空shader。
 
 不含建筑纹理重制、LOD、GI或新的云体积系统。此轮代码保留待用户验收，不自动提交。
