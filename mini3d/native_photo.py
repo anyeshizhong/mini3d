@@ -145,7 +145,8 @@ class NativePhotoRenderer:
                     runtime.mkdir(exist_ok=True)
                     directory = tempfile.TemporaryDirectory(prefix='native-photo-', dir=str(runtime))
                     try:
-                        export_live_bundle(scene, camera, self.owner, Path(directory.name), self.root)
+                        export_live_bundle(scene, camera, self.owner, Path(directory.name),
+                                           self.root.parent / 'spqr-native')
                         handle = self._check(self.library.spqr_photo_create(directory.name, *size, samples))
                     except BaseException:
                         directory.cleanup()
