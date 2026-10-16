@@ -1,4 +1,4 @@
-"""Compare legacy entry frames against a Git revision with fixed frame timing.
+"""Compare canonical example frames against historical Git sources with fixed timing.
 
 Uses the current GL renderer in both runs; shaders are checked separately by Q2.
 Original sources are read from Git in memory, without another worktree.
@@ -46,8 +46,12 @@ def run(output, reference='efd5ddc'):
                     for name in sources:
                         run_demo(name, directory)
             else:
-                for name in sources:
-                    run_demo(name, directory)
+                for old_name, module_name in (
+                    ('1.py', 'examples.primitives'),
+                    ('1 copy.py', 'examples.circular_motion'),
+                    ('2.py', 'examples.urdf_car'),
+                ):
+                    run_demo(module_name, directory, capture_stem=Path(old_name).stem)
     images = []
     for before in (output / 'before').glob('*.png'):
         after = output / 'after' / before.name

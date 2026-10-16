@@ -1,4 +1,4 @@
-"""Run all real demo loops in hidden OpenGL windows, with navigation events.
+"""Run the canonical example modules in hidden OpenGL windows, with navigation events.
 
 Usage: python -B tests/render_smoke.py [screenshot-directory]
 Requires a working desktop OpenGL driver; not part of the headless unit suite.
@@ -18,9 +18,15 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 
-def run_demo(filename, output=None):
-    # Importing must not open a window or start the old top-level demo loop.
-    module = runpy.run_path(str(ROOT / filename), run_name="smoke_import")
+def run_demo(filename, output=None, *, capture_stem=None):
+    # Canonical demos are packages with relative imports; historical tests still use paths.
+    if filename.startswith("examples."):
+        module = runpy.run_module(filename, run_name="smoke_import")
+        stem = filename.rsplit(".", 1)[-1]
+    else:
+        module = runpy.run_path(str(ROOT / filename), run_name="smoke_import")
+        stem = Path(filename).stem
+    capture_stem = capture_stem or stem
     assert not pygame.display.get_init(), "Import unexpectedly opened a window"
     set_mode = pygame.display.set_mode
     event_get = pygame.event.get
@@ -61,7 +67,7 @@ def run_demo(filename, output=None):
             assert np.count_nonzero(colorful) > 1000, "Missing model in " + filename
             if output is not None:
                 image = pygame.image.fromstring(pixels, size, "RGB", True)
-                pygame.image.save(image, str(output / (Path(filename).stem + "-" + str(state["frame"]) + ".png")))
+                pygame.image.save(image, str(output / (capture_stem + "-" + str(state["frame"]) + ".png")))
             state["captures"] += 1
         flip()
         state["frame"] += 1
@@ -81,8 +87,8 @@ if __name__ == "__main__":
     output = Path(sys.argv[1]) if len(sys.argv) > 1 else None
     if output is not None:
         output.mkdir(parents=True, exist_ok=True)
-    for filename in ("1.py", "1 copy.py", "2.py"):
-        if filename == '2.py' and not (ROOT / 'model/07_urdf_car/car/urdf/car.urdf').is_file():
-            print('SKIP: 2.py requires optional local 07 URDF assets')
+    for filename in ("examples.primitives", "examples.circular_motion", "examples.urdf_car"):
+        if filename == 'examples.urdf_car' and not (ROOT / 'model/07_urdf_car/car/urdf/car.urdf').is_file():
+            print('SKIP: examples.urdf_car requires optional local 07 URDF assets')
             continue
         run_demo(filename, output)
