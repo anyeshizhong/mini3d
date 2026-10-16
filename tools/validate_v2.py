@@ -19,8 +19,8 @@ ROOT = Path(__file__).resolve().parents[1]
 def source_hashes():
     files = list((ROOT/'mini3d').rglob('*.py')) + list((ROOT/'examples').glob('*.py'))
     files += list((ROOT/'mini3d/resources').rglob('*'))
-    files += [ROOT/name for name in ('editor_app.py','editor.py','1.py','1 copy.py','2.py',
-                                    'requirements.txt','model/manifest.json')]
+    files += [ROOT/name for name in ('editor_app.py', 'editor.py', 'requirements.txt',
+                                    'model/manifest.json')]
     return {str(p.relative_to(ROOT)).replace('\\','/'): hashlib.sha256(p.read_bytes()).hexdigest()
             for p in sorted(files) if p.is_file()}
 

@@ -138,14 +138,16 @@ Shot Camera 不接受鼠标导航；需要调整位置时，返回 Editor View �
 本机工作环境为 已有Python环境（Python 3.8）。在 PowerShell 中执行：
 
 ```powershell
-python 1.py
-python "1 copy.py"
-python 2.py
+python -B -m examples.primitives
+python -B -m examples.circular_motion
+python -B -m examples.urdf_car
 ```
 
-- `1.py`：球体、圆柱、方块和 STL 模型；Tab 切换物体，I/J/K/L 平移，U/O 旋转。
-- `1 copy.py`：方块在 XZ 平面做圆周运动；Tab 切换聚焦目标，启动视野覆盖整个运动路径。
-- `2.py`：小车 URDF；I/J/K/L 移动整车，U/O 旋转整车，Tab 切换车轮关节，Z/X 调节关节角。
+- `examples.primitives`：球体、圆柱、方块和 STL 模型；Tab 切换物体，I/J/K/L 平移，U/O 旋转。
+- `examples.circular_motion`：方块在 XZ 平面做圆周运动；Tab 切换聚焦目标，启动视野覆盖整个运动路径。
+- `examples.urdf_car`：小车 URDF；I/J/K/L 移动整车，U/O 旋转整车，Tab 切换车轮关节，Z/X 调节关节角。
+
+旧根目录的三个数字命名脚本已由上述模块入口替代。
 
 资源路径相对脚本文件解析，可从其他工作目录启动。依赖为 `pygame`、`numpy`、`numpy-stl`、`PyOpenGL`，主渲染器需要支持 GLSL 3.30 的 OpenGL 环境。
 
@@ -165,7 +167,7 @@ python 2.py
 | R | 恢复启动视角 |
 | Esc | 退出 |
 
-数字键 2 也可切换顶视，兼容原实验入口。`2.py` 初始聚焦整车；Tab 选中车轮后，F 聚焦该车轮，R 恢复启动时整车视角。`1 copy.py` 的 F 聚焦物体当前所在位置，不持续跟随移动；Home 也按当前姿态取景。
+数字键 2 也可切换顶视，兼容原实验入口。`examples.urdf_car` 初始聚焦整车；Tab 选中车轮后，F 聚焦该车轮，R 恢复启动时整车视角。`examples.circular_motion` 的 F 聚焦物体当前所在位置，不持续跟随移动；Home 也按当前姿态取景。
 
 世界坐标为 Z 向上；前视从 +X 看向目标，右视从 +Y 看向目标。预设视角仍使用透视投影。原有 WASD/方向键飞行相机已由鼠标轨道操作替代；Fly、Follow 和正交投影留待后续实现。
 
