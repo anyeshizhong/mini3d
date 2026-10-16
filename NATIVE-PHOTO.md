@@ -18,7 +18,7 @@ Shot 工作区内，鼠标放在画面上滚动滚轮会沿镜头方向持续移
 
 ## 位置与构建
 
-`mini3d/native_photo.py` 是共享上下文适配层；`native_photo_bundle.py` 低频同步当前场景和参数。`native/spqr_photo.dll` 需本机 x64 构建，不依赖 Python C 扩展 ABI，镜头帧通过 ctypes 调用。C++ 源在仓库内的 `spqr-native/src/native_photo.*` 和渲染核心中。Windows 安装 CMake、MinGW-w64（含 OpenGL 头文件）及项目 Python 依赖后，在项目根执行：
+`mini3d/native_photo.py` 是共享上下文适配层；`native_photo_bundle.py` 低频同步当前场景和参数。离线查看器与实时 Shot 共享唯一的原生资源导出器 `spqr-native/tools/export_scene.py` 和阴影源码 `spqr-native/shaders/shadow_cascade.glsl`；本机运行必须保留这两份源码文件所在的项目目录。`native/` 仍是 DLL 安装目录，`native/spqr_photo.dll` 需本机 x64 构建，不依赖 Python C 扩展 ABI，镜头帧通过 ctypes 调用。C++ 源在仓库内的 `spqr-native/src/native_photo.*` 和渲染核心中。Windows 安装 CMake、MinGW-w64（含 OpenGL 头文件）及项目 Python 依赖后，在项目根执行：
 
 ```powershell
 cmake -S spqr-native -B spqr-native/build -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release

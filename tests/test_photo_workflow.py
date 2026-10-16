@@ -106,4 +106,16 @@ class PhotoWorkflowTests(unittest.TestCase):
         self.assertEqual(app.shot_camera.size,full)
 
 
+    def test_native_photo_uses_canonical_native_bundle_sources(self):
+        # Live Shot and standalone native export must load the same implementation.
+        from mini3d.native_photo_bundle import _export_helpers
+        root = Path(__file__).resolve().parents[1]
+        exporter = root / 'spqr-native' / 'tools' / 'export_scene.py'
+        shader = root / 'spqr-native' / 'shaders' / 'shadow_cascade.glsl'
+        self.assertTrue(exporter.is_file())
+        self.assertTrue(shader.is_file())
+        self.assertEqual(Path(_export_helpers().__file__).resolve(), exporter.resolve())
+        self.assertTrue(callable(_export_helpers().write_scene_binary))
+
+
 if __name__=='__main__':unittest.main()

@@ -21,7 +21,7 @@ class UnsupportedNativeScene(RuntimeError):
 
 @lru_cache(maxsize=1)
 def _export_helpers():
-    path = Path(__file__).resolve().parents[1] / "native" / "export_scene.py"
+    path = Path(__file__).resolve().parents[1] / "spqr-native" / "tools" / "export_scene.py"
     if not path.is_file():
         raise RuntimeError("Missing native export helper: " + str(path))
     spec = importlib.util.spec_from_file_location("_mini3d_native_export_scene", path)

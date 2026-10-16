@@ -25,11 +25,11 @@ bin/spqr-native.exe --bundle assets --output demo-output --route orbit --seconds
 - `src/bundle.*`：版本化资源包、共享网格/材质/纹理与独立实体。
 - `src/shadow_fit.*`：double 精度接收区域、摄影地面投影、双侧盒/视锥交点与画外 caster 深度拟合。
 - 同文件提供保守可见近裁距离计算；颜色使用修复后的深度范围，阴影拟合与天空保留原相机输入。
-- `shaders/shadow_cascade.glsl` 是原生近远阴影扩展；基础material.frag仍保存原样，运行时仅在新模式替换阴影采样函数。导出工具会复制此扩展到资源包。
+- `shaders/shadow_cascade.glsl` 是唯一的原生近远阴影扩展源码，供独立导出器与 Shot 原生摄影共用；基础material.frag仍保存原样，运行时仅在新模式替换阴影采样函数。导出时将此扩展复制到资源包。
 - `src/renderer.*`：原有 GLSL、颜色/阴影实例化、原生裁剪和 OpenGL 状态管理。
 - 颜色目标固定为与旧版一致的 RGBA8 / depth24-stencil8，随后复制到窗口；不依赖窗口默认深度缓冲格式。
 - `src/platform_win32.*`：Windows/WGL OpenGL 3.3 上下文。原型先针对当前实机，尚未提供跨平台窗口后端。
-- `tools/export_scene.py`：一次性导出 Python 程序化资产、现有着色器、测试相机路线及参考图。原生运行不调用资产工厂。
+- `tools/export_scene.py`：唯一的资源包导出与序列化实现，同时由 `mini3d/native_photo_bundle.py` 动态加载供 Shot 原生摄影使用；独立运行时导出 Python 程序化资产、Shader、测试机位和参考图。原生查看器运行期间不调用 Python 资产工厂。
 - `tools/run_gpu.py`：只为指定测试可执行文件设置临时高性能显卡偏好，退出恢复原值；报告实际 GPU 仍以 GL_RENDERER 为准。
 - `tools/compare_captures.py`：RGB 与阴影深度比较，默认要求完全相等，任何容差必须显式传入并报告。
 - `FORMAT.md`：场景/相机包协议。
