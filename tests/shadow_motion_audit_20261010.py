@@ -19,6 +19,7 @@ import numpy as np
 import pygame
 from OpenGL import GL as gl
 from PIL import Image, ImageDraw
+from api_camera_trajectories import linear_path
 import photographer_session as fixture
 ROOT = fixture.ROOT
 from mini3d.api import Mini3DAPI
@@ -84,16 +85,21 @@ def union_fit(matrices):
 
 
 def camera_path(api, label, count):
+    # Camera paths are data. The AI API owns every pose change; this audit
+    # accesses the resulting Camera only for low-level shadow-map measurement.
+    if label in ('lateral', 'low-sun'):
+        track = linear_path([7, 9, 13], [7.2, 9, 13],
+                            [.6, .5, 0], [.8, .5, 0], count)
+    else:
+        track = linear_path([7, 9, 13], [6, 7.5, 10],
+                            [.6, .5, 0], [.6, .5, 0], count)
+    commands = list(track)
+    api.create_shot_camera(position=commands[0]['position'],
+                           target=commands[0]['target'],
+                           focal_mm=50, aspect='4:3', near=.05, far=400)
     poses = []
-    for u in np.linspace(0, 1, count):
-        if label in ('lateral', 'low-sun'):
-            position = np.array([7, 9, 13.])+[.2*u, 0, 0]
-            target = np.array([.6, .5, 0.])+[.2*u, 0, 0]
-        else:
-            position = (1-u)*np.array([7, 9, 13.])+u*np.array([6, 7.5, 10.])
-            target = [.6, .5, 0]
-        api.create_shot_camera(position=position, target=target, focal_mm=50,
-                               aspect='4:3', near=.05, far=400)
+    for args in commands:
+        api.set_shot_camera_pose(**args)
         poses.append(api._app.shot_camera)
     return poses
 
