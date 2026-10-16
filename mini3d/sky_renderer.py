@@ -66,7 +66,7 @@ vec3 nightRadiance(vec3 ray, vec3 emitter, float blur) {
         float radius=radians(max(celestialDiameter,.1)*.5);
         float edge=max(length(fwidth(ray)),.00012)+blur;
         float disc=1.-smoothstep(radius-edge,radius+edge,angle);
-        float textureShade=.78+.22*skyNoise(ray*600.);
+        float textureShade=disc>0. ? .78+.22*skyNoise(ray*600.) : 1.;
         sky+=sunColor*(disc*textureShade*.55+ .012*exp(-angle*18.));
     }
     return sky*skyIntensity;
@@ -85,13 +85,35 @@ vec3 skyRadiance(vec3 ray, vec3 sun, float blur) {
     vec3 sky=mix(horizon,zenith,(1.0-exp(-altitude*22.0)));
     float angle=acos(clamp(dot(ray,sun),-1.0,1.0));
     sky+=sunColor*.6*exp(-angle*4.5)*exp(-altitude*1.3);
-    float disc=1.0-smoothstep(.00465+blur,.0058+blur,angle);
+    // Angular radius follows the lighting control. Pixel derivatives soften
+    // subpixel silhouettes instead of a fixed-resolution hard edge.
+    float radius=radians(max(celestialDiameter,.1)*.5);
+    float edge=max(length(fwidth(ray))*.65,.00012);
+    float disc=1.0-smoothstep(max(0.,radius+blur-edge),radius+blur+edge,angle);
     sky+=sunColor*8.0*disc/(1.0+blur*150.0);
-    // Small wispy cloud layer; no separate sun or sky mesh is needed.
+    // Fine cloud structure belongs to sharp sky rays. Rough reflections and
+    // aerial haze use the smooth large-scale sky approximation: evaluating
+    // unresolved cloud octaves there creates noisy matte surfaces and wastes
+    // fragment work. This is an approximation, not a prefiltered GGX cubemap.
     vec3 p=ray/max(.12,ray.z+.22); p.xy*=1.3; p.z*=9.0;
-    float n=.58*skyNoise(p*1.7)+.28*skyNoise(p*3.4)+.14*skyNoise(p*6.8);
-    float cloud=smoothstep(.50,.68,n)*smoothstep(.02,.13,altitude)*(1.0-smoothstep(.35,.7,altitude));
-    sky=mix(sky,vec3(.40,.24,.17)+sunColor*.12,cloud*.65*(1.0-blur));
+    float footprint=length(fwidth(p));
+    if (blur<.06 && altitude>.02 && altitude<.7) {
+        float n=0., weight=0.;
+        float frequency=1.7, amplitude=.5;
+        for(int octave=0;octave<5;++octave) {
+            float octaveWeight=1.-smoothstep(.35,1.,footprint*frequency);
+            if(octaveWeight>0.) {
+                n+=amplitude*octaveWeight*skyNoise(p*frequency);
+                weight+=amplitude*octaveWeight;
+            }
+            frequency*=2.; amplitude*=.5;
+        }
+        n=weight>0. ? n/weight : .5;
+        float cloud=smoothstep(.46,.70,n)*smoothstep(.02,.13,altitude)
+                    *(1.-smoothstep(.35,.7,altitude));
+        float fade=1.-smoothstep(.025,.06,blur);
+        sky=mix(sky,vec3(.40,.24,.17)+sunColor*.12,cloud*.65*fade);
+    }
     return sky;
 }
 vec3 photoOutput(vec3 linearColor) {

@@ -116,6 +116,21 @@ class OrbitController:
                                              np.log(self.max_distance))))
         self.update()
 
+    def dolly(self, distance):
+        """Translate eye and orbit target together, crossing the old target.
+
+        Keep the exact camera rotation (including imported roll), focal length
+        and orbit distance. A photo move must not shrink toward a fixed pivot.
+        """
+        if not np.isfinite(distance):
+            raise ValueError("dolly distance must be finite")
+        delta = self.camera.forward * float(distance)
+        position = _vector3(self.camera.position + delta, "camera position")
+        target = _vector3(self.target + delta, "target")
+        self.target = target
+        self.camera.position = position
+        self._update_clipping()
+
     def set_view(self, name):
         """Look from a named world-axis side while retaining target/distance."""
         presets = {

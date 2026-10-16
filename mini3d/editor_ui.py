@@ -448,7 +448,7 @@ class EditorUI:
                 if imgui.button("Guides on" if self.app.composition_grid else "Guides off"):
                     self.app.composition_grid = not self.app.composition_grid
                 imgui.same_line()
-                imgui.text_disabled('Editor View changes framing; Camera View previews your edits.')
+                imgui.text_disabled('Wheel: move | Shift: faster | Ctrl: fine | Camera View: preview edits')
 
         imgui.separator()
         image_x, image_y = imgui.get_cursor_screen_pos()
@@ -751,7 +751,7 @@ class EditorUI:
         settings = atmosphere_state(scene)
         imgui.text("SKY / CELESTIAL LIGHT")
         if imgui.button("Golden-hour preset", width=-1):
-            self._call("sunset_preset")
+            self._call("sky_preset", 'sunset')
         if imgui.button("Photographic sunset preset", width=-1):
             self._call("sunset_preset")
             self._call("set_atmosphere",sky_texture='sunset',ground_texture='gravel',
@@ -994,6 +994,7 @@ class EditorUI:
                 "Drag a transform handle: edit the selected object",
                 "Middle drag: orbit | Shift + middle drag: pan",
                 "Mouse wheel: zoom",
+                "Shot wheel: move forward/back | Shift: faster | Ctrl: fine steps",
                 "Q: select | G: move | R: rotate | S: scale",
                 "F: focus selected | Home: frame all",
                 "1 / 3 / 7: front / right / top",

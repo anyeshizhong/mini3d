@@ -96,13 +96,15 @@ void main() {
 """
 
 
-def light_matrix(entities, direction, camera=None, resolution=1024, aspect=None, geometry_cache=None):
+def light_matrix(entities, direction, camera=None, resolution=1024, aspect=None, geometry_cache=None,
+                 prepared=None):
     """Cached AABBs; optional Shot receiver fit with whole-scene fallback."""
     if camera is not None:
         from .shadow_fit import receiver_matrix
-        entities = list(entities)
+        if not isinstance(entities, list):
+            entities = list(entities)
         fitted = receiver_matrix(entities, direction, camera, resolution, aspect=aspect,
-                                 geometry_cache=geometry_cache)
+                                 geometry_cache=geometry_cache, prepared=prepared)
         if fitted is not None:
             return fitted
     light = np.array(direction, dtype=np.float64, copy=True)
@@ -114,6 +116,11 @@ def light_matrix(entities, direction, camera=None, resolution=1024, aspect=None,
     rotation = np.stack((right, np.cross(light, right), light))
     boxes = []
     for entity in entities:
+        record = None if prepared is None else prepared.records.get(id(entity))
+        geometry = None if record is None else record['geometry']
+        if geometry is not None:
+            boxes.append(geometry[2] @ rotation.T)
+            continue
         bounds = getattr(entity.model, 'bounds', None)
         if bounds is None:
             continue
@@ -137,6 +144,32 @@ def light_matrix(entities, direction, camera=None, resolution=1024, aspect=None,
     return matrix
 
 
+def _shadow_input_key(entities, geometry=None):
+    """Small shared-material signatures plus already checked instance tokens."""
+    if geometry is not None and entities is geometry.entities:
+        return id(geometry), geometry.revision
+    materials, records = {}, []
+    for entity in entities:
+        mesh = entity.model
+        mid = id(mesh)
+        if mid not in materials:
+            material = getattr(mesh, 'material', None) or {}
+            tex = material.get('textures', {}).get('baseColor') or {}
+            materials[mid] = (material.get('alphaMode', 'OPAQUE'),
+                material.get('alphaCutoff', .5),
+                tuple(material.get('pbrMetallicRoughness', {}).get('baseColorFactor', [1]*4)),
+                id(tex.get('image')), tuple(sorted(tex.get('sampler', {}).items())),
+                bool(material.get('extras', {}).get('photographicGround')))
+        source = None if geometry is None else geometry.records.get(id(entity))
+        if source is None:
+            stamp = (np.asarray(entity.world_matrix).tobytes(),
+                     np.asarray(getattr(mesh, 'bounds', None)).tobytes())
+        else:
+            stamp = source.get('token', source['key'])
+        records.append((mid, stamp, materials[mid]))
+    return tuple(records)
+
+
 class ShadowMap:
     """One lazy depth texture/FBO. GPU geometry is owned by existing renderers."""
     UNIT = 7  # MaterialRenderer uses units 0..6.
@@ -149,6 +182,7 @@ class ShadowMap:
         self.gpu_instancing = True
         self._locations = {}
         self._geometry_cache = {}
+        self._instance_payloads = {}
 
     def _allocate(self, size):
         if self.size == size:
@@ -192,33 +226,26 @@ class ShadowMap:
             self.close()
             raise
 
-    def render(self, entities, scene, renderer, camera=None, aspect=None):
+    def render(self, entities, scene, renderer, camera=None, aspect=None, geometry=None):
         self.draw_calls = self.triangles = 0
         self.cache_hit = False
         from .gl_state import save_state, restore_state
-        entities = list(entities)
+        if not isinstance(entities, list):
+            entities = list(entities)
         # Mesh/texture payloads are immutable GPU resources; small mutable
         # transform, bound and cutout inputs are compared on every call.
         direction = scene_light_direction(scene)
-        records = []
-        for entity in entities:
-            material = getattr(entity.model, 'material', None) or {}
-            tex = material.get('textures', {}).get('baseColor') or {}
-            records.append((id(entity.model), np.asarray(entity.world_matrix).tobytes(),
-                np.asarray(getattr(entity.model, 'bounds', None)).tobytes(),
-                material.get('alphaMode', 'OPAQUE'), material.get('alphaCutoff', .5),
-                tuple(material.get('pbrMetallicRoughness', {}).get('baseColorFactor', [1]*4)),
-                id(tex.get('image')), tuple(sorted(tex.get('sampler', {}).items()))))
+        records = _shadow_input_key(entities, geometry)
         camera_key = None if camera is None else (
             np.asarray(camera.view_matrix).tobytes(),
             np.asarray(camera.projection_matrix(camera.aspect if aspect is None else aspect)).tobytes())
-        key = (scene.shadow_resolution, np.asarray(direction).tobytes(), camera_key, tuple(records))
+        key = (scene.shadow_resolution, np.asarray(direction).tobytes(), camera_key, records)
         if self.matrix is not None and key == self._cache_key:
             self.cache_hit = True
             return
         self._cache_key = None
         matrix = light_matrix(entities, direction, camera, scene.shadow_resolution,
-                              aspect=aspect, geometry_cache=self._geometry_cache)
+                              aspect=aspect, geometry_cache=self._geometry_cache, prepared=geometry)
         if matrix is None:
             self.matrix = None
             return
@@ -256,7 +283,19 @@ class ShadowMap:
             # Only reject geometry outside the actual light clip volume.
             # Color-camera visibility must never remove offscreen casters.
             from .render_plan import batch_world_bounds, aabb_visible, frustum_planes
-            bounds = batch_world_bounds(entities)
+            if geometry is not None and entities is geometry.entities:
+                bounds = geometry.bounds
+            elif geometry is not None:
+                bounds = []
+                for entity in entities:
+                    source = geometry.records.get(id(entity))
+                    if source is None:
+                        bounds.extend(batch_world_bounds([entity]))
+                    else:
+                        bound = source['geometry']
+                        bounds.append(None if bound is None else bound[3])
+            else:
+                bounds = batch_world_bounds(entities)
             tested = [i for i, bound in enumerate(bounds) if bound is not None]
             visible = np.ones(len(entities), dtype=bool)
             if tested:
@@ -278,15 +317,32 @@ class ShadowMap:
                 else:
                     individual.append(entity)
             gl.glUniform1i(loc('alphaMask'),False)
+            used_payloads = {}
             for batch in groups.values():
                 if len(batch) < 2:
                     individual.extend(batch)
                     continue
                 mesh = renderer.material_renderer._mesh(batch[0].model)
                 gl.glUniform1i(loc('useInstances'),True)
-                renderer.material_renderer.draw_instances(mesh, [e.world_matrix for e in batch])
+                if geometry is None:
+                    renderer.material_renderer.draw_instances(mesh, [e.world_matrix for e in batch])
+                else:
+                    sources = [geometry.records.get(id(entity)) for entity in batch]
+                    stamp = tuple(source.get('token', source['key']) if source is not None
+                                  else np.asarray(entity.world_matrix).tobytes()
+                                  for entity, source in zip(batch, sources))
+                    mid = id(batch[0].model)
+                    payload = self._instance_payloads.get(mid)
+                    if payload is None or payload[0] != stamp:
+                        matrices = [entity.world_matrix if source is None else source['matrix']
+                                    for entity, source in zip(batch, sources)]
+                        payload = (stamp, renderer.material_renderer.instance_payload(matrices))
+                    used_payloads[mid] = payload
+                    renderer.material_renderer.draw_instances(mesh, payload=payload[1],
+                                                               cache_key=('shadow', id(self)))
                 self.draw_calls += 1
                 self.triangles += mesh[4] // 3 * len(batch)
+            self._instance_payloads = used_payloads
             gl.glUniform1i(loc('useInstances'),False)
             for entity in individual:
                 material = getattr(entity.model, 'material', None)
@@ -306,7 +362,9 @@ class ShadowMap:
                 else:
                     gpu = renderer._get_gpu(entity.model)
                     vao, count = gpu.vao, gpu.count
-                gl.glUniformMatrix4fv(loc('model'),1,gl.GL_TRUE,np.asarray(entity.world_matrix,np.float32))
+                source = None if geometry is None else geometry.records.get(id(entity))
+                model = np.asarray(entity.world_matrix,np.float32) if source is None else source['matrix']
+                gl.glUniformMatrix4fv(loc('model'),1,gl.GL_TRUE,model)
                 gl.glBindVertexArray(vao)
                 gl.glDrawElements(gl.GL_TRIANGLES,count,gl.GL_UNSIGNED_INT,None)
                 self.draw_calls += 1
@@ -378,3 +436,4 @@ class ShadowMap:
         self._cache_key = None
         self._locations.clear()
         self._geometry_cache.clear()
+        self._instance_payloads.clear()

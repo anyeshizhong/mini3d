@@ -126,6 +126,11 @@ class Entity:
 
 class Scene:
     def __init__(self):
+        from .spatial_index import SpatialIndex
+        # Shared by shallow render-only copies; owned by this scene's lifetime.
+        self._color_spatial_index = SpatialIndex()
+        self.spatial_culling_enabled = False
+        self._snapshot_bank = {}
         self.root_entities = []
         from .placement_plane import PlacementPlane
         self.placement_plane = PlacementPlane()
@@ -227,6 +232,8 @@ class Scene:
             self.selected_group_id = None
 
     def update(self):
+        if getattr(self, '_frame_geometry', None) is not None:
+            return  # The runtime synchronized after this frame's input/IPC.
         for entity in self.root_entities:
             entity.update_transform()
 

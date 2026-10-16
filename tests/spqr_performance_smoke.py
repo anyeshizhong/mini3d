@@ -22,7 +22,12 @@ def main():
     parser.add_argument('--baseline-project',type=Path,required=True)
     parser.add_argument('--output',type=Path,required=True)
     parser.add_argument('--photo-samples',type=int,choices=(1,4),default=1)
+    parser.add_argument('--pompeii', action='store_true', help='Use the expanded district stress scene')
     args=parser.parse_args();args.output.mkdir(parents=True,exist_ok=False)
+    if args.pompeii:
+        from tools.build_pompeii import build_scene as build_example
+    else:
+        build_example = build_scene
     base=args.baseline_project.resolve()/'mini3d'
     spec=importlib.util.spec_from_file_location('spqr_reference',base/'__init__.py',submodule_search_locations=[str(base)])
     package=importlib.util.module_from_spec(spec);sys.modules[spec.name]=package;spec.loader.exec_module(package)
@@ -34,7 +39,7 @@ def main():
                 module=lambda name:importlib.import_module(prefix+'.'+name)
                 renderer=module('gl_renderer').GLRenderer(1920,1080)
                 renderer.render_mode='REALISTIC'
-                api=module('api').Mini3DAPI(renderer);build_scene(api)
+                api=module('api').Mini3DAPI(renderer);build_example(api)
                 api.create_shot_camera(position=[1,-10,2],target=[0,20,3],focal_mm=24,near=.05,far=200)
                 states[label]=(api,renderer,module('scene'))
             def compare(name,setup):
@@ -60,6 +65,10 @@ def main():
                               ('roof-left',[-13,2,10],[0,8,3]),('roof-right',[13,2,10],[0,8,3]),
                               ('roof-underside',[4,-3,.4],[7,0,5]),('overhead',[26,-36,28],[0,8,0])):
                 compare(name,pose(p,q))
+            if args.pompeii:
+                from tools.build_pompeii import VIEWS
+                for name in ('market', 'court', 'overview', 'west-lane'):
+                    compare(name, pose(*VIEWS[name]))
             for preset in ('stars','moonlit'):
                 def setup(api,r,m):
                     api.sky_preset(preset)

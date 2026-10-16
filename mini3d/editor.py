@@ -655,7 +655,14 @@ class Editor:
             return
         if (event.type == pygame.MOUSEWHEEL and ui.viewport_hovered and
                 self.gizmo.drag is None and self.surface_drag is None):
-            self.viewer.controller.zoom(event.y)
+            if self.workspace == 'Shot':
+                mods = getattr(event, 'mod', None)
+                if mods is None:
+                    mods = pygame.key.get_mods() if pygame.display.get_init() else 0
+                step = .1 if mods & pygame.KMOD_CTRL else 5. if mods & pygame.KMOD_SHIFT else 1.
+                self.viewer.controller.dolly(float(getattr(event, 'precise_y', event.y)) * step)
+            else:
+                self.viewer.controller.zoom(event.y)
         if event.type != pygame.KEYDOWN or ui.keyboard_captured:
             return
         control = bool(event.mod & pygame.KMOD_CTRL)

@@ -106,10 +106,14 @@ class Viewer:
         rotated scene's range unnecessarily. Entirely rearward boxes are ignored.
         """
         self.scene.update()
-        boxes = list(_world_boxes(self.scene.root_entities, visible_only=True))
-        if not boxes:
+        from .scene_snapshot import snapshot
+        prepared = snapshot(self.scene) if hasattr(self.scene, 'get_flat_render_list') else None
+        boxes = None if prepared is None else prepared.corners
+        if prepared is None or not prepared.complete:
+            boxes = np.asarray(list(_world_boxes(self.scene.root_entities, visible_only=True)))
+        if boxes is None or not len(boxes):
             return None
-        depths = (np.asarray(boxes) - self.camera.position) @ self.camera.forward
+        depths = (boxes - self.camera.position) @ self.camera.forward
         lo, hi = depths.min(axis=1), depths.max(axis=1)
         forward = hi > 0
         if not forward.any():

@@ -522,6 +522,11 @@ class GLRenderer:
         return self.gpu_cache[key]
 
     def render(self, scene, camera):
+        from .scene_snapshot import scene_frame
+        with scene_frame(scene):
+            self._render_frame(scene, camera)
+
+    def _render_frame(self, scene, camera):
         from .atmosphere import prepare_photographic_scene
         scene, self._photo_ground = prepare_photographic_scene(scene, camera, getattr(self, '_photo_ground', None))
         active = int(glGetIntegerv(GL_ACTIVE_TEXTURE))
@@ -545,7 +550,8 @@ class GLRenderer:
                     self.material_renderer = MaterialRenderer()
                 self.shadow_map.gpu_instancing = self.gpu_instancing
                 self.shadow_map.render(entities, scene, self,
-                                       camera=camera, aspect=float(self.w)/self.h)
+                                       camera=camera, aspect=float(self.w)/self.h,
+                                       geometry=plan.geometry)
                 self._active_shadow = self.shadow_map
                 self.render_stats.update(shadow_draw_calls=self.shadow_map.draw_calls,
                                          shadow_triangles=self.shadow_map.triangles,
@@ -565,6 +571,8 @@ class GLRenderer:
             glActiveTexture(active)
 
     def close(self):
+        if hasattr(self, 'native_photo'):
+            self.native_photo.close()
         if hasattr(self, 'depth_of_field'):
             self.depth_of_field.close()
         self.last_render_plan = None
@@ -620,7 +628,9 @@ class GLRenderer:
         # ==================== Render Based on Mode ====================
         entities, imported = plan.legacy, plan.imported
         
-        if self.render_mode == "OUTLINE":
+        if not entities:
+            pass
+        elif self.render_mode == "OUTLINE":
             # Two-pass rendering: outline + toon shading
             self._render_outline_pass(entities, V, P, scene)
             self._render_toon_pass(entities, V, P, scene, cam_pos)

@@ -53,6 +53,10 @@ def run(editor_class, initial_asset="auto", frames=None, screenshot=None, hidden
             return PygameRenderer.process_event(self, event)
 
     with ExitStack() as cleanup:
+        # Small per-frame matrices lose time to BLAS worker coordination.
+        # Scope this to the editor run and restore the caller's policy on exit.
+        from threadpoolctl import threadpool_limits
+        cleanup.enter_context(threadpool_limits(limits=1, user_api='blas'))
         pygame.init()
         cleanup.callback(pygame.quit)
         pygame.display.set_mode((1440, 900), pygame.OPENGL | pygame.DOUBLEBUF | pygame.RESIZABLE |
@@ -193,56 +197,59 @@ def run(editor_class, initial_asset="auto", frames=None, screenshot=None, hidden
                     app.handle_event(event, ui)
                 except (ValueError, OSError) as exc:
                     app.status = str(exc)
-            app.scene.update()
-            app.viewer.update_clipping()
-            app.scene.render_mode, app.scene.show_grid = app.render_mode, app.show_grid
-            app.scene.grid_scale = 10 ** math.floor(math.log10(max(app.viewer.controller.distance / 10, 1e-9))) / 20
-            if app.capture_requested:
-                app.capture_requested = False
-                try:
-                    path = app.capture_directory / ("shot_" + datetime.now().strftime("%Y%m%d_%H%M%S_%f") + ".png")
-                    app.last_capture = capture_png(app.scene, app.shot_camera, renderer, path)
-                    app.status = "Captured: " + str(app.last_capture)
-                except (OSError, ValueError, pygame.error) as exc:
-                    app.status = "Capture failed: " + str(exc)
-            photo_preview = ui.workspace == 'Shot' and app.shot_camera is not None
-            current_viewport_key = viewport_key(app, rect[2:], photo_preview, renderer.render_mode)
-            photo_size = None
-            if app.camera_view or photo_preview:
-                photo_size = quality.size(current_viewport_key, app.shot_camera.size,
-                    imgui.is_any_item_active() or app._orbiting, time.monotonic())
-            render_key = (current_viewport_key, photo_size)
-            viewport_redrawn = render_key != previous_viewport_key
-            if viewport_redrawn:
-                if app.camera_view:
-                    # Keep the ImGui image texture stable across quality changes:
-                    # UI commands are built before this frame's scene is rendered.
-                    current_target = target
-                    render_scene_view(app.scene, app.shot_camera, renderer, current_target,
-                                      photo_size, app.shot_camera.samples)
-                    shot = app.shot_camera
-                    camera = Camera(shot.position.copy(), shot.rotation.copy(), shot.fov_y, shot.near, shot.far)
-                    rendered_photo = (photo_pose(shot), camera, current_target)
-                    display_target = current_target
-                elif photo_preview:
-                    render_scene_view(app.scene, app.viewer.camera, renderer, target, photo_size,
-                                      app.shot_camera.samples, photo_camera=app.shot_camera)
-                    display_target = target
-                    rendered_photo = None
-                else:
-                    display_target = target
-                    rendered_photo = None
-                    target.resize(rect[2], rect[3], samples=1)
-                    target.bind()
-                    gl.glDisable(gl.GL_SCISSOR_TEST)
-                    gl.glDepthMask(True)
-                    renderer.resize(*rect[2:])
-                    renderer.render(app.scene, app.viewer.camera)
-                if not app.camera_view and app.selection is not None and app.selection.visible and hasattr(renderer, "material_renderer"):
-                    selected = Scene()
-                    selected.add(app.selection)
-                    renderer.material_renderer.render_selection(selected.get_flat_render_list(), app.viewer.camera, *rect[2:])
-                previous_viewport_key = render_key
+            from .scene_snapshot import scene_frame
+            with scene_frame(app.scene):
+                app.viewer.update_clipping()
+                app.scene.render_mode, app.scene.show_grid = app.render_mode, app.show_grid
+                app.scene.grid_scale = 10 ** math.floor(math.log10(max(app.viewer.controller.distance / 10, 1e-9))) / 20
+                if app.capture_requested:
+                    app.capture_requested = False
+                    try:
+                        path = app.capture_directory / ("shot_" + datetime.now().strftime("%Y%m%d_%H%M%S_%f") + ".png")
+                        app.last_capture = capture_png(app.scene, app.shot_camera, renderer, path)
+                        app.status = "Captured: " + str(app.last_capture)
+                    except (OSError, ValueError, pygame.error) as exc:
+                        app.status = "Capture failed: " + str(exc)
+                photo_preview = ui.workspace == 'Shot' and app.shot_camera is not None
+                current_viewport_key = viewport_key(app, rect[2:], photo_preview, renderer.render_mode)
+                photo_size = None
+                if app.camera_view or photo_preview:
+                    photo_size = quality.size(current_viewport_key, app.shot_camera.size,
+                        imgui.is_any_item_active() or app._orbiting, time.monotonic())
+                render_key = (current_viewport_key, photo_size)
+                viewport_redrawn = render_key != previous_viewport_key
+                if viewport_redrawn:
+                    if app.camera_view:
+                        # Keep the ImGui image texture stable across quality changes:
+                        # UI commands are built before this frame's scene is rendered.
+                        current_target = target
+                        render_scene_view(app.scene, app.shot_camera, renderer, current_target,
+                                          photo_size, app.shot_camera.samples)
+                        shot = app.shot_camera
+                        camera = getattr(current_target, 'render_camera', None)
+                        if camera is None:
+                            camera = Camera(shot.position.copy(), shot.rotation.copy(), shot.fov_y, shot.near, shot.far)
+                        rendered_photo = (photo_pose(shot), camera, current_target)
+                        display_target = current_target
+                    elif photo_preview:
+                        render_scene_view(app.scene, app.viewer.camera, renderer, target, photo_size,
+                                          app.shot_camera.samples, photo_camera=app.shot_camera)
+                        display_target = target
+                        rendered_photo = None
+                    else:
+                        display_target = target
+                        rendered_photo = None
+                        target.resize(rect[2], rect[3], samples=1)
+                        target.bind()
+                        gl.glDisable(gl.GL_SCISSOR_TEST)
+                        gl.glDepthMask(True)
+                        renderer.resize(*rect[2:])
+                        renderer.render(app.scene, app.viewer.camera)
+                    if not app.camera_view and app.selection is not None and app.selection.visible and hasattr(renderer, "material_renderer"):
+                        selected = Scene()
+                        selected.add(app.selection)
+                        renderer.material_renderer.render_selection(selected.get_flat_render_list(), app.viewer.camera, *rect[2:])
+                    previous_viewport_key = render_key
             renderer.render_stats['viewport_redrawn'] = viewport_redrawn
             editor_frame.resize(width, height)
             editor_frame.bind()

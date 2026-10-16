@@ -49,7 +49,10 @@ class MaterialRenderer:
         self._locations = {}
         self._meshes = {}
         self._instances = {}
+        self._opaque_groups = {}
         self._normal_cache = {}
+        from .draw_order import OpaqueOrder
+        self._opaque_order = OpaqueOrder()
         self.gpu_instancing = True
         self._textures = {}
         self.environment = None
@@ -112,14 +115,28 @@ class MaterialRenderer:
         self._meshes[key] = record
         return record
 
-    def draw_instances(self, mesh, matrices, normals=None):
+    @staticmethod
+    def instance_payload(matrices, normals=None):
+        """Pack immutable instance data once when a batch actually changes."""
+        data = np.zeros((len(matrices), 25), np.float32)
+        data[:, :16] = np.asarray(matrices, np.float32).transpose(0,2,1).reshape(-1,16)
+        if normals is not None:
+            data[:, 16:] = np.asarray(normals, np.float32).transpose(0,2,1).reshape(-1,9)
+        data.flags.writeable = False
+        return data
+
+    def draw_instances(self, mesh, matrices=None, normals=None, payload=None, cache_key=None):
         """Borrow mesh buffers; own the instance VAO/VBO until release().
 
         Matrix columns occupy attributes 4..10 (GL 3.3 guarantees at least 16).
         Separate VAOs keep divisors off the selection and individual paths.
         Orphaning the stream buffer avoids waiting on a previous GPU reader.
+        A supplied payload must remain immutable; retaining its object avoids
+        repacking and byte comparisons on unchanged frames. Explicit batch keys
+        keep separated runs of the same mesh from overwriting one another.
         """
-        key = (id(mesh[0]), normals is not None)
+        key = ((id(mesh[0]), normals is not None) if cache_key is None else
+               (id(mesh[0]), cache_key))
         if key not in self._instances:
             vao = int(gl.glGenVertexArrays(1))
             buffer = int(gl.glGenBuffers(1))
@@ -138,17 +155,89 @@ class MaterialRenderer:
                 gl.glVertexAttribDivisor(location,1)
         resource = self._instances[key]
         vao, buffer = resource[:2]
-        data = np.zeros((len(matrices), 25), np.float32)
-        data[:, :16] = np.asarray(matrices, np.float32).transpose(0,2,1).reshape(-1,16)
-        if normals is not None:
-            data[:, 16:] = np.asarray(normals, np.float32).transpose(0,2,1).reshape(-1,9)
+        data = self.instance_payload(matrices, normals) if payload is None else payload
         gl.glBindVertexArray(vao)
-        payload = data.tobytes()
-        if payload != resource[2]:
+        stamp = data.tobytes() if payload is None else data
+        unchanged = (stamp is resource[2] if payload is not None else
+                     isinstance(resource[2], bytes) and stamp == resource[2])
+        if not unchanged:
             gl.glBindBuffer(gl.GL_ARRAY_BUFFER,buffer)
             gl.glBufferData(gl.GL_ARRAY_BUFFER,data.nbytes,data,gl.GL_STREAM_DRAW)
-            resource[2] = payload
+            resource[2] = stamp
         gl.glDrawElementsInstanced(gl.GL_TRIANGLES,mesh[4],gl.GL_UNSIGNED_INT,None,len(data))
+
+    def _prune_color_instances(self, active, state=None):
+        """Keep only this pass's batch buffers, never evict shadow resources."""
+        for key in list(self._instances):
+            tag = key[1]
+            if isinstance(tag, tuple) and tag and tag[0] == 'color_batch' and key not in active:
+                vao, buffer, _ = self._instances[key]
+                # A caller may have left one of our public helper buffers bound;
+                # preserve the saved bindings and retire it on a later pass.
+                if state is not None and (vao == state['VERTEX_ARRAY_BINDING'] or
+                                          buffer == state['ARRAY_BUFFER_BINDING']):
+                    continue
+                self._instances.pop(key)
+                gl.glDeleteVertexArrays(1, [vao])
+                gl.glDeleteBuffers(1, [buffer])
+
+    def _persistent_batches(self, plan, view):
+        """Retain opaque work per material; the moving photo floor is separate.
+
+        Scene synchronization validates source changes before this call. Only
+        visible membership and immutable record tokens are inspected here.
+        Transparent depth ordering remains camera-dependent and is rebuilt.
+        """
+        from .geometry_cache import normal_transform
+        ranks = self._opaque_order.ranks_for(plan.shadow_candidates, plan.geometry)
+        groups = {}
+        for item in plan.opaque:
+            if item.material is not None:
+                groups.setdefault(id(item.material), []).append(item)
+        retained, result = {}, []
+        ordered_groups = sorted(groups.items(), key=lambda pair: ranks[id(pair[1][0].entity)])
+        for material_id, items in ordered_groups:
+            key = tuple((id(item.entity), item.prepared.get('token', id(item.prepared)),
+                         ranks[id(item.entity)]) for item in items)
+            cached_group = self._opaque_groups.get(material_id)
+            if cached_group is not None and cached_group[0] == key:
+                batches = cached_group[1]
+            else:
+                batches = []
+                for item in sorted(items, key=lambda value: ranks[id(value.entity)]):
+                    mesh = self._mesh(item.model)
+                    matrix = item.world_matrix
+                    cached = item.prepared
+                    normal, mirrored = ((cached['normal'], cached['mirrored']) if cached['normal'] is not None else
+                                        normal_transform(matrix, self._normal_cache))
+                    row = (False, 0., item, matrix, mesh)
+                    compatible = item.material.get('alphaMode', 'OPAQUE') == 'OPAQUE'
+                    batch_key = (id(item.model), mirrored) if compatible else None
+                    if batch_key is not None and batches and batches[-1][0] == batch_key:
+                        batches[-1][1].append((row, normal, mirrored))
+                    else:
+                        batches.append([batch_key, [(row, normal, mirrored)], None, None])
+                for batch_number, batch in enumerate(batches):
+                    if len(batch[1]) > 1:
+                        batch[2] = self.instance_payload([entry[0][3] for entry in batch[1]],
+                                                         [entry[1] for entry in batch[1]])
+                        batch[3] = ('color_batch', material_id, batch_number, batch[0][1])
+            retained[material_id] = (key, batches)
+            result.extend(batches)
+        self._opaque_groups = retained
+        transparent = []
+        for item in plan.transparent:
+            mesh = self._mesh(item.model)
+            matrix = item.world_matrix
+            depth = float((view @ (matrix @ np.append(mesh[5],1)))[2])
+            cached = item.prepared
+            normal, mirrored = ((cached['normal'], cached['mirrored']) if cached['normal'] is not None else
+                                normal_transform(matrix, self._normal_cache))
+            row = (True, depth, item, matrix, mesh)
+            transparent.append((depth, [None, [(row, normal, mirrored)], None, None]))
+        transparent.sort(key=lambda entry: entry[0])
+        result.extend(entry[1] for entry in transparent)
+        return result
 
     def _texture(self, texture):
         encoded = texture["image"]
@@ -204,10 +293,16 @@ class MaterialRenderer:
         textures = material.get("textures", {})
         for unit, (slot, sampler, present) in enumerate(self._slots):
             texture = textures.get(slot)
-            self._int(present,texture is not None)
-            self._int(sampler,unit)
-            gl.glActiveTexture(gl.GL_TEXTURE0+unit)
-            gl.glBindTexture(gl.GL_TEXTURE_2D,self._texture(texture) if texture is not None else 0)
+            # Bind lazily on the correct unit: _texture may upload a new image.
+            key = None if texture is None else (id(texture['image']), tuple(sorted(texture.get('sampler', {}).items())))
+            cache = getattr(self, '_material_texture_state', None)
+            if cache is None or unit not in cache or cache[unit] != key:
+                self._int(present,texture is not None)
+                self._int(sampler,unit)
+                gl.glActiveTexture(gl.GL_TEXTURE0+unit)
+                gl.glBindTexture(gl.GL_TEXTURE_2D,self._texture(texture) if texture is not None else 0)
+                if cache is not None:
+                    cache[unit] = key
 
     def _lighting(self, scene, camera):
         from .atmosphere import atmosphere_state, sun_color, direct_light_strength, PROCEDURAL_SKIES
@@ -250,6 +345,52 @@ class MaterialRenderer:
             self._float("lightIntensity",getattr(scene,"material_light_intensity",1.0))
             self._float("ambientIntensity",getattr(scene,"material_ambient_intensity",1.0))
 
+    def _transient_batches(self, entities, view, plan, mode):
+        """Compatibility path for callers without synchronized scene records."""
+        records = []
+        prepared = ([(False, item) for item in plan.opaque if item.material is not None] +
+                    [(True, item) for item in plan.transparent]) if plan is not None else [
+                        (self._entity_mesh(entity).material.get("alphaMode", "OPAQUE") == "BLEND", entity)
+                        for entity in entities]
+        for transparent, entity in prepared:
+            mesh = self._mesh(self._entity_mesh(entity))
+            matrix = np.asarray(entity.world_matrix,np.float32)
+            # Only transparent records need camera-depth sorting.
+            depth = float((view @ (matrix @ np.append(mesh[5],1)))[2]) if transparent else 0.
+            records.append((transparent,depth,entity,matrix,mesh))
+        # Camera looks along -Z: more negative depth is farther away.
+        # Memory addresses change on reload and can change which coplanar
+        # facade wins the depth test. Group materials by stable scene order.
+        order = {}
+        for entity in (plan.shadow_candidates if plan is not None else entities):
+            model = self._entity_mesh(entity)
+            if model is not None and getattr(model, 'material', None) is not None:
+                order.setdefault(id(model.material), len(order))
+        if self.gpu_instancing and mode.lower() != 'wireframe':
+            ranks = self._opaque_order.ranks_for(plan.shadow_candidates if plan is not None else entities,
+                                                getattr(plan,'geometry',None))
+            records.sort(key=lambda row: (row[0], row[1] if row[0] else
+                ranks[id(getattr(row[2], 'entity', row[2]))]))
+        else:
+            records.sort(key=lambda row:(row[0],row[1] if row[0] else order[id(row[4][0].material)]))
+        from .geometry_cache import normal_transform
+        batches = []
+        for row in records:
+            transparent, _, entity, matrix, mesh = row
+            cached = getattr(entity, 'prepared', None)
+            normal, mirrored = ((cached['normal'], cached['mirrored']) if cached is not None and cached['normal'] is not None else
+                                normal_transform(matrix, self._normal_cache))
+            # Preserve stable draw order, including coplanar ties. Never
+            # regroup across another mesh, winding or special alpha path.
+            compatible = (self.gpu_instancing and not transparent and
+                          mesh[0].material.get('alphaMode', 'OPAQUE') == 'OPAQUE')
+            key = (id(mesh[0]), mirrored) if compatible else None
+            if key is not None and batches and batches[-1][0] == key:
+                batches[-1][1].append((row, normal, mirrored))
+            else:
+                batches.append((key, [(row, normal, mirrored)]))
+        return [[key, rows, None, None] for key, rows in batches]
+
     def render(self, entities, camera, scene, width, height, mode="Lit", shadow=None, plan=None):
         """Draw into the caller's FBO; optionally consume this frame's RenderPlan.
 
@@ -278,43 +419,17 @@ class MaterialRenderer:
             from .sky_renderer import bind_photo_sky
             bind_photo_sky(self.program,scene,self.photo_environment,lighting=True)
             ShadowMap.bind(self.program, shadow, scene)
-            records = []
-            prepared = ([(False, item) for item in plan.opaque if item.material is not None] +
-                        [(True, item) for item in plan.transparent]) if plan is not None else [
-                            (self._entity_mesh(entity).material.get("alphaMode", "OPAQUE") == "BLEND", entity)
-                            for entity in entities]
-            for transparent, entity in prepared:
-                mesh = self._mesh(self._entity_mesh(entity))
-                matrix = np.asarray(entity.world_matrix,np.float32)
-                # Only transparent records need camera-depth sorting.
-                depth = float((view @ (matrix @ np.append(mesh[5],1)))[2]) if transparent else 0.
-                records.append((transparent,depth,entity,matrix,mesh))
-            # Camera looks along -Z: more negative depth is farther away.
-            # Memory addresses change on reload and can change which coplanar
-            # facade wins the depth test. Group materials by stable scene order.
-            order = {}
-            for entity in (plan.shadow_candidates if plan is not None else entities):
-                model = self._entity_mesh(entity)
-                if model is not None and getattr(model, 'material', None) is not None:
-                    order.setdefault(id(model.material), len(order))
-            records.sort(key=lambda row:(row[0],row[1] if row[0] else order[id(row[4][0].material)]))
+            persistent = (plan is not None and getattr(plan, 'geometry', None) is not None
+                          and self.gpu_instancing and mode.lower() != 'wireframe')
+            batches = (self._persistent_batches(plan, view) if persistent else
+                       self._transient_batches(entities, view, plan, mode))
+            # Other passes may have changed bindings, so GL state is cached only
+            # within this pass. CPU batches and owned instance buffers persist.
+            self._material_texture_state = {}
             last_material = None
-            from .geometry_cache import normal_transform
-            batches = []
-            for row in records:
-                transparent, _, entity, matrix, mesh = row
-                normal, mirrored = normal_transform(matrix, self._normal_cache)
-                # Preserve stable draw order, including coplanar ties. Never
-                # regroup across another mesh, winding or special alpha path.
-                compatible = (self.gpu_instancing and not transparent and
-                              mesh[0].material.get('alphaMode', 'OPAQUE') == 'OPAQUE')
-                key = (id(mesh[0]), mirrored) if compatible else None
-                if key is not None and batches and batches[-1][0] == key:
-                    batches[-1][1].append((row, normal, mirrored))
-                else:
-                    batches.append((key, [(row, normal, mirrored)]))
+            active_instances = set()
             last_transparent = last_cull = last_mirrored = last_instanced = None
-            for _, batch in batches:
+            for _, batch, payload, instance_key in batches:
                 (transparent, _, entity, matrix, mesh), normal_matrix, mirrored = batch[0]
                 material = mesh[0].material
                 if transparent != last_transparent:
@@ -346,7 +461,11 @@ class MaterialRenderer:
                     self._int('useInstances', instanced)
                     last_instanced = instanced
                 if instanced:
-                    self.draw_instances(mesh, [row[0][3] for row in batch], [row[1] for row in batch])
+                    if payload is not None:
+                        self.draw_instances(mesh, payload=payload, cache_key=instance_key)
+                        active_instances.add((id(mesh[0]), instance_key))
+                    else:
+                        self.draw_instances(mesh, [row[0][3] for row in batch], [row[1] for row in batch])
                 else:
                     self._matrix("model",matrix)
                     gl.glUniformMatrix3fv(self._loc("normalMatrix"),1,gl.GL_TRUE,normal_matrix)
@@ -354,7 +473,9 @@ class MaterialRenderer:
                     gl.glDrawElements(gl.GL_TRIANGLES,mesh[4],gl.GL_UNSIGNED_INT,None)
                 self.draw_calls += 1
                 self.triangles += mesh[4] // 3 * len(batch)
+            self._prune_color_instances(active_instances, state)
         finally:
+            self._material_texture_state = None
             self._restore_state(state)
 
     def render_selection(self, entities, camera, width, height):
@@ -429,7 +550,11 @@ class MaterialRenderer:
             gl.glDeleteVertexArrays(1,[vao])
             gl.glDeleteBuffers(1,[buffer])
         self._instances.clear()
+        self._opaque_groups.clear()
         self._normal_cache.clear()
+        self._opaque_order.key = None
+        self._opaque_order.ranks.clear()
+        self._opaque_order.groups.clear()
         for _, vao, vbo, ebo, _, _ in self._meshes.values():
             gl.glDeleteVertexArrays(1,[vao])
             gl.glDeleteBuffers(2,[vbo,ebo])

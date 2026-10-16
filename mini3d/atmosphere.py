@@ -126,7 +126,12 @@ def sky_preset(scene, name):
     if name not in ('day', 'sunset', 'stars', 'moonlit'):
         raise ValueError('Choose day, sunset, stars or moonlit')
     if name == 'sunset':
-        return sunset_preset(scene)
+        # Sky selection must not place a coplanar photography floor over an
+        # authored road. Keep the full photography preset as a separate API.
+        previous = atmosphere_state(scene)
+        sunset_preset(scene)
+        return update_atmosphere(scene, **{key: previous[key] for key in
+            ('ground', 'ground_z', 'ground_texture', 'ground_scale')})
     from .lighting import update_lighting, update_shadows
     night = name in ('stars', 'moonlit')
     moon = name == 'moonlit'
@@ -197,4 +202,6 @@ def prepare_photographic_scene(scene, camera, ground_entity=None):
     ground_entity.update_transform()
     clean = copy.copy(scene)
     clean.root_entities = [*scene.root_entities, ground_entity]
+    clean._render_base_scene = scene
+    clean._render_extra_entities = [ground_entity]
     return clean, ground_entity

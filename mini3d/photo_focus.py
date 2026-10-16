@@ -36,7 +36,10 @@ def read_focus_point(target, camera, screen_pos, rect):
         gl.glBindFramebuffer(gl.GL_READ_FRAMEBUFFER, target.framebuffer)
         with preserved_pixel_pack(reset=True):
             depth = float(np.asarray(gl.glReadPixels(*pixel, 1, 1, gl.GL_DEPTH_COMPONENT, gl.GL_FLOAT)).reshape(-1)[0])
-        return unproject_depth(camera, pixel, (target.width, target.height), depth)
+        # Native color depth uses a conservative near plane. Unproject with
+        # the exact projection that produced this displayed depth buffer.
+        rendered_camera = getattr(target, 'render_camera', camera)
+        return unproject_depth(rendered_camera, pixel, (target.width, target.height), depth)
     finally:
         gl.glBindFramebuffer(gl.GL_READ_FRAMEBUFFER, read)
 

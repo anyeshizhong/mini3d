@@ -69,6 +69,7 @@ class DrawItem:
     world_matrix: np.ndarray
     material: object
     bounds: object
+    prepared: object = None
 
     @property
     def isaxes(self):
@@ -86,38 +87,81 @@ class RenderPlan:
     view: np.ndarray
     projection: np.ndarray
     stats: dict
+    geometry: object = None
+
+
+def _inputs(geometry):
+    """View-independent culling arrays, shared until a scene edit occurs."""
+    cached = geometry._plan_inputs
+    if cached is not None:
+        return cached
+    if getattr(geometry, 'base', None) is not None:
+        left, right = _inputs(geometry.base), _inputs(geometry.extra)
+        cached = tuple(np.concatenate((a, b), axis=0) for a, b in zip(left, right))
+    else:
+        boxes = np.zeros((len(geometry.entities), 2, 3), np.float64)
+        eligible = np.zeros(len(boxes), bool)
+        outlined = np.zeros(len(boxes), bool)
+        for index, (entity, bound) in enumerate(zip(geometry.entities, geometry.bounds)):
+            if bound is not None:
+                boxes[index] = bound
+                eligible[index] = not getattr(entity, 'isaxes', False)
+            outlined[index] = getattr(entity.model, 'material', None) is None
+        cached = boxes, eligible, outlined
+    geometry._plan_inputs = cached
+    return cached
+
+
+def _draw_item(entity, record, bound):
+    item = record.get('draw_item')
+    if item is None:
+        item = record['draw_item'] = DrawItem(entity, entity.model, record['matrix'],
+            getattr(entity.model, 'material', None), bound, record)
+    return item
 
 
 def build_render_plan(scene, camera, width, height, culling=True, legacy_mode='REALISTIC'):
     started = perf_counter()
-    entities = scene.get_flat_render_list()
+    from .scene_snapshot import snapshot
+    geometry = snapshot(scene)
+    entities = geometry.entities
     view = np.asarray(camera.view_matrix, np.float32)
     projection = np.asarray(camera.projection_matrix(float(width) / height), np.float32)
-    items, boxes, tested = [], [], []
-    prepared_bounds = batch_world_bounds(entities) if culling else [None] * len(entities)
-    for entity, bounds in zip(entities, prepared_bounds):
-        mesh = entity.model
-        matrix = np.asarray(entity.world_matrix, np.float32)
-        material = getattr(mesh, 'material', None)
-        item = DrawItem(entity, mesh, matrix, material, bounds)
-        items.append(item)
-        # The legacy outline shader expands geometry by 0.15 in model space;
-        # axes can extend beyond the mesh. Retain these editor helper cases.
-        if bounds is not None and not item.isaxes and not (material is None and legacy_mode == 'OUTLINE'):
-            tested.append(len(items) - 1)
-            boxes.append(bounds)
-    visible = np.ones(len(items), dtype=bool)
-    if boxes:
-        visible[tested] = aabb_visible(boxes, frustum_planes(view, projection))
-    color = [item for item, keep in zip(items, visible) if keep]
+    prepared_bounds = geometry.bounds if culling else [None] * len(entities)
+    if culling:
+        all_boxes, eligible, outlined = _inputs(geometry)
+        tested = np.flatnonzero(eligible & ~outlined if legacy_mode == 'OUTLINE' else eligible)
+        boxes = all_boxes[tested]
+    else:
+        tested = np.empty(0, dtype=int)
+        boxes = np.empty((0, 2, 3))
+    visible = np.ones(len(entities), dtype=bool)
+    if len(boxes):
+        planes = frustum_planes(view, projection)
+        if len(boxes) >= 512 and getattr(scene, 'spatial_culling_enabled', False):
+            from .spatial_index import SpatialIndex
+            index = getattr(scene, '_color_spatial_index', None)
+            if index is None:
+                index = scene._color_spatial_index = SpatialIndex()
+            index.update(boxes)
+            candidates = index.query(planes)
+            keep = np.zeros(len(boxes), dtype=bool)
+            if len(candidates):
+                keep[candidates] = aabb_visible(np.asarray(boxes)[candidates], planes)
+            visible[tested] = keep
+        else:
+            visible[tested] = aabb_visible(boxes, planes)
+    # Prepare draw records only after coarse/fine culling, keeping scene order.
+    color = [_draw_item(entities[i], geometry.records[id(entities[i])], prepared_bounds[i])
+             for i in np.flatnonzero(visible)]
     legacy = [item for item in color if item.material is None]
     imported = [item for item in color if item.material is not None]
     transparent = [item for item in imported if item.material.get('alphaMode') == 'BLEND']
     opaque = [item for item in color if item.material is None or item.material.get('alphaMode') != 'BLEND']
-    stats = dict(entities_before=len(items), entities_after=len(color),
-                 entities_culled=len(items) - len(color), bounds_tested=len(tested),
+    stats = dict(entities_before=len(entities), entities_after=len(color),
+                 entities_culled=len(entities) - len(color), bounds_tested=len(tested),
                  shadow_candidates=len(entities), opaque_entities=len(opaque),
                  transparent_entities=len(transparent), color_draw_calls=0,
                  shadow_draw_calls=0, color_triangles=0, shadow_triangles=0,
                  render_plan_cpu_ms=(perf_counter() - started) * 1000)
-    return RenderPlan(entities, legacy, imported, opaque, transparent, view, projection, stats)
+    return RenderPlan(entities, legacy, imported, opaque, transparent, view, projection, stats,geometry)

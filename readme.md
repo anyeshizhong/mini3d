@@ -1,5 +1,9 @@
 # Mini3D
 
+SPQR 原生核心已接入 Shot 预览与 PNG 拍照，包含相机深度冲突、近景阴影和滚轮持续移动修复。C++20 源码在 `spqr-native/`，Python 编辑器通过一次原生调用绘制相机帧；Arrange 仍使用 Python。素材和编译产物不随本次提交上传，需先构建本机 DLL。[构建与拍照操作](NATIVE-PHOTO.md) · [验证范围](docs/SPQR-NATIVE-VALIDATION.md)。
+
+Pompeii 街区扩展：`python -B -m mini3d --scene examples/pompeii/district.json`。85 栋独立建筑、435 个模块，市场街、住宅巷和柱廊庭院通过路口连通；原街道例子保留。[搭建、石砖修复与验收](docs/SPQR-POMPEII.md)。
+
 SPQR Performance 本地待验收：阴影与兼容不透明模块已使用 GPU 实例化，复用静态几何准备并批量裁剪阴影；保持独立编辑和原有摄影画质。[实现边界与复测](docs/SPQR-PERFORMANCE.md)。
 
 SPQR Phase 2 本地待验收：Lighting新增星空/月光与太阳全高度角，Arrange多选后可按包围盒相邻排列；批量包围盒与阴影范围剔除减少导航开销。[操作与验收](docs/SPQR-PHASE2.md)。

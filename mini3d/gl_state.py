@@ -33,7 +33,7 @@ def read_rgb(x, y, width, height):
         return gl.glReadPixels(x, y, width, height, gl.GL_RGB, gl.GL_UNSIGNED_BYTE)
 
 
-def save_state():
+def save_state(texture_units=13, all_cubemaps=False):
     integer_names = ("CURRENT_PROGRAM","VERTEX_ARRAY_BINDING","ARRAY_BUFFER_BINDING",
                      "ACTIVE_TEXTURE","DEPTH_FUNC","CULL_FACE_MODE","FRONT_FACE",
                      "BLEND_SRC_RGB","BLEND_DST_RGB","BLEND_SRC_ALPHA","BLEND_DST_ALPHA",
@@ -56,11 +56,11 @@ def save_state():
     state["textures"] = []
     state["cubemaps"] = []
     state["samplers"] = []
-    for unit in range(13):
+    for unit in range(texture_units):
         gl.glActiveTexture(gl.GL_TEXTURE0+unit)
         state["textures"].append(int(gl.glGetIntegerv(gl.GL_TEXTURE_BINDING_2D)))
         state["samplers"].append(int(gl.glGetIntegerv(gl.GL_SAMPLER_BINDING)))
-        if unit in (8,9):
+        if all_cubemaps or unit in (8,9):
             state["cubemaps"].append((unit,int(gl.glGetIntegerv(gl.GL_TEXTURE_BINDING_CUBE_MAP))))
     gl.glActiveTexture(state["ACTIVE_TEXTURE"])
     return state

@@ -21,3 +21,23 @@ __pycache__/
 /model/11_benchmark_round01/
 /model/12_vespasian/
 /model/13_asclepius/
+
+# Optional locally compiled render acceleration and dedicated Windows runtime.
+/.native/
+/.runtime/
+
+# Local assets and generated native output are not distributed in source commits.
+/assets/
+/assent/
+/model/
+/mini3d/resources/
+/native/*.dll
+/native/*.exe
+/spqr-native/assets/
+/spqr-native/bin/
+/spqr-native/build/
+/spqr-native/demo-output/
+*.o
+*.obj
+*.a
+*.dll.a

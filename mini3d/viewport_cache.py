@@ -29,22 +29,19 @@ def viewport_key(app, size, photo_preview, renderer_mode):
         app.shot_camera.size, app.shot_camera.samples, app.shot_camera.dof_enabled,
         app.shot_camera.focus_distance, app.shot_camera.f_number,
         app.shot_camera.white_balance_kelvin, app.shot_camera.color_preset)
-    # Material dictionaries are shared by clones; read each once per UI frame.
-    materials, meshes, entities = {}, {}, []
-    for entity in scene.get_flat_render_list():
-        mesh = entity.model
-        material = getattr(mesh, 'material', None)
-        if id(material) not in materials:
-            materials[id(material)] = _value(material)
-        if id(mesh) not in meshes:
-            meshes[id(mesh)] = (_value(getattr(mesh, 'bounds', None)),
-                                _value(getattr(mesh, 'base_color', None)))
-        entities.append((id(entity), id(mesh), _value(entity.world_matrix), entity.isaxes))
+    from .scene_snapshot import snapshot
+    geometry = snapshot(scene)
+    # One scene-wide value scan happened at the frame boundary. Consumers only
+    # compare revisions; camera motion no longer serializes the city again.
+    scene_key = (id(geometry), geometry.geometry_revision, geometry.material_revision)
+    if getattr(scene, '_frame_geometry', None) is None:
+        # Standalone callers retain value equality (including undo to a state).
+        scene_key = (geometry.key, geometry._material_key)
     settings = tuple(_value(getattr(scene, name, None)) for name in (
         'light_dir', 'ambient', 'diffuse', 'lighting_mode', 'shadows_enabled',
         'shadow_resolution', 'shadow_bias', 'shadow_pcf', 'environment_enabled',
         'environment_intensity', 'material_light_intensity', 'material_ambient_intensity',
         'render_mode', 'show_grid', 'grid_scale', 'show_axes', '_hide_entity_axes', '_atmosphere'))
     return (tuple(size), app.camera_view, photo_preview, renderer_mode, camera_key, shot_key,
-            tuple(entities), tuple(materials.items()), tuple(meshes.items()), settings,
+            scene_key, settings,
             None if app.camera_view or app.selection is None else id(app.selection))
