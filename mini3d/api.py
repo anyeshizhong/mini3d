@@ -404,6 +404,37 @@ class Mini3DAPI:
         self._app._editing_shot = False
         return self.get_shot_camera()
 
+    def set_shot_camera_pose(self, position, target=None, rotation=None):
+        """Move the existing Shot Camera without resetting its photographic setup.
+
+        Specify exactly one of target (look-at) or rotation (camera-to-world 3x3).
+        The change is atomic, and any stored world focus point is reprojected
+        onto the new pose; a point behind the camera clears its focus marker.
+        """
+        self._outside_transaction()
+        original = self._app.shot_camera
+        if original is None:
+            raise ValueError('Create a Shot Camera before moving it')
+        if (target is None) == (rotation is None):
+            raise ValueError('Supply exactly one of target or rotation')
+        candidate = Camera(position, original.rotation, original.fov_y,
+                           original.near, original.far)
+        if target is not None:
+            candidate.look_at(target)
+        else:
+            candidate.rotation = rotation
+        updated = deepcopy(original)
+        updated.position, updated.rotation = candidate.position, candidate.rotation
+        if updated.focus_point is not None:
+            point = updated.focus_point.copy()
+            try:
+                updated.focus_at(point)
+            except ValueError:
+                updated.focus_point = None
+        self._app.shot_camera = updated
+        self._app._editing_shot = False
+        return self.get_shot_camera()
+
     def set_depth_of_field(self, enabled=None, focus_distance=None, f_number=None):
         self._outside_transaction()
         self._app.set_shot_depth_of_field(enabled, focus_distance, f_number)

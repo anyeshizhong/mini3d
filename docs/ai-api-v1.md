@@ -50,6 +50,39 @@ api = Mini3DAPI()  # 建场景/查询/保存无需窗口或 GL；不能在此状
 
 世界 Z 向上，实例 rotation/facing 是弧度，camera.rotation 的查询结果是正交 3×3 矩阵。没有 name-based lookup。返回数组转换为普通 list，修改返回值不改变内部场景。`include_bounds=True` 需要扫描几何，密集场景查询会更慢。
 
+## AI API 相机轨迹与自动验收（SPQR 整理）
+
+摄影机运动应由测试程序生成**位姿数据**，再通过 AI API 操作正式场景。
+新增 `set_shot_camera_pose(position, target=None, rotation=None)`：需要先创建
+Shot Camera，参数 `target`（观察目标）与 `rotation`（相机坐标到世界坐标的正交 3×3 矩阵）
+必须二选一。移动不会重建摄影机设置，保留焦距、画幅、近远裁剪、
+抗锯齿、景深及色彩设置。原有世界空间对焦点会重新计算焦距；
+当焦点移到镜头背后时只清除标记，保留手动对焦距离。
+参数无效时原相机不变。此命令不允许放进 Placement transaction。
+
+```python
+from mini3d.api import Mini3DAPI
+api = Mini3DAPI()
+api.create_shot_camera(position=[9, -9, 4], target=[0, 0, 1])
+for i in range(30):
+    # 实际轨迹可使用 tests/api_camera_trajectories.py 的生成器
+    api.set_shot_camera_pose(position=[9, -9 + i * .1, 4], target=[0, 0, 1])
+    assert api.get_shot_camera()['position'][1] == -9 + i * .1
+```
+
+`tests/api_camera_trajectories.py` 提供可复用的 `linear_path` 与 `orbit_path`，
+`tests/test_api_camera_trajectories.py` 验证 JSON 命令、相机轨迹、6DoF 姿态、
+参数保留、失败原子性及 Scene v3 保存重载（无需 GL）。
+既有 `tests/shadow_motion_audit_20261010.py` 沿用原先轨迹和低层阴影诊断，
+但改为使用统一轨迹数据 + AI API 设置 Shot 位姿。
+
+真实 GPU 入口：
+`python -B tests/api_camera_trajectory_smoke.py --output captures/api-track --backend native`。
+原生模式要求 DLL，且每帧验证 `native-photo` 后端；无 GPU 的单元测试不冒充画质验收。
+此脚本逐帧保存 PNG 仅用于运动/成像正确性，不计为 FPS 基准。
+需要测完整实时 FPS 时，应另用与编辑器帧循环一致的计时接口，不能把 PNG
+编码和读回当作纯渲染时间。
+
 ## Python 示例
 
 ```python
