@@ -27,13 +27,13 @@
 ```powershell
 python -B -m unittest discover -s tests -p 'test_*.py'
 python -B tests/spqr_performance_smoke.py --baseline-project BASELINE --output captures/performance-images
-python -B tests/spqr_performance_benchmark.py --baseline-project BASELINE --output captures/performance-timing.json
+python -B tests/spqr_engine_benchmark.py --baseline-project BASELINE --output captures/performance-timing.json --sizes 85 118 170 340
 python -B tests/spqr_editor_performance.py --baseline-project BASELINE --output captures/performance-editor
 ```
 
 GPU 回归比较完整照片与阴影深度，覆盖屋顶两侧/下沿、街口、星空/月夜、太阳 −90/0/90/3 度、摄影地面、透明/MASK/legacy、镜像/非均匀/零缩放、直接数组修改，以及选择轮廓和资源释放/重建。
 
-性能脚本在同一 GL context 交替运行两个完整版本，三轮反转顺序，预热后取样；固定 960×540、1×AA、2048 阴影。四条移动路线测 85 根实例，并以 118/170/340 根实例测沿街和俯瞰。记录每帧、P95、draw、三角形和 GPU 时间线；`glFinish` 完成延迟不等于完整编辑器呈现 FPS。
+性能脚本在同一 GL context 交替运行两个完整版本，三轮反转顺序，预热后取样；固定 960×540、1×AA、2048 阴影。四条移动路线测 85 根实例，并以 118/170/340 根实例测沿街和俯瞰；全部规模现由统一的 `spqr_engine_benchmark.py` 的 `--sizes` 控制，原有分规模脚本已删除。记录每帧、P95、draw、三角形和 GPU 时间线；`glFinish` 完成延迟不等于完整编辑器呈现 FPS。
 
 编辑器脚本额外运行真实 SDL/ImGui/runtime，1440×900 窗口，Arrange 视图固定布局，1×AA/2048 阴影。每帧移动相机并验证视口确实重绘；测输入处理、UI、场景、呈现到 flip 的完整循环和帧间隔，截图编码在计时后执行。隐藏窗口便于自动化，不能代表用户桌面其他应用负载、显示器同步或所有摄影质量设置。
 

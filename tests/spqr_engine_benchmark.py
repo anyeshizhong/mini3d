@@ -1,4 +1,10 @@
-"""Alternate complete project snapshots at fixed quality; no profiler in timings."""
+"""Benchmark fixed-quality Python renderer snapshots across SPQR scene scales.
+
+Usage: python -B tests/spqr_engine_benchmark.py --baseline-project BASELINE
+    --output captures/engine-timing.json --sizes 85 118 170 340 435
+
+The timings exclude editor UI and final frame presentation.
+"""
 import argparse
 import importlib
 import importlib.util
@@ -26,14 +32,46 @@ def pose(name,t):
     return [30*np.cos(angle),8+30*np.sin(angle),28],[0,8,0]
 
 
+SCENE_SIZES = (85, 118, 170, 340, 435)
+FULL_ROUTES = ('walk', 'arch', 'orbit', 'overhead')
+SHORT_ROUTES = ('walk', 'overhead')
+
+
+def populate_scenario(api, roots):
+    """Build one historical workload; the same recipe is used for both snapshots."""
+    if roots == 435:
+        build_district(api)
+    elif roots in (85, 118, 170, 340):
+        build_scene(api)
+        if roots == 118:
+            api.create_roman_street(segments=4, origin=[22, 0, 0], variation=True)
+        elif roots > 85:
+            for i in range(1, roots // 85):
+                api.create_roman_street(variation=True, seed=17, extension_segments=4,
+                                        origin=[22 * i, 0, 0])
+    else:
+        raise ValueError('Unsupported benchmark workload: {}'.format(roots))
+    assert len(api.list_entities()) == roots
+
+
+def routes_for(roots):
+    if roots not in SCENE_SIZES:
+        raise ValueError('Unsupported benchmark workload: {}'.format(roots))
+    return FULL_ROUTES if roots in (85, 435) else SHORT_ROUTES
+
+
 def main():
     parser=argparse.ArgumentParser()
     parser.add_argument('--baseline-project',type=Path,required=True)
     parser.add_argument('--output',type=Path,required=True)
     parser.add_argument('--samples',type=int,default=20)
     parser.add_argument('--repeats',type=int,default=3)
-    parser.add_argument('--sizes',type=int,nargs='+',choices=(85,435),default=[85,435])
-    args=parser.parse_args();args.output.parent.mkdir(parents=True,exist_ok=True)
+    parser.add_argument('--sizes',type=int,nargs='+',choices=SCENE_SIZES,default=[85,435],
+                        help='Scene root counts; 85/435 include four routes, other sizes two')
+    args=parser.parse_args()
+    if args.samples < 2 or args.repeats < 1:
+        parser.error('--samples must be >= 2 and --repeats must be >= 1')
+    args.output.parent.mkdir(parents=True,exist_ok=True)
     base=args.baseline_project.resolve()/'mini3d'
     spec=importlib.util.spec_from_file_location('spqr_before',base/'__init__.py',submodule_search_locations=[str(base)])
     package=importlib.util.module_from_spec(spec);sys.modules[spec.name]=package;spec.loader.exec_module(package)
@@ -54,11 +92,10 @@ def main():
                     r=state['renderer'];r.shadow_map.close()
                     if hasattr(r,'material_renderer'):r.material_renderer.release()
                     api=importlib.import_module(state['prefix']+'.api').Mini3DAPI(r)
-                    (build_scene if roots==85 else build_district)(api)
+                    populate_scenario(api, roots)
                     api.create_shot_camera(position=[1,-10,2],target=[0,20,3],focal_mm=24,near=.05,far=250)
-                    assert len(api.list_entities())==roots
                     state['api']=api
-                routes=('walk','arch','orbit','overhead')
+                routes=routes_for(roots)
                 for route in routes:
                     case={label:[] for label in states}
                     for repeat in range(args.repeats):

@@ -33,6 +33,17 @@ api.capture('captures/portrait.png')
 
 完整 1920 交互超过 100ms，因此采用上述临时低分辨率。真实编辑器另外记录参数更改到完成窗口帧的 25 个连续样本，包含 UI 和显示，中位数 56.53ms、P95 61.05ms；结果见 `photo-workflow-validation.json`。性能受桌面负载与温度影响，只报告实际样本，不保证所有机器。
 
+## 打开历史摄影会话
+
+原有两套本地摄影会话的 **生成/拍摄测试仍保留** 在 `tests/photographer_session.py` 和 `tests/photographer_session_two.py`。手工打开其已生成场景使用统一工具，不再维护两个临时 Editor 启动器：
+
+```powershell
+python -B tools/open_photo_session.py --session photographer 02_sanctuary
+python -B tools/open_photo_session.py --session still-life 01_geometry
+```
+
+前者读取 `captures/photographer-session/*.json`，后者读取 `captures/second-session/still-life/*.json`。场景来自原会话脚本生成的本地 `captures/`，未生成时工具会明确报错。可附加 `--frames N --screenshot PATH --hidden` 用于定帧查看；该工具只是打开已保存场景，不执行 GPU 自动断言。
+
 ## 验证与复跑
 
 316 项单元测试通过，无跳过。真实 GPU 验证四种画幅和缩放矩形、深度读取状态恢复、线性色彩数值、重置返回旧图、真实雕像脸部对焦、预览/PNG/重载精确一致。真实编辑器还验证输入路由、窗口缩放、IPC 修改色彩、960→1920 恢复及最终导出一致。鼠标测试使用实际事件路由注入，不冒充人工验收。

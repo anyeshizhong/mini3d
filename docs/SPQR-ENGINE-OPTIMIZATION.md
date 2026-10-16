@@ -26,7 +26,7 @@ Intel UHD 620，435 实例，960×540、1x AA、2048 PCF 阴影；每路线三�
 ```powershell
 python -B -m unittest discover -s tests -p "test_*.py"
 python -B tests/spqr_performance_smoke.py --baseline-project PATH_TO_SNAPSHOT --output captures/engine-visual --photo-samples 4 --pompeii
-python -B tests/spqr_engine_benchmark.py --baseline-project PATH_TO_SNAPSHOT --output captures/engine-timing.json
+python -B tests/spqr_engine_benchmark.py --baseline-project PATH_TO_SNAPSHOT --output captures/engine-timing.json --sizes 85 435
 ```
 
 基线应含本轮之前的 mini3d 包与 model/manifest.json。照片回归新增市场、庭院、全景、住宅巷，保留屋顶、夜空、极端太阳角度、直接数组修改、透明材质、选中轮廓与释放重建检查。性能默认对 85 / 435 实例测四条路线，含 GPU 完成等待，不含 UI、显示和 PNG 编码。性能测试须独立运行，避免其他测试干扰。

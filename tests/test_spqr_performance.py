@@ -101,5 +101,44 @@ class PerformanceCacheTests(unittest.TestCase):
             np.testing.assert_array_equal(box_geometry(api._app.scene.get_flat_render_list()[0])[3], moved)
 
 
+    def test_benchmark_scenario_presets_preserve_all_historical_workloads(self):
+        """Each deleted runner's scenario remains runnable through one entry point."""
+        import importlib.util
+        from unittest.mock import Mock
+
+        source = Path(__file__).resolve().parent / 'spqr_engine_benchmark.py'
+        spec = importlib.util.spec_from_file_location('_mini3d_spqr_benchmark_test', source)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+
+        self.assertEqual(module.SCENE_SIZES, (85, 118, 170, 340, 435))
+        expected_extras = {85: 0, 118: 1, 170: 1, 340: 3, 435: 0}
+        for size in module.SCENE_SIZES:
+            with self.subTest(size=size), \
+                    patch.object(module, 'build_scene') as street, \
+                    patch.object(module, 'build_district') as district:
+                api = Mock()
+                api.list_entities.return_value = [None] * size
+                module.populate_scenario(api, size)
+                self.assertEqual(street.call_count, int(size != 435))
+                self.assertEqual(district.call_count, int(size == 435))
+                self.assertEqual(api.create_roman_street.call_count, expected_extras[size])
+                self.assertEqual(module.routes_for(size),
+                                 module.FULL_ROUTES if size in (85, 435) else module.SHORT_ROUTES)
+                if size == 118:
+                    self.assertEqual(api.create_roman_street.call_args.kwargs,
+                                     dict(segments=4, origin=[22, 0, 0], variation=True))
+                elif size in (170, 340):
+                    calls = api.create_roman_street.call_args_list
+                    self.assertEqual([call.kwargs['origin'] for call in calls],
+                                     [[22 * i, 0, 0] for i in range(1, size // 85)])
+                    self.assertTrue(all(call.kwargs['seed'] == 17 and
+                                        call.kwargs['extension_segments'] == 4
+                                        for call in calls))
+        with self.assertRaises(ValueError):
+            module.routes_for(99)
+        with self.assertRaises(ValueError):
+            module.populate_scenario(Mock(), 99)
+
 if __name__ == '__main__':
     unittest.main()
