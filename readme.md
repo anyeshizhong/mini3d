@@ -149,7 +149,7 @@ python -B -m examples.urdf_car
 
 旧根目录的三个数字命名脚本已由上述模块入口替代。
 
-资源路径相对脚本文件解析，可从其他工作目录启动。依赖为 `pygame`、`numpy`、`numpy-stl`、`PyOpenGL`，主渲染器需要支持 GLSL 3.30 的 OpenGL 环境。
+请在项目根目录运行上述 `python -m examples.*` 命令；资源路径由示例代码按项目根目录解析。如果从其他工作目录启动，需要先切换到项目根目录或配置 `PYTHONPATH`。依赖为 `pygame`、`numpy`、`numpy-stl`、`PyOpenGL`，主渲染器需要支持 GLSL 3.30 的 OpenGL 环境。
 
 ## 原有示例的相机操作
 
