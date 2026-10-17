@@ -241,6 +241,25 @@ def _arch(builder):
         for z in (.62, 1.25, 1.88, 2.51):
             builder.box((side * 3.65, -.638, z), (.90, .015, .026), 'mortar')
     sectors = 18
+    # The visible voussoirs intentionally have narrow radial joints. A closed
+    # mortar core behind them makes those joints dark instead of revealing the
+    # sky. A ring (rather than a rectangle) preserves the real arch opening.
+    # Keep its front/back faces behind the stone faces at y=+/-0.65.
+    for i in range(sectors):
+        a0, a1 = i * math.pi / sectors, (i + 1) * math.pi / sectors
+        section = [
+            ((radius - .003) * math.cos(a0), spring + (radius - .003) * math.sin(a0)),
+            ((outer + .003) * math.cos(a0), spring + (outer + .003) * math.sin(a0)),
+            ((outer + .003) * math.cos(a1), spring + (outer + .003) * math.sin(a1)),
+            ((radius - .003) * math.cos(a1), spring + (radius - .003) * math.sin(a1)),
+        ]
+        front = [(x, -.63, z) for x, z in section]
+        back = [(x, .63, z) for x, z in section]
+        builder.face(front, 'mortar')
+        builder.face(back[::-1], 'mortar')
+        for edge in range(4):
+            nxt = (edge + 1) % 4
+            builder.face([front[edge], back[edge], back[nxt], front[nxt]], 'mortar')
     for i in range(sectors):
         a0, a1 = i * math.pi / sectors + .0016, (i + 1) * math.pi / sectors - .0016
         inner0 = (radius * math.cos(a0), spring + radius * math.sin(a0))
