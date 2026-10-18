@@ -111,7 +111,8 @@ def smoke(output):
                 assert state['app'].viewport_rect == state['shot_editor_rect']
                 # SDL resize/restore preserves the GL context, as user resizing does.
                 from pygame._sdl2.video import Window
-                window = Window.from_display_module()
+                # SDL stores a borrowed PyObject*: retain it through event pumping.
+                window = state['window'] = Window.from_display_module()
                 window.restore()
                 window.size = (900, 700)
                 state['ui']._choose_workspace('Arrange')

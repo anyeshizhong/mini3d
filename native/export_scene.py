@@ -461,13 +461,16 @@ def complete_source_hashes(project, bundle_dir, exporter, output):
 
 def write_scene_binary(path, texture_records, material_globals, sky_globals,
                        material_rows, mesh_rows, entity_rows, opaque_indices,
-                       scene, ground_z, gl):
+                       scene, ground_z, gl, shared_textures=False):
     writer = BinaryWriter()
     writer.raw(b"SPQRN001")
-    writer.u32(1)
+    writer.u32(2 if shared_textures else 1)
     writer.u32(len(texture_records))
     for record in texture_records:
         writer.u32(record["target"])
+        if shared_textures:
+            writer.u32(record["handle"])
+            continue
         writer.u32(record["internal_format"])
         p = record["parameters"]
         writer.u32(p["min_filter"]); writer.u32(p["mag_filter"])

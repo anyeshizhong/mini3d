@@ -522,8 +522,8 @@ class GLRenderer:
             glActiveTexture(active)
 
     def close(self):
-        if hasattr(self, 'native_photo'):
-            self.native_photo.close()
+        if hasattr(self, 'native_renderer'):
+            self.native_renderer.close()
         if hasattr(self, 'depth_of_field'):
             self.depth_of_field.close()
         self.last_render_plan = None
@@ -600,7 +600,33 @@ class GLRenderer:
             self.render_stats["color_draw_calls"] += self.material_renderer.draw_calls
             self.render_stats["color_triangles"] += self.material_renderer.triangles
 
+        self.render_editor_helpers(scene, camera, entities)
+
+    def render_editor_helpers(self, scene, camera, entities=None):
+        """Draw guides after either scene backend using its actual projection."""
+        from .gl_state import save_state, restore_state
+        state = save_state(texture_units=0)
+        line_width = float(glGetFloatv(GL_LINE_WIDTH))
+        depth_range = np.array(glGetDoublev(GL_DEPTH_RANGE))
+        try:
+            glDisable(GL_SCISSOR_TEST)
+            glDisable(GL_STENCIL_TEST)
+            glDisable(GL_RASTERIZER_DISCARD)
+            glDisable(GL_FRAMEBUFFER_SRGB)
+            glColorMask(True, True, True, True)
+            glDepthRange(0., 1.)
+            self._render_editor_helpers(scene, camera, entities)
+        finally:
+            glLineWidth(line_width)
+            glDepthRange(*depth_range)
+            restore_state(state)
+
+    def _render_editor_helpers(self, scene, camera, entities):
         self.render_editor_grid(scene, camera)
+        V = camera.view_matrix
+        P = camera.projection_matrix(float(self.w) / self.h)
+        if entities is None:
+            entities = scene.get_flat_render_list()
 
         # ==================== Render Axes ====================
         glDisable(GL_DEPTH_TEST)

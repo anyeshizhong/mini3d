@@ -50,6 +50,13 @@ def smoke(output,scene):
         def flip():
             frame=state['frame'];app=state['app'];ui=state['ui']
             gl.glFinish()
+            if frame==0 and ui.startup_message:
+                # The first visible frame deliberately precedes native creation.
+                assert 'target' not in state
+                app.api.screenshot(output/'startup-editor.png')
+                state['checks']['startup_before_native_scene']=True
+                original_flip();state['frame']+=1
+                return
             assert state['display_texture']==state['target'].texture
             if 56 <= frame <= 80:
                 state['times'].append((perf_counter()-state['changed_at'])*1000)
@@ -74,8 +81,8 @@ def smoke(output,scene):
                 app.api.screenshot(output/'clicked-face-editor.png')
                 state['checks']['real_routed_face_click_repeat_sky_and_black_borders']=True
                 from pygame._sdl2.video import Window
-                # Keep the SDL Window wrapper alive through run(): destroying a
-                # temporary wrapper here invalidates the display/context.
+                # SDL event.window borrows a raw pointer to this wrapper;
+                # keep the Python object alive until SDL shutdown.
                 state['window']=Window.from_display_module()
                 state['window'].size=(1000,760)
                 app.set_shot_aspect('1:1')

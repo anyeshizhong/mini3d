@@ -123,8 +123,9 @@ def run(output):
             if frame_index in (0, 1):
                 if app.workspace != "Shot" or not app.camera_view or state["backend"] != "native-photo":
                     raise AssertionError("Initial Shot viewport did not use the native-photo backend")
-            if frame_index == 8 and (app.workspace != "Arrange" or app.camera_view):
-                raise AssertionError("Arrange/Editor transition did not reach the legacy editor viewport")
+            if frame_index == 8 and (app.workspace != "Arrange" or app.camera_view or
+                                     state["backend"] != "native-arrange"):
+                raise AssertionError("Arrange/Editor transition did not use the native scene backend")
             if frame_index == 10 and (app.workspace != "Shot" or not app.camera_view or
                                       state["backend"] != "native-photo"):
                 raise AssertionError("Returning to Camera did not restore native Shot rendering")

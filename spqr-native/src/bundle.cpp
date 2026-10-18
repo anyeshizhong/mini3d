@@ -115,12 +115,15 @@ bool affine(const std::array<double, 16>& m) {
 
 } // namespace
 
-Bundle loadBundle(const std::filesystem::path& directory) {
+Bundle loadBundle(const std::filesystem::path& directory, bool allowBorrowedTextures) {
     if (std::endian::native != std::endian::little)
         throw std::runtime_error("SPQR native loader requires a little-endian host");
     Reader r(directory / "scene.bin");
     r.magic("SPQRN001");
-    if (r.scalar<std::uint32_t>() != 1) r.fail("unsupported scene bundle version");
+    const auto version = r.scalar<std::uint32_t>();
+    if (version != 1 && version != 2) r.fail("unsupported scene bundle version");
+    if (version == 2 && !allowBorrowedTextures)
+        r.fail("live texture references require the shared-context API");
     Bundle bundle;
 
     const auto textureCount = count(r, "texture");
@@ -128,6 +131,14 @@ Bundle loadBundle(const std::filesystem::path& directory) {
     for (std::uint32_t ti = 0; ti < textureCount; ++ti) {
         Texture texture;
         texture.target = r.scalar<std::uint32_t>();
+        if (version == 2) {
+            if (texture.target != 0x0de1u && texture.target != 0x8513u)
+                r.fail("unsupported borrowed texture target");
+            texture.borrowedHandle = r.scalar<std::uint32_t>();
+            if (!texture.borrowedHandle) r.fail("borrowed texture handle must be nonzero");
+            bundle.textures.push_back(std::move(texture));
+            continue;
+        }
         texture.internalFormat = r.scalar<std::uint32_t>();
         texture.minFilter = r.scalar<std::uint32_t>();
         texture.magFilter = r.scalar<std::uint32_t>();
@@ -163,7 +174,6 @@ Bundle loadBundle(const std::filesystem::path& directory) {
     bundle.materialGlobals = readUniformBlock(r);
     bundle.skyGlobals = readUniformBlock(r);
     const auto materialCount = count(r, "material");
-    if (!materialCount) r.fail("scene has no materials");
     bundle.materials.reserve(materialCount);
     for (std::uint32_t i = 0; i < materialCount; ++i) {
         Material material;
@@ -180,7 +190,6 @@ Bundle loadBundle(const std::filesystem::path& directory) {
     }
 
     const auto meshCount = count(r, "mesh");
-    if (!meshCount) r.fail("scene has no meshes");
     bundle.meshes.reserve(meshCount);
     for (std::uint32_t i = 0; i < meshCount; ++i) {
         Mesh mesh;
@@ -204,7 +213,6 @@ Bundle loadBundle(const std::filesystem::path& directory) {
     }
 
     const auto entityCount = count(r, "entity");
-    if (!entityCount) r.fail("scene has no entities");
     bundle.entities.reserve(entityCount);
     for (std::uint32_t i = 0; i < entityCount; ++i) {
         Entity entity;

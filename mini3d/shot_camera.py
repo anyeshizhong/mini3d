@@ -185,53 +185,29 @@ def render_shot(scene, camera, renderer, target):
     render_scene_view(scene, camera, renderer, target, camera.size, camera.samples)
 
 
-def render_scene_view(scene, camera, renderer, target, size, samples=1, photo_camera=None):
-    """Clean Scene-lit preview, shared by both views in the Shot workspace."""
-    from OpenGL import GL as gl
+def prepare_scene_view(scene, camera, photo_camera=None):
+    """Build the identical clean scene for staged preparation and rendering."""
     clean = copy.copy(scene)
-    clean._native_photo_source = scene
+    clean._render_source = scene
     clean.show_grid, clean.show_axes, clean.render_mode = False, False, 'Lit'
     clean._hide_entity_axes = True
     clean.lighting_mode = 'Scene'
     settings_camera = camera if photo_camera is None else photo_camera
     clean._photo_color = (getattr(settings_camera, 'white_balance_kelvin', 6500.),
                           getattr(settings_camera, 'color_preset', 'Original'))
-    from .native_photo import photo_backend
-    native = photo_backend(renderer)
-    if native is not None:
-        # Native owns MSAA and resolves both color and depth into this stable
-        # public target. Resolving the unused Python MSAA FBO would erase it.
-        target.resize(*size, samples=1)
-        renderer.resize(*size)
-        if native.render(clean, camera, target, size, samples):
-            if getattr(camera, 'dof_enabled', False):
-                if not hasattr(renderer, 'depth_of_field'):
-                    from .depth_of_field import DepthOfField
-                    renderer.depth_of_field = DepthOfField()
-                renderer.depth_of_field.apply(target, target.render_camera)
-            return
-    target.resize(*size, samples=samples)
-    target.bind()
-    gl.glDisable(gl.GL_SCISSOR_TEST)
-    gl.glDepthMask(True)
-    renderer.resize(*size)
-    multisample = bool(gl.glIsEnabled(gl.GL_MULTISAMPLE))
-    try:
-        gl.glEnable(gl.GL_MULTISAMPLE)
-        renderer.render(clean, camera)
-        target.resolve()
-        target.render_camera = copy.copy(camera)
-        if native is not None:
-            renderer.render_stats['backend'] = 'python-fallback'
-            renderer.render_stats['native_fallback_reason'] = native.last_reason
-        if getattr(camera, 'dof_enabled', False):
-            if not hasattr(renderer, 'depth_of_field'):
-                from .depth_of_field import DepthOfField
-                renderer.depth_of_field = DepthOfField()
-            renderer.depth_of_field.apply(target, camera)
-    finally:
-        if not multisample:
-            gl.glDisable(gl.GL_MULTISAMPLE)
+    return clean
+
+
+def render_scene_view(scene, camera, renderer, target, size, samples=1, photo_camera=None):
+    """Clean Scene-lit preview, shared by both views in the Shot workspace."""
+    clean = prepare_scene_view(scene, camera, photo_camera)
+    from .scene_renderer import render_scene
+    render_scene(clean, camera, renderer, target, size, samples, workspace='shot')
+    if getattr(camera, 'dof_enabled', False):
+        if not hasattr(renderer, 'depth_of_field'):
+            from .depth_of_field import DepthOfField
+            renderer.depth_of_field = DepthOfField()
+        renderer.depth_of_field.apply(target, target.render_camera)
 
 
 def capture_png(scene, camera, renderer, path):

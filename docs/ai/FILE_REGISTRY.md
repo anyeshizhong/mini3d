@@ -26,8 +26,9 @@
 | `editor_app.py` | 解析 CLI 参数（场景、资产、无窗口、截图、IPC）后运行编辑器 | 已抽查 |
 | `editor.py` | 顶层兼容启动入口，避免与 `mini3d/editor.py` 混淆 | 待核验 |
 | `mini3d/editor.py` | 编辑器应用状态、用户输入分配、场景/命令/Viewer/Shot 的联结点；不负责 ImGui 面板绘制 | 已抽查 |
-| `mini3d/editor_runtime.py` | Pygame/ImGui/OpenGL 生命周期、窗口事件及逐帧循环 | 已抽查 |
-| `mini3d/editor_ui.py` | Dear ImGui 面板布局和临时 UI 状态；通过应用命令触发操作，不拥有 Scene | 已抽查 |
+| `mini3d/editor_runtime.py` | Pygame/ImGui/OpenGL 生命周期、首帧界面、后台资产结果交付与分帧 native 资源准备，后续新增/重建保留已有视口至就绪；Arrange 经共享场景入口绘制并叠加辅助图形；隐藏及固定帧数运行同步输出场景 | 已抽查 |
+| `mini3d/editor_ui.py` | Dear ImGui 全局工作区栏、可调面板、资产列表/属性表、实际图像输入捕获和临时 UI 状态；通过应用命令触发操作，不拥有 Scene | 已抽查 |
+| `mini3d/editor_loading.py` | 交互资产请求、取消与主线程提交；后台模板经 AssetCache.adopt 接入现有 Add/Drop/Import 命令和 Undo，拖放保存请求时的表面命中；同步 API 独立保留 | 已抽查 |
 | `mini3d/editor_tools.py` | 变换 Gizmo 和视口内编辑工具的交互 | 待核验 |
 | `mini3d/model_dialog.py` | 模型文件选择对话框及其生命周期 | 待核验 |
 | `mini3d/viewer.py` | 浏览相机及场景取景视图，不等于独立 Shot Camera | 待核验 |
@@ -46,7 +47,8 @@
 | `mini3d/surface_drag.py` | 连续贴面拖动的一次交互与提交/取消语义 | 待核验 |
 | `mini3d/formation.py` | 阵型生成和阵型位置计算 | 待核验 |
 | `mini3d/picking.py` | 鼠标到场景物体的几何拾取 | 待核验 |
-| `mini3d/assets.py` | 资产辅助逻辑；具体与导入缓存职责的分界待源码复核 | 待核验 |
+| `mini3d/assets.py` | 无 GL 的 Asset 模板/共享实例与格式中立 AssetCache；load 同步加载，adopt 接收后台准备完成的模板 | 已抽查 |
+| `mini3d/asset_loader.py` | 单 daemon worker 私有缓存、CPU 模型解析与图像解码；队列 poll 交付结果，取消/关闭屏蔽迟到结果，不接触活动 Scene/History/GL | 已抽查 |
 | `mini3d/gltf_loader.py` | glTF/GLB 解码、模型资源缓存（Editor 通过其 AssetCache 使用） | 待核验 |
 | `mini3d/stl_loader.py` | ASCII/二进制 STL 到模型网格的导入 | 待核验 |
 | `mini3d/urdf_loader.py` | URDF 机器人实体/链接树数据导入 | 待核验 |
@@ -63,24 +65,25 @@
 
 **按任务进入，不必顺序通读**。当前实际入口和主要边界：
 
-- **Arrange / Editor 可见视口**：`mini3d/editor_runtime.py` 维护渲染循环，调用 `mini3d/gl_renderer.py`；它并不等于 C++ 原生 Shot。
+- **Arrange / Editor 可见视口**：`mini3d/editor_runtime.py` 维护渲染循环，经 `mini3d/scene_renderer.py` 选择 Python 或共享 C++ 场景核心；`GLRenderer` 负责 Python 路径及原生帧后的编辑辅助叠层。
 - **Python 画面生成**：`GLRenderer` → `render_plan` 组织绘制 → `material_renderer` 与 `shadow_map` 等实际绘制；`scene_snapshot.py` 提供共享的逐帧数据快照。
-- **Shot 预览 / PNG**：先查 D 节的 `shot_camera.py`；该路径可能使用 Python `GLRenderer`，也可能通过 `native_photo.py` 转至 F 节 C++ 后端，不能仅看最终画面判断后端。
-- **跨区域入口**：用户要修改灯光或阴影时，先读 C.3；材质或遮挡看 C.2；天空/IBL 看 C.4；帧缓冲/GL 状态看 C.5；只有涉及 Shot/native 才追 D/F。
+- **Shot 预览 / PNG**：先查 D 节的 `shot_camera.py`；该路径可能使用 Python `GLRenderer`，也可能通过 `native_renderer.py`（兼容名 `native_photo.py`）转至 F 节共享 C++ 后端，不能仅看最终画面判断后端。
+- **跨区域入口**：用户要修改灯光或阴影时，先读 C.3；材质或遮挡看 C.2；天空/IBL 看 C.4；帧缓冲/GL 状态看 C.5；涉及共享 native 核心时追 D.2/F。
 
 ### C.1 绘制入口与可见性规划
 
 | 文件 | 具体职责与界限 | 状态 |
 | --- | --- | --- |
-| `mini3d/gl_renderer.py` | Python 绘制顶层入口，协调材质、ShadowMap、RenderPlan、EditorGrid 和兼容几何；负责编辑网格的调用及资源释放 | 已抽查 |
-| `mini3d/editor_grid.py` | `EditorGrid.draw/close` 绘制覆盖视野的 placement-plane 辅助网格，保持世界坐标轴、格距、场景深度只读和调用方 GL 状态；不参与拾取、放置或照片。由 GLRenderer 调用；回归见 `tests/editor_grid_gpu_smoke.py`、`tests/test_ground_separation.py` | 已抽查 |
+| `mini3d/scene_renderer.py` | Arrange / Shot 共用场景绘制入口；选择后端、配置目标尺寸/采样并记录回退，在 auto 回退时运行 Python 绘制 | 已抽查 |
+| `mini3d/gl_renderer.py` | Python 绘制顶层入口，协调材质、ShadowMap、RenderPlan、EditorGrid 和兼容几何；也提供 Arrange native 场景帧后的 Python 辅助叠层 | 已抽查 |
+| `mini3d/editor_grid.py` | `EditorGrid.draw/close` 绘制覆盖视野的 placement-plane 辅助网格，保持世界坐标轴、格距、场景深度只读和调用方 GL 状态；不参与拾取、放置或 Shot 照片。Arrange native 帧后仍由 GLRenderer 的辅助绘制路径调用；回归见 `tests/editor_grid_gpu_smoke.py`、`tests/test_ground_separation.py` | 已抽查 |
 | `mini3d/render_plan.py` | 根据本帧 Scene/Camera 构建颜色可见性、分类和绘制计划 | 已抽查 |
 
 ### C.2 材质、着色器与绘制顺序
 
 | 文件 | 具体职责与界限 | 状态 |
 | --- | --- | --- |
-| `mini3d/material_renderer.py` | glTF 材质绘制、GPU 上传及相关资源复用 | 已抽查 |
+| `mini3d/material_renderer.py` | glTF 材质绘制、主线程 GPU 上传和资源复用；可消费带原图 identity 校验的后台 RGBA 解码结果 | 已抽查 |
 | `mini3d/material_shaders.py` | Python 绘制路径的 GLSL 着色器源 | 已抽查 |
 | `mini3d/draw_order.py` | 绘制顺序辅助；透明与不透明排序行为应查源码 | 已抽查 |
 
@@ -122,7 +125,7 @@
 
 | 文件 | 具体职责与界限 | 状态 |
 | --- | --- | --- |
-| `mini3d/shot_camera.py` | 独立 Shot Camera 参数、场景摄影绘制及 PNG 流程 | 已抽查 |
+| `mini3d/shot_camera.py` | 独立 Shot Camera 参数、摄影场景准备、照片色彩/景深和 PNG 流程；场景帧交给共享入口选择 GL/native 后端，Shot 不直接调用场景 renderer | 已抽查 |
 | `mini3d/depth_of_field.py` | 摄影景深计算/后处理 | 已抽查 |
 | `mini3d/photo_focus.py` | Camera View 点击深度对焦与焦点定位辅助 | 已抽查 |
 | `mini3d/photo_color.py` | 色温白平衡、照片色彩预设校验/应用 | 已抽查 |
@@ -132,11 +135,12 @@
 
 | 文件 | 具体职责与界限 | 状态 |
 | --- | --- | --- |
-| `mini3d/native_photo.py` | 复用编辑器 GL 上下文，调用 native Shot 渲染并恢复状态 | 已抽查 |
-| `mini3d/native_photo_bundle.py` | 将活动场景和相机资源同步至 native 可消费 bundle；自身不绘帧 | 已抽查 |
-| `native/export_scene.py` | Python 向 native 导出场景、材质与共享资源的底层转换逻辑 | 已抽查 |
+| `mini3d/native_renderer.py` | Arrange / Shot 共用 native renderer 生命周期、后端选择、bundle/globals 同步、live 纹理借用、实体批量变换和 GL 状态保护；prepare_step 在原线程/context 逐帧准备资源，资源变化/关闭取消部分初始化，交互按时间预算推进廉价阶段 | 已抽查 |
+| `mini3d/native_photo.py` | 兼容 re-export：将既有 Shot 导入名映射到 `native_renderer.py` | 已抽查 |
+| `mini3d/native_photo_bundle.py` | 将 Arrange / Shot 活动场景及参数同步至 native bundle；在线 v2 记录借用纹理 handle 和实体索引映射，离线 v1 仍导出像素；自身不绘帧 | 已抽查 |
+| `native/export_scene.py` | Python 向共享 native 核心导出场景、材质与共享资源的底层转换逻辑 | 待核验 |
 
-**两个导出路径不能混淆**：`mini3d/native_photo_bundle.py` 面向已打开编辑器的实时 Shot bundle；`native/export_scene.py` 为原生原型的**离线场景/参考采集导出器**，不是编辑器里的实时逐帧绘制入口。
+**live 与离线导出边界不能混淆**：`mini3d/native_photo_bundle.py` 面向已打开编辑器的 Arrange / Shot live bundle；`native/export_scene.py` 同时提供其复用的底层转换辅助与离线场景/参考采集入口。逐帧绘制通过 `scene_renderer` / `native_renderer` 调用 DLL，不由导出器绘帧。
 
 ## E. AI API 与本地通信
 
@@ -149,20 +153,20 @@
 
 ## F. C++20 原生核心（`spqr-native/src/`）
 
-**仅在需要原生 Shot、构建、原生阴影或跨语言契约时深入**。以下条目省略的共同前缀均为 `spqr-native/src/`；原生 DLL 的调用者位于 D.2 节。
+**仅在需要 Arrange / Shot 原生绘制、构建、原生阴影或跨语言契约时深入**。以下条目省略的共同前缀均为 `spqr-native/src/`；原生 DLL 的调用者位于 D.2 节。
 
 ### F.1 原生输入数据与编辑器接口
 
 | 文件 | 具体职责与界限 | 状态 |
 | --- | --- | --- |
-| `bundle.cpp` / `bundle.hpp` | 版本化 bundle、原生网格/材质/纹理/实体的导入与组织 | 已抽查 |
-| `native_photo.cpp` / `native_photo.h` | 编辑器调用的 DLL/C 接口及 Shot 原生执行 | 已抽查 |
+| `bundle.cpp` / `bundle.hpp` | 解析离线 v1 像素纹理和仅允许 shared-context API 读取的 live v2 借用 handle；组织原生网格/材质/纹理/实体 | 待核验 |
+| `native_photo.cpp` / `native_photo.h` | 编辑器调用的共享 Arrange / Shot DLL C 接口；ABI v1 保留同步 create/create_shared 与 transforms；可选 begin_shared/prepare_step 在创建线程/context 逐步初始化，未就绪拒绝绘制/更新，可销毁部分资源；可选 program_compile_count 提供当前 handle 的实际程序编译数 | 待核验 |
 
 ### F.2 原生 OpenGL 绘制与阴影视域
 
 | 文件 | 具体职责与界限 | 状态 |
 | --- | --- | --- |
-| `renderer.cpp` / `renderer.hpp` | C++ 绘制核心、颜色/阴影、实例化、GL 资源 | 已抽查 |
+| `renderer.cpp` / `renderer.hpp` | C++ 绘制核心、颜色/阴影、实例化及 GL 资源；同步或分阶段初始化，按 context/完整源码弱缓存共享 shader program，逐程序编译/逐网格上传并隔离共享 uniform 状态；仅存在摄影地面实体时编译地面程序；借用纹理不转移所有权，批量变换提交后失效阴影缓存 | 待核验 |
 | `shadow_fit.cpp` / `shadow_fit.hpp` | 原生视锥、接收体/投影者与阴影视域拟合 | 已抽查 |
 
 ### F.3 OpenGL 函数加载、平台及独立查看器
@@ -173,7 +177,7 @@
 | `platform_win32.cpp` / `platform_win32.hpp` | Windows/WGL 平台窗口与上下文 | 已抽查 |
 | `main.cpp` | 独立查看器/基准命令行入口，不等于 Python 编辑器 | 已抽查 |
 
-**注意**：`native_photo.cpp` 是 Python 编辑器借用现有 GL 上下文的原生摄影接口；`main.cpp` 是独立可执行程序的入口。它们不等价。修改 native 结构/字段时须同时核查 `mini3d/native_photo_bundle.py`、`spqr-native/FORMAT.md` 和相关测试。
+**注意**：`native_photo.cpp` 是 Python 编辑器借用现有 GL 上下文的 Arrange / Shot 共享原生接口；`main.cpp` 是独立可执行程序的入口。它们不等价。修改 native 结构/字段时须同时核查 `mini3d/native_photo_bundle.py`、`spqr-native/FORMAT.md` 和相关测试。
 
 ## G. 测试、工具与辅助材料（待逐项核对）
 
@@ -188,11 +192,12 @@
 
 | 共享契约 | 主要关注者 |
 | --- | --- |
-| 实体 ID、变换、历史、Scene v3 | Scene / Commands / scene_io / UI / API |
-| Camera pose、焦距、near/far 与点击对焦 | camera / shot_camera / photo_focus / native bundle |
-| Python → C++ bundle 字段和共享网格 | native_photo_bundle / native/export_scene / bundle |
-| ShadowMap 投影和缓存 | shadow_fit / shadow_map / native shadow_fit / native renderer |
-| GL FBO、状态、资源释放 | gl_renderer / render_target / gl_state / native_photo |
-| 同场景 API/UI 修改和照片一致性 | editor / editor_ui / api / editor_ipc / shot_camera |
+| 实体 ID、变换、历史、Scene v3 | Scene / Commands / scene_io / UI / API / native_renderer / native transform API |
+| Camera pose、焦距、near/far 与点击对焦 | camera / shot_camera / scene_renderer / native_renderer / photo_focus / native bundle |
+| Python → C++ bundle 字段、live 纹理借用和共享网格 | native_photo_bundle / native_renderer / native/export_scene / bundle / native_photo |
+| ShadowMap 投影和缓存 | shadow_fit / shadow_map / native shadow_fit / native renderer；实体批量变换会使原生阴影缓存失效 |
+| GL FBO、状态、资源释放 | scene_renderer / gl_renderer / render_target / gl_state / native_renderer；借用纹理必须存活到 native handle 销毁 |
+| Arrange 与 Shot 的后端策略 / 回退诊断 | scene_renderer / native_renderer / editor_runtime / shot_camera |
+| 同场景 API/UI 修改和照片一致性 | editor / editor_ui / api / editor_ipc / shot_camera / scene_renderer |
 
 阅读后仍须打开拟修改的真实脚本，核查接口与调用者。`已抽查` 不代表完整审计，`待核验` 不等于不存在或不可使用。

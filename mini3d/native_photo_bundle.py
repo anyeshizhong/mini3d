@@ -1,9 +1,9 @@
-"""Export the live Shot Camera scene to the native renderer's bundle format.
+"""Export the live Arrange/Shot scene to the shared native bundle format.
 
 This module deliberately borrows the application's current OpenGL context. It
-never creates a window or renders a frame. Bundle creation reads the textures
-already owned by the existing GL renderers; global-only refreshes do not read
-texture data back from the GPU.
+never creates a window or renders a frame. The live v2 path references textures
+owned by the existing GL renderers without reading their pixels. Explicit v1
+exports retain pixel capture for the standalone renderer.
 """
 from __future__ import annotations
 
@@ -180,14 +180,11 @@ def _flatten_or_raise(helpers, scene, ground):
         if message.startswith(unsupported_prefixes):
             raise UnsupportedNativeScene(message) from exc
         raise
-    if not rows:
-        raise UnsupportedNativeScene(
-            "Native scene export requires at least one visible mesh with a supported material")
     return rows
 
 
 def _material_rows(render_rows, material_renderer, scene, helpers, texture_records,
-                   texture_by_handle, gl_module):
+                   texture_by_handle, gl_module, shared_textures=False):
     materials = []
     material_by_id = {}
     for row in render_rows:
@@ -208,9 +205,9 @@ def _material_rows(render_rows, material_renderer, scene, helpers, texture_recor
             texture = material.get("textures", {}).get(slot)
             if texture is not None:
                 handle = material_renderer._texture(texture)
-                texture_indices[unit] = helpers.add_texture(
+                texture_indices[unit] = _add_texture(
                     handle, gl_module.GL_TEXTURE_2D, gl_module,
-                    texture_records, texture_by_handle)
+                    texture_records, texture_by_handle, helpers, shared_textures)
         rows.append({
             "parameters": parameters,
             "flags": 1 if material.get("doubleSided", False) else 0,
@@ -220,7 +217,7 @@ def _material_rows(render_rows, material_renderer, scene, helpers, texture_recor
 
 
 def _global_texture_indices(scene, material_renderer, helpers, texture_records,
-                            texture_by_handle, gl_module):
+                            texture_by_handle, gl_module, shared_textures=False):
     from .atmosphere import PROCEDURAL_SKIES, atmosphere_state
 
     atmosphere = atmosphere_state(scene)
@@ -233,19 +230,32 @@ def _global_texture_indices(scene, material_renderer, helpers, texture_records,
         handles = list(getattr(environment, "handles", ()))
         if len(handles) != 3:
             raise RuntimeError("Initialized environment must own diffuse/specular/LUT textures")
-        result[8] = helpers.add_texture(handles[0], gl_module.GL_TEXTURE_CUBE_MAP,
-                                        gl_module, texture_records, texture_by_handle)
-        result[9] = helpers.add_texture(handles[1], gl_module.GL_TEXTURE_CUBE_MAP,
-                                        gl_module, texture_records, texture_by_handle)
-        result[10] = helpers.add_texture(handles[2], gl_module.GL_TEXTURE_2D,
-                                         gl_module, texture_records, texture_by_handle)
+        for unit, handle, target in ((8, handles[0], gl_module.GL_TEXTURE_CUBE_MAP),
+                                     (9, handles[1], gl_module.GL_TEXTURE_CUBE_MAP),
+                                     (10, handles[2], gl_module.GL_TEXTURE_2D)):
+            result[unit] = _add_texture(handle, target, gl_module, texture_records,
+                                        texture_by_handle, helpers, shared_textures)
     if photo_hdr:
         panorama = int(getattr(material_renderer.photo_environment, "panorama", 0) or 0)
         if not panorama:
             raise RuntimeError("HDR atmosphere is enabled but its panorama texture is missing")
-        result[11] = helpers.add_texture(panorama, gl_module.GL_TEXTURE_2D,
-                                         gl_module, texture_records, texture_by_handle)
+        result[11] = _add_texture(panorama, gl_module.GL_TEXTURE_2D, gl_module,
+                                  texture_records, texture_by_handle, helpers, shared_textures)
     return result
+
+
+def _add_texture(handle, target, gl_module, records, by_handle, helpers, shared):
+    if not shared:
+        return helpers.add_texture(handle, target, gl_module, records, by_handle)
+    handle, target = int(handle), int(target)
+    if not handle:
+        return 0xffffffff
+    if handle not in by_handle:
+        by_handle[handle] = len(records)
+        records.append(dict(handle=handle, target=target))
+    elif records[by_handle[handle]]['target'] != target:
+        raise RuntimeError('Borrowed texture was observed with conflicting targets')
+    return by_handle[handle]
 
 
 def _mesh_entity_rows(render_rows, material_by_id, helpers):
@@ -311,7 +321,7 @@ def _write_shaders(output, native_source):
 
 
 def export_live_bundle(scene, camera, renderer, output: Path,
-                       native_source: Path) -> dict:
+                       native_source: Path, *, shared_textures=False) -> dict:
     """Write the live material scene and shader bundle using the current GL context.
 
     The scene is traversed in full, including off-camera shadow casters. Meshes
@@ -333,10 +343,10 @@ def export_live_bundle(scene, camera, renderer, output: Path,
     texture_by_handle = {}
     materials, material_by_id, material_rows = _material_rows(
         render_rows, material_renderer, photo_scene, helpers,
-        texture_records, texture_by_handle, gl)
+        texture_records, texture_by_handle, gl, shared_textures)
     global_indices = _global_texture_indices(
         photo_scene, material_renderer, helpers,
-        texture_records, texture_by_handle, gl)
+        texture_records, texture_by_handle, gl, shared_textures)
     for material_row in material_rows:
         for unit, index in global_indices.items():
             material_row["texture_indices"][unit] = index
@@ -358,12 +368,17 @@ def export_live_bundle(scene, camera, renderer, output: Path,
     helpers.write_scene_binary(
         scene_path, texture_records, material_globals, sky_globals,
         material_rows, mesh_rows, entity_rows, opaque_indices,
-        photo_scene, atmosphere["ground_z"], gl)
+        photo_scene, atmosphere["ground_z"], gl, shared_textures=shared_textures)
     shaders_dir = _write_shaders(output, native_source)
     ground_id = next((row["stable_id"] for row in render_rows
                       if row["photographic_ground"]), None)
     return {
         "scene_bin": scene_path,
+        "shared_textures": shared_textures,
+        # Bind each source object to its exported native index. Ground follows
+        # the active camera in C++ and never needs a CPU transform update.
+        "entity_bindings": [None if row['photographic_ground'] else row['entity']
+                            for row in render_rows],
         "shaders_dir": shaders_dir,
         "photo_scene": photo_scene,
         "ground_entity": ground,

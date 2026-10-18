@@ -267,8 +267,13 @@ class MaterialRenderer:
         key = (id(encoded), settings)
         if key in self._textures:
             return self._textures[key][1]
-        surface = pygame.image.load(io.BytesIO(encoded))
-        pixels = pygame.image.tostring(surface, "RGBA", False)
+        decoded = texture.get('_decoded_image') if texture.get('_decoded_source') is encoded else None
+        if decoded is None:
+            surface = pygame.image.load(io.BytesIO(encoded))
+            width, height = surface.get_size()
+            pixels = pygame.image.tostring(surface, "RGBA", False)
+        else:
+            width, height, pixels = decoded
         handle = int(gl.glGenTextures(1))
         gl.glBindTexture(gl.GL_TEXTURE_2D,handle)
         pixel_parameters = (gl.GL_UNPACK_ALIGNMENT,gl.GL_UNPACK_ROW_LENGTH,
@@ -277,7 +282,7 @@ class MaterialRenderer:
         try:
             for parameter, value in zip(pixel_parameters,(1,0,0,0)):
                 gl.glPixelStorei(parameter,value)
-            gl.glTexImage2D(gl.GL_TEXTURE_2D,0,gl.GL_RGBA8,surface.get_width(),surface.get_height(),
+            gl.glTexImage2D(gl.GL_TEXTURE_2D,0,gl.GL_RGBA8,width,height,
                             0,gl.GL_RGBA,gl.GL_UNSIGNED_BYTE,pixels)
         finally:
             for parameter, value in zip(pixel_parameters,previous):

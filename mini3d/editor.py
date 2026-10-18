@@ -221,6 +221,9 @@ class Editor:
             self.status = "Model import cancelled"
         else:
             try:
+                loading = getattr(self, 'asset_loading', None)
+                if loading is not None:
+                    return loading.request('import_asset', result["path"])
                 return self.import_asset(result["path"])
             except Exception as exc:
                 self.status = "Import failed: {}".format(exc)
@@ -298,6 +301,10 @@ class Editor:
         self.scene.update()
         hit = raycast_surface(self.scene, self.viewer.camera, screen_pos, self.viewport_rect,
                               fallback=self.viewer.controller.target)
+        return self._drop_asset_on_hit(index, hit)
+
+    def _drop_asset_on_hit(self, index, hit):
+        self.finish_edit()
         record = self.assets[index]
         self._instance_number += 1
         with self.commands.transaction("Drop asset"):
@@ -379,6 +386,9 @@ class Editor:
         return root
 
     def _history_step(self, redo=False):
+        loading = getattr(self, 'asset_loading', None)
+        if loading is not None:
+            loading.cancel()
         self.finish_edit()
         changed = self.commands.redo() if redo else self.commands.undo()
         self.place_selected_mode = False
@@ -517,6 +527,9 @@ class Editor:
             raise ValueError("Invalid scene document: {}".format(exc)) from exc
 
     def _load_scene(self, path=None):
+        loading = getattr(self, 'asset_loading', None)
+        if loading is not None:
+            loading.cancel()
         from .scene_io import load_scene
         return load_scene(self, path, PROJECT)
 

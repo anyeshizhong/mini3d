@@ -42,10 +42,10 @@ def run(output):
 
     def remember(label, components=1):
         low, high = imgui.get_item_rect_min(), imgui.get_item_rect_max()
-        # Input width is 220; component fields are equally sized.
+        # Use the actual current field width; the Inspector can be resized.
         if components == 3:
             for i in range(3):
-                state['items']['direction'+str(i)] = (low.x+(i+.5)*220/3, (low.y+high.y)/2)
+                state['items']['direction'+str(i)] = (low.x+(i+.5)*(high.x-low.x)/3, (low.y+high.y)/2)
         else:
             state['items'][label] = (low.x+min(40, (high.x-low.x)/2), (low.y+high.y)/2)
 
@@ -62,11 +62,11 @@ def run(output):
 
     def vector(label, *args, **kwargs):
         result = real_float3(label, *args, **kwargs)
-        if label == '##light_direction':
+        if label == '##sun_direction':
             remember(label, 3)
         return result
 
-    actions = [('Lighting...', None), ('direction0', '0'), ('direction1', '-1'),
+    actions = [('Lighting##workspace', None), ('direction0', '0'), ('direction1', '-1'),
                ('direction0', '0'), ('direction2', '0.5'), ('Direct strength', '0.25'),
                ('Ambient strength', '0.2')]
 
@@ -119,7 +119,8 @@ def run(output):
         if offset >= 0 and index < len(actions) and phase == 6:
             current = lighting_state(state['app'].scene)
             if index == 0:
-                assert state['ui']._show_lighting
+                assert state['ui'].workspace == 'Lighting'
+                state['initial_pixels'] = pixels()
             elif index == 1:
                 assert current == state['before'], current
                 assert 'nonzero' in state['ui'].lighting_error

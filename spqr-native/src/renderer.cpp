@@ -9,12 +9,29 @@
 #include <fstream>
 #include <iomanip>
 #include <limits>
+#include <mutex>
 #include <numeric>
 #include <sstream>
 #include <stdexcept>
 #include <string_view>
+#include <unordered_map>
 
 namespace spqr {
+
+struct ProgramSet {
+    decltype(&::glDeleteProgram) deleteProgram = nullptr;
+    GLuint material = 0;
+    GLuint ground = 0;
+    GLuint sky = 0;
+    GLuint shadow = 0;
+
+    ~ProgramSet() {
+        if (!deleteProgram) return;
+        for (GLuint program : {material, ground, sky, shadow})
+            if (program) deleteProgram(program);
+    }
+};
+
 namespace {
 constexpr std::uint32_t kNone = 0xffffffffu;
 constexpr GLenum GL_TEXTURE_COMPARE_MODE_VALUE = 0x884c;
@@ -29,6 +46,95 @@ constexpr GLenum GL_POLYGON_OFFSET_FILL_VALUE = 0x8037;
 
 using M4 = std::array<double, 16>;
 using M3 = std::array<double, 9>;
+
+std::string loadRendererShader(const std::filesystem::path& path, bool stableShadows,
+                               const std::filesystem::path& shaderDirectory) {
+    std::string source = readTextFile(path);
+    if (stableShadows && (path.filename() == "material.frag" || path.filename() == "ground.frag")) {
+        const auto begin = source.find("float shadowVisibility(");
+        const auto end = source.find("uniform bool photoColorEnabled;", begin);
+        if (begin == std::string::npos || end == std::string::npos)
+            throw std::runtime_error("material shader lacks native shadow replacement markers");
+        source.replace(begin, end - begin, readTextFile(shaderDirectory / "shadow_cascade.glsl") + "\n");
+    }
+    return source;
+}
+
+RendererShaderSources loadRendererShaderSources(const std::filesystem::path& shaderDirectory,
+                                                 bool stableShadows) {
+    RendererShaderSources sources;
+    sources.materialVertex = loadRendererShader(shaderDirectory / "material.vert", stableShadows,
+                                                shaderDirectory);
+    sources.materialFragment = loadRendererShader(shaderDirectory / "material.frag", stableShadows,
+                                                  shaderDirectory);
+    const auto groundVertex = shaderDirectory / "ground.vert";
+    const auto groundFragment = shaderDirectory / "ground.frag";
+    sources.hasGroundVertex = std::filesystem::exists(groundVertex);
+    sources.hasGroundFragment = std::filesystem::exists(groundFragment);
+    if (sources.hasGroundVertex)
+        sources.groundVertex = loadRendererShader(groundVertex, stableShadows, shaderDirectory);
+    if (sources.hasGroundFragment)
+        sources.groundFragment = loadRendererShader(groundFragment, stableShadows, shaderDirectory);
+    sources.skyVertex = loadRendererShader(shaderDirectory / "sky.vert", stableShadows, shaderDirectory);
+    sources.skyFragment = loadRendererShader(shaderDirectory / "sky.frag", stableShadows, shaderDirectory);
+    sources.shadowVertex = loadRendererShader(shaderDirectory / "shadow.vert", stableShadows, shaderDirectory);
+    sources.shadowFragment = loadRendererShader(shaderDirectory / "shadow.frag", stableShadows, shaderDirectory);
+    return sources;
+}
+
+void appendCacheField(std::string& key, std::string_view name, const std::string& source) {
+    const auto nameSize = static_cast<std::uint64_t>(name.size());
+    const auto sourceSize = static_cast<std::uint64_t>(source.size());
+    key.append(reinterpret_cast<const char*>(&nameSize), sizeof(nameSize));
+    key.append(name.data(), name.size());
+    key.append(reinterpret_cast<const char*>(&sourceSize), sizeof(sourceSize));
+    key.append(source.data(), source.size());
+}
+
+std::string programCacheKey(HGLRC context, bool stableShadows,
+                            const RendererShaderSources& sources) {
+    std::string key;
+    key.reserve(256 + sources.materialVertex.size() + sources.materialFragment.size() +
+                sources.groundVertex.size() + sources.groundFragment.size() +
+                sources.skyVertex.size() + sources.skyFragment.size() +
+                sources.shadowVertex.size() + sources.shadowFragment.size());
+    const auto contextValue = reinterpret_cast<std::uintptr_t>(context);
+    key.append(reinterpret_cast<const char*>(&contextValue), sizeof(contextValue));
+    key.push_back(stableShadows ? '\1' : '\0');
+    key.push_back(sources.hasGroundVertex ? '\1' : '\0');
+    key.push_back(sources.hasGroundFragment ? '\1' : '\0');
+    appendCacheField(key, "material.vert", sources.materialVertex);
+    appendCacheField(key, "material.frag", sources.materialFragment);
+    appendCacheField(key, "ground.vert", sources.groundVertex);
+    appendCacheField(key, "ground.frag", sources.groundFragment);
+    appendCacheField(key, "sky.vert", sources.skyVertex);
+    appendCacheField(key, "sky.frag", sources.skyFragment);
+    appendCacheField(key, "shadow.vert", sources.shadowVertex);
+    appendCacheField(key, "shadow.frag", sources.shadowFragment);
+    return key;
+}
+
+std::shared_ptr<ProgramSet> acquireProgramSet(GLApi& gl, HGLRC context,
+                                              bool stableShadows,
+                                              const RendererShaderSources& sources) {
+    static std::mutex cacheMutex;
+    static std::unordered_map<std::string, std::weak_ptr<ProgramSet>> cache;
+    std::string key = programCacheKey(context, stableShadows, sources);
+    std::lock_guard lock(cacheMutex);
+    for (auto it = cache.begin(); it != cache.end();) {
+        if (it->second.expired()) it = cache.erase(it);
+        else ++it;
+    }
+    const auto found = cache.find(key);
+    if (found != cache.end()) {
+        if (auto existing = found->second.lock()) return existing;
+        cache.erase(found);
+    }
+    auto programs = std::make_shared<ProgramSet>();
+    programs->deleteProgram = gl.DeleteProgram;
+    cache.emplace(std::move(key), programs);
+    return programs;
+}
 
 float f32(double value) { return static_cast<float>(value); }
 std::array<float, 16> floatMatrix(const M4& value) {
@@ -166,7 +272,8 @@ const float* floatData(const UniformValue& value) {
 } // namespace
 
 Renderer::Renderer(GLApi& gl, Bundle& bundle, const std::filesystem::path& bundleDirectory,
-                   int width, int height, bool stabilizeDepth, int msaaSamples, bool stableShadows)
+                   int width, int height, bool stabilizeDepth, int msaaSamples, bool stableShadows,
+                   bool deferred)
     : gl_(gl), bundle_(bundle), shaderDirectory_(bundleDirectory / "shaders"),
       width_(width), height_(height), msaaSamples_(msaaSamples), stabilizeDepth_(stabilizeDepth),
       stableShadows_(stableShadows) {
@@ -174,35 +281,8 @@ Renderer::Renderer(GLApi& gl, Bundle& bundle, const std::filesystem::path& bundl
     if (msaaSamples_ != 1 && msaaSamples_ != 4)
         throw std::runtime_error("renderer samples must be 1 or 4");
     try {
-        materialProgram_ = compileProgram(shaderDirectory_ / "material.vert", shaderDirectory_ / "material.frag");
-        if (std::filesystem::exists(shaderDirectory_ / "ground.vert"))
-            groundProgram_ = compileProgram(shaderDirectory_ / "ground.vert", shaderDirectory_ / "ground.frag");
-        skyProgram_ = compileProgram(shaderDirectory_ / "sky.vert", shaderDirectory_ / "sky.frag");
-        shadowProgram_ = compileProgram(shaderDirectory_ / "shadow.vert", shaderDirectory_ / "shadow.frag");
-        gl_.GenVertexArrays(1, &skyVao_);
-        uploadTextures();
-        uploadMeshes();
-        createColorTarget();
-
-        const std::array<std::pair<const char*, GLint>, 13> samplers{{
-            {"baseMap",0},{"mrMap",1},{"normalMap",2},{"aoMap",3},{"emissiveMap",4},
-            {"specularMap",5},{"specularColorMap",6},{"shadowDepth",7},{"diffuseEnv",8},
-            {"specularEnv",9},{"brdfLut",10},{"photoSky",11},{"shadowRaw",12}}};
-        for (GLuint program : {materialProgram_, groundProgram_}) {
-            if (!program) continue;
-            gl_.UseProgram(program);
-            applyUniformBlock(program, bundle_.materialGlobals);
-            for (const auto& [name, unit] : samplers) setUniform1i(program, name, unit);
-            setUniform1i(program, "shadowNearDepth", 13);
-            setUniform1i(program, "shadowNearRaw", 14);
-        }
-        gl_.UseProgram(skyProgram_);
-        applyUniformBlock(skyProgram_, bundle_.skyGlobals);
-        setUniform1i(skyProgram_, "photoSky", 11);
-        gl_.UseProgram(shadowProgram_);
-        setUniform1i(shadowProgram_, "baseMap", 0);
-        gl_.UseProgram(0);
-        checkError("renderer initialization");
+        if (!deferred)
+            while (!initializeStep()) { }
     } catch (...) {
         close();
         throw;
@@ -211,15 +291,110 @@ Renderer::Renderer(GLApi& gl, Bundle& bundle, const std::filesystem::path& bundl
 
 Renderer::~Renderer() { close(); }
 
-GLuint Renderer::compileShader(const std::filesystem::path& path, GLenum type) {
-    std::string source = readTextFile(path);
-    if (stableShadows_ && (path.filename() == "material.frag" || path.filename() == "ground.frag")) {
-        const auto begin = source.find("float shadowVisibility(");
-        const auto end = source.find("uniform bool photoColorEnabled;", begin);
-        if (begin == std::string::npos || end == std::string::npos)
-            throw std::runtime_error("material shader lacks native shadow replacement markers");
-        source.replace(begin, end - begin, readTextFile(shaderDirectory_ / "shadow_cascade.glsl") + "\n");
+bool Renderer::initializeStep() {
+    if (closed_) throw std::runtime_error("renderer is closed");
+    if (ready_) return true;
+    try {
+        if (!programSet_) {
+            const HGLRC context = wglGetCurrentContext();
+            if (!context) throw std::runtime_error("renderer initialization requires a current OpenGL context");
+            shaderSources_ = loadRendererShaderSources(shaderDirectory_, stableShadows_);
+            programSet_ = acquireProgramSet(gl_, context, stableShadows_, shaderSources_);
+        }
+        switch (initStage_) {
+        case InitStage::Material:
+            if (!programSet_->material) {
+                programSet_->material = compileProgram(shaderSources_.materialVertex,
+                    shaderSources_.materialFragment, shaderDirectory_ / "material.vert",
+                    shaderDirectory_ / "material.frag");
+                ++programCompileCount_;
+            }
+            materialProgram_ = programSet_->material;
+            initStage_ = InitStage::Ground;
+            break;
+        case InitStage::Ground:
+            if (std::any_of(bundle_.entities.begin(), bundle_.entities.end(),
+                            [](const Entity& entity) { return (entity.flags & 1u) != 0; }) &&
+                shaderSources_.hasGroundVertex) {
+                if (!shaderSources_.hasGroundFragment)
+                    throw std::runtime_error("cannot open shader: " +
+                                             (shaderDirectory_ / "ground.frag").string());
+                if (!programSet_->ground) {
+                    programSet_->ground = compileProgram(shaderSources_.groundVertex,
+                        shaderSources_.groundFragment, shaderDirectory_ / "ground.vert",
+                        shaderDirectory_ / "ground.frag");
+                    ++programCompileCount_;
+                }
+                groundProgram_ = programSet_->ground;
+            }
+            initStage_ = InitStage::Sky;
+            break;
+        case InitStage::Sky:
+            if (!programSet_->sky) {
+                programSet_->sky = compileProgram(shaderSources_.skyVertex, shaderSources_.skyFragment,
+                    shaderDirectory_ / "sky.vert", shaderDirectory_ / "sky.frag");
+                ++programCompileCount_;
+            }
+            skyProgram_ = programSet_->sky;
+            initStage_ = InitStage::Shadow;
+            break;
+        case InitStage::Shadow:
+            if (!programSet_->shadow) {
+                programSet_->shadow = compileProgram(shaderSources_.shadowVertex,
+                    shaderSources_.shadowFragment, shaderDirectory_ / "shadow.vert",
+                    shaderDirectory_ / "shadow.frag");
+                ++programCompileCount_;
+            }
+            shadowProgram_ = programSet_->shadow;
+            initStage_ = InitStage::Textures;
+            break;
+        case InitStage::Textures:
+            uploadTextures();
+            meshes_.resize(bundle_.meshes.size());
+            initStage_ = InitStage::Meshes;
+            break;
+        case InitStage::Meshes:
+            if (nextMesh_ < bundle_.meshes.size()) uploadMesh(nextMesh_++);
+            if (nextMesh_ == bundle_.meshes.size()) initStage_ = InitStage::Finalize;
+            break;
+        case InitStage::Finalize: {
+            gl_.GenVertexArrays(1, &skyVao_);
+            createColorTarget();
+
+            const std::array<std::pair<const char*, GLint>, 13> samplers{{
+                {"baseMap",0},{"mrMap",1},{"normalMap",2},{"aoMap",3},{"emissiveMap",4},
+                {"specularMap",5},{"specularColorMap",6},{"shadowDepth",7},{"diffuseEnv",8},
+                {"specularEnv",9},{"brdfLut",10},{"photoSky",11},{"shadowRaw",12}}};
+            for (GLuint program : {materialProgram_, groundProgram_}) {
+                if (!program) continue;
+                gl_.UseProgram(program);
+                for (const auto& [name, unit] : samplers) setUniform1i(program, name, unit);
+                setUniform1i(program, "shadowNearDepth", 13);
+                setUniform1i(program, "shadowNearRaw", 14);
+            }
+            gl_.UseProgram(skyProgram_);
+            setUniform1i(skyProgram_, "photoSky", 11);
+            gl_.UseProgram(shadowProgram_);
+            setUniform1i(shadowProgram_, "baseMap", 0);
+            applyGlobalUniforms();
+            gl_.UseProgram(0);
+            checkError("renderer initialization");
+            ready_ = true;
+            initStage_ = InitStage::Ready;
+            break;
+        }
+        case InitStage::Ready:
+            ready_ = true;
+            break;
+        }
+        return ready_;
+    } catch (...) {
+        close();
+        throw;
     }
+}
+
+GLuint Renderer::compileShader(const std::string& source, const std::filesystem::path& path, GLenum type) {
     if (source.empty()) throw std::runtime_error("empty shader source: " + path.string());
     const GLuint shader = gl_.CreateShader(type);
     const GLchar* sourcePointer = source.c_str();
@@ -241,12 +416,14 @@ GLuint Renderer::compileShader(const std::filesystem::path& path, GLenum type) {
     return shader;
 }
 
-GLuint Renderer::compileProgram(const std::filesystem::path& vertex, const std::filesystem::path& fragment) {
-    GLuint vs = compileShader(vertex, GL_VERTEX_SHADER);
+GLuint Renderer::compileProgram(const std::string& vertexSource, const std::string& fragmentSource,
+                                const std::filesystem::path& vertex,
+                                const std::filesystem::path& fragment) {
+    GLuint vs = compileShader(vertexSource, vertex, GL_VERTEX_SHADER);
     GLuint fs = 0;
     GLuint program = 0;
     try {
-        fs = compileShader(fragment, GL_FRAGMENT_SHADER);
+        fs = compileShader(fragmentSource, fragment, GL_FRAGMENT_SHADER);
         program = gl_.CreateProgram();
         gl_.AttachShader(program, vs);
         gl_.AttachShader(program, fs);
@@ -350,6 +527,15 @@ void Renderer::uploadTextures() {
     for (std::size_t i = 0; i < bundle_.textures.size(); ++i) {
         const Texture& texture = bundle_.textures[i];
         const GLenum target = texture.target;
+        if (texture.borrowedHandle) {
+            if (!glIsTexture(texture.borrowedHandle))
+                throw std::runtime_error("borrowed texture does not exist in the current context");
+            // Bind to validate its target, but retain all caller sampling/storage.
+            gl_.BindTexture(target, texture.borrowedHandle);
+            checkError("validate borrowed texture target");
+            textures_[i] = texture.borrowedHandle;
+            continue;
+        }
         if (texture.mips.front().width > static_cast<std::uint32_t>(maxTextureSize) ||
             texture.mips.front().height > static_cast<std::uint32_t>(maxTextureSize))
             throw std::runtime_error("texture " + std::to_string(i) + " exceeds GL_MAX_TEXTURE_SIZE");
@@ -381,30 +567,30 @@ void Renderer::uploadTextures() {
     }
 }
 
-void Renderer::uploadMeshes() {
-    meshes_.resize(bundle_.meshes.size());
-    for (std::size_t i = 0; i < bundle_.meshes.size(); ++i) {
-        const Mesh& mesh = bundle_.meshes[i];
-        MeshGpu& gpu = meshes_[i];
-        gl_.GenVertexArrays(1, &gpu.vao);
-        gl_.GenBuffers(1, &gpu.vbo);
-        gl_.GenBuffers(1, &gpu.ebo);
-        gl_.BindVertexArray(gpu.vao);
-        gl_.BindBuffer(GL_ARRAY_BUFFER, gpu.vbo);
-        gl_.BufferData(GL_ARRAY_BUFFER, static_cast<GLsizeiptr>(mesh.vertices.size() * sizeof(float)),
-                       mesh.vertices.data(), GL_STATIC_DRAW);
-        gl_.BindBuffer(GL_ELEMENT_ARRAY_BUFFER, gpu.ebo);
-        gl_.BufferData(GL_ELEMENT_ARRAY_BUFFER, static_cast<GLsizeiptr>(mesh.indices.size() * sizeof(std::uint32_t)),
-                       mesh.indices.data(), GL_STATIC_DRAW);
-        constexpr GLsizei stride = 12 * sizeof(float);
-        for (GLuint location = 0; location < 4; ++location) gl_.EnableVertexAttribArray(location);
-        gl_.VertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride, nullptr);
-        gl_.VertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<const void*>(3 * sizeof(float)));
-        gl_.VertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<const void*>(6 * sizeof(float)));
-        gl_.VertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<const void*>(8 * sizeof(float)));
-    }
+void Renderer::uploadMesh(std::size_t index) {
+    if (index >= bundle_.meshes.size() || index >= meshes_.size())
+        throw std::runtime_error("native mesh upload index is out of range");
+    const Mesh& mesh = bundle_.meshes[index];
+    MeshGpu& gpu = meshes_[index];
+    gl_.GenVertexArrays(1, &gpu.vao);
+    gl_.GenBuffers(1, &gpu.vbo);
+    gl_.GenBuffers(1, &gpu.ebo);
+    gl_.BindVertexArray(gpu.vao);
+    gl_.BindBuffer(GL_ARRAY_BUFFER, gpu.vbo);
+    gl_.BufferData(GL_ARRAY_BUFFER, static_cast<GLsizeiptr>(mesh.vertices.size() * sizeof(float)),
+                   mesh.vertices.data(), GL_STATIC_DRAW);
+    gl_.BindBuffer(GL_ELEMENT_ARRAY_BUFFER, gpu.ebo);
+    gl_.BufferData(GL_ELEMENT_ARRAY_BUFFER, static_cast<GLsizeiptr>(mesh.indices.size() * sizeof(std::uint32_t)),
+                   mesh.indices.data(), GL_STATIC_DRAW);
+    constexpr GLsizei stride = 12 * sizeof(float);
+    for (GLuint location = 0; location < 4; ++location) gl_.EnableVertexAttribArray(location);
+    gl_.VertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride, nullptr);
+    gl_.VertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<const void*>(3 * sizeof(float)));
+    gl_.VertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<const void*>(6 * sizeof(float)));
+    gl_.VertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<const void*>(8 * sizeof(float)));
     gl_.BindVertexArray(0);
     gl_.BindBuffer(GL_ARRAY_BUFFER, 0);
+    checkError("upload native mesh");
 }
 
 std::array<double, 16> Renderer::effectiveWorld(const Entity& entity, const CameraFrame& frame) const {
@@ -1181,7 +1367,7 @@ void Renderer::destroyColorTarget() {
 }
 
 void Renderer::resize(int width, int height, int samples) {
-    if (closed_) throw std::runtime_error("renderer is closed");
+    requireReady();
     if (width <= 0 || height <= 0) throw std::runtime_error("photo target dimensions must be positive");
     if (samples != 1 && samples != 4) throw std::runtime_error("photo target samples must be 1 or 4");
     if (width == width_ && height == height_ && samples == msaaSamples_) return;
@@ -1201,7 +1387,7 @@ void Renderer::updateGlobals(UniformBlock materialGlobals, UniformBlock skyGloba
                              const std::array<double, 3>& lightDirection,
                              std::uint32_t shadowResolution, float shadowBias,
                              bool shadowEnabled, double groundZ) {
-    if (closed_) throw std::runtime_error("renderer is closed");
+    requireReady();
     if (!std::all_of(lightDirection.begin(), lightDirection.end(),
                      [](double value) { return std::isfinite(value); }) ||
         std::hypot(lightDirection[0], lightDirection[1], lightDirection[2]) < 1e-15)
@@ -1229,18 +1415,28 @@ void Renderer::updateGlobals(UniformBlock materialGlobals, UniformBlock skyGloba
     shadowActive_ = false;
     nearShadowActive_ = false;
 
+    applyGlobalUniforms();
+    checkError("update photo globals");
+}
+
+void Renderer::applyGlobalUniforms() {
     for (GLuint program : {materialProgram_, groundProgram_}) {
         if (!program) continue;
         gl_.UseProgram(program);
         applyUniformBlock(program, bundle_.materialGlobals);
     }
-    gl_.UseProgram(skyProgram_);
-    applyUniformBlock(skyProgram_, bundle_.skyGlobals);
-    checkError("update photo globals");
+    if (skyProgram_) {
+        gl_.UseProgram(skyProgram_);
+        applyUniformBlock(skyProgram_, bundle_.skyGlobals);
+    }
 }
 
 FrameStats Renderer::render(const CameraFrame& frame, GLuint targetSingleSampleFbo) {
-    if (closed_) throw std::runtime_error("renderer is closed");
+    requireReady();
+    // Program objects are shared between renderers with identical shader
+    // sources. Their ordinary uniforms are shared too, so restore this
+    // renderer's globals before the next renderer can draw with its own data.
+    applyGlobalUniforms();
     // The photo renderer borrows a context whose previous pass may have
     // disabled seamless cube sampling. Set the environment contract per frame,
     // including frames without a low-frequency Python lighting update.
@@ -1350,6 +1546,7 @@ FrameStats Renderer::render(const CameraFrame& frame, GLuint targetSingleSampleF
 
 void Renderer::capture(const CameraFrame& frame, const std::filesystem::path& basePath,
                        std::size_t frameIndex, const FrameStats& stats) {
+    requireReady();
     std::filesystem::create_directories(basePath.parent_path());
     const std::size_t pixelCount = static_cast<std::size_t>(width_) * height_;
     std::vector<std::uint8_t> rgba(pixelCount * 4u);
@@ -1422,6 +1619,7 @@ void Renderer::capture(const CameraFrame& frame, const std::filesystem::path& ba
 }
 
 void Renderer::captureColor(const std::filesystem::path& path, bool presented) {
+    requireReady();
     // Diagnostics only: compare our finished render target with the window's
     // front buffer after SwapBuffers. Readback/encoding must not be benchmarked.
     std::filesystem::create_directories(path.parent_path());
@@ -1441,7 +1639,41 @@ void Renderer::captureColor(const std::filesystem::path& path, bool presented) {
     gl_.ReadBuffer(GL_BACK);
 }
 
+void Renderer::updateTransforms(const std::uint32_t* indices, const double* worlds,
+                                const float* normals, const std::uint32_t* mirrored,
+                                std::size_t count) {
+    requireReady();
+    if (count > bundle_.entities.size()) throw std::runtime_error("transform update count exceeds entity count");
+    if (count && (!indices || !worlds || !normals || !mirrored))
+        throw std::runtime_error("transform update pointer is null");
+    // Validate the entire batch before changing any entity or shadow cache.
+    for (std::size_t i = 0; i < count; ++i) {
+        const double* world = worlds + i * 16;
+        if (indices[i] >= bundle_.entities.size() || mirrored[i] > 1)
+            throw std::runtime_error("invalid transform update entity index or winding flag");
+        if (world[12] != 0 || world[13] != 0 || world[14] != 0 || world[15] != 1 ||
+            !std::all_of(world, world + 16, [](double v) { return std::isfinite(v); }) ||
+            !std::all_of(normals + i * 9, normals + (i + 1) * 9,
+                         [](float v) { return std::isfinite(v); }))
+            throw std::runtime_error("transform update requires finite affine matrices and normals");
+    }
+    for (std::size_t i = 0; i < count; ++i) {
+        Entity& entity = bundle_.entities[indices[i]];
+        std::copy_n(worlds + i * 16, 16, entity.world.begin());
+        std::copy_n(normals + i * 9, 9, entity.normal.begin());
+        entity.flags = (entity.flags & ~2u) | (mirrored[i] ? 2u : 0u);
+    }
+    if (count) {
+        ++transformRevision_;
+        farFitValid_ = false;
+        shadowDepthValid_ = nearShadowDepthValid_ = false;
+        shadowTransition_ = false;
+        shadowPoseValid_ = false;
+    }
+}
+
 bool Renderer::setTransform(const std::string& stableEntityId, const std::array<double, 16>& world) {
+    requireReady();
     if (world[12] != 0.0 || world[13] != 0.0 || world[14] != 0.0 || world[15] != 1.0 ||
         !std::all_of(world.begin(), world.end(), [](double x) { return std::isfinite(x); }))
         throw std::runtime_error("setTransform requires a finite affine matrix");
@@ -1480,9 +1712,15 @@ void Renderer::checkError(const char* stage) {
         }() + " after " + stage);
 }
 
+void Renderer::requireReady() const {
+    if (closed_) throw std::runtime_error("renderer is closed");
+    if (!ready_) throw std::runtime_error("renderer initialization is incomplete");
+}
+
 void Renderer::close() {
     if (closed_) return;
     closed_ = true;
+    ready_ = false;
     destroyShadowTarget();
     destroyColorTarget();
     for (auto& [key, instance] : instances_) {
@@ -1496,15 +1734,15 @@ void Renderer::close() {
         if (mesh.ebo) gl_.DeleteBuffers(1, &mesh.ebo);
     }
     meshes_.clear();
-    for (GLuint texture : textures_) if (texture) gl_.DeleteTextures(1, &texture);
+    for (std::size_t i = 0; i < textures_.size(); ++i)
+        if (textures_[i] && (i >= bundle_.textures.size() || !bundle_.textures[i].borrowedHandle))
+            gl_.DeleteTextures(1, &textures_[i]);
     textures_.clear();
     if (skyVao_) gl_.DeleteVertexArrays(1, &skyVao_);
     skyVao_ = 0;
-    if (materialProgram_) gl_.DeleteProgram(materialProgram_);
-    if (groundProgram_) gl_.DeleteProgram(groundProgram_);
-    if (skyProgram_) gl_.DeleteProgram(skyProgram_);
-    if (shadowProgram_) gl_.DeleteProgram(shadowProgram_);
     materialProgram_ = groundProgram_ = activeColorProgram_ = skyProgram_ = shadowProgram_ = 0;
+    locations_.clear();
+    programSet_.reset();
 }
 
 } // namespace spqr

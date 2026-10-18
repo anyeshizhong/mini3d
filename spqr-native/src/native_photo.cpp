@@ -203,8 +203,8 @@ extern "C" __declspec(dllexport) std::uint32_t spqr_photo_abi_version(void) {
     return 1;
 }
 
-extern "C" __declspec(dllexport) void* spqr_photo_create(const wchar_t* bundleDir,
-                                                           int width, int height, int samples) {
+static void* createRenderer(const wchar_t* bundleDir, int width, int height, int samples,
+                            bool sharedTextures, bool deferred) {
     clearError();
     try {
         if (!bundleDir || !*bundleDir) throw std::runtime_error("bundleDir must be a non-empty path");
@@ -218,9 +218,9 @@ extern "C" __declspec(dllexport) void* spqr_photo_create(const wchar_t* bundleDi
         std::string loadError;
         if (!state->gl.load(loadError)) throw std::runtime_error(loadError);
         const std::filesystem::path directory(bundleDir);
-        state->bundle = spqr::loadBundle(directory);
+        state->bundle = spqr::loadBundle(directory, sharedTextures);
         state->renderer = std::make_unique<spqr::Renderer>(state->gl, state->bundle, directory,
-                                                           width, height, true, samples, true);
+                                                           width, height, true, samples, true, deferred);
         return state.release();
     } catch (const std::exception& error) {
         saveError(error);
@@ -228,6 +228,38 @@ extern "C" __declspec(dllexport) void* spqr_photo_create(const wchar_t* bundleDi
         saveError("unknown C++ exception creating native photo renderer");
     }
     return nullptr;
+}
+
+extern "C" __declspec(dllexport) void* spqr_photo_create(const wchar_t* bundleDir,
+                                                       int width, int height, int samples) {
+    return createRenderer(bundleDir, width, height, samples, false, false);
+}
+
+extern "C" __declspec(dllexport) void* spqr_photo_create_shared(const wchar_t* bundleDir,
+                                                              int width, int height, int samples) {
+    return createRenderer(bundleDir, width, height, samples, true, false);
+}
+
+extern "C" __declspec(dllexport) void* spqr_photo_begin_shared(const wchar_t* bundleDir,
+                                                              int width, int height, int samples) {
+    return createRenderer(bundleDir, width, height, samples, true, true);
+}
+
+extern "C" __declspec(dllexport) int spqr_photo_prepare_step(void* instance, int* ready) {
+    if (ready) *ready = 0;
+    return runGuarded(instance, [&](PhotoRenderer& state) {
+        if (!ready) throw std::runtime_error("photo prepare ready pointer is null");
+        *ready = state.renderer->initializeStep() ? 1 : 0;
+    });
+}
+
+extern "C" __declspec(dllexport) int spqr_photo_program_compile_count(void* instance,
+                                                                       std::uint32_t* count) {
+    if (count) *count = 0;
+    return runGuarded(instance, [&](PhotoRenderer& state) {
+        if (!count) throw std::runtime_error("photo program compile count pointer is null");
+        *count = state.renderer->programCompileCount();
+    });
 }
 
 extern "C" __declspec(dllexport) int spqr_photo_resize(void* instance,
@@ -250,6 +282,14 @@ extern "C" __declspec(dllexport) int spqr_photo_globals(void* instance,
             lightDirection[0], lightDirection[1], lightDirection[2]};
         state.renderer->updateGlobals(std::move(blocks.first), std::move(blocks.second), direction,
                                       farShadowResolution, shadowBias, shadowEnabled != 0, groundZ);
+    });
+}
+
+extern "C" __declspec(dllexport) int spqr_photo_transforms(void* instance,
+    const uint32_t* indices, const double* worlds16, const float* normals9,
+    const uint32_t* mirrored, size_t count) {
+    return runGuarded(instance, [&](PhotoRenderer& state) {
+        state.renderer->updateTransforms(indices, worlds16, normals9, mirrored, count);
     });
 }
 

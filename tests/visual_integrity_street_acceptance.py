@@ -28,7 +28,8 @@ sys.path.insert(0, str(ROOT))
 
 def restore_baseline(ref, dll):
     for name in ('shadow_fit', 'shadow_map', 'material_shaders', 'material_renderer',
-                 'render_plan', 'roman_assets', 'native_photo_bundle'):
+                 'render_plan', 'roman_assets', 'native_photo_bundle',
+                 'native_photo', 'gl_renderer', 'shot_camera'):
         module = importlib.import_module('mini3d.'+name)
         source = subprocess.check_output(['git','show',ref+':mini3d/'+name+'.py'],cwd=str(ROOT))
         exec(compile(source, str(ROOT/'mini3d'/(name+'.py')), 'exec'), module.__dict__)

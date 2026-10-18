@@ -38,7 +38,9 @@ def run_smoke():
             app.browse_model()
             assert app.model_dialog._process is original
             from pygame._sdl2.video import Window
-            Window.from_display_module().size = (1200, 800)
+            # SDL event.window borrows this object; keep it until SDL shutdown.
+            state['window'] = Window.from_display_module()
+            state['window'].size = (1200, 800)
         if frame == 60:
             app.cancel_model_dialog()
             assert not app.model_dialog.pending

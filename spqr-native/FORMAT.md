@@ -1,6 +1,6 @@
-# Prototype scene bundle contract (version 1)
+# Scene bundle contract (offline v1 / live v2)
 
-All numbers little endian. `u32`, `f32`, `f64`; matrices row major, act on column vectors. Strings = u32 UTF-8 byte length + bytes. Arrays have counts stated below. No Python objects or GL handles serialized. Asset export happens offline once.
+All numbers little endian. `u32`, `f32`, `f64`; matrices row major, act on column vectors. Strings = u32 UTF-8 byte length + bytes. Arrays have counts stated below. No Python objects or GL handles serialized. Bundles can be exported offline or rebuilt from the live editor after resource edits; camera frames and lighting globals update separately.
 
 `scene.bin`:
 1. 8 bytes `SPQRN001`; u32 version=1.
@@ -18,7 +18,41 @@ All numbers little endian. `u32`, `f32`, `f64`; matrices row major, act on colum
 
 `shaders/`: material.vert/.frag, sky.vert/.frag, shadow.vert/.frag copied exactly from existing Python GLSL constants (no reimplemented lighting). Other shader exports optional. `metadata.json`: source hashes, counts, quality, route/capture mapping and limitations. Native must reject unsupported legacy material entities, malformed bundles, texture/uniform types or HDR assets rather than silently simplify.
 
-Prototype is a native renderer/viewer; full editor and Python API migration are separate milestones. Exporter and tests may use Python; native frame loop must not.
+Material, mesh and entity counts may be zero for an empty editor scene; globals
+still describe its background. Every existing index must remain in range.
+
+## Live v2 and shared-context extensions
+
+The Python editor writes the same `SPQRN001` magic with version=2. After the
+texture count, each texture is exactly `u32 GL target, u32 borrowed GL handle`.
+No internal format, sampler parameters, mip count, dimensions or pixels follow.
+The remainder of the file (UniformBlocks, materials, meshes, entities, opaque
+order and lighting settings) is identical to v1. Handles must be nonzero 2D or
+cube textures in the caller's current WGL context. They are process-local
+references, not portable assets. `loadBundle` rejects v2 by default;
+`spqr_photo_create_shared` explicitly enables it. The old `spqr_photo_create`
+and standalone viewer continue to accept v1 and reject v2.
+
+Native validates borrowed texture existence/target, borrows their storage and
+sampling parameters, and never uploads, modifies or deletes them. Python's
+MaterialRenderer / Environment owners must outlive the native renderer, including
+failed construction and rebuilds. The current context/thread restrictions also
+apply to the additional C exports; the numeric ABI version remains 1.
+
+`spqr_photo_transforms(instance, indices, worlds16, normals9, mirrored, count)`
+updates existing bundle entities by u32 index. Worlds are row-major f64[16],
+normals are row-major f32[9], and mirrored is u32 0/1 per row. The C++ renderer
+validates count, pointers, every index, finite normals and finite affine worlds
+before committing any row. It preserves photographic-ground flags and updates
+mirrored winding, then invalidates shadow fitting/depth caches once per batch.
+Normals are supplied by the same Python pseudoinverse calculation as a complete
+export, so imported mirrored/singular transforms keep the same semantics.
+Pure transforms do not export resources; topology, visibility or material
+changes still rebuild the bundle. Invalid batches leave the old scene intact.
+
+The renderer is shared by the editor's Arrange and Shot scene passes. UI,
+editing commands, overlays and Python API remain in Python. The `spqr_photo`
+DLL name and ABI v1 remain compatible with existing Shot integrations.
 
 The native stable-shadow mode additionally requires `shaders/shadow_cascade.glsl`.
 Original base shader files and scene bundle settings remain reference inputs.

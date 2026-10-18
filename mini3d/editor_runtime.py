@@ -20,6 +20,7 @@ def run(editor_class, initial_asset="auto", frames=None, screenshot=None, hidden
     from .gl_renderer import GLRenderer
     from .render_target import RenderTarget
     from .viewport_cache import viewport_key
+    from .scene_renderer import render_scene
 
     class Backend(ProgrammablePipelineRenderer):
         _custom_key = PygameRenderer._custom_key
@@ -89,6 +90,16 @@ def run(editor_class, initial_asset="auto", frames=None, screenshot=None, hidden
         cleanup.callback(renderer.close)
         app = editor_class(800, 700)
         cleanup.callback(app.model_dialog.close)
+        # Bounded capture/test runs retain deterministic synchronous semantics.
+        interactive_loading = not hidden and frames is None
+        loading = None
+        preparing_scene = False
+        preparation_message = None
+        if interactive_loading:
+            from .editor_loading import EditorAssetLoading
+            loading = EditorAssetLoading(app)
+            app.asset_loading = loading
+            cleanup.callback(loading.close)
         from .api import Mini3DAPI
         def editor_screenshot(path):
             if not frame_ready:
@@ -153,7 +164,10 @@ def run(editor_class, initial_asset="auto", frames=None, screenshot=None, hidden
         if initial_asset is not None:
             if not 0 <= initial_asset < len(app.assets):
                 raise ValueError("Asset number is not available; choose from 1 to {}".format(len(app.assets)))
-            app.add_asset(initial_asset)
+            if loading is None:
+                app.add_asset(initial_asset)
+            else:
+                loading.request('add_asset', initial_asset)
             ui.selected_asset = initial_asset
         bridge = None
         if ipc:
@@ -179,6 +193,8 @@ def run(editor_class, initial_asset="auto", frames=None, screenshot=None, hidden
             if not running:
                 break
             imported = app.poll_model_dialog()
+            if loading is not None:
+                imported = loading.poll() or imported
             if imported is not None:
                 ui.selected_asset = next(i for i, item in enumerate(app.assets)
                                          if item["path"] == imported.asset_path)
@@ -190,8 +206,25 @@ def run(editor_class, initial_asset="auto", frames=None, screenshot=None, hidden
             if bridge is not None:
                 bridge.pump()
                 app.sync_selection()
+            # Present a real editor frame before cold native resource/shader
+            # preparation. Keep --frames=1 and hidden capture runs synchronous.
+            startup_frame = frame == 0 and not hidden and (frames is None or frames > 1)
+            waiting_asset = loading is not None and loading.pending is not None and previous_viewport_key is None
+            # Resource changes after startup retain the last completed scene.
+            # Progress belongs in the status bar, not a cleared viewport.
+            ui.viewport_stale = preparing_scene
+            ui.resource_message = preparation_message if preparing_scene else None
+            ui.startup_message = ((app.status if waiting_asset else
+                preparation_message if preparing_scene else
+                'Preparing scene resources...' if startup_frame else None)
+                if previous_viewport_key is None else None)
             imgui.new_frame()
             rect = ui.draw(width, height, display_target.texture)
+            if not hidden and previous_viewport_key is None:
+                # Events queued while the startup frame was visible must not
+                # manipulate a scene which has not appeared on screen yet.
+                ui.viewport_hovered = False
+                ui.keyboard_captured = ui.mouse_captured = True
             for event in events:
                 try:
                     app.handle_event(event, ui)
@@ -217,9 +250,38 @@ def run(editor_class, initial_asset="auto", frames=None, screenshot=None, hidden
                     photo_size = quality.size(current_viewport_key, app.shot_camera.size,
                         imgui.is_any_item_active() or app._orbiting, time.monotonic())
                 render_key = (current_viewport_key, photo_size)
+                if interactive_loading and not startup_frame:
+                    # Do one GL initialization job, then present/pump events again.
+                    # No worker may borrow the live scene or the GL context.
+                    from .native_renderer import scene_backend
+                    workspace = 'shot' if app.camera_view or photo_preview else 'arrange'
+                    native = scene_backend(renderer, workspace)
+                    ready = True
+                    if native is not None and not waiting_asset:
+                        camera = app.shot_camera if app.camera_view else app.viewer.camera
+                        source = app.scene
+                        if workspace == 'shot':
+                            from .shot_camera import prepare_scene_view
+                            source = prepare_scene_view(source, camera, app.shot_camera)
+                        ready = native.prepare_step(source, camera, photo_size or rect[2:],
+                            app.shot_camera.samples if workspace == 'shot' else 1,
+                            workspace=workspace, budget_seconds=.006)
+                        preparation_message = native.preparation_message or 'Preparing scene resources...'
+                    preparing_scene = not ready
+                    startup_frame = waiting_asset or preparing_scene
                 viewport_redrawn = render_key != previous_viewport_key
                 if viewport_redrawn:
-                    if app.camera_view:
+                    if startup_frame:
+                        if previous_viewport_key is None:
+                            target.resize(*rect[2:])
+                            target.bind()
+                            gl.glDisable(gl.GL_SCISSOR_TEST)
+                            gl.glClearColor(.105, .118, .145, 1)
+                            gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT | gl.GL_STENCIL_BUFFER_BIT)
+                        # Keep the existing color/depth attachments while preparing
+                        # a replacement, including across window-size changes.
+                        rendered_photo = None
+                    elif app.camera_view:
                         # Keep the ImGui image texture stable across quality changes:
                         # UI commands are built before this frame's scene is rendered.
                         current_target = target
@@ -239,18 +301,16 @@ def run(editor_class, initial_asset="auto", frames=None, screenshot=None, hidden
                     else:
                         display_target = target
                         rendered_photo = None
-                        target.resize(rect[2], rect[3], samples=1)
-                        target.bind()
-                        gl.glDisable(gl.GL_SCISSOR_TEST)
-                        gl.glDepthMask(True)
-                        renderer.resize(*rect[2:])
-                        renderer.render(app.scene, app.viewer.camera)
-                    if not app.camera_view and app.selection is not None and app.selection.visible and hasattr(renderer, "material_renderer"):
+                        render_scene(app.scene, app.viewer.camera, renderer, target, rect[2:],
+                                     workspace='arrange')
+                    if not startup_frame and not app.camera_view and app.selection is not None and app.selection.visible and hasattr(renderer, "material_renderer"):
                         selected = Scene()
                         selected.add(app.selection)
-                        renderer.material_renderer.render_selection(selected.get_flat_render_list(), app.viewer.camera, *rect[2:])
-                    previous_viewport_key = render_key
-            renderer.render_stats['viewport_redrawn'] = viewport_redrawn
+                        renderer.material_renderer.render_selection(selected.get_flat_render_list(),
+                            getattr(target, 'render_camera', app.viewer.camera), target.width, target.height)
+                    if not startup_frame:
+                        previous_viewport_key = render_key
+            renderer.render_stats['viewport_redrawn'] = viewport_redrawn and not startup_frame
             editor_frame.resize(width, height)
             editor_frame.bind()
             gl.glDisable(gl.GL_SCISSOR_TEST)

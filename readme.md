@@ -1,6 +1,6 @@
 # Mini3D
 
-SPQR 原生核心已接入 Shot 预览与 PNG 拍照，包含相机深度冲突、近景阴影和滚轮持续移动修复。C++20 源码在 `spqr-native/`，Python 编辑器通过一次原生调用绘制相机帧；Arrange 仍使用 Python。素材和编译产物不随本次提交上传，需先构建本机 DLL。[构建与拍照操作](NATIVE-PHOTO.md) · [验证范围](docs/SPQR-NATIVE-VALIDATION.md)。
+SPQR C++20 原生场景渲染核心可供 Arrange 与 Shot 预览、PNG 拍照共用，后端可按工作区配置；Python 绘制仍可用作默认自动模式下的回退。源码在 `spqr-native/`，运行原生后端前需构建本机 DLL。素材和编译产物不随本次提交上传。[构建与后端选项](NATIVE-PHOTO.md) · [验证范围](docs/SPQR-NATIVE-VALIDATION.md)。
 
 Pompeii 街区扩展：`python -B -m mini3d --scene examples/pompeii/district.json`。85 栋独立建筑、435 个模块，市场街、住宅巷和柱廊庭院通过路口连通；原街道例子保留。[搭建、石砖修复与验收](docs/SPQR-POMPEII.md)。
 
@@ -90,7 +90,7 @@ Outliner 或 Inspector 的 **Lock / Unlock** 控制实例锁定。锁定模型�
 
 **Shift+左键** 在 Viewport 或 Outliner 中增减选择。多选使用 World 轴和可编辑成员位置均值作为 Selection Center，Move/Rotate/Scale 整体生效；Locked 成员自动排除。Inspector 显示 primary 的数值，编辑变换时对可编辑成员应用同一个增量。**Group selected** 保存选中 ID 集合，点击组名可再次选中全组；**Ungroup** 只删除组定义，不删除模型。Group 名称可在 Inspector 输入后按 Enter 修改。
 
-单选实例时，Inspector 顶部显示 **Formation**：Rows、Columns、Spacing X/Y 和 **Create Formation**。默认 5×8、间距 1.2/1.4；以源实例位置为第一行第一列，阵型方向随源 yaw。生成后自动选择 Formation Group，整次操作一条 Undo；**40 人包含原士兵，Undo 后保留原士兵，Redo 恢复同样的实例 ID 和组关系**。
+单选实例时，Inspector 的 Placement 之后可展开 **Formation**：Rows、Columns、Spacing X/Y 和 **Create Formation**。默认 5×8、间距 1.2/1.4；以源实例位置为第一行第一列，阵型方向随源 yaw。生成后自动选择 Formation Group，整次操作一条 Undo；**40 人包含原士兵，Undo 后保留原士兵，Redo 恢复同样的实例 ID 和组关系**。
 
 间距使用模型原始单位，不自动换算。Roman 原始高度约 25.96；可显式将实例 Scale 设为 `0.06 / 0.06 / 0.06`，用 Surface Move 重新贴地后，再使用 1.2/1.4 间距。Scene v3 保存 Group、成员 ID 和选择状态，兼容没有 Group 的旧版场景。实际 40 人流程、Command API、性能数据及当前限制见 [Placement V2 验收报告](docs/placement-v2.md)。当前核显上 40/100 人已有明显卡顿，尚未做大场景性能优化。
 
@@ -117,13 +117,15 @@ Shot Camera 的 Camera View、PNG 与 AI API 拍照始终使用 Scene Lighting�
 模式与方向随场景保存，旧场景兼容原默认值。实现来源、许可证、PBR 测试与前后截图见
 [方向光移植实验报告](docs/directional-light.md)。
 
+布局与真实鼠标验收见 [UI 重构记录](docs/editor-ui-review.md)。正常交互启动先显示界面，后台加载/解码模型，主线程逐帧准备 GPU 资源；Assets 可取消模型加载。固定帧数/隐藏截图仍同步绘制场景；原因和时间采样见 [启动黑屏分析](docs/editor-startup.md)。
+
 ### 最小拍照流程
 
 1. 在 **Editor View** 中摆放场景、调整浏览相机。
-2. 点击 **Create Camera From View**，将 Editor Camera 的位置、旋转、垂直视角和裁剪范围复制为独立 Shot Camera；再次点击会覆盖当前 Shot Camera。
+2. 切到 **Shot** 工作区，在右侧 Inspector 点击 **Create Camera From View**，将 Editor Camera 的位置、旋转、垂直视角和裁剪范围复制为独立 Shot Camera；之后通过 **Update Camera From View** 明确更新当前 Shot Camera。
 3. 点击 **Camera View** 查看最终画幅。**24mm / 35mm / 50mm / 85mm** 调整 Shot Camera 镜头，**16:9 / 3:2 / 4:3 / 1:1** 调整拍照比例。焦距按 36mm 宽的虚拟画幅换算，改变比例时保持焦距、调整画幅高度。
-4. **Grid On / Grid Off** 切换九宫格构图线，只作用于 Camera View；与 Editor View 的地面 Grid 无关。
-5. 点击 **Capture**，PNG 保存到项目的 `captures/shot_日期_时间_微秒.png`，状态栏显示完整路径。固定输出宽度 1920：四种比例分别为 1920×1080、1920×1280、1920×1440、1920×1920。
+4. **Guides** 复选框切换九宫格构图线，只作用于 Camera View；与 Editor View 的地面 Grid 无关。
+5. 在右侧 Inspector 点击 **Capture PNG**，PNG 保存到项目的 `captures/shot_日期_时间_微秒.png`，状态栏显示完整路径。固定输出宽度 1920：四种比例分别为 1920×1080、1920×1280、1920×1440、1920×1920。
 
 Camera View 使用与成片相同的 Lit 离屏渲染和画幅比例，并留黑边适配窗口；不显示选中轮廓、Gizmo、地面网格。九宫格仅在 UI 上叠加，PNG 不包含它。即使 Editor View 处于 Wireframe 或打开地面网格，Capture 也始终输出 Shot Camera 的干净 Lit 画面。
 

@@ -263,18 +263,20 @@ def run(output):
             if native.bundle_builds <= builds_before_add or add_delta < 100:
                 raise AssertionError("Adding a built-in module failed to rebuild or change the frame")
             builds_before_transform = native.bundle_builds
+            updates_before_transform = native.transform_updates
             before_transform = after_add
             api.set_transform(added["entity_id"], position=[-3.0, 8.0, 0.0])
             scene.update()
             render(preview_size, 4)
             after_transform = rgb_top_down(target, preview_size, gl, read_rgb)
             transform_delta = int(np.count_nonzero(np.any(before_transform != after_transform, axis=2)))
-            if native.bundle_builds <= builds_before_transform or transform_delta < 100:
-                raise AssertionError("Transform edit failed to rebuild or change the frame")
+            if (native.bundle_builds != builds_before_transform or
+                    native.transform_updates <= updates_before_transform or transform_delta < 100):
+                raise AssertionError("Transform edit failed to update instances without rebuilding assets")
             report["geometry_edits"] = dict(add_pixel_changed=add_delta,
                 transform_pixel_changed=transform_delta,
                 bundle_builds=native.bundle_builds)
-            done("adding and transforming a built-in module rebuilt assets and changed pixels")
+            done("adding rebuilt assets; transforming updated native instances and changed pixels")
 
             native.close()
             if native.handle is not None:

@@ -23,6 +23,7 @@ struct TextureMip {
 };
 struct Texture {
     std::uint32_t target = 0, internalFormat = 0;
+    std::uint32_t borrowedHandle = 0; // Live v2 only; owned by the calling GL context.
     std::uint32_t minFilter = 0, magFilter = 0;
     std::uint32_t wrapS = 0, wrapT = 0, wrapR = 0;
     std::vector<TextureMip> mips;
@@ -66,7 +67,7 @@ struct Bundle {
     double groundZ = 0;
 };
 
-Bundle loadBundle(const std::filesystem::path& directory);
+Bundle loadBundle(const std::filesystem::path& directory, bool allowBorrowedTextures = false);
 std::vector<CameraFrame> loadFrames(const std::filesystem::path& path);
 std::string readTextFile(const std::filesystem::path& path);
 

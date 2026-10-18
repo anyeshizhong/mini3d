@@ -1,5 +1,6 @@
 """Lighting contract tests without a GL context; GPU pixels: lighting_smoke.py."""
 import json
+import os
 from pathlib import Path
 import tempfile
 import unittest
@@ -93,7 +94,8 @@ class LightingTests(unittest.TestCase):
         shot = ShotCamera(self.camera)
         renderer, target = Mock(), Mock()
         renderer.render.side_effect = RuntimeError('intentional render failure')
-        with patch('OpenGL.GL.glDisable') as disable, patch('OpenGL.GL.glDepthMask'), \
+        with patch.dict(os.environ, {'MINI3D_PHOTO_BACKEND': 'python'}), \
+                patch('OpenGL.GL.glDisable') as disable, patch('OpenGL.GL.glDepthMask'), \
                 patch('OpenGL.GL.glEnable'), patch('OpenGL.GL.glIsEnabled', return_value=False):
             with self.assertRaises(RuntimeError):
                 render_shot(self.scene, shot, renderer, target)

@@ -1,4 +1,4 @@
-# Mini3D UI: task workspaces (prototype 2026-10-11)
+# Mini3D UI: task workspaces
 
 This UI change is about **a person being able to complete a scene and take a photograph**, not maximizing the number of buttons, scripts, or unit tests.
 
@@ -14,25 +14,27 @@ The interaction model borrows established patterns, but not their source code, a
 
 The current UI is built on **pyimgui 2.0**, which has no ImGui docking extension in this project. This proposal keeps the existing deterministic panels rather than creating fragile fake docking logic. It does **not** claim Blender-level window dragging and docking.
 
-## What changed
+Current layout, Gemini collaboration and actual acceptance: [UI refactor review](editor-ui-review.md). Startup presentation: [startup analysis](editor-startup.md).
 
-- Primary workflow above the viewport: **Arrange / Lighting / Shot**.
+## Current workflow
+
+- Primary workflow in the full-width header: **Arrange / Lighting / Shot**.
 - Arrange: selection, G/R/S, Surface Move, Place on Surface, World/Local, placement anchor, focus/frame, grid.
 - Lighting: the Inspector displays actual world-space directional-light vector, direct/ambient strength and shadows. This is sunlight **direction**, not a movable lamp entity. Shot Camera always uses Scene lighting.
 - Shot: create from Editor View, switch to Camera View, set focal length and aspect ratio, capture PNG. The Inspector displays camera state and next-step hints.
 - Optional asset library: automatically visible in Arrange and hidden in Lighting/Shot to reclaim viewport area. **Show library** toggles it back without losing selection.
-- Assets: direct **+ Ground Mesh** action, preserving model import and drag/drop.
+- Assets: fixed **Add to scene**, a separately scrolling model list, and **Quick add → Ground Mesh**, preserving model import and drag/drop.
 - Scene Outliner: search by root entity name; selection/group/lock controls remain.
-- Object Inspector: Formation options collapsed by default, so basic transform controls are easier to reach.
+- Object Inspector: Name and Transform come first; Formation remains available below Placement. Sidebar widths and the Outliner/Inspector divider can be dragged.
 - Help includes the three-step workflow. Existing keyboard shortcuts and top menus remain.
 - Renderer, scene data, API, command history, transforms and persistence have **not** been rewritten.
 
 ## Quick start
 
 1. Run `python editor.py --empty` from the project root using the existing environment.
-2. **Arrange:** use `+ Ground Mesh`; import or drag a Roman legionnaire onto it. Select the object; drag the gizmo or edit Inspector X/Y/Z. Ground Mesh starts as 10 x 10; Inspector Scale X/Y increases area. Lock the ground when finished.
+2. **Arrange:** use `Quick add → Ground Mesh`; import or drag a Roman legionnaire onto it. Select the object; drag the gizmo or edit Inspector X/Y/Z. Ground Mesh starts as 10 x 10; Inspector Scale X/Y increases area. Lock the ground when finished.
 3. **Lighting:** set Preview to **Scene Lighting**, adjust the **direction toward light**, Direct strength, Ambient strength, and Scene shadows in the right Inspector.
-4. **Shot:** frame the scene with the editor camera, click **Create Camera From View**, switch to **Camera View**, set lens/ratio, and click **Capture**. PNG files are written to `captures/`.
+4. **Shot:** frame the scene with the editor camera, click **Create Camera From View** in the right Inspector, switch to **Camera View**, set lens/ratio, and click **Capture**. PNG files are written to `captures/`.
 5. Save with `Ctrl+S`, reopen with `Ctrl+O`. Scene JSON saves only when requested; simply changing workspace does not save.
 6. If the scene seems lost, switch to Arrange and use **Frame all** or `Home`.
 
@@ -59,4 +61,4 @@ the clean Scene-lit photo preview between both views in Shot, retain its aspect
 in Editor View, and display the actual copied focal length. That follow-up also
 adds value-based viewport/depth caching without replacing Scene or Commands.
 
-This first iteration is **not yet a production UX certification**. It improves information architecture while retaining the proven pyimgui 2.0 panel system. True docking, splitter resizing, localization, visual icons, keyboard-accessible tooltips and a proper Undo/history view are separate follow-up work and should be driven by a manual usability run, not added speculatively. Do not merge purely because unit tests pass.
+This first iteration is **not yet a production UX certification**. It improves information architecture while retaining the proven pyimgui 2.0 panel system. True docking, localization, visual icons, keyboard-accessible tooltips and a proper Undo/history view remain follow-up work and should be driven by a manual usability run, not added speculatively. Do not merge purely because unit tests pass.

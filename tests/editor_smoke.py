@@ -127,7 +127,9 @@ def run_smoke():
         if frame == 19:
             from pygame._sdl2 import Window
             state['before_resize'] = app.viewport_rect
-            Window.from_display_module().size = (1200, 800)
+            # SDL event.window borrows this object; keep it until SDL shutdown.
+            state['window'] = Window.from_display_module()
+            state['window'].size = (1200, 800)
             return [pygame.event.Event(pygame.VIDEORESIZE, w=1200, h=800, size=(1200, 800))]
         if frame == 20:
             return [move(center)]

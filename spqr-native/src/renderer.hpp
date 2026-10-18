@@ -6,6 +6,7 @@
 #include <array>
 #include <cstdint>
 #include <filesystem>
+#include <memory>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -19,11 +20,24 @@ struct FrameStats {
     double inputNear = 0, colorNear = 0;
 };
 
+// Shader source is captured once per initialization so cache keys and compiled
+// programs always use the same complete source bytes.
+struct RendererShaderSources {
+    std::string materialVertex, materialFragment;
+    std::string groundVertex, groundFragment;
+    std::string skyVertex, skyFragment;
+    std::string shadowVertex, shadowFragment;
+    bool hasGroundVertex = false;
+    bool hasGroundFragment = false;
+};
+
+struct ProgramSet;
+
 class Renderer {
 public:
     Renderer(GLApi& gl, Bundle& bundle, const std::filesystem::path& bundleDirectory,
              int width, int height, bool stabilizeDepth = true, int msaaSamples = 1,
-             bool stableShadows = true);
+             bool stableShadows = true, bool deferred = false);
     ~Renderer();
     Renderer(const Renderer&) = delete;
     Renderer& operator=(const Renderer&) = delete;
@@ -40,9 +54,16 @@ public:
     void capture(const CameraFrame& frame, const std::filesystem::path& basePath,
                  std::size_t frameIndex, const FrameStats& stats);
     bool setTransform(const std::string& stableEntityId, const std::array<double, 16>& world);
+    void updateTransforms(const std::uint32_t* indices, const double* worlds,
+                          const float* normals, const std::uint32_t* mirrored, std::size_t count);
     void captureColor(const std::filesystem::path& path, bool presented = false);
     std::string rendererName() const;
     void close();
+    // Compile and upload a bounded portion of the renderer on the current GL
+    // context. Returns true once all resources and targets are ready.
+    bool initializeStep();
+    bool ready() const { return ready_; }
+    std::uint32_t programCompileCount() const { return programCompileCount_; }
 
 private:
     friend struct ShadowAudit;  // Opt-in GPU regression executable; no runtime API.
@@ -51,10 +72,12 @@ private:
     struct Batch { std::uint32_t mesh = 0; bool mirrored = false, ground = false; std::vector<std::uint32_t> entities; };
     struct DrawEntry { std::uint32_t entity = 0; float depth = 0; };
 
-    GLuint compileProgram(const std::filesystem::path& vertex, const std::filesystem::path& fragment);
-    GLuint compileShader(const std::filesystem::path& path, GLenum type);
+    GLuint compileProgram(const std::string& vertexSource, const std::string& fragmentSource,
+                          const std::filesystem::path& vertex,
+                          const std::filesystem::path& fragment);
+    GLuint compileShader(const std::string& source, const std::filesystem::path& path, GLenum type);
     void uploadTextures();
-    void uploadMeshes();
+    void uploadMesh(std::size_t index);
     void createShadowTarget(bool nearLayer);
     void destroyShadowTarget();
     void drawShadow(const CameraFrame& frame, FrameStats& stats);
@@ -87,10 +110,16 @@ private:
     void updateGround(const CameraFrame& frame);
     void createColorTarget();
     void destroyColorTarget();
+    void applyGlobalUniforms();
+    void requireReady() const;
+
+    enum class InitStage { Material, Ground, Sky, Shadow, Textures, Meshes, Finalize, Ready };
 
     GLApi& gl_;
     Bundle& bundle_;
     std::filesystem::path shaderDirectory_;
+    RendererShaderSources shaderSources_;
+    std::shared_ptr<ProgramSet> programSet_;
     int width_, height_;
     int msaaSamples_ = 1;
     GLuint materialProgram_ = 0, groundProgram_ = 0, activeColorProgram_ = 0;
@@ -117,6 +146,10 @@ private:
     bool shadowDepthValid_ = false, nearShadowDepthValid_ = false;
     std::uint64_t transformRevision_ = 0;
     bool closed_ = false;
+    bool ready_ = false;
+    std::uint32_t programCompileCount_ = 0;
+    InitStage initStage_ = InitStage::Material;
+    std::size_t nextMesh_ = 0;
     bool stabilizeDepth_ = true;
     bool stableShadows_ = true, nearShadowActive_ = false;
 };

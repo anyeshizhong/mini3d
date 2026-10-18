@@ -21,6 +21,11 @@ class AssetCache:
     def __init__(self):
         self._assets = {}
 
+    def adopt(self, asset):
+        """Accept a prepared CPU template on the owning (main) thread."""
+        self._assets[asset.path] = asset
+        return asset
+
     def load(self, path):
         from .roman_assets import ROMAN_ASSETS, create_roman_asset
         if str(path) in {item['path'] for item in ROMAN_ASSETS}:

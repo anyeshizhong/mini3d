@@ -55,7 +55,6 @@ class EditorUI:
         self.import_error = ""
         self._open_import = False
         self._open_help = False
-        self._show_lighting = False
         self.lighting_error = ''
         # Lightweight task workspaces: keep engine state and commands untouched.
         self.scene_filter = ""
@@ -71,6 +70,13 @@ class EditorUI:
         self.street_error = ''
         self._group_name_id, self._group_name = None, ""
         self._group_saved_name = ""
+        self._left_width, self._right_width = 220.0, 320.0
+        self._outliner_ratio = .28
+        self._library_auto_hidden = False
+        self._had_popup = False
+        self.startup_message = None
+        self.resource_message = None
+        self.viewport_stale = False
         self._configure_style()
 
     @property
@@ -115,6 +121,12 @@ class EditorUI:
     def _call(self, command, *args, **kwargs):
         """Keep a recoverable import/file error from terminating the editor."""
         try:
+            loading = getattr(self.app, 'asset_loading', None)
+            if loading is not None:
+                if command in ('add_asset', 'drop_asset', 'import_asset'):
+                    return loading.request(command, *args, **kwargs)
+                if command in ('load_scene', 'undo', 'redo'):
+                    loading.cancel()
             return getattr(self.app, command)(*args, **kwargs)
         except Exception as exc:
             self.app.status = f"{command.replace('_', ' ').capitalize()}: {exc}"
@@ -129,35 +141,55 @@ class EditorUI:
         return imgui.begin(name, flags=flags | extra_flags)
 
     def draw(self, width, height, texture_id):
-        """Keep the viewport large while allowing the asset shelf to collapse."""
         self.asset_dragging = False
         self.modal_open = False
         menu_height = self._menu()
-        status_height = 30
-        available_height = max(80, height - menu_height - status_height)
-        left = min(235, max(185, width * .175)) if self.assets_visible else 0
-        right = min(335, max(255, width * .24))
-        # On small windows collapse the library instead of crushing the viewport.
-        if width - left - right < 420:
+        top = menu_height + self._workspace_bar(width, menu_height)
+        status_height, gap = 30, 6
+        available_height = max(80, height - top - status_height)
+        # Preferences survive a resize, but actual panels always fit the window.
+        min_center = 320 if width < 900 else 380
+        right_cap = max(250, width - min_center - 170 - gap * 2) if self.assets_visible else max(250, width - min_center - gap)
+        right = min(self._right_width, right_cap)
+        left = min(self._left_width, max(0, width - right - min_center - gap * 2)) if self.assets_visible else 0
+        if left < 170:
             left = 0
-        if width - right < 320:
-            right = max(185, width * .34)
-        center = max(1, width - left - right)
-        outliner_height = max(140, available_height * .39)
+        self._library_auto_hidden = bool(self.assets_visible and not left)
+        center_x = left + gap if left else 0
+        right_x = width - right
+        center = max(1, right_x - gap - center_x)
+        outliner_height = min(max(120, available_height * self._outliner_ratio),
+                              max(120, available_height - 280 - gap))
         if left:
-            self._assets(0, menu_height, left, available_height)
-        self._viewport(left, menu_height, center, available_height, texture_id)
-        self._outliner(left + center, menu_height, right, outliner_height)
-        self._inspector(left + center, menu_height + outliner_height,
-                        right, available_height - outliner_height)
+            self._assets(0, top, left, available_height)
+        self._viewport(center_x, top, center, available_height, texture_id)
+        self._outliner(right_x, top, right, outliner_height)
+        self._inspector(right_x, top + outliner_height + gap, right,
+                        available_height - outliner_height - gap)
+        if left:
+            delta = self._splitter('##left_split', left, top, gap, available_height, True)
+            if delta:
+                self._left_width = min(max(170, left + delta), max(170, width - right - min_center - gap * 2))
+        delta = self._splitter('##right_split', right_x - gap, top, gap, available_height, True)
+        if delta:
+            self._right_width = min(max(250, right - delta), max(250, width - center_x - min_center - gap))
+        delta = self._splitter('##inspector_split', right_x, top + outliner_height, right, gap, False)
+        if delta:
+            self._outliner_ratio = min(max(120, outliner_height + delta),
+                                      max(120, available_height - 280 - gap)) / available_height
         self._status(width, height, status_height)
         self._popups()
         self._street_popup()
-        self._lighting_window()
         io = imgui.get_io()
         viewport_input = self.viewport_hovered and self.viewport_focused and not imgui.is_any_item_active()
         self.keyboard_captured = bool(io.want_text_input or (io.want_capture_keyboard and not viewport_input))
         self.mouse_captured = bool(io.want_capture_mouse and not self.viewport_hovered)
+        popup_now = imgui.is_popup_open('', imgui.POPUP_ANY_POPUP)
+        popup_capture = popup_now or self._had_popup
+        self._had_popup = popup_now
+        if popup_capture or self.startup_message or self.viewport_stale:
+            self.viewport_hovered = False
+            self.keyboard_captured = self.mouse_captured = True
         if self.modal_open:
             self.viewport_hovered = False
             self.keyboard_captured = self.mouse_captured = True
@@ -224,7 +256,7 @@ class EditorUI:
                     if imgui.menu_item(mode, selected=self.app.render_mode == mode)[0]:
                         self.app.render_mode = mode
                 if imgui.menu_item('Lighting settings')[0]:
-                    self._show_lighting = True
+                    self._choose_workspace('Lighting')
                 imgui.end_menu()
             if imgui.begin_menu("Help").opened:
                 if imgui.menu_item("Controls")[0]:
@@ -236,68 +268,83 @@ class EditorUI:
         return menu_height
 
     def _assets(self, x, y, width, height):
-        self._panel("Assets", x, y, width, height)
-        if self.workspace == 'Arrange':
-            imgui.text_disabled("PROJECT SPQR")
-            if imgui.button("+ Roman Street...", width=-1):
-                self._open_street = True
-            imgui.separator()
-        imgui.text_disabled("MODEL LIBRARY")
-        imgui.push_item_width(-1)
-        _, self.asset_filter = imgui.input_text("##asset_filter", self.asset_filter, 128)
-        if imgui.is_item_hovered():
-            imgui.set_tooltip("Filter by asset name")
-        imgui.pop_item_width()
-        if imgui.button("+ Ground Mesh", width=-1):
-            self._call("add_ground_mesh")
-        if imgui.button("+ Import model", width=-1):
-            self._call("browse_model")
+        # Gemini's fixed-action / child-list proposal, adapted to real pyimgui APIs.
+        self._panel('Assets', x, y, width, height,
+                    imgui.WINDOW_NO_SCROLLBAR | imgui.WINDOW_NO_SCROLL_WITH_MOUSE)
+        if imgui.button('+ Import model', width=-1):
+            self._call('browse_model')
         if self.app.model_dialog.pending:
-            imgui.text_wrapped("File picker is open.")
-            if imgui.button("Cancel file picker", width=-1):
-                self._call("cancel_model_dialog")
+            imgui.text_wrapped('File picker is open.')
+            if imgui.button('Cancel file picker', width=-1):
+                self._call('cancel_model_dialog')
+        loading = getattr(self.app, 'asset_loading', None)
+        if loading is not None and loading.pending is not None:
+            imgui.text_wrapped('Loading model...')
+            if imgui.button('Cancel model loading', width=-1):
+                loading.cancel()
+        if imgui.button('Quick add...', width=-1):
+            imgui.open_popup('##quick_add')
+        if imgui.begin_popup('##quick_add').opened:
+            if imgui.menu_item('Ground Mesh')[0]:
+                self._call('add_ground_mesh')
+            if imgui.menu_item('Roman Street...')[0]:
+                self._open_street = True
+            # Consume the dismissing click here, including clicks on the
+            # non-interactive viewport image in the popup's parent window.
+            if imgui.is_mouse_clicked(0) and not imgui.is_window_hovered():
+                imgui.close_current_popup()
+            imgui.end_popup()
+        imgui.text_disabled('SEARCH MODELS')
+        imgui.push_item_width(-1)
+        _, self.asset_filter = imgui.input_text('##asset_filter', self.asset_filter, 128)
+        imgui.pop_item_width()
+        assets = self.app.assets
+        current = None
+        if assets:
+            self.selected_asset = max(0, min(self.selected_asset, len(assets) - 1))
+            current = assets[self.selected_asset]
         imgui.separator()
-        imgui.text_wrapped("Drag a model into the viewport, or double-click to add.")
-        imgui.spacing()
-        for index, asset in enumerate(self.app.assets):
-            if self.asset_filter.casefold() not in asset["name"].casefold():
+        imgui.text_disabled('SELECTED MODEL')
+        imgui.text_unformatted(current['name'] if current else 'No model selected')
+        if current and imgui.is_item_hovered():
+            imgui.set_tooltip(current['name'])
+        if current and imgui.button('Add to scene', width=-1):
+            self._call('add_asset', self.selected_asset)
+        details = imgui.collapsing_header('Preview & Details')[0]
+        if details and current:
+            remaining = imgui.get_content_region_available().y
+            detail_height = max(1, min(160, remaining * .3, remaining - 120))
+            imgui.begin_child('##asset_details', 0, detail_height, border=True)
+            self._asset_preview(current)
+            imgui.text_wrapped(str(current.get('description', '')))
+            imgui.text_wrapped(str(current.get('license', '')))
+            imgui.text_wrapped(str(current['path']))
+            imgui.end_child()
+        imgui.text_disabled('Drag or double-click to add')
+        imgui.begin_child('##asset_list', 0, 0, border=True)
+        matches = 0
+        for index, asset in enumerate(assets):
+            if self.asset_filter.casefold() not in asset['name'].casefold():
                 continue
-            clicked, _ = imgui.selectable(
-                f"{index + 1:02d}  {asset['name']}##asset{index}",
-                self.selected_asset == index,
-                flags=imgui.SELECTABLE_ALLOW_DOUBLE_CLICK,
-                height=30,
-            )
+            matches += 1
+            clicked, _ = imgui.selectable(f"{index + 1:02d}  {asset['name']}##asset{index}",
+                self.selected_asset == index, flags=imgui.SELECTABLE_ALLOW_DOUBLE_CLICK, height=30)
             if clicked:
                 self.selected_asset = index
                 if imgui.is_mouse_double_clicked(0):
-                    self._call("add_asset", index)
+                    self._call('add_asset', index)
             if imgui.begin_drag_drop_source().dragging:
                 self.asset_dragging = True
-                imgui.set_drag_drop_payload(self.PAYLOAD, str(index).encode("ascii"))
-                imgui.text(f"Add {asset['name']}")
+                imgui.set_drag_drop_payload(self.PAYLOAD, str(index).encode('ascii'))
+                imgui.text_unformatted('Add ' + asset['name'])
                 imgui.end_drag_drop_source()
             if imgui.is_item_hovered():
-                imgui.begin_tooltip()
-                imgui.push_text_wrap_pos(420)
-                imgui.text_wrapped(asset["name"])
-                imgui.text_wrapped(str(asset["path"]))
-                imgui.text_wrapped(str(asset.get("license", "")))
-                imgui.pop_text_wrap_pos()
-                imgui.end_tooltip()
-        imgui.separator()
-        if self.app.assets:
-            self.selected_asset = max(0, min(self.selected_asset, len(self.app.assets) - 1))
-            asset = self.app.assets[self.selected_asset]
-            imgui.text_wrapped(asset["name"])
-            self._asset_preview(asset)
-            imgui.text_disabled('BUILT-IN' if str(asset['path']).startswith('builtin:')
-                                else Path(asset["path"]).suffix.upper().lstrip("."))
-            if asset.get("description"):
-                imgui.text_wrapped(str(asset["description"]))
-            imgui.text_wrapped(str(asset.get("license", "")))
-            if imgui.button("Add to scene", width=-1):
-                self._call("add_asset", self.selected_asset)
+                imgui.set_tooltip(asset['name'])
+        if not matches:
+            imgui.text_wrapped('No matching models.' if assets else 'Import a model to start.')
+            if self.asset_filter and imgui.button('Clear Filter'):
+                self.asset_filter = ''
+        imgui.end_child()
         imgui.end()
 
     @staticmethod
@@ -324,132 +371,27 @@ class EditorUI:
         self._call('set_workspace', workspace)
 
     def _viewport(self, x, y, width, height, texture_id):
-        self._panel("Viewport", x, y, width, height,
+        self._panel('Viewport', x, y, width, height,
                     imgui.WINDOW_NO_SCROLLBAR | imgui.WINDOW_NO_SCROLL_WITH_MOUSE)
-        # Primary navigation is task-oriented, like dedicated workspaces in 3D editors.
-        for index, name in enumerate(("Arrange", "Lighting", "Shot")):
-            if index:
-                imgui.same_line()
-            active = self.workspace == name
-            if active:
-                imgui.push_style_color(imgui.COLOR_BUTTON, .18, .46, .58, 1.0)
-            if imgui.button(name + "##workspace"):
-                self._choose_workspace(name)
-            if active:
-                imgui.pop_style_color()
-        imgui.same_line()
-        if imgui.button("Hide library" if self.assets_visible else "Show library"):
-            self.assets_visible = not self.assets_visible
-        imgui.same_line()
-        if imgui.button("Help ?"):
-            self._open_help = True
-        imgui.separator()
-
-        if self.workspace == "Arrange":
-            for index, (tool, label) in enumerate(self.TOOLS[:4]):
-                if index:
-                    imgui.same_line()
-                active = self.app.tool == tool
-                if active:
-                    imgui.push_style_color(imgui.COLOR_BUTTON, .18, .46, .58, 1.0)
-                if imgui.button(label):
-                    self._call("finish_edit")
-                    self.app.tool = tool
-                if active:
-                    imgui.pop_style_color()
-            if width >= 750:
-                imgui.same_line()
-            if imgui.button("Surface Move"):
-                self._call("finish_edit")
-                self.app.tool = "surface"
+        if self.workspace == 'Arrange':
+            self._arrange_toolbar()
+        elif self.workspace == 'Lighting':
+            if imgui.button('Frame all'):
+                self._call('frame_all')
             imgui.same_line()
-            if imgui.button("Place on Surface"):
-                self._call("begin_surface_placement")
-            if self.app.place_selected_mode:
-                imgui.text_disabled("Click a surface to place the selection. Esc cancels.")
-            else:
-                imgui.text_wrapped("Select an object, then drag its handles or use Place on Surface.")
-            for index, space in enumerate(("world", "local")):
-                if index:
-                    imgui.same_line()
-                if imgui.radio_button(space.title(), self.app.transform_space == space):
-                    self._call("finish_edit")
-                    self.app.transform_space = space
-            imgui.same_line()
-            imgui.push_item_width(120)
-            anchor_values = ("bounds_bottom", "pivot")
-            changed, anchor = imgui.combo("Anchor##drop", anchor_values.index(self.app.placement_anchor),
-                                          ["Bounds Bottom", "Pivot"])
-            if changed:
-                self.app.placement_anchor = anchor_values[anchor]
-            imgui.pop_item_width()
-            imgui.same_line()
-            if imgui.button("Focus [F]"):
-                self._call("focus_selected")
-            imgui.same_line()
-            if imgui.button("Frame all"):
-                self._call("frame_all")
-            imgui.same_line()
-            _, self.app.show_grid = imgui.checkbox("Grid", self.app.show_grid)
-        elif self.workspace == "Lighting":
-            imgui.text_disabled("Sun / directional light  |  Adjust X Y Z, intensity and shadows in Inspector")
-            modes = ("Studio", "Scene")
-            imgui.push_item_width(158)
-            changed, index = imgui.combo("Preview##light", modes.index(self.app.scene.lighting_mode),
-                                          ["Studio Lighting", "Scene Lighting"])
-            if changed:
-                self._apply_lighting(mode=modes[index])
-            imgui.pop_item_width()
-            imgui.same_line()
-            if imgui.button("Advanced lighting..."):
-                self._show_lighting = True
-            imgui.same_line()
-            if imgui.button("Frame all"):
-                self._call("frame_all")
+            imgui.text_disabled('Lighting controls in Inspector')
         else:
-            label = 'Create Camera From View' if self.app.shot_camera is None else 'Update Camera From View'
-            if imgui.button(label) and not self.app.camera_view:
-                self._call("create_camera_from_view")
-            imgui.same_line()
-            if imgui.button("Editor View"):
-                self._call("set_camera_view", False)
-            imgui.same_line()
-            if imgui.button("Camera View") and self.app.shot_camera is not None:
-                self._call("set_camera_view", True)
-            imgui.same_line()
-            if imgui.button("Capture PNG") and self.app.shot_camera is not None:
-                self._call("request_capture")
-            if self.app.shot_camera is None:
-                imgui.text_disabled("Start in Editor View, frame the scene, then Create Camera From View.")
+            if imgui.radio_button('Editor View', not self.app.camera_view):
+                self._call('set_camera_view', False)
+            if self.app.shot_camera is not None:
+                imgui.same_line()
+                if imgui.radio_button('Camera View', self.app.camera_view):
+                    self._call('set_camera_view', True)
+                imgui.same_line()
+                _, self.app.composition_grid = imgui.checkbox('Guides', self.app.composition_grid)
             else:
-                lens_options = (24, 35, 50, 85)
-                focal_mm = (self.app.shot_camera.focal_mm if self.app.camera_view else
-                    36 / (2 * self.app.shot_camera.aspect * math.tan(math.radians(self.app.viewer.camera.fov_y) / 2)))
-                lens_labels = [str(v) + " mm" for v in lens_options]
-                lens_value = next((i for i, lens in enumerate(lens_options)
-                                   if abs(lens - focal_mm) < 1e-6), len(lens_options))
-                if lens_value == len(lens_options):
-                    lens_labels.append("{:.1f} mm (view)".format(focal_mm))
-                imgui.push_item_width(116)
-                changed, index = imgui.combo("Lens##shot", lens_value,
-                                              lens_labels)
-                if changed and index < len(lens_options):
-                    self._call("set_view_lens", lens_options[index])
-                imgui.pop_item_width()
                 imgui.same_line()
-                ratios = ("16:9", "3:2", "4:3", "1:1")
-                imgui.push_item_width(90)
-                changed, index = imgui.combo("Aspect##shot",
-                                              ratios.index(self.app.shot_camera.aspect_name), list(ratios))
-                if changed:
-                    self._call("set_view_aspect", ratios[index])
-                imgui.pop_item_width()
-                imgui.same_line()
-                if imgui.button("Guides on" if self.app.composition_grid else "Guides off"):
-                    self.app.composition_grid = not self.app.composition_grid
-                imgui.same_line()
-                imgui.text_disabled('Wheel: move | Shift: faster | Ctrl: fine | Camera View: preview edits')
-
+                imgui.text_disabled('Create a camera in Inspector')
         imgui.separator()
         image_x, image_y = imgui.get_cursor_screen_pos()
         image_w, image_h = imgui.get_content_region_available()
@@ -466,13 +408,19 @@ class EditorUI:
         self.viewport_hovered = bool(imgui.is_item_hovered())
         self.viewport_focused = bool(imgui.is_window_focused())
         overlay = getattr(self.app, "draw_viewport_overlay", None)
-        if overlay is not None:
+        if overlay is not None and not self.startup_message and not self.viewport_stale:
             draw_list = imgui.get_window_draw_list()
             draw_list.push_clip_rect(image_x, image_y, image_x + image_w,
                                      image_y + image_h, True)
             overlay(draw_list, self.viewport_rect)
             draw_list.pop_clip_rect()
-        if not self.app.camera_view and imgui.begin_drag_drop_target().hovered:
+        if self.startup_message:
+            draw_list = imgui.get_window_draw_list()
+            label = str(self.startup_message)
+            size = imgui.calc_text_size(label)
+            draw_list.add_text(image_x + max(8, (image_w - size.x) / 2),
+                               image_y + image_h / 2, imgui.get_color_u32_rgba(.7, .8, .9, 1), label)
+        if not self.startup_message and not self.viewport_stale and not self.app.camera_view and imgui.begin_drag_drop_target().hovered:
             payload = imgui.accept_drag_drop_payload(self.PAYLOAD)
             if payload is not None:
                 self._call("drop_asset", int(payload.decode("ascii")), tuple(imgui.get_mouse_pos()))
@@ -489,79 +437,53 @@ class EditorUI:
             self.lighting_error = ''
             self.app.status = 'Lighting updated'
 
-    def _lighting_window(self):
-        if not self._show_lighting:
-            return
-        imgui.set_next_window_size(370, 0, condition=imgui.APPEARING)
-        opened, self._show_lighting = imgui.begin('Scene Lighting settings', closable=True,
-            flags=imgui.WINDOW_ALWAYS_AUTO_RESIZE | imgui.WINDOW_NO_SAVED_SETTINGS)
-        if opened:
-            scene = self.app.scene
-            modes = ('Studio', 'Scene')
-            imgui.push_item_width(220)
-            changed, mode = imgui.combo('Editor preview', modes.index(scene.lighting_mode),
-                                         ['Studio Lighting', 'Scene Lighting'])
-            if changed:
-                self._apply_lighting(mode=modes[mode])
-            imgui.text_unformatted('World direction: X / Y / Z (toward light)')
-            changed, direction = imgui.input_float3('##light_direction', *map(float, scene.light_dir),
-                                                    format='%.4g')
-            if changed:
-                self._apply_lighting(mode='Scene', direction=direction)
-            changed, diffuse = imgui.input_float('Direct strength', scene.diffuse, step=.05, format='%.4g')
-            if changed:
-                self._apply_lighting(mode='Scene', diffuse=diffuse)
-            changed, ambient = imgui.input_float('Ambient strength', scene.ambient, step=.05, format='%.4g')
-            if changed:
-                self._apply_lighting(mode='Scene', ambient=ambient)
-            imgui.pop_item_width()
-            imgui.text_wrapped('Editing values previews Scene Lighting. No manual normalization needed.')
-            changed, enabled = imgui.checkbox('Scene shadows', scene.shadows_enabled)
-            if changed:
-                try:
-                    self.app.set_shadows(enabled=enabled)
-                    self.lighting_error = ''
-                except ValueError as exc:
-                    self.lighting_error = str(exc)
-            imgui.text_wrapped('Shadows apply in Scene Lighting and Shot Camera.')
-            imgui.text_wrapped('Shot Camera always uses Scene Lighting.')
-            if self.lighting_error:
-                imgui.text_wrapped('Invalid lighting: ' + self.lighting_error)
-        if imgui.is_window_hovered():
-            self.viewport_hovered = False
-        imgui.end()
 
     def _outliner(self, x, y, width, height):
-        self._panel("Scene Outliner", x, y, width, height)
+        self._panel('Scene Outliner', x, y, width, height,
+                    imgui.WINDOW_NO_SCROLLBAR | imgui.WINDOW_NO_SCROLL_WITH_MOUSE)
         roots = list(self.app.scene.root_entities)
-        imgui.text_disabled(f"{len(roots)} objects  |  Shift+click for multi-select")
-        imgui.text_disabled("Search objects by name")
-        imgui.push_item_width(-1)
-        _, self.scene_filter = imgui.input_text("##scene_filter", self.scene_filter, 128)
-        imgui.pop_item_width()
-        if imgui.button("Group selected"):
-            self._call("group_selected")
+        imgui.text_disabled('{} objects'.format(len(roots)))
         imgui.same_line()
-        if imgui.button("Ungroup"):
-            self._call("ungroup_selected")
+        if imgui.button('Actions...'):
+            imgui.open_popup('##outliner_actions')
+        if imgui.begin_popup('##outliner_actions').opened:
+            if imgui.menu_item('Group selected', enabled=len(self.app.selected_entities) > 1)[0]:
+                self._call('group_selected')
+            if imgui.menu_item('Ungroup', enabled=self.app.scene.selected_group_id is not None)[0]:
+                self._call('ungroup_selected')
+            selected = self.app.selection
+            if selected is not None:
+                if imgui.menu_item('Unlock selected' if selected.locked else 'Lock selected')[0]:
+                    self._call('unlock_selected' if selected.locked else 'lock_selected')
+            # Consume the dismissing click here, including clicks on the
+            # non-interactive viewport image in the popup's parent window.
+            if imgui.is_mouse_clicked(0) and not imgui.is_window_hovered():
+                imgui.close_current_popup()
+            imgui.end_popup()
+        imgui.push_item_width(-1)
+        _, self.scene_filter = imgui.input_text('##scene_filter', self.scene_filter, 128)
+        imgui.pop_item_width()
+        if imgui.is_item_hovered():
+            imgui.set_tooltip('Search objects by name. Shift+click selects multiple objects.')
+        imgui.begin_child('##scene_tree', 0, 0)
         for group in self.app.scene.groups:
-            clicked, _ = imgui.selectable(group.name + "##group" + group.group_id,
+            clicked, _ = imgui.selectable(group.name + '##group' + group.group_id,
                 self.app.scene.selected_group_id == group.group_id)
             if clicked:
-                self._call("select_group", group.group_id)
+                self._call('select_group', group.group_id)
             if imgui.is_item_hovered():
-                imgui.set_tooltip("{} | {} members".format(group.group_id, len(group.member_ids)))
-        imgui.separator()
-        if not roots:
-            imgui.text_wrapped("Add an asset to start building the scene.")
+                imgui.set_tooltip('{} | {} members'.format(group.group_id, len(group.member_ids)))
+        matches = 0
         for entity in roots:
-            if self.scene_filter and self.scene_filter.casefold() not in entity.name.casefold():
+            if self.scene_filter.casefold() not in entity.name.casefold():
                 continue
+            matches += 1
             self._entity_node(entity, entity)
-        if self.app.selection is not None:
-            locked = self.app.selection.locked
-            if imgui.button("Unlock selected" if locked else "Lock selected", width=-1):
-                self._call("unlock_selected" if locked else "lock_selected")
+        if not roots:
+            imgui.text_wrapped('Add an asset to start building the scene.')
+        elif not matches:
+            imgui.text_wrapped('No matching objects.')
+        imgui.end_child()
         imgui.end()
 
     def _entity_node(self, entity, root):
@@ -628,20 +550,6 @@ class EditorUI:
             imgui.end()
             return
         count = len(self.app.selected_entities)
-        if count == 1 and not entity.locked:
-            if imgui.button(("Hide" if self.formation_open else "Show") + " Formation tools"):
-                self.formation_open = not self.formation_open
-            if self.formation_open:
-                imgui.push_item_width(120)
-                _, self.formation_rows = imgui.input_int("Rows", self.formation_rows)
-                _, self.formation_columns = imgui.input_int("Columns", self.formation_columns)
-                _, self.formation_spacing_x = imgui.input_float("Spacing X", self.formation_spacing_x, format="%.3f")
-                _, self.formation_spacing_y = imgui.input_float("Spacing Y", self.formation_spacing_y, format="%.3f")
-                imgui.pop_item_width()
-                if imgui.button("Create Formation"):
-                    self._call("create_formation", self.formation_rows, self.formation_columns,
-                               self.formation_spacing_x, self.formation_spacing_y)
-            imgui.separator()
         if count > 1:
             imgui.text_wrapped('Align beside primary (last selected); locked members stay fixed.')
             _, self.align_gap = imgui.input_float('Gap (world units)', self.align_gap, format='%.3f')
@@ -729,6 +637,20 @@ class EditorUI:
             imgui.pop_item_width()
             if entity.placement_type == "character":
                 imgui.text_disabled("Surface placement keeps world Z upright.")
+        if count == 1 and not entity.locked:
+            if imgui.button(("Hide" if self.formation_open else "Show") + " Formation tools"):
+                self.formation_open = not self.formation_open
+            if self.formation_open:
+                imgui.push_item_width(120)
+                _, self.formation_rows = imgui.input_int("Rows", self.formation_rows)
+                _, self.formation_columns = imgui.input_int("Columns", self.formation_columns)
+                _, self.formation_spacing_x = imgui.input_float("Spacing X", self.formation_spacing_x, format="%.3f")
+                _, self.formation_spacing_y = imgui.input_float("Spacing Y", self.formation_spacing_y, format="%.3f")
+                imgui.pop_item_width()
+                if imgui.button("Create Formation"):
+                    self._call("create_formation", self.formation_rows, self.formation_columns,
+                               self.formation_spacing_x, self.formation_spacing_y)
+            imgui.separator()
         imgui.separator()
         if imgui.button("Focus [F]"):
             self._call("focus_selected")
@@ -746,6 +668,7 @@ class EditorUI:
         imgui.end()
 
     def _inspector_lighting(self):
+        imgui.push_item_width(120)
         scene = self.app.scene
         from .atmosphere import atmosphere_state, sun_angles
         settings = atmosphere_state(scene)
@@ -812,8 +735,10 @@ class EditorUI:
             self._apply_lighting(mode=modes[index])
         imgui.separator()
         imgui.text_disabled("Toward light - world X / Y / Z")
+        imgui.push_item_width(-1)
         changed, direction = imgui.input_float3("##sun_direction", *map(float, scene.light_dir),
                                                  format="%.3f")
+        imgui.pop_item_width()
         if changed:
             self._apply_lighting(mode="Scene", direction=direction)
         changed, diffuse = imgui.input_float("Direct strength", scene.diffuse,
@@ -833,12 +758,11 @@ class EditorUI:
         if self.lighting_error:
             imgui.text_wrapped("Lighting error: " + self.lighting_error)
 
+        imgui.pop_item_width()
+
     def _inspector_shot(self):
         imgui.text("PHOTO / SHOT CAMERA")
-        if self.app.shot_camera is None:
-            imgui.text_wrapped("1. Switch to Editor View and frame your subject.")
-            imgui.text_wrapped("2. Click Create Camera From View above the viewport.")
-            imgui.text_wrapped("3. Preview in Camera View, then Capture.")
+        if not self._photo_controls():
             return
         shot = self.app.shot_camera
         imgui.text_disabled("Lens: {:.1f} mm".format(shot.focal_mm))
@@ -881,13 +805,6 @@ class EditorUI:
             self._call('set_shot_photo_color', white_balance_kelvin=6500., preset='Original')
         imgui.text_wrapped('Camera color changes keep the scene lights unchanged. Preview settles to full quality when you stop adjusting.')
         imgui.separator()
-        if imgui.button("Preview photo", width=-1):
-            self._call("set_camera_view", True)
-        if imgui.button("Return to editor view", width=-1):
-            self._call("set_camera_view", False)
-        if imgui.button("Capture PNG", width=-1):
-            self._call("request_capture")
-        imgui.separator()
         imgui.text_wrapped('Middle drag or scroll to adjust framing from this view. '
                            'Camera View previews the edited framing and keeps your photo settings.')
         imgui.text_wrapped("Photos exclude editing grid, gizmos and selection axes.")
@@ -899,7 +816,7 @@ class EditorUI:
         imgui.push_style_var(imgui.STYLE_WINDOW_PADDING, (12, 5))
         self._panel("##status", 0, height - status_height, width, status_height,
                     imgui.WINDOW_NO_TITLE_BAR | imgui.WINDOW_NO_SCROLLBAR)
-        imgui.text_unformatted(str(self.app.status))
+        imgui.text_unformatted(str(self.startup_message or self.resource_message or self.app.status))
         if imgui.is_item_hovered():
             imgui.begin_tooltip()
             imgui.push_text_wrap_pos(600)
@@ -969,7 +886,11 @@ class EditorUI:
                     self.import_error = "The file does not exist. Check its full path."
                 else:
                     try:
-                        self.app.import_asset(str(path.resolve()))
+                        loading = getattr(self.app, 'asset_loading', None)
+                        if loading is None:
+                            self.app.import_asset(str(path.resolve()))
+                        else:
+                            loading.request('import_asset', str(path.resolve()))
                         self.import_error = ""
                         imgui.close_current_popup()
                     except Exception as exc:
@@ -1012,3 +933,128 @@ class EditorUI:
             if imgui.button("Close"):
                 imgui.close_current_popup()
             imgui.end_popup()
+
+    def _workspace_bar(self, width, y):
+        bar_height = imgui.get_frame_height() + 20
+        self._panel('##WorkspaceBar', 0, y, width, bar_height,
+                    imgui.WINDOW_NO_TITLE_BAR | imgui.WINDOW_NO_SCROLLBAR)
+        for index, name in enumerate(('Arrange', 'Lighting', 'Shot')):
+            if index:
+                imgui.same_line()
+            active = self.workspace == name
+            if active:
+                imgui.push_style_color(imgui.COLOR_BUTTON, .18, .46, .58, 1)
+            if imgui.button(name + '##workspace'):
+                self._choose_workspace(name)
+            if active:
+                imgui.pop_style_color()
+        imgui.same_line(spacing=20)
+        if imgui.button('Hide library' if self.assets_visible and not self._library_auto_hidden else 'Show library'):
+            if self._library_auto_hidden:
+                self.app.status = 'Widen the window to show the library alongside the viewport.'
+            else:
+                self.assets_visible = not self.assets_visible
+        imgui.same_line()
+        if imgui.button('Undo'):
+            self._call('undo')
+        imgui.same_line()
+        if imgui.button('Redo'):
+            self._call('redo')
+        imgui.same_line()
+        if imgui.button('Help ?'):
+            self._open_help = True
+        imgui.end()
+        return bar_height
+
+    def _splitter(self, name, x, y, width, height, vertical):
+        imgui.push_style_var(imgui.STYLE_WINDOW_PADDING, (0, 0))
+        imgui.push_style_var(imgui.STYLE_WINDOW_MIN_SIZE, (1, 1))
+        self._panel(name, x, y, width, height,
+                    imgui.WINDOW_NO_TITLE_BAR | imgui.WINDOW_NO_SCROLLBAR |
+                    imgui.WINDOW_NO_SCROLL_WITH_MOUSE)
+        imgui.invisible_button('##drag', max(1, width), max(1, height))
+        hovered, active = imgui.is_item_hovered(), imgui.is_item_active()
+        if hovered or active:
+            imgui.set_mouse_cursor(imgui.MOUSE_CURSOR_RESIZE_EW if vertical else imgui.MOUSE_CURSOR_RESIZE_NS)
+            self.viewport_hovered = False
+        delta = imgui.get_io().mouse_delta
+        amount = float(delta.x if vertical else delta.y) if active and not imgui.is_item_activated() else 0.0
+        imgui.end()
+        imgui.pop_style_var(2)
+        return amount
+
+    def _arrange_toolbar(self):
+        # Gemini's compact tool selector + explicit placement + More layout.
+        tools = [tool for tool, _ in self.TOOLS]
+        imgui.push_item_width(138)
+        changed, index = imgui.combo('##arrange_tool', tools.index(self.app.tool),
+                                      [label for _, label in self.TOOLS])
+        imgui.pop_item_width()
+        if changed:
+            self._call('finish_edit')
+            self.app.tool = tools[index]
+        imgui.same_line()
+        if imgui.button('Place on Surface'):
+            self._call('begin_surface_placement')
+        imgui.same_line()
+        if imgui.button('More...'):
+            imgui.open_popup('##arrange_more')
+        if imgui.begin_popup('##arrange_more').opened:
+            for space in ('world', 'local'):
+                if imgui.menu_item(space.title(), selected=self.app.transform_space == space)[0]:
+                    self._call('finish_edit')
+                    self.app.transform_space = space
+            imgui.separator()
+            for anchor, label in (('bounds_bottom', 'Bounds Bottom'), ('pivot', 'Pivot')):
+                if imgui.menu_item('Anchor: ' + label, selected=self.app.placement_anchor == anchor)[0]:
+                    self.app.placement_anchor = anchor
+            clicked, enabled = imgui.menu_item('Grid', selected=self.app.show_grid)
+            if clicked:
+                self.app.show_grid = enabled
+            imgui.separator()
+            if imgui.menu_item('Focus selected', 'F', enabled=self.app.selection is not None)[0]:
+                self._call('focus_selected')
+            if imgui.menu_item('Frame all', 'Home')[0]:
+                self._call('frame_all')
+            # Consume the dismissing click here, including clicks on the
+            # non-interactive viewport image in the popup's parent window.
+            if imgui.is_mouse_clicked(0) and not imgui.is_window_hovered():
+                imgui.close_current_popup()
+            imgui.end_popup()
+        if self.app.place_selected_mode:
+            imgui.text_disabled('Click a surface. Esc cancels.')
+
+    def _photo_controls(self):
+        shot = self.app.shot_camera
+        if shot is None:
+            imgui.text_wrapped('Frame your subject in Editor View, then save this view as the Shot Camera.')
+            if imgui.button('Create Camera From View', width=-1):
+                self._call('create_camera_from_view')
+            return False
+        if not self.app.camera_view:
+            if imgui.button('Update Camera From View', width=-1):
+                self._call('create_camera_from_view')
+        else:
+            imgui.text_wrapped('Return to Editor View to change framing.')
+        imgui.push_item_width(-1)
+        focal = (shot.focal_mm if self.app.camera_view else
+                 36 / (2 * shot.aspect * math.tan(math.radians(self.app.viewer.camera.fov_y) / 2)))
+        lenses = (24, 35, 50, 85)
+        labels = [str(value) + ' mm' for value in lenses]
+        index = next((i for i, value in enumerate(lenses) if abs(value - focal) < 1e-6), len(lenses))
+        if index == len(lenses):
+            labels.append('{:.1f} mm (view)'.format(focal))
+        imgui.text('Lens')
+        changed, index = imgui.combo('##shot_lens', index, labels)
+        if changed and index < len(lenses):
+            self._call('set_view_lens', lenses[index])
+        ratios = ('16:9', '3:2', '4:3', '1:1')
+        imgui.text('Aspect')
+        changed, index = imgui.combo('##shot_aspect', ratios.index(shot.aspect_name), list(ratios))
+        if changed:
+            self._call('set_view_aspect', ratios[index])
+        imgui.pop_item_width()
+        if imgui.button('Capture PNG', width=-1):
+            self._call('request_capture')
+        imgui.separator()
+        return True

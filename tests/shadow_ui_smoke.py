@@ -43,7 +43,7 @@ def run(output):
     class UI(EditorUI):
         def __init__(self,*args):
             super().__init__(*args)
-            self._show_lighting = True
+            self._choose_workspace('Lighting')
 
     class Target(RenderTarget):
         def __init__(self):

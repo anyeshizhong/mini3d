@@ -1,6 +1,6 @@
 # FIRST.md — Mini3D 项目导航
 
-Mini3D 是一个以**三维场景摆放、渲染、摄影和 AI API** 为核心的编辑器项目。现有编辑器主要使用 Python、Pygame、OpenGL；Shot 摄影还接入了 C++20 原生渲染核心。**本文件只负责指路**，不重复源码解释、使用手册、技术日志或完整操作步骤。
+Mini3D 是一个以**三维场景摆放、渲染、摄影和 AI API** 为核心的编辑器项目。现有编辑器主要使用 Python、Pygame、OpenGL；Arrange 与 Shot 可共用 C++20 原生场景渲染核心，也保留 Python 后端。**本文件只负责指路**，不重复源码解释、使用手册、技术日志或完整操作步骤。
 
 用户只需要用自然语言提出目标；由**主 Agent** 负责判断任务、查阅必要资料、协调跨模块工作、验收并交付。不要要求用户指定脚本、模块或测试。
 
@@ -13,7 +13,7 @@ Mini3D 是一个以**三维场景摆放、渲染、摄影和 AI API** 为核心�
 | 如何启动和操作软件、接单、修改、测试与验收 | [OPERATIONS.md](docs/ai/OPERATIONS.md) |
 | 容易误改的地方、跨模块长期注意事项 | [CAUTIONS.md](docs/ai/CAUTIONS.md) |
 | 软件模块、调用关系和架构背景 | [ARCHITECTURE.md](docs/ARCHITECTURE.md) |
-| C++ 摄影绘制的构建、运行及后端切换 | [NATIVE-PHOTO.md](NATIVE-PHOTO.md) |
+| C++ 原生场景绘制的构建、运行及后端切换 | [NATIVE-PHOTO.md](NATIVE-PHOTO.md) |
 | AI 控制及活动窗口连接方式 | [ai-api-v1.md](docs/ai-api-v1.md)、[live-editor-ipc.md](docs/live-editor-ipc.md) |
 | 旧实验、修复经验、专项验收及测试入口 | 在 `docs/` 及相关项目资料中**按任务关键词、条件和时间搜索原始日志**，再核实相应源码和测试 |
 
