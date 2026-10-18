@@ -59,41 +59,83 @@
 | `mini3d/scene_snapshot.py` | 场景派生快照、变化检测等中间表示；具体边界待核查 | 待核验 |
 | `mini3d/spatial_index.py` | 空间索引原型；当前默认是否启用由代码及配置确认 | 待核验 |
 
-## C. Python 绘制、阴影与环境
+## C. Python 渲染（编辑视口及摄影的 Python 绘制路径）
+
+**按任务进入，不必顺序通读**。当前实际入口和主要边界：
+
+- **Arrange / Editor 可见视口**：`mini3d/editor_runtime.py` 维护渲染循环，调用 `mini3d/gl_renderer.py`；它并不等于 C++ 原生 Shot。
+- **Python 画面生成**：`GLRenderer` → `render_plan` 组织绘制 → `material_renderer` 与 `shadow_map` 等实际绘制；`scene_snapshot.py` 提供共享的逐帧数据快照。
+- **Shot 预览 / PNG**：先查 D 节的 `shot_camera.py`；该路径可能使用 Python `GLRenderer`，也可能通过 `native_photo.py` 转至 F 节 C++ 后端，不能仅看最终画面判断后端。
+- **跨区域入口**：用户要修改灯光或阴影时，先读 C.3；材质或遮挡看 C.2；天空/IBL 看 C.4；帧缓冲/GL 状态看 C.5；只有涉及 Shot/native 才追 D/F。
+
+### C.1 绘制入口与可见性规划
 
 | 文件 | 具体职责与界限 | 状态 |
 | --- | --- | --- |
 | `mini3d/gl_renderer.py` | 绘制顶层入口，协调材质、ShadowMap、RenderPlan 和兼容几何 | 已抽查 |
-| `mini3d/material_renderer.py` | glTF 材质绘制、GPU 上传及相关资源复用 | 待核验 |
-| `mini3d/material_shaders.py` | Python 绘制路径的 GLSL 着色器源 | 待核验 |
-| `mini3d/render_plan.py` | 根据本帧 Scene/Camera 构建颜色可见性、分类和绘制计划 | 待核验 |
-| `mini3d/draw_order.py` | 绘制顺序辅助；透明与不透明排序行为应查源码 | 待核验 |
-| `mini3d/render_target.py` | 离屏帧缓冲、尺寸、抗锯齿及颜色/深度附件生命周期 | 待核验 |
-| `mini3d/gl_state.py` | OpenGL 上下文状态的保存、恢复与读取辅助 | 待核验 |
-| `mini3d/shadow_fit.py` | 根据接收体、投影者与相机计算阴影视域 | 待核验 |
-| `mini3d/shadow_map.py` | ShadowMap 生成、资源、缓存和阴影采样配合 | 待核验 |
-| `mini3d/lighting.py` | 方向光与光照设置校验/状态 | 待核验 |
-| `mini3d/sky_renderer.py` | 天空绘制 | 待核验 |
-| `mini3d/atmosphere.py` | 摄影大气/天空/地面状态及照片场景准备 | 待核验 |
-| `mini3d/environment.py` | IBL / 环境贴图等环境渲染资源 | 待核验 |
-| `mini3d/hdr.py` | HDR 图像处理辅助 | 待核验 |
-| `mini3d/ibl_filter.py` | IBL 过滤 / 预计算辅助 | 待核验 |
-| `mini3d/cpu_renderer.py` | CPU 绘制及参考用途；不要与正式 GPU 后端混淆 | 待核验 |
-| `mini3d/headless_gl.py` | 无可见窗口的 OpenGL 环境辅助 | 待核验 |
-| `mini3d/math3d.py` | 通用三维数学辅助，不等于 Scene 的所有坐标契约 | 待核验 |
+| `mini3d/render_plan.py` | 根据本帧 Scene/Camera 构建颜色可见性、分类和绘制计划 | 已抽查 |
 
-## D. 摄影与原生连接
+### C.2 材质、着色器与绘制顺序
+
+| 文件 | 具体职责与界限 | 状态 |
+| --- | --- | --- |
+| `mini3d/material_renderer.py` | glTF 材质绘制、GPU 上传及相关资源复用 | 已抽查 |
+| `mini3d/material_shaders.py` | Python 绘制路径的 GLSL 着色器源 | 已抽查 |
+| `mini3d/draw_order.py` | 绘制顺序辅助；透明与不透明排序行为应查源码 | 已抽查 |
+
+### C.3 阴影与光照
+
+| 文件 | 具体职责与界限 | 状态 |
+| --- | --- | --- |
+| `mini3d/shadow_fit.py` | 根据接收体、投影者与相机计算阴影视域 | 已抽查 |
+| `mini3d/shadow_map.py` | ShadowMap 生成、资源、缓存和阴影采样配合 | 已抽查 |
+| `mini3d/lighting.py` | 方向光与光照设置校验/状态 | 已抽查 |
+
+### C.4 天空、大气、环境和 IBL
+
+| 文件 | 具体职责与界限 | 状态 |
+| --- | --- | --- |
+| `mini3d/sky_renderer.py` | 天空绘制 | 已抽查 |
+| `mini3d/atmosphere.py` | 摄影大气/天空/地面状态及照片场景准备 | 已抽查 |
+| `mini3d/environment.py` | IBL / 环境贴图等环境渲染资源 | 已抽查 |
+| `mini3d/hdr.py` | HDR 图像处理辅助 | 已抽查 |
+| `mini3d/ibl_filter.py` | IBL 过滤 / 预计算辅助 | 已抽查 |
+
+### C.5 目标缓冲、GL 状态与辅助后端
+
+| 文件 | 具体职责与界限 | 状态 |
+| --- | --- | --- |
+| `mini3d/render_target.py` | 离屏帧缓冲、尺寸、抗锯齿及颜色/深度附件生命周期 | 已抽查 |
+| `mini3d/gl_state.py` | OpenGL 上下文状态的保存、恢复与读取辅助 | 已抽查 |
+| `mini3d/headless_gl.py` | 无可见窗口的 OpenGL 环境辅助 | 已抽查 |
+| `mini3d/cpu_renderer.py` | CPU 绘制及参考用途；不要与正式 GPU 后端混淆 | 已抽查 |
+| `mini3d/math3d.py` | 通用三维数学辅助，不等于 Scene 的所有坐标契约 | 已抽查 |
+
+**共享但登记在其他分类**：`mini3d/scene.py`（场景所有权）、`mini3d/scene_snapshot.py`（派生帧数据）、`mini3d/geometry_cache.py`（网格派生缓存）、`mini3d/viewport_cache.py`（视口重新绘制决策）、`mini3d/camera.py`（相机投影）；不要为渲染而重复登记这些文件。
+
+## D. 摄影流程与原生桥接
+
+摄影是**使用渲染能力的上层任务流程**，不等于另一份独立的完整渲染器。需要先从 `shot_camera.py` 看预览/照片如何选择实际后端。
+
+### D.1 Shot 相机、对焦和后处理
 
 | 文件 | 具体职责与界限 | 状态 |
 | --- | --- | --- |
 | `mini3d/shot_camera.py` | 独立 Shot Camera 参数、场景摄影绘制及 PNG 流程 | 已抽查 |
-| `mini3d/depth_of_field.py` | 摄影景深计算/后处理 | 待核验 |
-| `mini3d/photo_focus.py` | Camera View 点击深度对焦与焦点定位辅助 | 待核验 |
-| `mini3d/photo_color.py` | 色温白平衡、照片色彩预设校验/应用 | 待核验 |
-| `mini3d/photo_environment.py` | 摄影环境数据与辅助处理 | 待核验 |
+| `mini3d/depth_of_field.py` | 摄影景深计算/后处理 | 已抽查 |
+| `mini3d/photo_focus.py` | Camera View 点击深度对焦与焦点定位辅助 | 已抽查 |
+| `mini3d/photo_color.py` | 色温白平衡、照片色彩预设校验/应用 | 已抽查 |
+| `mini3d/photo_environment.py` | 摄影环境数据与辅助处理 | 已抽查 |
+
+### D.2 Python 与 native 绘制边界
+
+| 文件 | 具体职责与界限 | 状态 |
+| --- | --- | --- |
 | `mini3d/native_photo.py` | 复用编辑器 GL 上下文，调用 native Shot 渲染并恢复状态 | 已抽查 |
 | `mini3d/native_photo_bundle.py` | 将活动场景和相机资源同步至 native 可消费 bundle；自身不绘帧 | 已抽查 |
-| `native/export_scene.py` | Python 向 native 导出场景、材质与共享资源的底层转换逻辑 | 待核验 |
+| `native/export_scene.py` | Python 向 native 导出场景、材质与共享资源的底层转换逻辑 | 已抽查 |
+
+**两个导出路径不能混淆**：`mini3d/native_photo_bundle.py` 面向已打开编辑器的实时 Shot bundle；`native/export_scene.py` 为原生原型的**离线场景/参考采集导出器**，不是编辑器里的实时逐帧绘制入口。
 
 ## E. AI API 与本地通信
 
@@ -106,15 +148,31 @@
 
 ## F. C++20 原生核心（`spqr-native/src/`）
 
+**仅在需要原生 Shot、构建、原生阴影或跨语言契约时深入**。以下条目省略的共同前缀均为 `spqr-native/src/`；原生 DLL 的调用者位于 D.2 节。
+
+### F.1 原生输入数据与编辑器接口
+
 | 文件 | 具体职责与界限 | 状态 |
 | --- | --- | --- |
-| `bundle.cpp` / `bundle.hpp` | 版本化 bundle、原生网格/材质/纹理/实体的导入与组织 | 待核验 |
-| `gl_api.cpp` / `gl_api.hpp` | 原生 OpenGL API 加载及相关约束 | 待核验 |
-| `main.cpp` | 独立查看器/基准命令行入口，不等于 Python 编辑器 | 待核验 |
-| `native_photo.cpp` / `native_photo.h` | 编辑器调用的 DLL/C 接口及 Shot 原生执行 | 待核验 |
-| `platform_win32.cpp` / `platform_win32.hpp` | Windows/WGL 平台窗口与上下文 | 待核验 |
-| `renderer.cpp` / `renderer.hpp` | C++ 绘制核心、颜色/阴影、实例化、GL 资源 | 待核验 |
-| `shadow_fit.cpp` / `shadow_fit.hpp` | 原生视锥、接收体/投影者与阴影视域拟合 | 待核验 |
+| `bundle.cpp` / `bundle.hpp` | 版本化 bundle、原生网格/材质/纹理/实体的导入与组织 | 已抽查 |
+| `native_photo.cpp` / `native_photo.h` | 编辑器调用的 DLL/C 接口及 Shot 原生执行 | 已抽查 |
+
+### F.2 原生 OpenGL 绘制与阴影视域
+
+| 文件 | 具体职责与界限 | 状态 |
+| --- | --- | --- |
+| `renderer.cpp` / `renderer.hpp` | C++ 绘制核心、颜色/阴影、实例化、GL 资源 | 已抽查 |
+| `shadow_fit.cpp` / `shadow_fit.hpp` | 原生视锥、接收体/投影者与阴影视域拟合 | 已抽查 |
+
+### F.3 OpenGL 函数加载、平台及独立查看器
+
+| 文件 | 具体职责与界限 | 状态 |
+| --- | --- | --- |
+| `gl_api.cpp` / `gl_api.hpp` | 原生 OpenGL API 加载及相关约束 | 已抽查 |
+| `platform_win32.cpp` / `platform_win32.hpp` | Windows/WGL 平台窗口与上下文 | 已抽查 |
+| `main.cpp` | 独立查看器/基准命令行入口，不等于 Python 编辑器 | 已抽查 |
+
+**注意**：`native_photo.cpp` 是 Python 编辑器借用现有 GL 上下文的原生摄影接口；`main.cpp` 是独立可执行程序的入口。它们不等价。修改 native 结构/字段时须同时核查 `mini3d/native_photo_bundle.py`、`spqr-native/FORMAT.md` 和相关测试。
 
 ## G. 测试、工具与辅助材料（待逐项核对）
 
