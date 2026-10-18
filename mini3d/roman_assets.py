@@ -73,8 +73,12 @@ class _Builder:
     def face(self, points, material, tint=1.):
         self.add(points, [[0, i, i + 1] for i in range(1, len(points) - 1)], material, tint)
 
-    def box(self, center, size, material, tint=1.):
+    def box(self, center, size, material, tint=1., bottom=True):
         vertices, faces = make_box(*size)
+        if not bottom:
+            # Embedded building solids share one exterior underside. Keeping
+            # their hidden Z- caps would make coplanar materials fight at Z=0.
+            faces = faces[~np.all(vertices[faces, 2] == vertices[:, 2].min(), axis=1)]
         self.add(vertices + np.asarray(center), faces, material, tint)
 
     def lathe(self, profile, material, sectors=16, tint=1., center=(0., 0., 0.)):
@@ -188,9 +192,13 @@ def _window(builder, x, z, width=.64, height=.88):
 
 def _building(builder, house=False):
     height = 5.8 if house else 3.6
-    builder.box((0., 0., height / 2), (3.8, 4.7, height), 'plaster')
-    builder.box((0., 0., .38), (3.84, 4.74, .76), 'terracotta', .83)
-    builder.box((0., 0., .055), (3.94, 4.88, .11), 'stone', .86)
+    builder.box((0., 0., height / 2), (3.8, 4.7, height), 'plaster', bottom=False)
+    builder.box((0., 0., .38), (3.84, 4.74, .76), 'terracotta', .83, bottom=False)
+    builder.box((0., 0., .055), (3.94, 4.88, .11), 'stone', .86, bottom=False)
+    # One downward-facing red cap closes the whole base, without changing the
+    # footprint, stone trim, or ground contact. The door lip is capped below.
+    builder.face([(-1.97, -2.44, 0.), (-1.97, 2.44, 0.),
+                  (1.97, 2.44, 0.), (1.97, -2.44, 0.)], 'terracotta', .83)
     builder.box((0., 0., height - .16), (3.96, 4.92, .17), 'stone')
     if house:
         builder.box((0., 0., 3.18), (3.94, 4.86, .13), 'stone', .93)
@@ -204,7 +212,10 @@ def _building(builder, house=False):
                     (width / count - .012, .018, 2.22), 'timber', .89 + (i % 3) * .10)
     for z in (.58, 1.91):
         builder.box((0., -2.477, z), (width, .015, .085), 'timber', .64)
-    builder.box((0., -2.39, .07), (width + .26, .22, .14), 'stone')
+    builder.box((0., -2.39, .07), (width + .26, .22, .14), 'stone', bottom=False)
+    half_step = (width + .26) / 2
+    builder.face([(-half_step, -2.5, 0.), (-half_step, -2.44, 0.),
+                  (half_step, -2.44, 0.), (half_step, -2.5, 0.)], 'terracotta', .83)
     if house:
         for x in (-1.12, 1.12):
             _window(builder, x, 4.32)

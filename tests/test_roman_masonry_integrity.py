@@ -38,6 +38,39 @@ def ray_hit(geometry, origin, direction):
 
 
 class RomanMasonryIntegrityTests(unittest.TestCase):
+    def test_building_underside_has_one_red_surface_without_coplanar_overlap(self):
+        for name in ('shop', 'shop-ochre', 'shop-rose', 'house', 'house-ochre', 'house-rose'):
+            root = create_roman_asset('builtin:roman-' + name)
+            caps = []
+            for part in root.children:
+                mesh = part.model
+                indices = np.asarray(mesh.indices).reshape(-1, 3)
+                points = np.asarray(mesh.vertices)[:, :3][indices]
+                bottom = np.all(np.abs(points[:, :, 2]) < 1e-8, axis=1)
+                if not bottom.any():
+                    continue
+                self.assertEqual(part.name, 'Terracotta', name)
+                np.testing.assert_allclose(mesh.vertex_colors[indices[bottom], :3], .83)
+                caps.extend(points[bottom])
+            caps = np.asarray(caps)
+            normals = np.cross(caps[:, 1] - caps[:, 0], caps[:, 2] - caps[:, 0])
+            self.assertTrue(np.all(normals[:, 2] < 0), name)
+            step_width = (1.08 if name.startswith('house') else 2.56) + .26
+            # Area includes only the base and the exposed 6 cm door lip.
+            self.assertAlmostEqual(float(-normals[:, 2].sum() / 2),
+                                   3.94 * 4.88 + step_width * .06, places=5)
+            xy = [(x, y) for x in np.linspace(-1.91, 1.89, 11)
+                  for y in np.linspace(-2.39, 2.37, 13)]
+            xy += [(x, y) for x in np.linspace(-.43, .39, 5) * step_width
+                   for y in (-2.489, -2.471, -2.453)]
+            for point in xy:
+                hits = 0
+                for triangle in caps[:, :, :2]:
+                    a, b, c = triangle
+                    u, v = np.linalg.solve(np.column_stack((b-a, c-a)), np.asarray(point)-a)
+                    hits += int(u >= 0 and v >= 0 and u + v <= 1)
+                self.assertEqual(hits, 1, (name, point))
+
     def test_arch_spandrels_block_side_views_with_culling(self):
         geometry = np.concatenate(triangles(create_roman_asset('builtin:roman-arch')))
         # Above the arch crown and below the cap: a wall, not a designed opening.
