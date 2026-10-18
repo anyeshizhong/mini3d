@@ -86,6 +86,22 @@ class AtmosphereTests(unittest.TestCase):
         api.set_atmosphere(ground=False)
         self.assertIs(prepare_photographic_scene(scene,camera,ground)[0],scene)
 
+    def test_roman_street_has_a_photographic_floor_below_its_authored_paving(self):
+        api = Mini3DAPI()
+        api.load_scene(Path(__file__).resolve().parents[1] / 'examples/roman_street/street.json')
+        settings = api.get_atmosphere()
+        self.assertTrue(settings['ground'])
+        roads = [root for root in api._app.scene.root_entities
+                 if root.asset_path == 'builtin:roman-road']
+        self.assertTrue(roads)
+        # The render-only floor must not Z-fight with the authored road slab.
+        for road in roads:
+            self.assertLess(settings['ground_z'], geometry_bounds(road)[0][2] - .01)
+        roots = list(api._app.scene.root_entities)
+        rendered, ground = prepare_photographic_scene(api._app.scene, api._app.shot_camera)
+        self.assertEqual(api._app.scene.root_entities, roots)
+        self.assertEqual(rendered.root_entities, roots + [ground])
+
     def test_hdr_and_ground_switches_validate_atomically_and_roundtrip(self):
         api=Mini3DAPI();api.sunset_preset()
         api.set_atmosphere(sky_texture='sunset',ground_texture='gravel',sun_size=.53,

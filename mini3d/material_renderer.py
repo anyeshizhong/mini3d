@@ -19,6 +19,7 @@ from .environment import EnvironmentMap
 
 
 from .material_shaders import (VERTEX_SHADER, FRAGMENT_SHADER,
+                               analytic_ground_shader,
                                SELECTION_VERTEX_SHADER, SELECTION_FRAGMENT_SHADER)
 from .gl_state import save_state, restore_state
 
@@ -47,6 +48,8 @@ class MaterialRenderer:
         # Default sampler uniforms all point to unit zero after linking. Assign
         # cube/2D units before any draw; pre-assignment validation would fail.
         self._locations = {}
+        self._active_program = self.program
+        self._ground_program = 0
         self._meshes = {}
         self._instances = {}
         self._opaque_groups = {}
@@ -62,9 +65,25 @@ class MaterialRenderer:
         self._selection_locations = {}
 
     def _loc(self, name):
-        if name not in self._locations:
-            self._locations[name] = gl.glGetUniformLocation(self.program, name)
-        return self._locations[name]
+        key = (self._active_program, name)
+        if key not in self._locations:
+            self._locations[key] = gl.glGetUniformLocation(self._active_program, name)
+        return self._locations[key]
+
+    def _bind_color_program(self, program, camera, scene, projection, view, shadow):
+        self._active_program = program
+        gl.glUseProgram(program)
+        self._matrix('view', view)
+        self._matrix('projection', projection)
+        if program == self._ground_program:
+            self._matrix('groundInverseViewProjection', np.linalg.inv(
+                np.asarray(projection, np.float64) @ np.asarray(view, np.float64)))
+        self._vec3('eye', camera.position)
+        self._lighting(scene, camera)
+        from .sky_renderer import bind_photo_sky
+        bind_photo_sky(program, scene, self.photo_environment, lighting=True)
+        ShadowMap.bind(program, shadow, scene)
+        self._material_texture_state = {}
 
     def _float(self, name, value):
         gl.glUniform1f(self._loc(name), float(value))
@@ -405,20 +424,15 @@ class MaterialRenderer:
             raise RuntimeError("MaterialRenderer has been closed")
         state = self._save_state()
         try:
-            gl.glUseProgram(self.program)
             gl.glEnable(gl.GL_DEPTH_TEST)
             gl.glDepthFunc(gl.GL_LESS)
             gl.glDisable(gl.GL_FRAMEBUFFER_SRGB)
             gl.glPolygonMode(gl.GL_FRONT_AND_BACK,gl.GL_LINE if mode.lower()=="wireframe" else gl.GL_FILL)
             view = camera.view_matrix
-            self._matrix("view", plan.view if plan is not None else view)
-            self._matrix("projection", plan.projection if plan is not None else
-                         camera.projection_matrix(float(width)/height))
-            self._vec3("eye",camera.position)
-            self._lighting(scene, camera)
-            from .sky_renderer import bind_photo_sky
-            bind_photo_sky(self.program,scene,self.photo_environment,lighting=True)
-            ShadowMap.bind(self.program, shadow, scene)
+            draw_view = plan.view if plan is not None else view
+            projection = (plan.projection if plan is not None else
+                          camera.projection_matrix(float(width)/height))
+            self._bind_color_program(self.program, camera, scene, projection, draw_view, shadow)
             persistent = (plan is not None and getattr(plan, 'geometry', None) is not None
                           and self.gpu_instancing and mode.lower() != 'wireframe')
             batches = (self._persistent_batches(plan, view) if persistent else
@@ -432,6 +446,17 @@ class MaterialRenderer:
             for _, batch, payload, instance_key in batches:
                 (transparent, _, entity, matrix, mesh), normal_matrix, mirrored = batch[0]
                 material = mesh[0].material
+                ground = material.get('extras', {}).get('photographicGround', False)
+                if ground and not self._ground_program:
+                    self._ground_program = compileProgram(
+                        compileShader(analytic_ground_shader(VERTEX_SHADER), gl.GL_VERTEX_SHADER),
+                        compileShader(analytic_ground_shader(FRAGMENT_SHADER), gl.GL_FRAGMENT_SHADER),
+                        validate=False)
+                program = self._ground_program if ground else self.program
+                if program != self._active_program:
+                    self._bind_color_program(program, camera, scene, projection, draw_view, shadow)
+                    last_material = None
+                    last_instanced = None
                 if transparent != last_transparent:
                     if transparent:
                         gl.glEnable(gl.GL_BLEND)
@@ -475,6 +500,7 @@ class MaterialRenderer:
                 self.triangles += mesh[4] // 3 * len(batch)
             self._prune_color_instances(active_instances, state)
         finally:
+            self._active_program = self.program
             self._material_texture_state = None
             self._restore_state(state)
 
@@ -573,6 +599,9 @@ class MaterialRenderer:
         if self.program:
             gl.glDeleteProgram(self.program)
             self.program = 0
+        if self._ground_program:
+            gl.glDeleteProgram(self._ground_program)
+            self._ground_program = 0
         if self._selection_program:
             gl.glDeleteProgram(self._selection_program)
             self._selection_program = 0

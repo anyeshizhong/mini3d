@@ -46,6 +46,17 @@ class RenderPlanTests(unittest.TestCase):
         self.add([0, 0, -5], ((-100, -100, -100), (100, 100, 100)))
         self.assertEqual(self.plan().stats['entities_after'], 2)
 
+    def test_photographic_plane_continues_beyond_far_but_authored_ground_is_culled(self):
+        from mini3d.placement import create_ground
+        ordinary = self.scene.add(create_ground(2))
+        ordinary.pos[:] = [0, 0, -300]
+        analytic = self.scene.add(create_ground(2))
+        analytic.pos[:] = ordinary.pos
+        analytic.model.material['extras'] = {'photographicGround': True}
+        plan = self.plan()
+        self.assertEqual([item.entity for item in plan.imported], [analytic])
+        self.assertEqual(plan.shadow_candidates, [ordinary, analytic])
+
     def test_parent_rotation_nonuniform_negative_scale_matches_corner_oracle(self):
         parent = Entity()
         parent.pos[:] = [5, 1, -6]

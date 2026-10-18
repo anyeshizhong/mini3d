@@ -105,7 +105,11 @@ def _inputs(geometry):
         for index, (entity, bound) in enumerate(zip(geometry.entities, geometry.bounds)):
             if bound is not None:
                 boxes[index] = bound
-                eligible[index] = not getattr(entity, 'isaxes', False)
+                material = getattr(entity.model, 'material', None) or {}
+                # Render-only photographic ground is an analytic plane. Its
+                # finite shadow receiver proxy may be outside the camera far.
+                analytic_ground = material.get('extras', {}).get('photographicGround', False)
+                eligible[index] = not getattr(entity, 'isaxes', False) and not analytic_ground
             outlined[index] = getattr(entity.model, 'material', None) is None
         cached = boxes, eligible, outlined
     geometry._plan_inputs = cached

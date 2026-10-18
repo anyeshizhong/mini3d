@@ -6,7 +6,9 @@ uniform mat4 shadowNearMatrix;
 uniform vec3 shadowNearWorldScale;
 uniform float shadowNearBias;
 uniform bool shadowNearEnabled;
+#ifndef ANALYTIC_GROUND
 uniform mat4 view;
+#endif
 
 bool shadowCoordinateValid(vec3 coordinate) {
     return all(greaterThanEqual(coordinate, vec3(0.0))) &&

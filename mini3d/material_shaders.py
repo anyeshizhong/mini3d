@@ -16,6 +16,11 @@ out vec3 worldPosition;
 out vec3 worldNormal;
 out vec2 uv;
 out vec4 vertexColor;
+#ifdef ANALYTIC_GROUND
+uniform vec3 eye;
+out vec2 groundNDC;
+flat out float groundHeight;
+#endif
 void main() {
     vec4 p = (useInstances ? instanceModel : model) * vec4(position, 1.0);
     worldPosition = p.xyz;
@@ -23,11 +28,26 @@ void main() {
     uv = texcoord;
     vertexColor = color;
     gl_Position = projection * view * p;
+#ifdef ANALYTIC_GROUND
+    // The existing render-only ground quad covers the viewport. Its height
+    // still comes from the ordinary model transform; authored meshes do not.
+    groundNDC = position.xy;
+    groundHeight = p.z;
+    worldNormal = vec3(0.0, 0.0, eye.z >= p.z ? 1.0 : -1.0);
+    gl_Position = vec4(position.xy, 0.0, 1.0);
+#endif
 }
 """
 
 FRAGMENT_SHADER = """#version 330 core
+#ifdef ANALYTIC_GROUND
+vec3 worldPosition;
+in vec2 groundNDC;
+flat in float groundHeight;
+uniform mat4 groundInverseViewProjection, view, projection;
+#else
 in vec3 worldPosition;
+#endif
 in vec3 worldNormal;
 in vec2 uv;
 in vec4 vertexColor;
@@ -100,6 +120,21 @@ vec3 mappedNormal() {
     return normalize(mat3(t,b,n) * mapNormal);
 }
 void main() {
+#ifdef ANALYTIC_GROUND
+    vec4 farPoint = groundInverseViewProjection * vec4(groundNDC, 1.0, 1.0);
+    vec3 ray = farPoint.xyz / farPoint.w - eye;
+    if (abs(ray.z) < 1e-7) discard;
+    float t = (groundHeight - eye.z) / ray.z;
+    if (t <= 0.0) discard;
+    worldPosition = eye + ray * t;
+    vec4 clip = projection * view * vec4(worldPosition, 1.0);
+    float depth = clip.z / clip.w * 0.5 + 0.5;
+    if (depth < 0.0) discard;
+    // Keep real in-range depth for objects, focusing and DoF. The infinite
+    // continuation sits at the last depth value before sky, without changing
+    // the camera near/far planes or the precision of any authored geometry.
+    gl_FragDepth = min(depth, 0.99999994);
+#endif
     vec4 base = baseFactor * vertexColor;
     if (hasBase) {
         vec4 sampled = texture(baseMap, surfaceUV());
@@ -184,6 +219,12 @@ void main() {
     fragColor = vec4(displayColor, alpha);
 }
 """
+
+
+def analytic_ground_shader(source):
+    """Separate program: only the ground writes depth; opaque meshes keep early Z."""
+    return source.replace('#version 330 core',
+                          '#version 330 core\n#define ANALYTIC_GROUND', 1)
 
 
 SELECTION_VERTEX_SHADER = """#version 330 core

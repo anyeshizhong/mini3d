@@ -284,7 +284,7 @@ def _mesh_entity_rows(render_rows, material_by_id, helpers):
 
 
 def _write_shaders(output, native_source):
-    from .material_shaders import VERTEX_SHADER, FRAGMENT_SHADER
+    from .material_shaders import VERTEX_SHADER, FRAGMENT_SHADER, analytic_ground_shader
     from .sky_renderer import VERTEX as SKY_VERTEX, FRAGMENT as SKY_FRAGMENT
     from .shadow_map import DEPTH_VERTEX, DEPTH_FRAGMENT
 
@@ -296,6 +296,8 @@ def _write_shaders(output, native_source):
     sources = {
         "material.vert": VERTEX_SHADER,
         "material.frag": FRAGMENT_SHADER,
+        "ground.vert": analytic_ground_shader(VERTEX_SHADER),
+        "ground.frag": analytic_ground_shader(FRAGMENT_SHADER),
         "sky.vert": SKY_VERTEX,
         "sky.frag": SKY_FRAGMENT,
         "shadow.vert": DEPTH_VERTEX,

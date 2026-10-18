@@ -92,7 +92,8 @@ private:
     std::filesystem::path shaderDirectory_;
     int width_, height_;
     int msaaSamples_ = 1;
-    GLuint materialProgram_ = 0, skyProgram_ = 0, shadowProgram_ = 0, skyVao_ = 0;
+    GLuint materialProgram_ = 0, groundProgram_ = 0, activeColorProgram_ = 0;
+    GLuint skyProgram_ = 0, shadowProgram_ = 0, skyVao_ = 0;
     std::vector<GLuint> textures_;
     std::vector<MeshGpu> meshes_;
     std::unordered_map<std::string, InstanceGpu> instances_;

@@ -591,7 +591,7 @@ def main():
     from mini3d.scene_snapshot import scene_frame
     from mini3d.atmosphere import atmosphere_state, prepare_photographic_scene
     from mini3d.sky_renderer import VERTEX as SKY_VERTEX, FRAGMENT as SKY_FRAGMENT
-    from mini3d.material_shaders import VERTEX_SHADER, FRAGMENT_SHADER
+    from mini3d.material_shaders import VERTEX_SHADER, FRAGMENT_SHADER, analytic_ground_shader
     from mini3d.shadow_map import DEPTH_VERTEX, DEPTH_FRAGMENT
 
     spec = importlib.util.spec_from_file_location(
@@ -835,6 +835,8 @@ def main():
             shaders.mkdir(parents=True, exist_ok=True)
             shader_files = {
                 "material.vert": VERTEX_SHADER, "material.frag": FRAGMENT_SHADER,
+                "ground.vert": analytic_ground_shader(VERTEX_SHADER),
+                "ground.frag": analytic_ground_shader(FRAGMENT_SHADER),
                 "sky.vert": SKY_VERTEX, "sky.frag": SKY_FRAGMENT,
                 "shadow.vert": DEPTH_VERTEX, "shadow.frag": DEPTH_FRAGMENT,
             }

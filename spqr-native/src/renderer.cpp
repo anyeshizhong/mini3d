@@ -175,6 +175,8 @@ Renderer::Renderer(GLApi& gl, Bundle& bundle, const std::filesystem::path& bundl
         throw std::runtime_error("renderer samples must be 1 or 4");
     try {
         materialProgram_ = compileProgram(shaderDirectory_ / "material.vert", shaderDirectory_ / "material.frag");
+        if (std::filesystem::exists(shaderDirectory_ / "ground.vert"))
+            groundProgram_ = compileProgram(shaderDirectory_ / "ground.vert", shaderDirectory_ / "ground.frag");
         skyProgram_ = compileProgram(shaderDirectory_ / "sky.vert", shaderDirectory_ / "sky.frag");
         shadowProgram_ = compileProgram(shaderDirectory_ / "shadow.vert", shaderDirectory_ / "shadow.frag");
         gl_.GenVertexArrays(1, &skyVao_);
@@ -182,15 +184,18 @@ Renderer::Renderer(GLApi& gl, Bundle& bundle, const std::filesystem::path& bundl
         uploadMeshes();
         createColorTarget();
 
-        gl_.UseProgram(materialProgram_);
-        applyUniformBlock(materialProgram_, bundle_.materialGlobals);
         const std::array<std::pair<const char*, GLint>, 13> samplers{{
             {"baseMap",0},{"mrMap",1},{"normalMap",2},{"aoMap",3},{"emissiveMap",4},
             {"specularMap",5},{"specularColorMap",6},{"shadowDepth",7},{"diffuseEnv",8},
             {"specularEnv",9},{"brdfLut",10},{"photoSky",11},{"shadowRaw",12}}};
-        for (const auto& [name, unit] : samplers) setUniform1i(materialProgram_, name, unit);
-        setUniform1i(materialProgram_, "shadowNearDepth", 13);
-        setUniform1i(materialProgram_, "shadowNearRaw", 14);
+        for (GLuint program : {materialProgram_, groundProgram_}) {
+            if (!program) continue;
+            gl_.UseProgram(program);
+            applyUniformBlock(program, bundle_.materialGlobals);
+            for (const auto& [name, unit] : samplers) setUniform1i(program, name, unit);
+            setUniform1i(program, "shadowNearDepth", 13);
+            setUniform1i(program, "shadowNearRaw", 14);
+        }
         gl_.UseProgram(skyProgram_);
         applyUniformBlock(skyProgram_, bundle_.skyGlobals);
         setUniform1i(skyProgram_, "photoSky", 11);
@@ -208,7 +213,7 @@ Renderer::~Renderer() { close(); }
 
 GLuint Renderer::compileShader(const std::filesystem::path& path, GLenum type) {
     std::string source = readTextFile(path);
-    if (stableShadows_ && path.filename() == "material.frag") {
+    if (stableShadows_ && (path.filename() == "material.frag" || path.filename() == "ground.frag")) {
         const auto begin = source.find("float shadowVisibility(");
         const auto end = source.find("uniform bool photoColorEnabled;", begin);
         if (begin == std::string::npos || end == std::string::npos)
@@ -483,6 +488,8 @@ std::vector<bool> Renderer::visibleInFrustum(const CameraFrame& frame, bool colo
     const auto planes = frustumPlanes(view, projection);
     std::vector<bool> visible(bundle_.entities.size(), true);
     for (std::size_t i = 0; i < bundle_.entities.size(); ++i) {
+        // The analytic photographic plane covers screen rays beyond camera.far.
+        if (colorPass && groundProgram_ && (bundle_.entities[i].flags & 1u)) continue;
         bool valid = false;
         const auto bounds = worldBounds(bundle_.entities[i], frame, valid);
         if (valid) visible[i] = boundsVisible(bounds, planes);
@@ -618,7 +625,7 @@ void Renderer::destroyShadowTarget() {
 void Renderer::drawShadow(const CameraFrame& frame, FrameStats& stats) {
     shadowActive_ = false;
     nearShadowActive_ = false;
-    if (!bundle_.shadowEnabled) return;
+    if (!bundle_.shadowEnabled || bundle_.entities.empty()) return;
     std::vector<ShadowBox> boxes;
     boxes.reserve(bundle_.entities.size());
     for (const Entity& entity : bundle_.entities) {
@@ -629,18 +636,22 @@ void Renderer::drawShadow(const CameraFrame& frame, FrameStats& stats) {
         boxes.push_back(box);
     }
     drawShadowLayer(frame, stats, boxes, false);
-    if (stableShadows_) drawShadowLayer(frame, stats, boxes, true);
+    if (stableShadows_ && shadowActive_) drawShadowLayer(frame, stats, boxes, true);
 }
 
 void Renderer::drawShadowLayer(const CameraFrame& frame, FrameStats& stats,
                                 const std::vector<ShadowBox>& boxes, bool nearLayer) {
     auto& matrix = nearLayer ? nearShadowMatrix_ : shadowMatrix_;
     const auto resolution = nearLayer ? nearShadowResolution_ : bundle_.shadowResolution;
+    bool emptyReceivers = false;
     const bool fitted = nearLayer
         ? fit_stable_shadow(boxes, bundle_.lightDirection.data(), frame.view.data(), frame.projection.data(),
                             resolution, .02, 18.0, matrix.data())
         : fit_shadow(boxes, bundle_.lightDirection.data(), frame.view.data(), frame.projection.data(),
-                      resolution, matrix.data());
+                      resolution, matrix.data(), &emptyReceivers);
+    // Aerial views can see only the analytic plane beyond the finite receiver
+    // region. Render it normally without a shadow layer; keep invalid fits fatal.
+    if (!fitted && emptyReceivers) return;
     if (!fitted)
         throw std::runtime_error("fit_shadow could not fit this camera/scene; native viewer has no silent shadow fallback");
     createShadowTarget(nearLayer);
@@ -810,13 +821,13 @@ void Renderer::bindMaterialTextures(std::uint32_t materialIndex) {
 
 void Renderer::bindMaterial(std::uint32_t materialIndex, bool ground, bool mirrored) {
     const Material& material = bundle_.materials[materialIndex];
-    applyUniformBlock(materialProgram_, material.parameters);
+    applyUniformBlock(activeColorProgram_, material.parameters);
     bindMaterialTextures(materialIndex);
-    setUniform1i(materialProgram_, "photographicGround", ground ? GL_TRUE : GL_FALSE);
-    setUniform1i(materialProgram_, "shadowEnabled", shadowActive_ ? GL_TRUE : GL_FALSE);
-    setUniform1i(materialProgram_, "shadowDepth", 7);
-    setUniform1i(materialProgram_, "shadowRaw", 12);
-    setUniform1i(materialProgram_, "shadowNearEnabled", nearShadowActive_ ? GL_TRUE : GL_FALSE);
+    setUniform1i(activeColorProgram_, "photographicGround", ground ? GL_TRUE : GL_FALSE);
+    setUniform1i(activeColorProgram_, "shadowEnabled", shadowActive_ ? GL_TRUE : GL_FALSE);
+    setUniform1i(activeColorProgram_, "shadowDepth", 7);
+    setUniform1i(activeColorProgram_, "shadowRaw", 12);
+    setUniform1i(activeColorProgram_, "shadowNearEnabled", nearShadowActive_ ? GL_TRUE : GL_FALSE);
     if (nearShadowActive_) {
         gl_.ActiveTexture(GL_TEXTURE0 + 13);
         gl_.BindTexture(GL_TEXTURE_2D, nearShadowTexture_);
@@ -825,14 +836,14 @@ void Renderer::bindMaterial(std::uint32_t materialIndex, bool ground, bool mirro
         gl_.BindTexture(GL_TEXTURE_2D, nearShadowTexture_);
         gl_.BindSampler(14, rawSampler_);
         const auto nearMatrix = floatMatrix(nearShadowMatrix_);
-        setUniformMatrix4(materialProgram_, "shadowNearMatrix", nearMatrix.data());
+        setUniformMatrix4(activeColorProgram_, "shadowNearMatrix", nearMatrix.data());
         const double row0 = std::hypot(nearShadowMatrix_[0], nearShadowMatrix_[1], nearShadowMatrix_[2]);
         const double row1 = std::hypot(nearShadowMatrix_[4], nearShadowMatrix_[5], nearShadowMatrix_[6]);
         const double row2 = std::hypot(nearShadowMatrix_[8], nearShadowMatrix_[9], nearShadowMatrix_[10]);
-        setUniform3f(materialProgram_, "shadowNearWorldScale", f32(row0 * .5), f32(row1 * .5), f32(2.0 / row2));
-        setUniform1f(materialProgram_, "shadowNearBias", bundle_.shadowBias);
+        setUniform3f(activeColorProgram_, "shadowNearWorldScale", f32(row0 * .5), f32(row1 * .5), f32(2.0 / row2));
+        setUniform1f(activeColorProgram_, "shadowNearBias", bundle_.shadowBias);
     }
-    setUniform1f(materialProgram_, "shadowBias", bundle_.shadowBias);
+    setUniform1f(activeColorProgram_, "shadowBias", bundle_.shadowBias);
     if (shadowActive_) {
         gl_.ActiveTexture(GL_TEXTURE0 + 7);
         gl_.BindTexture(GL_TEXTURE_2D, shadowTexture_);
@@ -843,9 +854,9 @@ void Renderer::bindMaterial(std::uint32_t materialIndex, bool ground, bool mirro
         const double row0 = std::hypot(shadowMatrix_[0], shadowMatrix_[1], shadowMatrix_[2]);
         const double row1 = std::hypot(shadowMatrix_[4], shadowMatrix_[5], shadowMatrix_[6]);
         const double row2 = std::hypot(shadowMatrix_[8], shadowMatrix_[9], shadowMatrix_[10]);
-        setUniform3f(materialProgram_, "shadowWorldScale", f32(row0 * .5), f32(row1 * .5), f32(2.0 / row2));
+        setUniform3f(activeColorProgram_, "shadowWorldScale", f32(row0 * .5), f32(row1 * .5), f32(2.0 / row2));
         const auto matrix = floatMatrix(shadowMatrix_);
-        setUniformMatrix4(materialProgram_, "shadowMatrix", matrix.data());
+        setUniformMatrix4(activeColorProgram_, "shadowMatrix", matrix.data());
     } else {
         gl_.ActiveTexture(GL_TEXTURE0 + 7); gl_.BindTexture(GL_TEXTURE_2D, 0); gl_.BindSampler(7, 0);
         gl_.ActiveTexture(GL_TEXTURE0 + 12); gl_.BindTexture(GL_TEXTURE_2D, 0); gl_.BindSampler(12, 0);
@@ -856,35 +867,45 @@ void Renderer::bindMaterial(std::uint32_t materialIndex, bool ground, bool mirro
 }
 
 void Renderer::drawColor(const CameraFrame& frame, const std::vector<bool>& visible, FrameStats& stats) {
-    gl_.UseProgram(materialProgram_);
     M4 view = floatRoundTrip(frame.view);
     M4 projection = floatRoundTrip(frame.projection);
     const auto viewF = floatMatrix(view), projectionF = floatMatrix(projection);
-    setUniformMatrix4(materialProgram_, "view", viewF.data());
-    setUniformMatrix4(materialProgram_, "projection", projectionF.data());
-    setUniform3f(materialProgram_, "eye", f32(frame.position[0]), f32(frame.position[1]), f32(frame.position[2]));
-    setUniform1f(materialProgram_, "photoFar", f32(frame.farPlane));
+    for (GLuint program : {materialProgram_, groundProgram_}) {
+        if (!program) continue;
+        activeColorProgram_ = program;
+        gl_.UseProgram(program);
+        if (program == groundProgram_) {
+            const auto inverseVP = floatMatrix(inverse4(multiply4(projection, view)));
+            setUniformMatrix4(program, "groundInverseViewProjection", inverseVP.data());
+        }
+        setUniformMatrix4(activeColorProgram_, "view", viewF.data());
+        setUniformMatrix4(activeColorProgram_, "projection", projectionF.data());
+        setUniform3f(activeColorProgram_, "eye", f32(frame.position[0]), f32(frame.position[1]), f32(frame.position[2]));
+        setUniform1f(activeColorProgram_, "photoFar", f32(frame.farPlane));
 
-    // The Studio light rig follows camera rotation in the Python renderer.
-    // Scene mode keeps the bundle's world-space directional light.
-    bool sceneLighting = true;
-    for (const auto& value : bundle_.materialGlobals)
-        if (value.name == "sceneLighting" && value.components == 1 && isIntegerUniform(value.type))
-            sceneLighting = intData(value)[0] != 0;
-    if (sceneLighting) {
-        auto light = normalize3(bundle_.lightDirection);
-        setUniform3f(materialProgram_, "light0", f32(light[0]), f32(light[1]), f32(light[2]));
-    } else {
-        const auto right = rotationColumn(frame.rotation, 0);
-        const auto up = rotationColumn(frame.rotation, 1);
-        const auto back = rotationColumn(frame.rotation, 2);
-        auto l0 = normalize3(add3(add3(back, up, 1.1), right, -.8));
-        auto l1 = normalize3(add3(add3(back, right), up, .2));
-        auto l2 = normalize3(add3(add3(back, up), right, .2));
-        setUniform3f(materialProgram_, "light0", f32(l0[0]), f32(l0[1]), f32(l0[2]));
-        setUniform3f(materialProgram_, "light1", f32(l1[0]), f32(l1[1]), f32(l1[2]));
-        setUniform3f(materialProgram_, "light2", f32(l2[0]), f32(l2[1]), f32(l2[2]));
+        // The Studio light rig follows camera rotation in the Python renderer.
+        // Scene mode keeps the bundle's world-space directional light.
+        bool sceneLighting = true;
+        for (const auto& value : bundle_.materialGlobals)
+            if (value.name == "sceneLighting" && value.components == 1 && isIntegerUniform(value.type))
+                sceneLighting = intData(value)[0] != 0;
+        if (sceneLighting) {
+            auto light = normalize3(bundle_.lightDirection);
+            setUniform3f(activeColorProgram_, "light0", f32(light[0]), f32(light[1]), f32(light[2]));
+        } else {
+            const auto right = rotationColumn(frame.rotation, 0);
+            const auto up = rotationColumn(frame.rotation, 1);
+            const auto back = rotationColumn(frame.rotation, 2);
+            auto l0 = normalize3(add3(add3(back, up, 1.1), right, -.8));
+            auto l1 = normalize3(add3(add3(back, right), up, .2));
+            auto l2 = normalize3(add3(add3(back, up), right, .2));
+            setUniform3f(activeColorProgram_, "light0", f32(l0[0]), f32(l0[1]), f32(l0[2]));
+            setUniform3f(activeColorProgram_, "light1", f32(l1[0]), f32(l1[1]), f32(l1[2]));
+            setUniform3f(activeColorProgram_, "light2", f32(l2[0]), f32(l2[1]), f32(l2[2]));
+        }
     }
+    activeColorProgram_ = materialProgram_;
+    gl_.UseProgram(activeColorProgram_);
     if (shadowActive_) {
         gl_.ActiveTexture(GL_TEXTURE0 + 7);
         gl_.BindTexture(GL_TEXTURE_2D, shadowTexture_);
@@ -930,9 +951,14 @@ void Renderer::drawColor(const CameraFrame& frame, const std::vector<bool>& visi
                 alpha = intData(value)[0];
         gl_.DepthMask(GL_TRUE);
         gl_.Disable(GL_BLEND);
+        const GLuint program = batch.ground && groundProgram_ ? groundProgram_ : materialProgram_;
+        if (activeColorProgram_ != program) {
+            activeColorProgram_ = program;
+            gl_.UseProgram(program);
+        }
         bindMaterial(materialIndex, batch.ground, batch.mirrored);
         const bool instanced = alpha == 0 && batch.entities.size() > 1;
-        setUniform1i(materialProgram_, "useInstances", instanced ? GL_TRUE : GL_FALSE);
+        setUniform1i(activeColorProgram_, "useInstances", instanced ? GL_TRUE : GL_FALSE);
         if (instanced) {
             InstanceGpu& instance = instanceResource(batch.mesh, false, instanceOrdinals[batch.mesh]++);
             const std::size_t n = batch.entities.size();
@@ -962,8 +988,8 @@ void Renderer::drawColor(const CameraFrame& frame, const std::vector<bool>& visi
             const Entity& entity = bundle_.entities[entityIndex];
             const auto world = floatMatrix(effectiveWorld(entity, frame));
             const auto normal = effectiveNormal(entity, frame);
-            setUniformMatrix4(materialProgram_, "model", world.data());
-            setUniformMatrix3(materialProgram_, "normalMatrix", normal.data());
+            setUniformMatrix4(activeColorProgram_, "model", world.data());
+            setUniformMatrix3(activeColorProgram_, "normalMatrix", normal.data());
             gl_.BindVertexArray(meshes_[batch.mesh].vao);
             gl_.DrawElements(GL_TRIANGLES, mesh.indexCount, GL_UNSIGNED_INT, nullptr);
         }
@@ -1003,12 +1029,17 @@ void Renderer::drawColor(const CameraFrame& frame, const std::vector<bool>& visi
         for (const DrawEntry& entry : transparent) {
             const Entity& entity = bundle_.entities[entry.entity];
             const Mesh& mesh = bundle_.meshes[entity.mesh];
+            const GLuint program = (entity.flags & 1u) && groundProgram_ ? groundProgram_ : materialProgram_;
+            if (activeColorProgram_ != program) {
+                activeColorProgram_ = program;
+                gl_.UseProgram(program);
+            }
             bindMaterial(mesh.material, (entity.flags & 1u) != 0, (entity.flags & 2u) != 0);
-            setUniform1i(materialProgram_, "useInstances", GL_FALSE);
+            setUniform1i(activeColorProgram_, "useInstances", GL_FALSE);
             const auto world = floatMatrix(effectiveWorld(entity, frame));
             const auto normal = effectiveNormal(entity, frame);
-            setUniformMatrix4(materialProgram_, "model", world.data());
-            setUniformMatrix3(materialProgram_, "normalMatrix", normal.data());
+            setUniformMatrix4(activeColorProgram_, "model", world.data());
+            setUniformMatrix3(activeColorProgram_, "normalMatrix", normal.data());
             gl_.BindVertexArray(meshes_[entity.mesh].vao);
             gl_.DrawElements(GL_TRIANGLES, mesh.indexCount, GL_UNSIGNED_INT, nullptr);
             ++stats.colorDraws;
@@ -1120,8 +1151,11 @@ void Renderer::updateGlobals(UniformBlock materialGlobals, UniformBlock skyGloba
     shadowActive_ = false;
     nearShadowActive_ = false;
 
-    gl_.UseProgram(materialProgram_);
-    applyUniformBlock(materialProgram_, bundle_.materialGlobals);
+    for (GLuint program : {materialProgram_, groundProgram_}) {
+        if (!program) continue;
+        gl_.UseProgram(program);
+        applyUniformBlock(program, bundle_.materialGlobals);
+    }
     gl_.UseProgram(skyProgram_);
     applyUniformBlock(skyProgram_, bundle_.skyGlobals);
     checkError("update photo globals");
@@ -1383,9 +1417,10 @@ void Renderer::close() {
     if (skyVao_) gl_.DeleteVertexArrays(1, &skyVao_);
     skyVao_ = 0;
     if (materialProgram_) gl_.DeleteProgram(materialProgram_);
+    if (groundProgram_) gl_.DeleteProgram(groundProgram_);
     if (skyProgram_) gl_.DeleteProgram(skyProgram_);
     if (shadowProgram_) gl_.DeleteProgram(shadowProgram_);
-    materialProgram_ = skyProgram_ = shadowProgram_ = 0;
+    materialProgram_ = groundProgram_ = activeColorProgram_ = skyProgram_ = shadowProgram_ = 0;
 }
 
 } // namespace spqr

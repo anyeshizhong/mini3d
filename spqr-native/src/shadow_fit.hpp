@@ -6,9 +6,11 @@ namespace spqr {
 // Row-major double matrices. Ground footprint is conservatively projected from all
 // ordinary boxes. Precise receiver/caster clipping follows existing Python.
 struct ShadowBox { std::array<double,6> bounds{}; std::array<double,16> world{}; bool ground=false; };
+// On false, emptyReceivers distinguishes an ordinary empty camera region from
+// invalid input. Existing non-empty fits and the exported batch ABI are unchanged.
 bool fit_shadow(const std::vector<ShadowBox>& boxes, const double* direction,
                 const double* view, const double* projection, unsigned resolution,
-                double* output);
+                double* output, bool* emptyReceivers = nullptr);
 // Stable near-cascade fit: fixed-radius split volume, texel-snapped XY, and
 // conservative depth bounds over every non-ground caster.
 bool fit_stable_shadow(const std::vector<ShadowBox>& boxes, const double* direction,

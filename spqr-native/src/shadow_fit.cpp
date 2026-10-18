@@ -281,7 +281,8 @@ namespace spqr {
 
 bool fit_shadow(const std::vector<ShadowBox>& input, const double* direction,
                 const double* view, const double* projection, unsigned resolution,
-                double* output) {
+                double* output, bool* emptyReceivers) {
+    if (emptyReceivers) *emptyReceivers = false;
     if (output) std::fill(output, output + 16, 0.0);
     try {
         if (!output || !direction || !view || !projection || input.empty() || resolution == 0) return false;
@@ -343,7 +344,12 @@ bool fit_shadow(const std::vector<ShadowBox>& input, const double* direction,
             for (const ShadowBox& box : input)
                 if (box.ground) ordinary.push_back(prepare(box.bounds, box.world));
         } else {
-            if (ordinary.empty()) return false;  // Ground alone cannot provide a bounded shadow fit.
+            if (ordinary.empty()) {
+                // Validate the plane before reporting an ordinary empty region.
+                for (const ShadowBox* ground : grounds) prepare(ground->bounds, ground->world);
+                if (emptyReceivers) *emptyReceivers = true;
+                return false;  // Ground alone has no bounded caster footprint.
+            }
             std::vector<V3> caster_corners;
             caster_corners.reserve(ordinary.size() * 8);
             for (const Record& record : ordinary)
@@ -383,7 +389,10 @@ bool fit_shadow(const std::vector<ShadowBox>& input, const double* direction,
         for (const Record& record : ordinary) {
             if (!intersect(record, camera_planes, frustum, receiver_points)) return false;
         }
-        if (receiver_points.empty()) return false;
+        if (receiver_points.empty()) {
+            if (emptyReceivers) *emptyReceivers = true;
+            return false;
+        }
 
         V3 lo{}, hi{};
         bool first = true;
