@@ -308,56 +308,6 @@ def add_axis_with_arrow(p0, p1, col, scale=50.0, head_len_ratio=0.18, head_w_rat
 
 # ==================== OpenGL Objects ====================
 
-class GLGrid:
-    def __init__(self, grid_size=200, step=20, z0=0.0):
-        base = np.array([90, 90, 90], dtype=np.float32) / 255.0
-        xcol = np.array([180, 80, 80], dtype=np.float32) / 255.0
-        ycol = np.array([80, 180, 80], dtype=np.float32) / 255.0
-
-        verts = []
-        colors = []
-
-        for i in range(-grid_size, grid_size + 1, step):
-            # Parallel to Y axis (X=i)
-            a1 = [i, -grid_size, z0]
-            b1 = [i, grid_size, z0]
-            # Parallel to X axis (Y=i)
-            a2 = [-grid_size, i, z0]
-            b2 = [grid_size, i, z0]
-
-            if i == 0:
-                # X=0 is Y-axis (green)
-                verts += [a1, b1]
-                colors += [ycol, ycol]
-                # Y=0 is X-axis (red)
-                verts += [a2, b2]
-                colors += [xcol, xcol]
-            else:
-                verts += [a1, b1, a2, b2]
-                colors += [base, base, base, base]
-
-        inter = np.hstack([
-            np.asarray(verts, np.float32),
-            np.asarray(colors, np.float32)
-        ])
-
-        self.count = inter.shape[0]
-        self.vao = glGenVertexArrays(1)
-        self.vbo = glGenBuffers(1)
-
-        glBindVertexArray(self.vao)
-        glBindBuffer(GL_ARRAY_BUFFER, self.vbo)
-        glBufferData(GL_ARRAY_BUFFER, inter.nbytes, inter, GL_STATIC_DRAW)
-
-        stride = 6 * 4
-        glEnableVertexAttribArray(0)
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride, ctypes.c_void_p(0))
-        glEnableVertexAttribArray(1)
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, stride, ctypes.c_void_p(12))
-        
-        glBindVertexArray(0)
-
-
 class GLMeshGPU:
     def __init__(self, mesh):
         """
@@ -498,7 +448,8 @@ class GLRenderer:
         self._photo_ground = None
 
         # Grid
-        self.grid = GLGrid(grid_size=200, step=20, z0=0.0)
+        from .editor_grid import EditorGrid
+        self.grid = EditorGrid()
 
         # Dynamic buffers
         self.screen_line_vao = glGenVertexArrays(1)
@@ -600,10 +551,7 @@ class GLRenderer:
             if value:
                 glDeleteBuffers(1,[value])
                 setattr(self,name,0)
-        if self.grid.vao:
-            glDeleteVertexArrays(1,[self.grid.vao])
-            glDeleteBuffers(1,[self.grid.vbo])
-            self.grid.vao = 0
+        self.grid.close()
 
     def _render_scene(self, scene, camera, plan=None):
         # Clear
@@ -669,37 +617,8 @@ class GLRenderer:
         glEnable(GL_DEPTH_TEST)
     
     def render_editor_grid(self, scene, camera):
-        """Finite editor guide lines: read scene depth, never write it."""
-        if not getattr(scene, "show_grid", True):
-            return
-        depth_mask = bool(glGetBooleanv(GL_DEPTH_WRITEMASK))
-        depth_test = bool(glIsEnabled(GL_DEPTH_TEST))
-        depth_func = int(glGetIntegerv(GL_DEPTH_FUNC))
-        program = int(glGetIntegerv(GL_CURRENT_PROGRAM))
-        vao = int(glGetIntegerv(GL_VERTEX_ARRAY_BINDING))
-        line_width = float(glGetFloatv(GL_LINE_WIDTH))
-        try:
-            glDepthMask(False)
-            glEnable(GL_DEPTH_TEST)
-            glDepthFunc(GL_LEQUAL)
-            glUseProgram(self.line_program)
-            scale = getattr(scene, "grid_scale", 1.0)
-            transform = np.diag([scale, scale, 1., 1.])
-            transform[2, 3] = getattr(getattr(scene, "placement_plane", None), "z", 0.)
-            glUniformMatrix4fv(self.line_locView, 1, GL_TRUE,
-                               (camera.view_matrix @ transform).astype(DTYPE))
-            glUniformMatrix4fv(self.line_locProj, 1, GL_TRUE,
-                               camera.projection_matrix(self.w / self.h).astype(DTYPE))
-            glBindVertexArray(self.grid.vao)
-            glLineWidth(1.0)
-            glDrawArrays(GL_LINES, 0, self.grid.count)
-        finally:
-            glDepthMask(depth_mask)
-            (glEnable if depth_test else glDisable)(GL_DEPTH_TEST)
-            glDepthFunc(depth_func)
-            glUseProgram(program)
-            glBindVertexArray(vao)
-            glLineWidth(line_width)
+        """View-covering placement-plane guides; test depth but never write it."""
+        self.grid.draw(scene, camera, self.w, self.h)
 
     def _render_realistic_pass(self, entities, V, P, scene):
         """Standard realistic rendering"""
