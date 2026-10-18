@@ -52,9 +52,15 @@ alpha mask、Z-fighting、远裁剪引起的意外露天。
 
 ### 3. 摄像机移动时静态阴影跳动（时间稳定性）
 
-可疑路径：
+**本地更新（2026-10-18）**：已单独修复 Roman Street 的相机相关阴影纹素漂移和尺度重拟合跳变。
+Python/native 均使用局部网格吸附、有限迟滞和双层可见度过渡，保持原阴影分辨率与滤波。
+横移固定观察图无变化；推进最大单通道变化 Python 68→13、native 49→9；420 项 CPU 测试、原生预览/PNG 一致性及地面回归通过。
+MX130 串行复测完整帧 P95 横移 26.49ms、推进 29.58ms，仍有长尾，不宣称完整编辑器稳定 30FPS。
+实现、原始指标的评价范围、首轮性能异常及复现方法见[阴影时间稳定性记录](SPQR-SHADOW-STABILITY.md)。
+
+修复前排查记录：
 - `mini3d/shadow_fit.py:receiver_matrix`：相机相关的接收体拟合，
-  `lo/hi` 与 `scale` 随帧变化；当前没有显式 texel-snap 步骤
+  `lo/hi` 与 `scale` 随帧变化；原版本没有显式 texel-snap 步骤
 - `mini3d/shadow_map.py:ShadowMap.render`：camera matrix 作为缓存 key，
   摄像机一动就可能重新计算 ShadowMap
 - `tests/shadow_motion_audit_20261010.py`：已有真实 GL 深度与固定 world

@@ -323,8 +323,43 @@ class _PreparedReceivers:
         return records, self.arrays
 
 
+def _stabilize_bounds(lo, hi, rotation, resolution, state=None):
+    """Snap a local fit while retaining its texel pitch across small pose changes.
+
+    Snapping translation alone does not stabilize a tight fit whose scale changes
+    every frame. A small span hysteresis holds that scale until the local
+    receiver region grows or shrinks enough to need a new fit. This never locks
+    the map to the whole scene. Reserve a texel so rounding cannot clip a receiver.
+    """
+    lo, hi = np.array(lo, dtype=float, copy=True), np.array(hi, dtype=float, copy=True)
+    center, required = (lo + hi) * .5, hi - lo
+    key = (int(resolution), rotation.tobytes())
+    if state is not None and state.get('key') != key:
+        state.clear()
+    previous = None if state is None else state.get('bounds')
+    # At tiny unsupported resolutions snapping has no useful conservative fit.
+    if resolution <= 2:
+        return lo, hi
+    span = required[:2] * 1.02 / (1 - 2 / resolution)
+    if previous is not None:
+        old_lo, old_hi = previous
+        old_span = old_hi - old_lo
+        growth_reserve = 1.02 / (1 - 2 / resolution)
+        shrink_ratio = .96 * growth_reserve
+        grow_ratio = growth_reserve * (1 - 1 / resolution)
+        shrinking = span >= old_span[:2] * shrink_ratio
+        keep = (span <= old_span[:2] * grow_ratio) & shrinking
+        span = np.where(keep, old_span[:2], span)
+    texel = span / resolution
+    center[:2] = np.floor(center[:2] / texel + .5) * texel
+    lo[:2], hi[:2] = center[:2] - span * .5, center[:2] + span * .5
+    if state is not None:
+        state.update(key=key, bounds=(lo.copy(), hi.copy()))
+    return lo, hi
+
+
 def receiver_matrix(entities, direction, camera, resolution, aspect=None, geometry_cache=None,
-                    prepared=None):
+                    prepared=None, stability=None):
     """Return a conservative fit or None, signaling whole-scene fallback.
 
     Directional rays keep light-space XY constant. Bounds clipped to a padded
@@ -376,6 +411,10 @@ def receiver_matrix(entities, direction, camera, resolution, aspect=None, geomet
         margin = max(float(extent[:2].max())*max(.02,4/resolution),1e-12)
         lo[:2] -= margin
         hi[:2] += margin
+        # Stabilize XY before fitting caster Z: expanded/snapped coverage must
+        # retain offscreen casters whose shadows enter the new edge texels.
+        xy_lo, xy_hi = _stabilize_bounds(lo, hi, rotation, resolution, stability)
+        lo[:2], hi[:2] = xy_lo[:2], xy_hi[:2]
         global_points = np.concatenate(world_corners @ rotation.T)
         lo[2],hi[2] = global_points[:,2].min()-margin,global_points[:,2].max()+margin
         clip_corners = _corners((lo,hi)) @ rotation
@@ -384,9 +423,17 @@ def receiver_matrix(entities, direction, camera, resolution, aspect=None, geomet
         casters = _intersections(bounds, worlds, corners, world_corners, tolerances, light_planes, clip_corners, records)
         caster_points = np.concatenate([p for p in casters if len(p)]) @ rotation.T
         lo[2],hi[2] = caster_points[:,2].min(),caster_points[:,2].max()
+        caster_depth = (lo[2], hi[2])
         depth_margin = max(float((hi-lo).max())*.02,1e-12)
         lo[2] -= depth_margin
         hi[2] += depth_margin
+        if stability is not None:
+            previous = stability.get('depth')
+            if (previous is not None and caster_depth[0] >= previous[0] + depth_margin * .25
+                    and caster_depth[1] <= previous[1] - depth_margin * .25
+                    and hi[2] - lo[2] >= (previous[1] - previous[0]) * .96):
+                lo[2], hi[2] = previous
+            stability['depth'] = (float(lo[2]), float(hi[2]))
         scale = 2/(hi-lo)
         scale[2] *= -1
         matrix = np.eye(4)

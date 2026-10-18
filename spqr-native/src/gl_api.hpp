@@ -24,10 +24,10 @@ namespace spqr {
     X(GenVertexArrays) X(BindVertexArray) X(DeleteVertexArrays) \
     X(GenBuffers) X(BindBuffer) X(BufferData) X(DeleteBuffers) \
     X(EnableVertexAttribArray) X(VertexAttribPointer) X(VertexAttribDivisor) \
-    X(GenTextures) X(DeleteTextures) X(ActiveTexture) X(BindTexture) X(TexImage2D) \
+    X(GenTextures) X(DeleteTextures) X(ActiveTexture) X(BindTexture) X(TexImage2D) X(TexImage3D) \
     X(TexParameteri) X(TexParameterfv) X(PixelStorei) \
     X(GenSamplers) X(DeleteSamplers) X(SamplerParameteri) X(SamplerParameterfv) X(BindSampler) \
-    X(GenFramebuffers) X(DeleteFramebuffers) X(BindFramebuffer) X(FramebufferTexture2D) \
+    X(GenFramebuffers) X(DeleteFramebuffers) X(BindFramebuffer) X(FramebufferTexture2D) X(FramebufferTextureLayer) \
     X(CheckFramebufferStatus) X(DrawBuffer) X(ReadBuffer) \
     X(GenRenderbuffers) X(BindRenderbuffer) X(RenderbufferStorage) X(RenderbufferStorageMultisample) \
     X(FramebufferRenderbuffer) X(DeleteRenderbuffers) X(BlitFramebuffer) \

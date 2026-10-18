@@ -17,19 +17,24 @@ from .lighting import scene_light_direction
 # shader/fsScene.glsl. Visibility multiplies direct radiance, never scene color.
 SHADOW_GLSL = """
 uniform bool shadowEnabled, shadowPCF;
-uniform sampler2DShadow shadowDepth;
-uniform sampler2D shadowRaw;
+uniform sampler2DArrayShadow shadowDepth;
+uniform sampler2DArray shadowRaw;
 uniform float sunRadius;
-uniform vec3 shadowWorldScale;
-uniform mat4 shadowMatrix;
+uniform vec3 shadowWorldScale, shadowPreviousWorldScale;
+uniform mat4 shadowMatrix, shadowPreviousMatrix;
 uniform float shadowBias;
-float shadowVisibility(vec3 world, vec3 normal, vec3 light) {
-    if (!shadowEnabled) return 1.0;
-    vec4 p = shadowMatrix * vec4(world, 1.0);
+uniform int shadowLayer, shadowPreviousLayer;
+uniform bool shadowTransition;
+uniform float shadowBlend;
+
+float shadowMapVisibility(vec3 world, vec3 normal, vec3 light, mat4 matrix,
+                          vec3 worldScale, int layer, out bool inside) {
+    vec4 p = matrix * vec4(world, 1.0);
     vec3 q = p.xyz / p.w * 0.5 + 0.5;
-    if (any(lessThan(q, vec3(0.0))) || any(greaterThan(q, vec3(1.0)))) return 1.0;
+    inside = !any(lessThan(q, vec3(0.0))) && !any(greaterThan(q, vec3(1.0)));
+    if (!inside) return 1.0;
     float bias = shadowBias * (1.0 + 4.0 * (1.0 - max(dot(normal, light), 0.0)));
-    vec2 texel = 1.0 / vec2(textureSize(shadowDepth, 0));
+    vec2 texel = 1.0 / vec2(textureSize(shadowDepth, 0).xy);
     // Orthographic PCSS: search raw blocker depths, then filter comparisons.
     // Sun radius is angular; blocker distance sets the penumbra in world units.
     if (shadowPCF && sunRadius>0.0) {
@@ -37,20 +42,20 @@ float shadowVisibility(vec3 world, vec3 normal, vec3 light) {
             vec2(.44,-.77),vec2(-.49,.73),vec2(-.89,.14),vec2(.87,-.16),
             vec2(.15,.93),vec2(-.13,-.94),vec2(.29,.26),vec2(-.28,-.23),
             vec2(-.37,.31),vec2(.32,-.34),vec2(.73,-.61),vec2(-.76,-.60),vec2(-.70,.60));
-        vec2 search=max(texel,shadowWorldScale.xy*sunRadius*q.z*shadowWorldScale.z);
+        vec2 search=max(texel,worldScale.xy*sunRadius*q.z*worldScale.z);
         search=min(search,vec2(.03));
         float sum=0.0, count=0.0;
         for (int i=0;i<16;++i) {
-            float depth=texture(shadowRaw,q.xy+disk[i]*search).r;
+            float depth=texture(shadowRaw,vec3(q.xy+disk[i]*search,float(layer))).r;
             if (depth<q.z-bias) {sum+=depth;count+=1.0;}
         }
         if (count==0.0) return 1.0;
-        float separation=max(0.0,(q.z-sum/count)*shadowWorldScale.z);
-        vec2 width=max(texel*.65,shadowWorldScale.xy*sunRadius*separation);
+        float separation=max(0.0,(q.z-sum/count)*worldScale.z);
+        vec2 width=max(texel*.65,worldScale.xy*sunRadius*separation);
         width=min(width,vec2(.03));
         float soft=0.0;
         for (int i=0;i<16;++i)
-            soft+=texture(shadowDepth,vec3(q.xy+disk[i]*width,q.z-bias));
+            soft+=texture(shadowDepth,vec4(q.xy+disk[i]*width,float(layer),q.z-bias));
         return soft/16.0;
     }
     float visibility = 0.0;
@@ -60,9 +65,31 @@ float shadowVisibility(vec3 world, vec3 normal, vec3 light) {
     vec2 center = shadowPCF ? q.xy : (floor(q.xy / texel) + 0.5) * texel;
     for (int x = -radius; x <= radius; ++x)
         for (int y = -radius; y <= radius; ++y) {
-            visibility += texture(shadowDepth, vec3(center + vec2(x,y)*texel, q.z - bias));
+            visibility += texture(shadowDepth,
+                                  vec4(center + vec2(x,y)*texel, float(layer), q.z - bias));
         }
     return visibility / (shadowPCF ? 9.0 : 1.0);
+}
+
+float shadowFarVisibility(vec3 world, vec3 normal, vec3 light) {
+    if (!shadowEnabled) return 1.0;
+    bool currentInside;
+    float current = shadowMapVisibility(world, normal, light, shadowMatrix,
+                                        shadowWorldScale, shadowLayer, currentInside);
+    // A newly fitted map has priority outside its coverage. The old layer must
+    // not leave stale shadows where the current fit has no depth samples.
+    if (!currentInside || !shadowTransition || shadowBlend >= 1.0) return current;
+    bool previousInside;
+    float previous = shadowMapVisibility(world, normal, light, shadowPreviousMatrix,
+                                          shadowPreviousWorldScale, shadowPreviousLayer,
+                                          previousInside);
+    if (!previousInside) return current;
+    if (shadowBlend <= 0.0) return previous;
+    return mix(previous, current, clamp(shadowBlend, 0.0, 1.0));
+}
+
+float shadowVisibility(vec3 world, vec3 normal, vec3 light) {
+    return shadowFarVisibility(world, normal, light);
 }
 """
 
@@ -97,14 +124,15 @@ void main() {
 
 
 def light_matrix(entities, direction, camera=None, resolution=1024, aspect=None, geometry_cache=None,
-                 prepared=None):
+                 prepared=None, stability=None):
     """Cached AABBs; optional Shot receiver fit with whole-scene fallback."""
     if camera is not None:
         from .shadow_fit import receiver_matrix
         if not isinstance(entities, list):
             entities = list(entities)
         fitted = receiver_matrix(entities, direction, camera, resolution, aspect=aspect,
-                                 geometry_cache=geometry_cache, prepared=prepared)
+                                 geometry_cache=geometry_cache, prepared=prepared,
+                                 stability=stability)
         if fitted is not None:
             return fitted
     light = np.array(direction, dtype=np.float64, copy=True)
@@ -170,8 +198,118 @@ def _shadow_input_key(entities, geometry=None):
     return tuple(records)
 
 
+def _shadow_fit_input_key(entities, geometry, direction, records):
+    """Ignore a photographic overlay's in-plane following motion, not its plane.
+
+    Such ground never casts and its receiver footprint is projected from the
+    ordinary casters. Moving or resizing that infinite plane in XY therefore
+    changes neither shadow geometry nor fit inputs. Plane height/normal edits,
+    ordinary scene edits and the parallel-light fallback still invalidate it.
+    """
+    base = getattr(geometry, 'base', None)
+    if base is None or entities is not geometry.entities:
+        return records
+    extras = []
+    for entity in geometry.extra.entities:
+        material = getattr(entity.model, 'material', None) or {}
+        if not material.get('extras', {}).get('photographicGround'):
+            extras.append(_shadow_input_key([entity], geometry.extra))
+            continue
+        world = np.asarray(entity.world_matrix, dtype=float)
+        try:
+            normal = np.linalg.inv(world[:3, :3]).T @ [0., 0., 1.]
+            normal /= np.linalg.norm(normal)
+            light = np.array(direction, dtype=float, copy=True)
+            light /= np.linalg.norm(light)
+            if abs(float(normal @ light)) < 1e-10:
+                return records
+            center = np.asarray(entity.model.bounds, dtype=float).mean(axis=0)
+            point = world[:3, :3] @ center + world[:3, 3]
+            extras.append((id(entity.model), tuple(normal), float(normal @ point)))
+        except (ValueError, np.linalg.LinAlgError, FloatingPointError):
+            return records
+    return (_shadow_input_key(base.entities, base), tuple(extras))
+
+
+_SHADOW_FADE_POSES = 8
+_SHADOW_SCALE_ROWS = np.array((0, 1, 2, 4, 5, 6, 8, 9, 10, 11), dtype=np.intp)
+
+
+def _uploaded_shadow_matrix(matrix):
+    """Return the exact float32 matrix sent to both the depth and color shaders."""
+    return np.ascontiguousarray(matrix, dtype=np.float32)
+
+
+def _shadow_world_scale(matrix):
+    rows = np.linalg.norm(np.asarray(matrix, dtype=np.float64)[:3, :3], axis=1)
+    if np.any(rows == 0) or not np.isfinite(rows).all():
+        raise ValueError('invalid shadow matrix scale')
+    return np.asarray((rows[0] * .5, rows[1] * .5, 2 / rows[2]), dtype=np.float32)
+
+
+class _ShadowTemporalState:
+    """CPU-only ownership and fade state for the two far depth-array layers."""
+
+    def __init__(self, fade_poses=_SHADOW_FADE_POSES):
+        self.fade_poses = int(fade_poses)
+        self.reset()
+
+    def reset(self, fit_key=None):
+        self.fit_key = fit_key
+        self.current_layer = 0
+        self.previous_layer = 1
+        self.layer_keys = [None, None]
+        self.matrix = None
+        self.previous_matrix = None
+        self.previous_world_scale = np.ones(3, dtype=np.float32)
+        self.transition = False
+        self.transition_steps = 0
+        self.last_pose = None
+
+    def update(self, fit_key, matrix, pose_key):
+        fit_changed = fit_key != self.fit_key
+        if fit_changed:
+            self.reset(fit_key)
+        elif self.transition and pose_key is not None and pose_key != self.last_pose:
+            self.transition_steps += 1
+            self.last_pose = pose_key
+            if self.transition_steps >= self.fade_poses:
+                self.transition = False
+
+        previous = self.matrix
+        if (not fit_changed and not self.transition and previous is not None and
+                not np.array_equal(previous.reshape(-1)[_SHADOW_SCALE_ROWS],
+                                   matrix.reshape(-1)[_SHADOW_SCALE_ROWS])):
+            self.previous_layer = self.current_layer
+            self.previous_matrix = previous.copy()
+            self.previous_world_scale = _shadow_world_scale(previous)
+            self.current_layer = 1 - self.current_layer
+            self.transition = True
+            self.transition_steps = 1 if pose_key is not None else 0
+            self.last_pose = pose_key
+
+        self.matrix = matrix.copy()
+        depth_key = (fit_key, matrix.tobytes())
+        needs_draw = self.layer_keys[self.current_layer] != depth_key
+        return {
+            'fit_changed': fit_changed,
+            'depth_key': depth_key,
+            'needs_draw': needs_draw,
+            'current_layer': self.current_layer,
+            'previous_layer': self.previous_layer,
+            'previous_matrix': self.previous_matrix,
+            'previous_world_scale': self.previous_world_scale,
+            'transition': self.transition,
+            'blend': min(max(self.transition_steps - 1, 0) / max(self.fade_poses - 1, 1), 1.0)
+                if self.transition else 1.0,
+        }
+
+    def mark_rendered(self, depth_key):
+        self.layer_keys[self.current_layer] = depth_key
+
+
 class ShadowMap:
-    """One lazy depth texture/FBO. GPU geometry is owned by existing renderers."""
+    """Lazy two-layer far depth array/FBO; geometry stays owned by renderers."""
     UNIT = 7  # MaterialRenderer uses units 0..6.
 
     def __init__(self):
@@ -183,13 +321,28 @@ class ShadowMap:
         self._locations = {}
         self._geometry_cache = {}
         self._instance_payloads = {}
+        self._fit_state = {}
+        self._fit_key = None
+        self._temporal = _ShadowTemporalState()
+
+    def _delete_gpu_resources(self):
+        if self.fbo:
+            gl.glDeleteFramebuffers(1, [self.fbo])
+        if self.texture:
+            gl.glDeleteTextures([self.texture])
+        if self.raw_sampler:
+            gl.glDeleteSamplers(1, [self.raw_sampler])
+        if self.program:
+            gl.glDeleteProgram(self.program)
+        self._locations.clear()
+        self.fbo = self.texture = self.program = self.size = self.raw_sampler = 0
 
     def _allocate(self, size):
         if self.size == size:
             return
         if size > int(gl.glGetIntegerv(gl.GL_MAX_TEXTURE_SIZE)):
             raise ValueError('Shadow resolution exceeds GL_MAX_TEXTURE_SIZE')
-        self.close()
+        self._delete_gpu_resources()
         try:
             self.program = compileProgram(compileShader(DEPTH_VERTEX, gl.GL_VERTEX_SHADER),
                                           compileShader(DEPTH_FRAGMENT, gl.GL_FRAGMENT_SHADER))
@@ -200,30 +353,33 @@ class ShadowMap:
                 gl.glSamplerParameteri(self.raw_sampler,p,gl.GL_NEAREST)
             for p in (gl.GL_TEXTURE_WRAP_S,gl.GL_TEXTURE_WRAP_T):
                 gl.glSamplerParameteri(self.raw_sampler,p,gl.GL_CLAMP_TO_BORDER)
+            gl.glSamplerParameteri(self.raw_sampler,gl.GL_TEXTURE_WRAP_R,gl.GL_CLAMP_TO_EDGE)
             gl.glSamplerParameterfv(self.raw_sampler,gl.GL_TEXTURE_BORDER_COLOR,np.ones(4,np.float32))
             gl.glActiveTexture(gl.GL_TEXTURE0+self.UNIT)
-            gl.glBindTexture(gl.GL_TEXTURE_2D, self.texture)
+            gl.glBindTexture(gl.GL_TEXTURE_2D_ARRAY, self.texture)
             # Port of src/main.cpp depth attachment setup; depth-only FBO.
-            gl.glTexImage2D(gl.GL_TEXTURE_2D, 0, gl.GL_DEPTH_COMPONENT24, size, size,
+            gl.glTexImage3D(gl.GL_TEXTURE_2D_ARRAY, 0, gl.GL_DEPTH_COMPONENT24, size, size, 2,
                             0, gl.GL_DEPTH_COMPONENT, gl.GL_FLOAT, None)
             for param in (gl.GL_TEXTURE_MIN_FILTER, gl.GL_TEXTURE_MAG_FILTER):
-                gl.glTexParameteri(gl.GL_TEXTURE_2D, param, gl.GL_LINEAR)
-            gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_COMPARE_MODE, gl.GL_COMPARE_REF_TO_TEXTURE)
-            gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_COMPARE_FUNC, gl.GL_LEQUAL)
+                gl.glTexParameteri(gl.GL_TEXTURE_2D_ARRAY, param, gl.GL_LINEAR)
+            gl.glTexParameteri(gl.GL_TEXTURE_2D_ARRAY, gl.GL_TEXTURE_COMPARE_MODE, gl.GL_COMPARE_REF_TO_TEXTURE)
+            gl.glTexParameteri(gl.GL_TEXTURE_2D_ARRAY, gl.GL_TEXTURE_COMPARE_FUNC, gl.GL_LEQUAL)
             for param in (gl.GL_TEXTURE_WRAP_S, gl.GL_TEXTURE_WRAP_T):
-                gl.glTexParameteri(gl.GL_TEXTURE_2D, param, gl.GL_CLAMP_TO_BORDER)
-            gl.glTexParameterfv(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_BORDER_COLOR, np.ones(4,np.float32))
+                gl.glTexParameteri(gl.GL_TEXTURE_2D_ARRAY, param, gl.GL_CLAMP_TO_BORDER)
+            gl.glTexParameteri(gl.GL_TEXTURE_2D_ARRAY, gl.GL_TEXTURE_WRAP_R, gl.GL_CLAMP_TO_EDGE)
+            gl.glTexParameterfv(gl.GL_TEXTURE_2D_ARRAY, gl.GL_TEXTURE_BORDER_COLOR, np.ones(4,np.float32))
             self.fbo = int(gl.glGenFramebuffers(1))
             gl.glBindFramebuffer(gl.GL_FRAMEBUFFER, self.fbo)
-            gl.glFramebufferTexture2D(gl.GL_FRAMEBUFFER, gl.GL_DEPTH_ATTACHMENT,
-                                      gl.GL_TEXTURE_2D, self.texture, 0)
+            gl.glFramebufferTextureLayer(gl.GL_FRAMEBUFFER, gl.GL_DEPTH_ATTACHMENT,
+                                         self.texture, 0, 0)
             gl.glDrawBuffer(gl.GL_NONE)
             gl.glReadBuffer(gl.GL_NONE)
             if gl.glCheckFramebufferStatus(gl.GL_FRAMEBUFFER) != gl.GL_FRAMEBUFFER_COMPLETE:
                 raise RuntimeError('Incomplete shadow depth framebuffer')
             self.size = size
         except Exception:
-            self.close()
+            self._delete_gpu_resources()
+            self._locations.clear()
             raise
 
     def render(self, entities, scene, renderer, camera=None, aspect=None, geometry=None):
@@ -244,11 +400,36 @@ class ShadowMap:
             self.cache_hit = True
             return
         self._cache_key = None
+        # Camera pose may move the local fit; lens, scene and sun changes start
+        # a fresh fit so an earlier view cannot hold stale coverage or quality.
+        fit_inputs = _shadow_fit_input_key(entities, geometry, direction, records)
+        fit_key = (scene.shadow_resolution, np.asarray(direction).tobytes(),
+                   None if camera_key is None else camera_key[1], fit_inputs)
+        if fit_key != self._fit_key:
+            self._fit_state.clear()
+            self._fit_key = fit_key
         matrix = light_matrix(entities, direction, camera, scene.shadow_resolution,
-                              aspect=aspect, geometry_cache=self._geometry_cache, prepared=geometry)
+                              aspect=aspect, geometry_cache=self._geometry_cache, prepared=geometry,
+                              stability=self._fit_state)
         if matrix is None:
+            self._temporal.reset(fit_key)
             self.matrix = None
+            self._cache_key = None
             return
+
+        # The color and depth passes consume this same float32 matrix. Cache
+        # identity, culling, and transition comparison must reflect its exact
+        # uploaded values rather than the higher precision fit intermediate.
+        matrix32 = _uploaded_shadow_matrix(matrix)
+        draw_matrix = matrix32.astype(np.float64)
+        pose_key = None if camera is None else _uploaded_shadow_matrix(camera.view_matrix).tobytes()
+        plan = self._temporal.update(fit_key, matrix32, pose_key)
+        self.matrix = draw_matrix
+        if not plan['needs_draw']:
+            self._cache_key = key
+            self.cache_hit = True
+            return
+
         state = save_state()
         draw = int(gl.glGetIntegerv(gl.GL_DRAW_FRAMEBUFFER_BINDING))
         read = int(gl.glGetIntegerv(gl.GL_READ_FRAMEBUFFER_BINDING))
@@ -256,9 +437,14 @@ class ShadowMap:
         clear = float(gl.glGetDoublev(gl.GL_DEPTH_CLEAR_VALUE))
         depth_range = gl.glGetDoublev(gl.GL_DEPTH_RANGE)
         try:
+            fit_state, fit_key = self._fit_state.copy(), self._fit_key
             self._allocate(scene.shadow_resolution)
-            self.matrix = matrix
+            self._fit_state, self._fit_key = fit_state, fit_key
             gl.glBindFramebuffer(gl.GL_FRAMEBUFFER, self.fbo)
+            gl.glFramebufferTextureLayer(gl.GL_FRAMEBUFFER, gl.GL_DEPTH_ATTACHMENT,
+                                         self.texture, 0, plan['current_layer'])
+            if gl.glCheckFramebufferStatus(gl.GL_FRAMEBUFFER) != gl.GL_FRAMEBUFFER_COMPLETE:
+                raise RuntimeError('Incomplete shadow depth framebuffer layer')
             gl.glViewport(0, 0, self.size, self.size)
             for cap in (gl.GL_SCISSOR_TEST, gl.GL_STENCIL_TEST, gl.GL_BLEND,
                         gl.GL_CULL_FACE, gl.GL_POLYGON_OFFSET_FILL, gl.GL_RASTERIZER_DISCARD):
@@ -278,7 +464,7 @@ class ShadowMap:
                 self._locations = {name: gl.glGetUniformLocation(self.program, name) for name in
                     ('lightMatrix', 'baseMap', 'alphaMask', 'hasBase', 'baseAlpha', 'cutoff', 'model', 'useInstances')}
             loc = self._locations.__getitem__
-            gl.glUniformMatrix4fv(loc('lightMatrix'),1,gl.GL_TRUE,np.asarray(matrix,np.float32))
+            gl.glUniformMatrix4fv(loc('lightMatrix'),1,gl.GL_TRUE,matrix32)
             gl.glUniform1i(loc('baseMap'),0)
             # Only reject geometry outside the actual light clip volume.
             # Color-camera visibility must never remove offscreen casters.
@@ -300,7 +486,7 @@ class ShadowMap:
             visible = np.ones(len(entities), dtype=bool)
             if tested:
                 visible[tested] = aabb_visible([bounds[i] for i in tested],
-                                              frustum_planes(np.eye(4), matrix))
+                                              frustum_planes(np.eye(4), draw_matrix))
             self.culled_casters = int((~visible).sum())
             groups, individual = {}, []
             for entity, keep in zip(entities, visible):
@@ -369,6 +555,7 @@ class ShadowMap:
                 gl.glDrawElements(gl.GL_TRIANGLES,count,gl.GL_UNSIGNED_INT,None)
                 self.draw_calls += 1
                 self.triangles += count // 3
+            self._temporal.mark_rendered(plan['depth_key'])
             self._cache_key = key
         finally:
             gl.glBindFramebuffer(gl.GL_DRAW_FRAMEBUFFER,draw)
@@ -380,7 +567,7 @@ class ShadowMap:
 
     @staticmethod
     def bind(program, shadow, scene):
-        """Caller saves/restores unit 7; an absent map always means full light."""
+        """Bind current/previous far layers; an absent map means full light."""
         loc = lambda name: gl.glGetUniformLocation(program, name)
         active = shadow is not None and shadow.matrix is not None
         gl.glUniform1i(loc('shadowEnabled'),active)
@@ -388,18 +575,45 @@ class ShadowMap:
         gl.glUniform1i(loc('shadowRaw'),12)
         from .atmosphere import atmosphere_state
         gl.glUniform1f(loc('sunRadius'),np.tan(np.radians(atmosphere_state(scene)['sun_size']*.5)))
+        gl.glUniform1f(loc('shadowBias'),scene.shadow_bias)
+        gl.glUniform1i(loc('shadowPCF'),scene.shadow_pcf)
+        current_matrix = np.eye(4, dtype=np.float32)
+        previous_matrix = current_matrix
+        current_scale = np.ones(3, dtype=np.float32)
+        previous_scale = current_scale
+        current_layer = previous_layer = 0
+        transition = False
+        blend = 1.0
         if active:
-            gl.glUniformMatrix4fv(loc('shadowMatrix'),1,gl.GL_TRUE,np.asarray(shadow.matrix,np.float32))
-            gl.glUniform1f(loc('shadowBias'),scene.shadow_bias)
-            gl.glUniform1i(loc('shadowPCF'),scene.shadow_pcf)
+            current_matrix = _uploaded_shadow_matrix(shadow.matrix)
+            current_scale = _shadow_world_scale(current_matrix)
+            temporal = shadow._temporal
+            current_layer = temporal.current_layer
+            previous_layer = temporal.previous_layer
+            transition = temporal.transition and temporal.previous_matrix is not None
+            blend = (min(max(temporal.transition_steps - 1, 0) /
+                         max(temporal.fade_poses - 1, 1), 1.0)
+                     if transition else 1.0)
+            if transition:
+                previous_matrix = temporal.previous_matrix
+                previous_scale = temporal.previous_world_scale
+            else:
+                previous_matrix = current_matrix
+                previous_scale = current_scale
             gl.glActiveTexture(gl.GL_TEXTURE0+ShadowMap.UNIT)
-            gl.glBindTexture(gl.GL_TEXTURE_2D,shadow.texture)
+            gl.glBindTexture(gl.GL_TEXTURE_2D_ARRAY,shadow.texture)
             gl.glBindSampler(ShadowMap.UNIT,0)
-            gl.glActiveTexture(gl.GL_TEXTURE12)
-            gl.glBindTexture(gl.GL_TEXTURE_2D,shadow.texture)
+            gl.glActiveTexture(gl.GL_TEXTURE0+12)
+            gl.glBindTexture(gl.GL_TEXTURE_2D_ARRAY,shadow.texture)
             gl.glBindSampler(12,shadow.raw_sampler)
-            rows=np.linalg.norm(shadow.matrix[:3,:3],axis=1)
-            gl.glUniform3fv(loc('shadowWorldScale'),1,np.asarray([rows[0]*.5,rows[1]*.5,2/rows[2]],np.float32))
+        gl.glUniformMatrix4fv(loc('shadowMatrix'),1,gl.GL_TRUE,current_matrix)
+        gl.glUniformMatrix4fv(loc('shadowPreviousMatrix'),1,gl.GL_TRUE,previous_matrix)
+        gl.glUniform3fv(loc('shadowWorldScale'),1,current_scale)
+        gl.glUniform3fv(loc('shadowPreviousWorldScale'),1,previous_scale)
+        gl.glUniform1i(loc('shadowLayer'),current_layer)
+        gl.glUniform1i(loc('shadowPreviousLayer'),previous_layer)
+        gl.glUniform1i(loc('shadowTransition'),transition)
+        gl.glUniform1f(loc('shadowBlend'),blend)
 
     def save_depth_png(self, path):
         """Raw orthographic depth [0,1] as grayscale, white = empty/far."""
@@ -423,17 +637,13 @@ class ShadowMap:
                 gl.glPixelStorei(name,value)
 
     def close(self):
-        if self.fbo:
-            gl.glDeleteFramebuffers(1,[self.fbo])
-        if self.texture:
-            gl.glDeleteTextures([self.texture])
-        if self.raw_sampler:
-            gl.glDeleteSamplers(1,[self.raw_sampler])
-        if self.program:
-            gl.glDeleteProgram(self.program)
-        self.fbo = self.texture = self.program = self.size = self.raw_sampler = 0
+        self._delete_gpu_resources()
         self.matrix = None
         self._cache_key = None
+        self.cache_hit = False
         self._locations.clear()
         self._geometry_cache.clear()
         self._instance_payloads.clear()
+        self._fit_state.clear()
+        self._fit_key = None
+        self._temporal.reset()

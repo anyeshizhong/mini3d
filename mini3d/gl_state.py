@@ -54,11 +54,13 @@ def save_state(texture_units=13, all_cubemaps=False):
     state["color_mask"] = np.asarray(gl.glGetBooleanv(gl.GL_COLOR_WRITEMASK)).reshape(-1)
     state["polygon"] = np.asarray(gl.glGetIntegerv(gl.GL_POLYGON_MODE)).reshape(-1)
     state["textures"] = []
+    state["texture_arrays"] = []
     state["cubemaps"] = []
     state["samplers"] = []
     for unit in range(texture_units):
         gl.glActiveTexture(gl.GL_TEXTURE0+unit)
         state["textures"].append(int(gl.glGetIntegerv(gl.GL_TEXTURE_BINDING_2D)))
+        state["texture_arrays"].append(int(gl.glGetIntegerv(gl.GL_TEXTURE_BINDING_2D_ARRAY)))
         state["samplers"].append(int(gl.glGetIntegerv(gl.GL_SAMPLER_BINDING)))
         if all_cubemaps or unit in (8,9):
             state["cubemaps"].append((unit,int(gl.glGetIntegerv(gl.GL_TEXTURE_BINDING_CUBE_MAP))))
@@ -89,6 +91,7 @@ def restore_state(state):
     for unit, texture in enumerate(state["textures"]):
         gl.glActiveTexture(gl.GL_TEXTURE0+unit)
         gl.glBindTexture(gl.GL_TEXTURE_2D,texture)
+        gl.glBindTexture(gl.GL_TEXTURE_2D_ARRAY,state["texture_arrays"][unit])
         gl.glBindSampler(unit,state["samplers"][unit])
     for unit, texture in state["cubemaps"]:
         gl.glActiveTexture(gl.GL_TEXTURE0+unit)

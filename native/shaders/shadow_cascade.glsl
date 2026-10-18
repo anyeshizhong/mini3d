@@ -79,19 +79,13 @@ float shadowVisibility(vec3 world, vec3 normal, vec3 light) {
 
     vec3 farCoordinate;
     bool farValid = projectShadowCoordinate(shadowMatrix, world, farCoordinate);
-    float farBias = shadowBias *
-        (1.0 + 4.0 * (1.0 - max(dot(normal, light), 0.0)));
     if (!shadowNearEnabled) {
-        return farValid
-            ? sampleShadowMap(shadowDepth, shadowRaw, farCoordinate, shadowWorldScale, farBias)
-            : 1.0;
+        return shadowFarVisibility(world, normal, light);
     }
 
     float cameraDepth = -(view * vec4(world, 1.0)).z;
     if (cameraDepth >= 16.0) {
-        return farValid
-            ? sampleShadowMap(shadowDepth, shadowRaw, farCoordinate, shadowWorldScale, farBias)
-            : 1.0;
+        return shadowFarVisibility(world, normal, light);
     }
 
     vec3 nearCoordinate;
@@ -99,9 +93,7 @@ float shadowVisibility(vec3 world, vec3 normal, vec3 light) {
     // transition to the far map completes at 16 m as a guard band.
     bool nearValid = projectShadowCoordinate(shadowNearMatrix, world, nearCoordinate);
     if (!nearValid) {
-        return farValid
-            ? sampleShadowMap(shadowDepth, shadowRaw, farCoordinate, shadowWorldScale, farBias)
-            : 1.0;
+        return shadowFarVisibility(world, normal, light);
     }
 
     float nearBias = shadowNearBias *
@@ -114,8 +106,7 @@ float shadowVisibility(vec3 world, vec3 normal, vec3 light) {
     // projection is out of bounds during the overlap band.
     if (!farValid) return nearVisibility;
 
-    float farVisibility = sampleShadowMap(shadowDepth, shadowRaw, farCoordinate,
-                                          shadowWorldScale, farBias);
+    float farVisibility = shadowFarVisibility(world, normal, light);
     float farWeight = smoothstep(12.0, 16.0, cameraDepth);
     return mix(nearVisibility, farVisibility, farWeight);
 }

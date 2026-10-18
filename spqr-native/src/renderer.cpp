@@ -579,18 +579,22 @@ void Renderer::createShadowTarget(bool nearLayer) {
     if (resolution > static_cast<std::uint32_t>(maxTextureSize))
         throw std::runtime_error("shadow resolution exceeds GL_MAX_TEXTURE_SIZE");
     gl_.GenTextures(1, &targetTexture);
-    gl_.BindTexture(GL_TEXTURE_2D, targetTexture);
-    gl_.TexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24_VALUE,
-                   static_cast<GLsizei>(resolution), static_cast<GLsizei>(resolution),
-                   0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
-    gl_.TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    gl_.TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    gl_.TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE_VALUE, GL_COMPARE_REF_TO_TEXTURE_VALUE);
-    gl_.TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC_VALUE, GL_LEQUAL);
-    gl_.TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER_VALUE);
-    gl_.TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER_VALUE);
+    const GLenum target = nearLayer ? GL_TEXTURE_2D : GL_TEXTURE_2D_ARRAY;
+    gl_.BindTexture(target, targetTexture);
+    if (nearLayer)
+        gl_.TexImage2D(target, 0, GL_DEPTH_COMPONENT24_VALUE, resolution, resolution,
+                       0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
+    else
+        gl_.TexImage3D(target, 0, GL_DEPTH_COMPONENT24_VALUE, resolution, resolution, 2,
+                       0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
+    gl_.TexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    gl_.TexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    gl_.TexParameteri(target, GL_TEXTURE_COMPARE_MODE_VALUE, GL_COMPARE_REF_TO_TEXTURE_VALUE);
+    gl_.TexParameteri(target, GL_TEXTURE_COMPARE_FUNC_VALUE, GL_LEQUAL);
+    gl_.TexParameteri(target, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER_VALUE);
+    gl_.TexParameteri(target, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER_VALUE);
     const GLfloat border[]{1,1,1,1};
-    gl_.TexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR_VALUE, border);
+    gl_.TexParameterfv(target, GL_TEXTURE_BORDER_COLOR_VALUE, border);
 
     if (!rawSampler_) gl_.GenSamplers(1, &rawSampler_);
     gl_.SamplerParameteri(rawSampler_, GL_TEXTURE_COMPARE_MODE_VALUE, GL_NONE);
@@ -602,7 +606,10 @@ void Renderer::createShadowTarget(bool nearLayer) {
 
     gl_.GenFramebuffers(1, &targetFbo);
     gl_.BindFramebuffer(GL_FRAMEBUFFER, targetFbo);
-    gl_.FramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, targetTexture, 0);
+    if (nearLayer)
+        gl_.FramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, targetTexture, 0);
+    else
+        gl_.FramebufferTextureLayer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, targetTexture, 0, shadowLayer_);
     gl_.DrawBuffer(GL_NONE);
     gl_.ReadBuffer(GL_NONE);
     const GLenum status = gl_.CheckFramebufferStatus(GL_FRAMEBUFFER);
@@ -613,6 +620,9 @@ void Renderer::createShadowTarget(bool nearLayer) {
 }
 
 void Renderer::destroyShadowTarget() {
+    shadowDepthValid_ = nearShadowDepthValid_ = false;
+    shadowTransition_ = false;
+    shadowPoseValid_ = false;
     if (nearShadowFbo_) gl_.DeleteFramebuffers(1, &nearShadowFbo_);
     if (nearShadowTexture_) gl_.DeleteTextures(1, &nearShadowTexture_);
     nearShadowFbo_ = nearShadowTexture_ = 0;
@@ -626,6 +636,18 @@ void Renderer::drawShadow(const CameraFrame& frame, FrameStats& stats) {
     shadowActive_ = false;
     nearShadowActive_ = false;
     if (!bundle_.shadowEnabled || bundle_.entities.empty()) return;
+    const auto pose = floatRoundTrip(frame.view);
+    const auto lens = floatRoundTrip(frame.projection);
+    if (shadowPoseValid_ && lens != shadowLens_) {
+        farFitValid_ = shadowDepthValid_ = nearShadowDepthValid_ = false;
+        shadowTransition_ = false;
+    }
+    if (shadowPoseValid_ && pose != shadowPose_ && shadowTransition_) {
+        if (++shadowBlendStep_ >= 8) shadowTransition_ = false;
+    }
+    shadowPose_ = pose;
+    shadowLens_ = lens;
+    shadowPoseValid_ = true;
     std::vector<ShadowBox> boxes;
     boxes.reserve(bundle_.entities.size());
     for (const Entity& entity : bundle_.entities) {
@@ -642,20 +664,52 @@ void Renderer::drawShadow(const CameraFrame& frame, FrameStats& stats) {
 void Renderer::drawShadowLayer(const CameraFrame& frame, FrameStats& stats,
                                 const std::vector<ShadowBox>& boxes, bool nearLayer) {
     auto& matrix = nearLayer ? nearShadowMatrix_ : shadowMatrix_;
+    const auto previousMatrix = matrix;
     const auto resolution = nearLayer ? nearShadowResolution_ : bundle_.shadowResolution;
     bool emptyReceivers = false;
     const bool fitted = nearLayer
         ? fit_stable_shadow(boxes, bundle_.lightDirection.data(), frame.view.data(), frame.projection.data(),
                             resolution, .02, 18.0, matrix.data())
         : fit_shadow(boxes, bundle_.lightDirection.data(), frame.view.data(), frame.projection.data(),
-                      resolution, matrix.data(), &emptyReceivers);
-    // Aerial views can see only the analytic plane beyond the finite receiver
-    // region. Render it normally without a shadow layer; keep invalid fits fatal.
-    if (!fitted && emptyReceivers) return;
+                      resolution, matrix.data(), stableShadows_ && farFitValid_ ? previousMatrix.data() : nullptr,
+                      &emptyReceivers, stableShadows_);
+    if (!fitted && emptyReceivers) {
+        // Empty finite receiver/caster regions are normal for aerial/sky shots.
+        // The analytic plane remains visible, but has no relevant local shadows.
+        farFitValid_ = shadowDepthValid_ = false;
+        shadowTransition_ = false;
+        return;
+    }
     if (!fitted)
         throw std::runtime_error("fit_shadow could not fit this camera/scene; native viewer has no silent shadow fallback");
+    if (!nearLayer && stableShadows_) {
+        farFitValid_ = true;
+    }
+    auto& depthValid = nearLayer ? nearShadowDepthValid_ : shadowDepthValid_;
+    auto& drawnMatrix = nearLayer ? nearShadowDrawMatrix_ : shadowDrawMatrix_;
+    // The shader consumes float32, so compare exactly that uploaded transform.
+    // Use the same transform for caster culling and cache identity.
+    const auto drawMatrix = floatRoundTrip(matrix);
+    if (!nearLayer && depthValid && stableShadows_ && shadowTransitionsEnabled_ && !shadowTransition_) {
+        bool refit = false;
+        for (int index : {0,1,2,4,5,6,8,9,10,11})
+            refit = refit || drawMatrix[index] != drawnMatrix[index];
+        if (refit) {
+            shadowPreviousMatrix_ = drawnMatrix;
+            shadowPreviousLayer_ = shadowLayer_;
+            shadowLayer_ = 1 - shadowLayer_;
+            shadowBlendStep_ = 1;
+            shadowTransition_ = true;
+        }
+    }
+    const auto fbo = nearLayer ? nearShadowFbo_ : shadowFbo_;
+    if (depthValid && fbo && drawMatrix == drawnMatrix) {
+        if (nearLayer) nearShadowActive_ = true;
+        else shadowActive_ = true;
+        return;
+    }
     createShadowTarget(nearLayer);
-    const auto planes = frustumPlanes(M4{1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1}, matrix);
+    const auto planes = frustumPlanes(M4{1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1}, drawMatrix);
     std::vector<std::uint32_t> casters;
     std::vector<bool> visible(bundle_.entities.size(), true);
     for (std::size_t i = 0; i < bundle_.entities.size(); ++i) {
@@ -674,6 +728,8 @@ void Renderer::drawShadowLayer(const CameraFrame& frame, FrameStats& stats,
     stats.shadowCasters += static_cast<std::uint32_t>(casters.size());
 
     gl_.BindFramebuffer(GL_FRAMEBUFFER, nearLayer ? nearShadowFbo_ : shadowFbo_);
+    if (!nearLayer)
+        gl_.FramebufferTextureLayer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, shadowTexture_, 0, shadowLayer_);
     gl_.Disable(GL_MULTISAMPLE);
     gl_.Viewport(0, 0, static_cast<GLsizei>(resolution), static_cast<GLsizei>(resolution));
     gl_.Disable(GL_BLEND);
@@ -773,6 +829,8 @@ void Renderer::drawShadowLayer(const CameraFrame& frame, FrameStats& stats,
     if (nearLayer) nearShadowActive_ = true;
     else shadowActive_ = true;
     checkError("shadow pass");
+    drawnMatrix = drawMatrix;
+    depthValid = true;
 }
 
 void Renderer::drawSky(const CameraFrame& frame) {
@@ -837,29 +895,42 @@ void Renderer::bindMaterial(std::uint32_t materialIndex, bool ground, bool mirro
         gl_.BindSampler(14, rawSampler_);
         const auto nearMatrix = floatMatrix(nearShadowMatrix_);
         setUniformMatrix4(activeColorProgram_, "shadowNearMatrix", nearMatrix.data());
-        const double row0 = std::hypot(nearShadowMatrix_[0], nearShadowMatrix_[1], nearShadowMatrix_[2]);
-        const double row1 = std::hypot(nearShadowMatrix_[4], nearShadowMatrix_[5], nearShadowMatrix_[6]);
-        const double row2 = std::hypot(nearShadowMatrix_[8], nearShadowMatrix_[9], nearShadowMatrix_[10]);
+        const double row0 = std::hypot(nearShadowDrawMatrix_[0], nearShadowDrawMatrix_[1], nearShadowDrawMatrix_[2]);
+        const double row1 = std::hypot(nearShadowDrawMatrix_[4], nearShadowDrawMatrix_[5], nearShadowDrawMatrix_[6]);
+        const double row2 = std::hypot(nearShadowDrawMatrix_[8], nearShadowDrawMatrix_[9], nearShadowDrawMatrix_[10]);
         setUniform3f(activeColorProgram_, "shadowNearWorldScale", f32(row0 * .5), f32(row1 * .5), f32(2.0 / row2));
         setUniform1f(activeColorProgram_, "shadowNearBias", bundle_.shadowBias);
     }
     setUniform1f(activeColorProgram_, "shadowBias", bundle_.shadowBias);
+    setUniform1i(activeColorProgram_, "shadowLayer", shadowLayer_);
+    setUniform1i(activeColorProgram_, "shadowPreviousLayer", shadowPreviousLayer_);
+    setUniform1i(activeColorProgram_, "shadowTransition", shadowTransition_ ? GL_TRUE : GL_FALSE);
+    setUniform1f(activeColorProgram_, "shadowBlend", (shadowBlendStep_ - 1) / 7.0f);
+    if (shadowTransition_) {
+        const auto previous = floatMatrix(shadowPreviousMatrix_);
+        setUniformMatrix4(activeColorProgram_, "shadowPreviousMatrix", previous.data());
+        const auto& m = shadowPreviousMatrix_;
+        setUniform3f(activeColorProgram_, "shadowPreviousWorldScale",
+            f32(std::hypot(m[0],m[1],m[2]) * .5),
+            f32(std::hypot(m[4],m[5],m[6]) * .5),
+            f32(2.0 / std::hypot(m[8],m[9],m[10])));
+    }
     if (shadowActive_) {
         gl_.ActiveTexture(GL_TEXTURE0 + 7);
-        gl_.BindTexture(GL_TEXTURE_2D, shadowTexture_);
+        gl_.BindTexture(GL_TEXTURE_2D_ARRAY, shadowTexture_);
         gl_.BindSampler(7, 0);
         gl_.ActiveTexture(GL_TEXTURE0 + 12);
-        gl_.BindTexture(GL_TEXTURE_2D, shadowTexture_);
+        gl_.BindTexture(GL_TEXTURE_2D_ARRAY, shadowTexture_);
         gl_.BindSampler(12, rawSampler_);
-        const double row0 = std::hypot(shadowMatrix_[0], shadowMatrix_[1], shadowMatrix_[2]);
-        const double row1 = std::hypot(shadowMatrix_[4], shadowMatrix_[5], shadowMatrix_[6]);
-        const double row2 = std::hypot(shadowMatrix_[8], shadowMatrix_[9], shadowMatrix_[10]);
+        const double row0 = std::hypot(shadowDrawMatrix_[0], shadowDrawMatrix_[1], shadowDrawMatrix_[2]);
+        const double row1 = std::hypot(shadowDrawMatrix_[4], shadowDrawMatrix_[5], shadowDrawMatrix_[6]);
+        const double row2 = std::hypot(shadowDrawMatrix_[8], shadowDrawMatrix_[9], shadowDrawMatrix_[10]);
         setUniform3f(activeColorProgram_, "shadowWorldScale", f32(row0 * .5), f32(row1 * .5), f32(2.0 / row2));
         const auto matrix = floatMatrix(shadowMatrix_);
         setUniformMatrix4(activeColorProgram_, "shadowMatrix", matrix.data());
     } else {
-        gl_.ActiveTexture(GL_TEXTURE0 + 7); gl_.BindTexture(GL_TEXTURE_2D, 0); gl_.BindSampler(7, 0);
-        gl_.ActiveTexture(GL_TEXTURE0 + 12); gl_.BindTexture(GL_TEXTURE_2D, 0); gl_.BindSampler(12, 0);
+        gl_.ActiveTexture(GL_TEXTURE0 + 7); gl_.BindTexture(GL_TEXTURE_2D_ARRAY, 0); gl_.BindSampler(7, 0);
+        gl_.ActiveTexture(GL_TEXTURE0 + 12); gl_.BindTexture(GL_TEXTURE_2D_ARRAY, 0); gl_.BindSampler(12, 0);
     }
     gl_.FrontFace(mirrored ? GL_CW : GL_CCW);
     if (material.flags & 1u) gl_.Disable(GL_CULL_FACE);
@@ -908,10 +979,10 @@ void Renderer::drawColor(const CameraFrame& frame, const std::vector<bool>& visi
     gl_.UseProgram(activeColorProgram_);
     if (shadowActive_) {
         gl_.ActiveTexture(GL_TEXTURE0 + 7);
-        gl_.BindTexture(GL_TEXTURE_2D, shadowTexture_);
+        gl_.BindTexture(GL_TEXTURE_2D_ARRAY, shadowTexture_);
         gl_.BindSampler(7, 0);
         gl_.ActiveTexture(GL_TEXTURE0 + 12);
-        gl_.BindTexture(GL_TEXTURE_2D, shadowTexture_);
+        gl_.BindTexture(GL_TEXTURE_2D_ARRAY, shadowTexture_);
         gl_.BindSampler(12, rawSampler_);
     }
 
@@ -1140,6 +1211,13 @@ void Renderer::updateGlobals(UniformBlock materialGlobals, UniformBlock skyGloba
     if (!std::isfinite(shadowBias) || !std::isfinite(groundZ))
         throw std::runtime_error("photo globals bias and ground Z must be finite");
 
+    if (bundle_.shadowResolution != shadowResolution || bundle_.lightDirection != lightDirection ||
+        bundle_.groundZ != groundZ) {
+        farFitValid_ = false;
+        shadowDepthValid_ = nearShadowDepthValid_ = false;
+        shadowTransition_ = false;
+        shadowPoseValid_ = false;
+    }
     if (bundle_.shadowResolution != shadowResolution) destroyShadowTarget();
     bundle_.materialGlobals = std::move(materialGlobals);
     bundle_.skyGlobals = std::move(skyGlobals);
@@ -1379,7 +1457,13 @@ bool Renderer::setTransform(const std::string& stableEntityId, const std::array<
         else entity.flags &= ~2u;
         found = true;
     }
-    if (found) ++transformRevision_;
+    if (found) {
+        ++transformRevision_;
+        farFitValid_ = false;
+        shadowDepthValid_ = nearShadowDepthValid_ = false;
+        shadowTransition_ = false;
+        shadowPoseValid_ = false;
+    }
     return found;
 }
 

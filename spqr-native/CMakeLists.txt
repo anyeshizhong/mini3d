@@ -60,6 +60,16 @@ set_target_properties(spqr-native spqr_shadow spqr_photo PROPERTIES
   LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
   ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 
+# Diagnostic target is opt-in and never linked into the photo DLL.
+add_executable(spqr-shadow-audit EXCLUDE_FROM_ALL
+  tests/shadow_gpu_audit.cpp src/platform_win32.cpp ${SPQR_CORE_SOURCES})
+target_include_directories(spqr-shadow-audit PRIVATE src "${SPQR_GL_INCLUDE_DIR}")
+target_link_libraries(spqr-shadow-audit PRIVATE opengl32 gdi32 user32)
+set_target_properties(spqr-shadow-audit PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
+if(MINGW)
+  target_link_options(spqr-shadow-audit PRIVATE -static-libgcc -static-libstdc++)
+endif()
+
 if(MSVC)
   target_compile_options(spqr-native PRIVATE /W4 /permissive-)
   target_compile_options(spqr_shadow PRIVATE /W4 /permissive-)

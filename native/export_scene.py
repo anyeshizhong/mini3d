@@ -43,6 +43,8 @@ PER_MATERIAL = {
 DYNAMIC_UNIFORMS = {
     "material": ["model", "normalMatrix", "view", "projection", "eye",
                  "useInstances", "shadowMatrix", "shadowWorldScale",
+                 "shadowLayer", "shadowPreviousLayer", "shadowTransition", "shadowBlend",
+                 "shadowPreviousMatrix", "shadowPreviousWorldScale",
                  "shadowEnabled", "photoFar"],
     "sky": ["inverseProjection", "cameraRotation"],
 }

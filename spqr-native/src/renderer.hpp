@@ -45,6 +45,7 @@ public:
     void close();
 
 private:
+    friend struct ShadowAudit;  // Opt-in GPU regression executable; no runtime API.
     struct MeshGpu { GLuint vao = 0, vbo = 0, ebo = 0; };
     struct InstanceGpu { GLuint vao = 0, buffer = 0; std::vector<float> lastPayload; };
     struct Batch { std::uint32_t mesh = 0; bool mirrored = false, ground = false; std::vector<std::uint32_t> entities; };
@@ -105,7 +106,15 @@ private:
     GLuint msaaFbo_ = 0, msaaColor_ = 0, msaaDepth_ = 0;
     std::array<double, 16> shadowMatrix_{};
     std::array<double, 16> nearShadowMatrix_{};
+    std::array<double, 16> shadowDrawMatrix_{}, nearShadowDrawMatrix_{};
+    // Preserve the previous far grid while a scale/depth refit fades in.
+    std::array<double, 16> shadowPreviousMatrix_{}, shadowPose_{}, shadowLens_{};
+    int shadowLayer_ = 0, shadowPreviousLayer_ = 1, shadowBlendStep_ = 8;
+    bool shadowTransition_ = false, shadowPoseValid_ = false;
+    bool shadowTransitionsEnabled_ = true; // Audit can isolate fit from blending.
     bool shadowActive_ = false;
+    bool farFitValid_ = false;
+    bool shadowDepthValid_ = false, nearShadowDepthValid_ = false;
     std::uint64_t transformRevision_ = 0;
     bool closed_ = false;
     bool stabilizeDepth_ = true;

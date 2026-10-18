@@ -281,9 +281,9 @@ namespace spqr {
 
 bool fit_shadow(const std::vector<ShadowBox>& input, const double* direction,
                 const double* view, const double* projection, unsigned resolution,
-                double* output, bool* emptyReceivers) {
-    if (emptyReceivers) *emptyReceivers = false;
+                double* output, const double* previous, bool* emptyReceivers, bool stabilize) {
     if (output) std::fill(output, output + 16, 0.0);
+    if (emptyReceivers) *emptyReceivers = false;
     try {
         if (!output || !direction || !view || !projection || input.empty() || resolution == 0) return false;
 
@@ -337,7 +337,10 @@ bool fit_shadow(const std::vector<ShadowBox>& input, const double* direction,
         std::vector<const ShadowBox*> grounds;
         ordinary.reserve(input.size());
         for (const ShadowBox& box : input) {
-            if (box.ground) grounds.push_back(&box);
+            if (box.ground) {
+                (void)prepare(box.bounds, box.world);  // Validate even when there are no casters.
+                grounds.push_back(&box);
+            }
             else ordinary.push_back(prepare(box.bounds, box.world));
         }
         if (grounds.empty()) {
@@ -345,10 +348,8 @@ bool fit_shadow(const std::vector<ShadowBox>& input, const double* direction,
                 if (box.ground) ordinary.push_back(prepare(box.bounds, box.world));
         } else {
             if (ordinary.empty()) {
-                // Validate the plane before reporting an ordinary empty region.
-                for (const ShadowBox* ground : grounds) prepare(ground->bounds, ground->world);
                 if (emptyReceivers) *emptyReceivers = true;
-                return false;  // Ground alone has no bounded caster footprint.
+                return false;  // Ground alone has no finite caster footprint.
             }
             std::vector<V3> caster_corners;
             caster_corners.reserve(ordinary.size() * 8);
@@ -408,6 +409,23 @@ bool fit_shadow(const std::vector<ShadowBox>& input, const double* direction,
         lo[0] -= margin; lo[1] -= margin;
         hi[0] += margin; hi[1] += margin;
 
+        // Snap the padded receiver volume before caster clipping, so newly
+        // included XY texels also have conservative caster depth coverage.
+        M4 receiver_matrix{0,0,0,0, 0,0,0,0, 0,0,1,0, 0,0,0,1};
+        for (int r = 0; r < 2; ++r) {
+            const double scale = 2.0 / (hi[r] - lo[r]);
+            for (int c = 0; c < 3; ++c) receiver_matrix[r * 4 + c] = scale * rotation[r][c];
+            receiver_matrix[r * 4 + 3] = -scale * (hi[r] + lo[r]) * .5;
+        }
+        if (stabilize && !stabilize_shadow_matrix(receiver_matrix.data(), previous, resolution)) return false;
+        for (int r = 0; r < 2; ++r) {
+            const double scale = std::hypot(receiver_matrix[r * 4], receiver_matrix[r * 4 + 1],
+                                            receiver_matrix[r * 4 + 2]);
+            const double center = -receiver_matrix[r * 4 + 3] / scale;
+            lo[r] = center - 1.0 / scale;
+            hi[r] = center + 1.0 / scale;
+        }
+
         bool first_global = true;
         V3 global_lo{}, global_hi{};
         for (const Record& record : ordinary) {
@@ -461,6 +479,21 @@ bool fit_shadow(const std::vector<ShadowBox>& input, const double* direction,
                                              1e-12);
         lo[2] -= depth_margin;
         hi[2] += depth_margin;
+        if (stabilize && previous) {
+            const double scale = -std::hypot(previous[8], previous[9], previous[10]);
+            if (scale < 0.0 && finite(scale)) {
+                const V3 old_basis{previous[8] / scale, previous[9] / scale, previous[10] / scale};
+                const double center = -previous[11] / scale;
+                const double old_lo = center + 1.0 / scale, old_hi = center - 1.0 / scale;
+                if (norm(sub(old_basis, light)) < 1e-12 &&
+                    caster_lo[2] >= old_lo + depth_margin * .25 &&
+                    caster_hi[2] <= old_hi - depth_margin * .25 &&
+                    hi[2] - lo[2] >= (old_hi - old_lo) * .96) {
+                    lo[2] = old_lo;
+                    hi[2] = old_hi;
+                }
+            }
+        }
 
         const V3 final_range = sub(hi, lo);
         V3 scale{2.0 / final_range[0], 2.0 / final_range[1], 2.0 / final_range[2]};
@@ -476,6 +509,43 @@ bool fit_shadow(const std::vector<ShadowBox>& input, const double* direction,
     } catch (...) {
         return false;
     }
+}
+
+bool stabilize_shadow_matrix(double* matrix, const double* previous, unsigned resolution) {
+    if (!matrix || resolution == 0) return false;
+    M4 result{};
+    std::copy(matrix, matrix + 16, result.begin());
+    if (!finite(result)) return false;
+    if (resolution <= 2) return true;
+    for (int axis = 0; axis < 2; ++axis) {
+        const V3 row{result[axis * 4], result[axis * 4 + 1], result[axis * 4 + 2]};
+        const double scale = norm(row);
+        if (!(scale > 0.0) || !finite(scale)) return false;
+        const V3 basis = mul(row, 1.0 / scale);
+        const double input_span = 2.0 / scale;
+        const double input_center = -result[axis * 4 + 3] / scale;
+        double span = input_span * 1.02;
+        double center = input_center;
+        span /= 1.0 - 2.0 / resolution;
+        if (previous) {
+            const V3 old_row{previous[axis * 4], previous[axis * 4 + 1], previous[axis * 4 + 2]};
+            const double old_scale = norm(old_row);
+            if (old_scale > 0.0 && finite(old_scale) &&
+                norm(sub(mul(old_row, 1.0 / old_scale), basis)) < 1e-12) {
+                const double old_span = 2.0 / old_scale;
+                if (input_span <= old_span * (1.0 - 1.0 / resolution) &&
+                    input_span >= old_span * 0.96) span = old_span;
+            }
+        }
+        const double texel = span / resolution;
+        center = std::floor(center / texel + .5) * texel;
+        const double stable_scale = 2.0 / span;
+        for (int c = 0; c < 3; ++c) result[axis * 4 + c] = stable_scale * basis[c];
+        result[axis * 4 + 3] = -stable_scale * center;
+    }
+    if (!finite(result)) return false;
+    std::copy(result.begin(), result.end(), matrix);
+    return true;
 }
 
 bool conservative_camera_near(const std::vector<ShadowBox>& boxes,
@@ -672,11 +742,24 @@ bool fit_stable_shadow(const std::vector<ShadowBox>& boxes, const double* direct
 
 }  // namespace spqr
 
+extern "C" int spqr_stabilize_shadow(double* matrix, const double* previous, uint32_t resolution) {
+    return spqr::stabilize_shadow_matrix(matrix, previous, resolution) ? 1 : 0;
+}
+
 extern "C" int spqr_fit_shadow(const double* bounds, const double* worlds,
                                const uint32_t* flags, uint32_t count,
                                const double* direction, const double* view,
                                const double* projection, uint32_t resolution,
                                double* output) {
+    return spqr_fit_shadow_temporal(bounds, worlds, flags, count, direction, view,
+                                   projection, resolution, nullptr, output);
+}
+
+extern "C" int spqr_fit_shadow_temporal(const double* bounds, const double* worlds,
+                                        const uint32_t* flags, uint32_t count,
+                                        const double* direction, const double* view,
+                                        const double* projection, uint32_t resolution,
+                                        const double* previous, double* output) {
     if (output) std::fill(output, output + 16, 0.0);
     try {
         if (!output || !bounds || !worlds || !flags || !direction || !view || !projection ||
@@ -693,7 +776,7 @@ extern "C" int spqr_fit_shadow(const double* bounds, const double* worlds,
             box.ground = (flags[i] & 1u) != 0;
             boxes.push_back(box);
         }
-        return spqr::fit_shadow(boxes, direction, view, projection, resolution, output) ? 1 : 0;
+        return spqr::fit_shadow(boxes, direction, view, projection, resolution, output, previous) ? 1 : 0;
     } catch (...) {
         if (output) std::fill(output, output + 16, 0.0);
         return 0;

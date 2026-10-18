@@ -32,6 +32,15 @@ def restore_baseline(ref, dll):
         module = importlib.import_module('mini3d.'+name)
         source = subprocess.check_output(['git','show',ref+':mini3d/'+name+'.py'],cwd=str(ROOT))
         exec(compile(source, str(ROOT/'mini3d'/(name+'.py')), 'exec'), module.__dict__)
+    # The DLL and its injected cascade shader must come from the same revision.
+    bundle_module = importlib.import_module('mini3d.native_photo_bundle')
+    write_shaders = bundle_module._write_shaders
+    cascade = subprocess.check_output(['git','show',ref+':native/shaders/shadow_cascade.glsl'],cwd=str(ROOT))
+    def baseline_shaders(output, native_source):
+        directory = write_shaders(output, native_source)
+        (directory/'shadow_cascade.glsl').write_bytes(cascade)
+        return directory
+    bundle_module._write_shaders = baseline_shaders
     original = ctypes.CDLL
     def load(path, *args, **kwargs):
         if Path(str(path)).name.lower() == 'spqr_photo.dll':
