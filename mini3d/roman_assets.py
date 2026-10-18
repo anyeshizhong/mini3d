@@ -275,15 +275,21 @@ def _arch(builder):
         for edge in range(4):
             nxt = (edge + 1) % 4
             builder.face([front[edge], back[edge], back[nxt], front[nxt]], 'stone', tint)
-    # Flat spandrel masonry above the curved opening, split into narrow strips.
-    for i in range(18):
-        x0, x1 = -outer + i * (2 * outer / 18), -outer + (i + 1) * (2 * outer / 18)
-        z0 = spring + math.sqrt(max(0., outer * outer - x0 * x0))
-        z1 = spring + math.sqrt(max(0., outer * outer - x1 * x1))
+    # The spandrel's lower edge must share the ring's angular tessellation.
+    # Sampling the same ideal circle at unrelated X positions leaves thin
+    # cracks between the two polygonal approximations. Close each strip's
+    # thickness too: front/back panels alone disappear from side views.
+    for i in range(sectors):
+        a0, a1 = (sectors - i) * math.pi / sectors, (sectors - i - 1) * math.pi / sectors
+        x0, x1 = outer * math.cos(a0), outer * math.cos(a1)
+        z0, z1 = spring + outer * math.sin(a0), spring + outer * math.sin(a1)
         front = [(x0, -.60, z0), (x1, -.60, z1), (x1, -.60, 6.82), (x0, -.60, 6.82)]
         back = [(x, .60, z) for x, _, z in front]
         builder.face(front, 'stone', .82)
         builder.face(back[::-1], 'stone', .82)
+        for edge in range(4):
+            nxt = (edge + 1) % 4
+            builder.face([front[edge], back[edge], back[nxt], front[nxt]], 'stone', .82)
     builder.box((0., 0., 6.91), (8.2, 1.55, .22), 'stone')
     builder.box((0., -.795, 6.89), (2.5, .04, .13), 'terracotta', .75)
 
