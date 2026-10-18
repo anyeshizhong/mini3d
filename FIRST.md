@@ -10,7 +10,7 @@ Mini3D 是一个以**三维场景摆放、渲染、摄影和 AI API** 为核心�
 | --- | --- |
 | 项目整体介绍、目前的主要使用入口 | [readme.md](readme.md) |
 | 当前有哪些生产代码文件、各自负责什么 | [FILE_REGISTRY.md](docs/ai/FILE_REGISTRY.md) |
-| 接单、修改、测试、验收与交付的方法 | [OPERATIONS.md](docs/ai/OPERATIONS.md) |
+| 如何启动和操作软件、接单、修改、测试与验收 | [OPERATIONS.md](docs/ai/OPERATIONS.md) |
 | 容易误改的地方、跨模块长期注意事项 | [CAUTIONS.md](docs/ai/CAUTIONS.md) |
 | 软件模块、调用关系和架构背景 | [ARCHITECTURE.md](docs/ARCHITECTURE.md) |
 | C++ 摄影绘制的构建、运行及后端切换 | [NATIVE-PHOTO.md](NATIVE-PHOTO.md) |
