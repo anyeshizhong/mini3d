@@ -3,3 +3,7 @@
 tools/ibl/upstream/*.frag text eol=lf whitespace=-blank-at-eol,-blank-at-eof
 spqr-native/shaders/*.glsl text eol=lf
 native/shaders/*.glsl text eol=lf
+
+# Preserve measured artifact hashes; collapse generated evidence in GitHub diffs.
+experiments/world-surroundings/review/** -text whitespace=cr-at-eol linguist-generated=true
+experiments/world-surroundings/review/README.md text eol=lf linguist-generated=false

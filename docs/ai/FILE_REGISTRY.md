@@ -166,7 +166,7 @@
 
 | 文件 | 具体职责与界限 | 状态 |
 | --- | --- | --- |
-| `renderer.cpp` / `renderer.hpp` | C++ 绘制核心、颜色/阴影、实例化及 GL 资源；同步或分阶段初始化，按 context/完整源码弱缓存共享 shader program，逐程序编译/逐网格上传并隔离共享 uniform 状态；仅存在摄影地面实体时编译地面程序；借用纹理不转移所有权，批量变换提交后失效阴影缓存 | 待核验 |
+| `renderer.cpp` / `renderer.hpp` | C++ 绘制核心、颜色/阴影、实例化及 GL 资源；同步或分阶段初始化，按 context/完整源码弱缓存共享 shader program，逐程序编译/逐网格上传并隔离共享 uniform 状态；仅存在摄影地面实体时编译地面程序；借用纹理不转移所有权，批量变换提交后失效阴影缓存；header另有仅由SPQR_TERRAIN_LAB启用的独立地形实验friend钩子，不属于正式ABI | 待核验 |
 | `shadow_fit.cpp` / `shadow_fit.hpp` | 原生视锥、接收体/投影者与阴影视域拟合 | 已抽查 |
 
 ### F.3 OpenGL 函数加载、平台及独立查看器
@@ -187,6 +187,26 @@
 - `spqr-native/tests/`：C++ / native 库功能、数值及 GPU 验收。
 - `tools/` 与 `spqr-native/tools/`：运行、构建、导出、生成素材与验证辅助；不能无检查地当生产入口。
 - `docs/`：规范、历史报告、实验数据、照片混合存放。是否删减先调查链接、复现依赖、许可证及使用情况。
+
+### G.1 独立 World Surroundings 实验
+
+以下为实验工具，不属于正式编辑器功能；入口与范围见 [实验说明](../../experiments/world-surroundings/README.md)。
+
+| 文件 | 具体职责与界限 | 状态 |
+| --- | --- | --- |
+| `experiments/world-surroundings/baseline_scene.py` | 构建有限平地与非对称几何标记、三种固定 Z-up 相机；复用现有离线 v1 Bundle 导出与 BinaryWriter 写入场景、shader 和相机帧，不实现渲染器 | 已抽查 |
+| `experiments/world-surroundings/run_baseline.py` | 隔离构建现有 SPQR viewer，串行导出/测量两套三机位基线，检查资源/图像/阴影重复性并输出 PNG、原始帧时、环境及源码摘要；不修改 Editor 或正式 native 二进制 | 已抽查 |
+| `experiments/world-surroundings/heightfield.py` | 独立有限高度场数据、float32 规范网格、精确三角面高度/几何法线查询、共享法线的静态网格分块；不负责图像解码或动态 GPU 更新 | 已抽查 |
+| `experiments/world-surroundings/heightmap_io.py` | 使用实验 Pillow 依赖保留8/16位灰度 PNG 原始数值，校验位深/尺寸/透明度/预算，显式映射高程和Y方向；写入可重复的实验 PNG 输入 | 已抽查 |
+| `experiments/world-surroundings/run_heightmap.py` | Heightmap 独立实验入口；生成或导入输入、对照实际分块网格射线/接缝、复用 SPQR 导出并重复三机位实测，记录数值/图像/性能和输入摘要 | 已抽查 |
+| `experiments/world-surroundings/sculpt.py` | CPU雕刻会话、四种时间加权笔刷、预览/提交/取消、预算限制的区域差异Undo/Redo和修订号；每次有效dab仍派生完整不可变Heightfield | 已抽查 |
+| `experiments/world-surroundings/terrain_bridge.cpp` / `CMakeLists.txt` | 宏隔离实验DLL，编译同一SPQR核心；固定拓扑顶点校验/VBO更新、bounds与阴影失效；独占单级RGBA8纹理批量脏区更新，像素传输状态保护、GPU读回及编译/上传统计；限定创建线程/context，不扩展正式native ABI | 已抽查 |
+| `experiments/world-surroundings/sculpt_native.py` | 实验DLL的ctypes类型绑定、网格与纹理脏区上传/读回、绘制/截图和资源关闭；不调用正式编辑器的native更新接口 | 已抽查 |
+| `experiments/world-surroundings/run_sculpt.py` | 持续Renderer的独立雕刻窗口及Pygame事件回放；刷新当前CPU拾取、比较全量新建颜色/阴影、测试非法批次及context所有权，分开记录完整帧时和GIF；不负责正式Scene存档 | 已抽查 |
+| `experiments/world-surroundings/paint.py` | 三层不可变float32权重、世界空间绘制/擦除、笔画事务、区域差异Undo/Redo与预算回滚；不修改高度场或场景网格 | 已抽查 |
+| `experiments/world-surroundings/material_maps.py` | 校验真实PBR素材摘要，构建隔离预滤级atlas，线性颜色/法线/粗糙度混合及脏区烘焙，生成限定fixture的Bundle shader副本；不修改生产材质shader | 已抽查 |
+| `experiments/world-surroundings/run_paint.py` | 同SPQR核心的烘焙/分层方案对照、持续纹理绘制窗口及事件回放；GPU状态/事务/全量新建对照、三机位图像、分离录像与完整帧测量；不负责正式Scene存档 | 已抽查 |
+| `experiments/world-surroundings/prepare_material_assets.py` / `assets/materials/` | 复现并校验Poly Haven三层PBR输入，保留作者/许可/下载与文件摘要；运行时使用已备好的小尺寸PNG，不联网获取素材 | 已抽查 |
 
 ## H. 发生跨模块修改时必须核实的契约
 

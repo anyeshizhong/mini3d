@@ -1,0 +1,142 @@
+{
+  "license": "CC0-1.0",
+  "license_url": "https://polyhaven.com/license",
+  "preparation": "Pillow RGB8 decode and Lanczos 1K to 256; normal vectors renormalized after resize",
+  "maps": {
+    "soil/diff.png": {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/brown_mud_02/brown_mud_02_diff_1k.jpg",
+      "asset_page": "https://polyhaven.com/a/brown_mud_02",
+      "author": "Rob Tuytel",
+      "tile_metres": 1.3,
+      "upstream_sha256": "058b6f12493305ec6b47cb5ea77f013c9e7e58216b34af3700a3d3d7d821732d",
+      "upstream_bytes": 527741,
+      "bundled_sha256": "159331b676f11fd7956682aa74c0597293f9e2f320d059beaad4efc8b29e6eff",
+      "size": [
+        256,
+        256
+      ],
+      "channels": "RGB8",
+      "normal_convention": null
+    },
+    "soil/nor_gl.png": {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/1k/brown_mud_02/brown_mud_02_nor_gl_1k.png",
+      "asset_page": "https://polyhaven.com/a/brown_mud_02",
+      "author": "Rob Tuytel",
+      "tile_metres": 1.3,
+      "upstream_sha256": "6ab08dc4d8b6ff3a7d8407a5a0fe0af0ed324e7734f18b649c3e211cc820e1df",
+      "upstream_bytes": 2490837,
+      "bundled_sha256": "1e3cdf34743e7058be712010835554f66efb1664df92872feaeddda11a77744a",
+      "size": [
+        256,
+        256
+      ],
+      "channels": "RGB8",
+      "normal_convention": "OpenGL +Y"
+    },
+    "soil/rough.png": {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/1k/brown_mud_02/brown_mud_02_rough_1k.png",
+      "asset_page": "https://polyhaven.com/a/brown_mud_02",
+      "author": "Rob Tuytel",
+      "tile_metres": 1.3,
+      "upstream_sha256": "bf30eba9d4f451dc3357c5cc84adc39f21056e447cd706146f2bf1312667b648",
+      "upstream_bytes": 635284,
+      "bundled_sha256": "64d259b108d97c29c6b3310c39d95e15becc094863e0f6fdc5f5fe57b4dc3bf9",
+      "size": [
+        256,
+        256
+      ],
+      "channels": "RGB8",
+      "normal_convention": null
+    },
+    "rock/diff.png": {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/rock_face/rock_face_diff_1k.jpg",
+      "asset_page": "https://polyhaven.com/a/rock_face",
+      "author": "Dario Barresi (processing), Greg Zaal (photography)",
+      "tile_metres": 2.4,
+      "upstream_sha256": "cce4b50517161264bdef196f5e247e328ca3739083cd6044ad3cc54d88cb82e2",
+      "upstream_bytes": 732721,
+      "bundled_sha256": "a1916d3aebcd68593163a84a41925954f180a24f29d6ed50b04189bc9e8fd41c",
+      "size": [
+        256,
+        256
+      ],
+      "channels": "RGB8",
+      "normal_convention": null
+    },
+    "rock/nor_gl.png": {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/1k/rock_face/rock_face_nor_gl_1k.png",
+      "asset_page": "https://polyhaven.com/a/rock_face",
+      "author": "Dario Barresi (processing), Greg Zaal (photography)",
+      "tile_metres": 2.4,
+      "upstream_sha256": "969bafe93574768ba2efc9874c6d96ce8326f8e8908f2b1734eddeca14c8ef10",
+      "upstream_bytes": 5796887,
+      "bundled_sha256": "b39fdbf9a9895d5146e6ca66da7574d0aeae9a0bf57504a2915718434c023745",
+      "size": [
+        256,
+        256
+      ],
+      "channels": "RGB8",
+      "normal_convention": "OpenGL +Y"
+    },
+    "rock/rough.png": {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/1k/rock_face/rock_face_rough_1k.png",
+      "asset_page": "https://polyhaven.com/a/rock_face",
+      "author": "Dario Barresi (processing), Greg Zaal (photography)",
+      "tile_metres": 2.4,
+      "upstream_sha256": "8166fea57c520baf39a1665b2b44e594400d96d2069b3062365566531048f352",
+      "upstream_bytes": 1561719,
+      "bundled_sha256": "13c0915d226521fb56bba264c92a227dbdebcf9a4add3a4957fd9c810582dbe8",
+      "size": [
+        256,
+        256
+      ],
+      "channels": "RGB8",
+      "normal_convention": null
+    },
+    "grass/diff.png": {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/leafy_grass/leafy_grass_diff_1k.jpg",
+      "asset_page": "https://polyhaven.com/a/leafy_grass",
+      "author": "Charlotte Baglioni",
+      "tile_metres": 2.0,
+      "upstream_sha256": "cfa40bc9d9417d1852db8753a8d5917f110c40101179f63543c382e39bc05e4a",
+      "upstream_bytes": 1195394,
+      "bundled_sha256": "70142ecef681606819df20a1b4fd83d470001a062bc18f5c24b902c5b8ca1f19",
+      "size": [
+        256,
+        256
+      ],
+      "channels": "RGB8",
+      "normal_convention": null
+    },
+    "grass/nor_gl.png": {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/1k/leafy_grass/leafy_grass_nor_gl_1k.png",
+      "asset_page": "https://polyhaven.com/a/leafy_grass",
+      "author": "Charlotte Baglioni",
+      "tile_metres": 2.0,
+      "upstream_sha256": "7cba8d8a3cbd14663fd974b73ecebcbb42e0cc258d912867e9dd67a5582ca4d9",
+      "upstream_bytes": 6111876,
+      "bundled_sha256": "f69e476b63f272dbc562e92840db81805d12c5b3f651e2af4e94fef59341549b",
+      "size": [
+        256,
+        256
+      ],
+      "channels": "RGB8",
+      "normal_convention": "OpenGL +Y"
+    },
+    "grass/rough.png": {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/1k/leafy_grass/leafy_grass_rough_1k.png",
+      "asset_page": "https://polyhaven.com/a/leafy_grass",
+      "author": "Charlotte Baglioni",
+      "tile_metres": 2.0,
+      "upstream_sha256": "3b2e89d11950b1ea33731514eff86ed211f4e2e7af3b4be4a2deb6bb8a1cba84",
+      "upstream_bytes": 2444449,
+      "bundled_sha256": "2410bb5e52b5f583cc7df670b480e82df659ebfc6f94b69c0c2a1c7984b8861d",
+      "size": [
+        256,
+        256
+      ],
+      "channels": "RGB8",
+      "normal_convention": null
+    }
+  }
+}

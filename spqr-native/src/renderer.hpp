@@ -67,6 +67,9 @@ public:
 
 private:
     friend struct ShadowAudit;  // Opt-in GPU regression executable; no runtime API.
+#ifdef SPQR_TERRAIN_LAB
+    friend struct TerrainLab;   // Isolated dynamic-mesh experiment bridge.
+#endif
     struct MeshGpu { GLuint vao = 0, vbo = 0, ebo = 0; };
     struct InstanceGpu { GLuint vao = 0, buffer = 0; std::vector<float> lastPayload; };
     struct Batch { std::uint32_t mesh = 0; bool mirrored = false, ground = false; std::vector<std::uint32_t> entities; };

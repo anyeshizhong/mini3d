@@ -1,0 +1,180 @@
+{
+  "scope": "Selected review evidence copied byte-for-byte; generated build/bundle/raw buffers remain local.",
+  "files": {
+    "lab00-20261019-run03/report.json": {
+      "bytes": 376223,
+      "sha256": "951b6f438123f040e291b2a3faf8ebe2b58e127f80a2716c861d910599a477b2",
+      "source": "captures/world-surroundings/lab00-20261019-run03/report.json"
+    },
+    "lab00-20261019-run03/native-1/horizontal/preview.png": {
+      "bytes": 92414,
+      "sha256": "961e0ae8d707d533fa48172766ba82349f65c80f9a72b7ca351f8e8792a73c60",
+      "source": "captures/world-surroundings/lab00-20261019-run03/native-1/horizontal/preview.png"
+    },
+    "lab00-20261019-run03/native-1/oblique/preview.png": {
+      "bytes": 9762,
+      "sha256": "b9f56bff08bd84573c7ae268d977dd24030746eaded900991ce51da9bab0e9dd",
+      "source": "captures/world-surroundings/lab00-20261019-run03/native-1/oblique/preview.png"
+    },
+    "lab00-20261019-run03/native-1/distant/preview.png": {
+      "bytes": 5721,
+      "sha256": "86eefd4181d055a6bb84270953fde069319f2aff3ddf1cc4dab34d4f8deb16b1",
+      "source": "captures/world-surroundings/lab00-20261019-run03/native-1/distant/preview.png"
+    },
+    "lab01-20261019-final/report.json": {
+      "bytes": 1339651,
+      "sha256": "44fdb182a7e8921793d91f515f72ff6d82178b646e3e26b339e34cfa7c5449ac",
+      "source": "captures/world-surroundings/lab01-20261019-final/report.json"
+    },
+    "lab01-20261019-final/native-1/gray16-65/horizontal/preview.png": {
+      "bytes": 100988,
+      "sha256": "4a3d652328c2b9500aedcaac752af960300d14d8951ded7487adf69145b7a023",
+      "source": "captures/world-surroundings/lab01-20261019-final/native-1/gray16-65/horizontal/preview.png"
+    },
+    "lab01-20261019-final/native-1/gray16-65/oblique/preview.png": {
+      "bytes": 21856,
+      "sha256": "5028b795628800836bfd499725d0561792e6335c9bc786335eaf04e1eb0b0dd6",
+      "source": "captures/world-surroundings/lab01-20261019-final/native-1/gray16-65/oblique/preview.png"
+    },
+    "lab01-20261019-final/native-1/gray16-65/distant/preview.png": {
+      "bytes": 9351,
+      "sha256": "14133c50d41fae3ffafec08489f27191d1f39dd1e1cfd339907d53ccbd0bd829",
+      "source": "captures/world-surroundings/lab01-20261019-final/native-1/gray16-65/distant/preview.png"
+    },
+    "lab01-20261019-final/native-1/gray16-257/horizontal/preview.png": {
+      "bytes": 101055,
+      "sha256": "b49e75480e10eb371e5da32d410a4a92f77497ffa6115f509266cf4245586f3c",
+      "source": "captures/world-surroundings/lab01-20261019-final/native-1/gray16-257/horizontal/preview.png"
+    },
+    "lab01-20261019-final/native-1/gray16-257/oblique/preview.png": {
+      "bytes": 22082,
+      "sha256": "f910824e760057b45abd62952886c2a2083cbf4a990e2324a5df1428cf1b270a",
+      "source": "captures/world-surroundings/lab01-20261019-final/native-1/gray16-257/oblique/preview.png"
+    },
+    "lab01-20261019-final/native-1/gray16-257/distant/preview.png": {
+      "bytes": 9370,
+      "sha256": "eddfaadc0c0656871ae682f2573bde74a000b9800754f2ce6e7e5698abead964",
+      "source": "captures/world-surroundings/lab01-20261019-final/native-1/gray16-257/distant/preview.png"
+    },
+    "lab01-20261019-final/native-1/gray8-rect/horizontal/preview.png": {
+      "bytes": 101904,
+      "sha256": "86f76f0984f07c946ee03252645d32db60d090b24a4adac654b13383134e43d7",
+      "source": "captures/world-surroundings/lab01-20261019-final/native-1/gray8-rect/horizontal/preview.png"
+    },
+    "lab01-20261019-final/native-1/gray8-rect/oblique/preview.png": {
+      "bytes": 22966,
+      "sha256": "2ffefb0e07f1c8d5b78ebfefe373321be011e6c3a3ef02ee362037c6d797e336",
+      "source": "captures/world-surroundings/lab01-20261019-final/native-1/gray8-rect/oblique/preview.png"
+    },
+    "lab01-20261019-final/native-1/gray8-rect/distant/preview.png": {
+      "bytes": 9761,
+      "sha256": "65402214df514c746deb09a0c0df432cd83e20582b2319130a8df875c3858e79",
+      "source": "captures/world-surroundings/lab01-20261019-final/native-1/gray8-rect/distant/preview.png"
+    },
+    "lab01-import-20261019/report.json": {
+      "bytes": 441142,
+      "sha256": "0623df7a9ccc087a14f190b70d25b15676c9b3878d3ae6070e22f44398929106",
+      "source": "captures/world-surroundings/lab01-import-20261019/report.json"
+    },
+    "lab02b-20261019-verified/report.json": {
+      "bytes": 101846,
+      "sha256": "5850decb871d629fdd8ca29caad1a3d9c8344a0021eff4714037f54d49a84421",
+      "source": "captures/world-surroundings/lab02b-20261019-verified/report.json"
+    },
+    "lab02b-20261019-verified/layered/paint-replay.gif": {
+      "bytes": 845700,
+      "sha256": "6bd9a8ba439c533f5ed494b460d76ba59dbdc9cb5b8ef38bc8674b4e4e31d8ee",
+      "source": "captures/world-surroundings/lab02b-20261019-verified/layered/paint-replay.gif"
+    },
+    "lab02b-20261019-verified/layered/input-replay.json": {
+      "bytes": 21641,
+      "sha256": "326c46d4355a9fe2e943f2b7ed1b3fa06538f837dca685921f578f1d833d1e7b",
+      "source": "captures/world-surroundings/lab02b-20261019-verified/layered/input-replay.json"
+    },
+    "lab02b-20261019-verified/layered/weights.npy": {
+      "bytes": 792716,
+      "sha256": "c6097663731e66634b039a1d4bcbc2b53d0e64ab1b2145fb49f2b42b08bd8d3e",
+      "source": "captures/world-surroundings/lab02b-20261019-verified/layered/weights.npy"
+    },
+    "lab02b-20261019-verified/baked/views/close.png": {
+      "bytes": 215730,
+      "sha256": "efc31ec1b98289255ed77694dac1287c78c400480e6e6eb448458f826544aa2a",
+      "source": "captures/world-surroundings/lab02b-20261019-verified/baked/views/close.png"
+    },
+    "lab02b-20261019-verified/layered/views/close.png": {
+      "bytes": 559644,
+      "sha256": "8eaa6a5e64a338242ad0ec3b4543f8e3fdaed807b16c8c2504d008ac70fc3aa3",
+      "source": "captures/world-surroundings/lab02b-20261019-verified/layered/views/close.png"
+    },
+    "lab02b-20261019-verified/layered/views/oblique.png": {
+      "bytes": 123574,
+      "sha256": "53e3468564ac59220c42f8732ede2bf98d27e83e75a647af284fea96a8c9addf",
+      "source": "captures/world-surroundings/lab02b-20261019-verified/layered/views/oblique.png"
+    },
+    "lab02b-20261019-verified/layered/views/distant.png": {
+      "bytes": 19792,
+      "sha256": "88e0f786634b9c1b599d97a6aa3f054c51287ed3c930bb23d0fbb63fa621cb9f",
+      "source": "captures/world-surroundings/lab02b-20261019-verified/layered/views/distant.png"
+    },
+    "lab02b-20261019-run02/report.json": {
+      "bytes": 101897,
+      "sha256": "e184a37a68a3a1039e5e4ddab8f62cc634a5a41dc5de560babb3a960094065c4",
+      "source": "captures/world-surroundings/lab02b-20261019-run02/report.json"
+    },
+    "lab02b-sculpt-regression/report.json": {
+      "bytes": 250729,
+      "sha256": "77a8420ce52b4289b945fda5f7bcdbb628a236466581591a5da56e99ba81ac1c",
+      "source": "captures/world-surroundings/lab02b-sculpt-regression/report.json"
+    },
+    "lab02b-20261019-window/report.json": {
+      "bytes": 9724,
+      "sha256": "1b9cfb369661b732fe182f439979131c484f7f6a485b156f064ad5dd45484cc2",
+      "source": "captures/world-surroundings/lab02b-20261019-window/report.json"
+    },
+    "lab02a-20261019-verified/report.json": {
+      "bytes": 250106,
+      "sha256": "8eb5a5d64247a4272929e2c97769529b643ceb6949246ddcba6644ef35efa2cc",
+      "source": "captures/world-surroundings/lab02a-20261019-verified/report.json"
+    },
+    "lab02a-20261019-verified/input-replay.json": {
+      "bytes": 24893,
+      "sha256": "0cbfd7c8573bcaeba375ff46458439782f8fb7981cc30a19720ba54e007bb14e",
+      "source": "captures/world-surroundings/lab02a-20261019-verified/input-replay.json"
+    },
+    "lab02a-20261019-verified/sculpt-replay.gif": {
+      "bytes": 288293,
+      "sha256": "fe832e2fe7904f27c6d03ea42a49ab9530e7b93e7105f1e45966291924af3e10",
+      "source": "captures/world-surroundings/lab02a-20261019-verified/sculpt-replay.gif"
+    },
+    "lab02a-20261019-verified/checkpoints/initial/preview.png": {
+      "bytes": 21758,
+      "sha256": "886999aa2300077b96cc32a6508748fd85567e855dda31bb69384952868f71bb",
+      "source": "captures/world-surroundings/lab02a-20261019-verified/checkpoints/initial/preview.png"
+    },
+    "lab02a-20261019-verified/checkpoints/raise/preview.png": {
+      "bytes": 23609,
+      "sha256": "10098ccda70d74a1c8d8ab4a495a4a13af2018ca4ede303d74db9a762715ca80",
+      "source": "captures/world-surroundings/lab02a-20261019-verified/checkpoints/raise/preview.png"
+    },
+    "lab02a-20261019-verified/checkpoints/flatten/preview.png": {
+      "bytes": 24544,
+      "sha256": "64408048bbc7c9527a45a954540c5a4ff65a991fdfd318aa7534e05a1a76d40b",
+      "source": "captures/world-surroundings/lab02a-20261019-verified/checkpoints/flatten/preview.png"
+    },
+    "lab02a-20261019/report.json": {
+      "bytes": 250068,
+      "sha256": "20c3f95986932726db079665bc8205adddbe4f511600b45c61108821c5b51487",
+      "source": "captures/world-surroundings/lab02a-20261019/report.json"
+    },
+    "lab02a-20261019-window/report.json": {
+      "bytes": 7359,
+      "sha256": "98c2346ee9f016181731ea2ab3c0dba410e4bb128913ea04e3ad944c207a8781",
+      "source": "captures/world-surroundings/lab02a-20261019-window/report.json"
+    },
+    "lab02a-production-regression/report.json": {
+      "bytes": 2982,
+      "sha256": "24da097860a590924e82b04afaf21eeef5e0c2bcda2480dace14df79fb15eb74",
+      "source": "captures/world-surroundings/lab02a-production-regression/report.json"
+    }
+  }
+}

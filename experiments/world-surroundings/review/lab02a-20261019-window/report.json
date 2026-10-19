@@ -1,0 +1,123 @@
+{
+  "passed": true,
+  "stage": "LAB-02A",
+  "commands": [
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "log": "git-head.log",
+      "exit_code": 0,
+      "wall_seconds": 0.04263439999999996
+    },
+    {
+      "argv": [
+        "git",
+        "status",
+        "--short"
+      ],
+      "log": "git-status.log",
+      "exit_code": 0,
+      "wall_seconds": 0.04148370000000001
+    },
+    {
+      "argv": [
+        "D:\\CMake\\CMake\\bin\\cmake.EXE",
+        "-S",
+        "F:\\python_project\\mini3d\\experiments\\world-surroundings",
+        "-B",
+        "F:\\python_project\\mini3d\\captures\\world-surroundings\\build-lab02a",
+        "-G",
+        "Ninja",
+        "-DCMAKE_BUILD_TYPE=Release",
+        "-DCMAKE_CXX_COMPILER=D:\\mingw64\\bin\\g++.EXE",
+        "-DCMAKE_MAKE_PROGRAM=D:\\anaconda3\\Scripts\\ninja.EXE"
+      ],
+      "log": "configure.log",
+      "exit_code": 0,
+      "wall_seconds": 0.34093260000000014
+    },
+    {
+      "argv": [
+        "D:\\CMake\\CMake\\bin\\cmake.EXE",
+        "--build",
+        "F:\\python_project\\mini3d\\captures\\world-surroundings\\build-lab02a",
+        "--target",
+        "terrain_lab",
+        "--parallel",
+        "2"
+      ],
+      "log": "build.log",
+      "exit_code": 0,
+      "wall_seconds": 0.04784850000000018
+    }
+  ],
+  "git_head": "4c8b380d1a87922cdcd6be90972184f60120250a",
+  "git_status_before": " M FIRST.md\n M docs/ARCHITECTURE.md\n M docs/ai-api-v1.md\n M docs/ai-view-api.md\n M docs/ai/FILE_REGISTRY.md\n M docs/editor-startup.md\n M docs/live-editor-ipc.md\n M mini3d/api.py\n M mini3d/editor.py\n M mini3d/editor_runtime.py\n M mini3d/editor_ui.py\n M mini3d/native_renderer.py\n M spqr-native/src/renderer.hpp\n M tests/editor_ui_layout_smoke.py\n M tests/photo_workflow_ui_smoke.py\n M tests/test_api.py\n M tests/test_api_view.py\n M tests/test_editor.py\n?? PROJECT.md\n?? experiments/\n?? tests/editor_loading_capture_smoke.py\n?? tests/test_world_surroundings_baseline.py\n?? tests/test_world_surroundings_heightfield.py\n?? tests/test_world_surroundings_heightmap.py\n?? tests/test_world_surroundings_sculpt.py\n",
+  "library_sha256": "b9dc66a3dba6422bc8d8622e9a74c4213e9c3812bbc3cba24314c6e623e10093",
+  "source_sha256": {
+    "experiments/world-surroundings/baseline_scene.py": "b2cd5194e3055d6983ddb9bf31e95881a90c74fb74aa67ca721e3e58d8f4c078",
+    "experiments/world-surroundings/heightfield.py": "3d7eb16969955715ece931f60853ed8f1aa14572a06fd00a89bd7868d8aad98b",
+    "experiments/world-surroundings/heightmap_io.py": "b6e51ca1909e6b6b6ec30a9da81a218ea4194dee69d04bf863c26e78fa8d3292",
+    "experiments/world-surroundings/run_baseline.py": "1402a7807c9c615e65dc5448368f617dc84a7d81abace8841d46774ebb728a17",
+    "experiments/world-surroundings/run_heightmap.py": "69595b72dbf05d5d20d2b3495bd8347db624bc61432bb9165c671997b2931574",
+    "experiments/world-surroundings/run_sculpt.py": "5e3e023de702a4aadc6a942302a132cb29c4c32ea253a5012e623e71891a5460",
+    "experiments/world-surroundings/sculpt.py": "379a402f456b64d45900b6866cbf29e66ff2719c5366f9f92c6fff235e6d6ba4",
+    "experiments/world-surroundings/sculpt_native.py": "6d218617848db055284d09e2a385487d15f8b83c4d17cc725eaf59b4d5feae96",
+    "mini3d/atmosphere.py": "e5902a2807692ed169a339e31f1d572c40b111bf2b98b24771a00be306aa9be9",
+    "mini3d/camera.py": "4dc8a3cae6eedf088add4355d683276fd3bb49c1843031ce6d9cf7d73ad7f96e",
+    "mini3d/environment.py": "8237dae2d8bc2cea0c4c9234e78a1954925b6c9c38569df79bbaba763bf6c746",
+    "mini3d/gl_renderer.py": "04c11313465698ce40141f997898fcca1297c693269bae57a07690cf3bee8e1b",
+    "mini3d/lighting.py": "fb3b7cfc34b17d1ba4995bb7848e94d8fdb87039ab9c8e44ee4eb0cfb7ef20db",
+    "mini3d/material_renderer.py": "e7cb48b338cef325543bc37aba435547bf23e10c67a472fe46dd5e34f7da4e11",
+    "mini3d/material_shaders.py": "753e4c71127ba0be80286ed6194bc49c9d920faf3f29410c02b5c3bac1f8f4ae",
+    "mini3d/native_photo_bundle.py": "ad8ec232cd2d77878353d019eeb1fade0ef55dee06c7d27e9b4cd022a141ca53",
+    "mini3d/photo_environment.py": "419fa9817da6580dec008b00c9223def1b1c0a71aa6fb9575fa27c800234c7dd",
+    "mini3d/resources/ibl/neutral.json": "06dd9392a8988ae900dc4393fe62c55fdbdccd44fbe672823a6425cbbb0610d1",
+    "mini3d/resources/ibl/neutral.npz": "6679cedf9bc3a683be6ec70b3cf4208305b0929045753e1244df3bbc150c3cc9",
+    "mini3d/resources/ibl/NOTICE.md": "d6aac45253dd4baf85a0742fb1d736dc6f779a630a9d2902feb6b9b259633f3b",
+    "mini3d/scene.py": "b0cc2d5f548265fc1eca040b74aeea7495ee17cfd2b5b4555b8fdf75dbc80424",
+    "mini3d/shadow_map.py": "1741610950a88ad01c13de32bb24c19de3a729b9c74e5512074103294595b4f3",
+    "mini3d/sky_renderer.py": "eca4057bde62094414828681514affdd7c27d5d94fb3ba12e56b67792fa65845",
+    "native/export_scene.py": "74b0aee9286ed4fd54585e2ef980492ebc65fe135d2e3764853df3345c0cb47d",
+    "spqr-native/CMakeLists.txt": "6757b2691d7024b21d9229bf16f856aee404460452a6a821c49244699516b77d",
+    "spqr-native/FORMAT.md": "24e2cf54ae0a3d39d41d7b39e308974c6e9055cbc5f24a58729fa914648389d5",
+    "spqr-native/shaders/shadow_cascade.glsl": "b86ee641c861a3749c886a953d447bd17e45784fd8d453ae89ab6b268a920dad",
+    "spqr-native/src/bundle.cpp": "ed68ecc54671a3aebe245bd28b92c19c31b22a0363c9f684669e29349f3349cb",
+    "spqr-native/src/bundle.hpp": "93a76e64da21c7ebde033ecd89d2fae0251d76f4de56f349e25251b90694c7ee",
+    "spqr-native/src/gl_api.cpp": "5e19bd2a86ca10339ce34c7e74864f1855d700d88eea95fc37a088b056e8e9e9",
+    "spqr-native/src/gl_api.hpp": "d3803316de402ed8c9f32d301290e4ea87c9e78017b6a8050ec15f93d5a63417",
+    "spqr-native/src/main.cpp": "21acbd4a2143a250b01a8ad7c4b29ae96c08043ae82a2ce4dea3ee1851ef29a6",
+    "spqr-native/src/native_photo.cpp": "65bc3015b6a20544be6e18b411191077d5814751ded67e90227d5968108670c4",
+    "spqr-native/src/native_photo.h": "b1f24689fce0ff83e31f3de425dba32784188dd5d18545232fd81a8fca22905b",
+    "spqr-native/src/platform_win32.cpp": "a7e1e1eb5b93e89e74a111c30df30f4fa747d2885b9be2adadfef013c87ba808",
+    "spqr-native/src/platform_win32.hpp": "998cf091af50ec5eb08b31e3f6845c1082b502e3bf394755628e5634bc11e3c3",
+    "spqr-native/src/renderer.cpp": "a555ade6ef38a93b7dd093c8aeec24b77bffb2414a8af99777dd2252710fcc28",
+    "spqr-native/src/renderer.hpp": "f96e0274b9c13f89955c5246006c915f109200c17846651a82d45c3c9746da23",
+    "spqr-native/src/shadow_fit.cpp": "6787b3ad0088835e51e8dd9446dbeee76b65069b5bddc08c2bd0e7449197665c",
+    "spqr-native/src/shadow_fit.hpp": "e8094ecc94c74da774da04c7245935803c1afa686e28e72465e1917a9426f2a7",
+    "experiments/world-surroundings/terrain_bridge.cpp": "1f01e34b9245b3cd4b8652adbe2ae8037995736857329700ca24a4d0e54ba617",
+    "experiments/world-surroundings/CMakeLists.txt": "dfc10250ce43348354bae9d6af2471b56bf12ef32af74ec57ea8ab0d11a71fb2"
+  },
+  "initial_stats": {
+    "shader_compiles": 3,
+    "updates": 0,
+    "uploaded_bytes": 0,
+    "meshes": 7,
+    "renderer": "Intel(R) UHD Graphics 620",
+    "gl_version": "3.3.0 - Build 27.20.100.8682"
+  },
+  "mode": "interactive",
+  "automated_checks": false,
+  "interactive_frames": 30,
+  "final_stats": {
+    "shader_compiles": 3,
+    "updates": 0,
+    "uploaded_bytes": 0,
+    "meshes": 7,
+    "renderer": "Intel(R) UHD Graphics 620",
+    "gl_version": "3.3.0 - Build 27.20.100.8682"
+  }
+}
