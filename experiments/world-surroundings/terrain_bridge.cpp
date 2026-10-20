@@ -255,6 +255,73 @@ struct TerrainLab {
         return frames_[frameIndex];
     }
 
+    void enableGpuTiming(bool enabled) {
+        requireOwner();
+        renderer_->setTerrainGpuTimingEnabled(enabled);
+        gpuTimingEnabled_ = enabled;
+    }
+
+    void render(std::uint32_t frameIndex) {
+        requireOwner();
+        const CameraFrame& frame = frameAt(frameIndex);
+        if (!gpuTimingEnabled_) {
+            rememberFrameStats(renderer_->render(frame));
+            return;
+        }
+
+        FrameStats stats;
+        renderer_->beginTerrainGpuTimingSample(frameIndex);
+        try {
+            stats = renderer_->render(frame);
+        } catch (...) {
+            renderer_->endTerrainGpuTimingSample(false);
+            throw;
+        }
+        renderer_->endTerrainGpuTimingSample(true);
+        rememberFrameStats(stats);
+    }
+
+    FrameStats renderForCapture(std::uint32_t frameIndex) {
+        requireOwner();
+        const FrameStats stats = renderer_->render(frameAt(frameIndex));
+        rememberFrameStats(stats);
+        return stats;
+    }
+
+    void copyFrameStats(double* output, std::uint32_t capacity) const {
+        requireOwner();
+        if (capacity < kFrameStatsCount)
+            throw std::runtime_error("frame stats output buffer is too small; expected 8 doubles");
+        if (!output) throw std::runtime_error("frame stats output pointer is null");
+        if (!hasFrameStats_)
+            throw std::runtime_error("frame stats are unavailable until a frame has been rendered");
+
+        const double nearDepthSpan = lastNearShadowActive_
+            ? shadowDepthSpan(lastNearShadowDrawMatrix_, "near") : 0.0;
+        const double farDepthSpan = lastFarShadowActive_
+            ? shadowDepthSpan(lastFarShadowDrawMatrix_, "far") : 0.0;
+        const std::array<double, kFrameStatsCount> values{
+            lastFrameStats_.inputNear,
+            lastFrameStats_.colorNear,
+            static_cast<double>(lastFrameStats_.colorDraws),
+            static_cast<double>(lastFrameStats_.shadowDraws),
+            static_cast<double>(lastFrameStats_.colorTriangles),
+            static_cast<double>(lastFrameStats_.shadowTriangles),
+            nearDepthSpan,
+            farDepthSpan,
+        };
+        for (std::size_t i = 0; i < values.size(); ++i) {
+            if (!std::isfinite(values[i]))
+                throw std::runtime_error("renderer returned non-finite frame stats");
+            output[i] = values[i];
+        }
+    }
+
+    std::vector<TerrainGpuTimingSample> pollGpuTiming(std::size_t capacity) {
+        requireOwner();
+        return renderer_->pollTerrainGpuTiming(capacity);
+    }
+
     int updateBatch(const std::uint32_t* meshIds, const std::uint32_t* vertexCounts,
                     const float* packedVertices, std::uint32_t batchCount) {
         requireOwner();
@@ -659,6 +726,30 @@ struct TerrainLab {
         return 1;
     }
 
+    static constexpr std::uint32_t kFrameStatsCount = 8;
+
+    void rememberFrameStats(const FrameStats& stats) {
+        lastFrameStats_ = stats;
+        lastNearShadowActive_ = renderer_->nearShadowActive_;
+        lastFarShadowActive_ = renderer_->shadowActive_;
+        lastNearShadowDrawMatrix_ = renderer_->nearShadowDrawMatrix_;
+        lastFarShadowDrawMatrix_ = renderer_->shadowDrawMatrix_;
+        hasFrameStats_ = true;
+    }
+
+    static double shadowDepthSpan(const std::array<double, 16>& matrix,
+                                 const char* layer) {
+        const double row2Norm = std::hypot(matrix[8], matrix[9], matrix[10]);
+        if (!std::isfinite(row2Norm) || row2Norm <= 0.0)
+            throw std::runtime_error(std::string("active ") + layer +
+                                     " shadow matrix has an invalid depth row");
+        const double span = 2.0 / row2Norm;
+        if (!std::isfinite(span) || span <= 0.0)
+            throw std::runtime_error(std::string("active ") + layer +
+                                     " shadow matrix has a non-finite depth span");
+        return span;
+    }
+
     HGLRC context_ = nullptr;
     DWORD ownerThread_ = 0;
     GLApi gl_;
@@ -670,8 +761,12 @@ struct TerrainLab {
     TexSubImage2DProc texSubImage2D_ = nullptr;
     GetTexImageProc getTexImage_ = nullptr;
     std::string rendererName_, glVersion_;
+    FrameStats lastFrameStats_{};
+    std::array<double, 16> lastNearShadowDrawMatrix_{}, lastFarShadowDrawMatrix_{};
     std::uint64_t updateCount_ = 0, uploadedBytes_ = 0;
     std::uint64_t textureUpdateCount_ = 0, textureUploadedBytes_ = 0;
+    bool gpuTimingEnabled_ = false, hasFrameStats_ = false;
+    bool lastNearShadowActive_ = false, lastFarShadowActive_ = false;
     bool fatal_ = false;
     std::string fatalMessage_;
 };
@@ -716,8 +811,51 @@ extern "C" __declspec(dllexport) int lab_render(void* handle, std::uint32_t fram
     if (!handle) { setError("terrain_lab handle is null"); return 0; }
     try {
         auto& lab = *static_cast<spqr::TerrainLab*>(handle);
-        lab.requireOwner();
-        lab.renderer_->render(lab.frameAt(frameIndex));
+        lab.render(frameIndex);
+        return 1;
+    } catch (...) { setCurrentException(); return 0; }
+}
+
+extern "C" __declspec(dllexport) int lab_frame_stats(void* handle, double* output,
+                                                       std::uint32_t capacity) {
+    clearError();
+    if (!handle) { setError("terrain_lab handle is null"); return 0; }
+    try {
+        static_cast<spqr::TerrainLab*>(handle)->copyFrameStats(output, capacity);
+        return 1;
+    } catch (...) { setCurrentException(); return 0; }
+}
+
+extern "C" __declspec(dllexport) int lab_enable_gpu_timing(void* handle, int enabled) {
+    clearError();
+    if (!handle) { setError("terrain_lab handle is null"); return 0; }
+    try {
+        if (enabled != 0 && enabled != 1)
+            throw std::runtime_error("GPU timing enable flag must be zero or one");
+        static_cast<spqr::TerrainLab*>(handle)->enableGpuTiming(enabled != 0);
+        return 1;
+    } catch (...) { setCurrentException(); return 0; }
+}
+
+extern "C" __declspec(dllexport) int lab_poll_gpu_timing(
+    void* handle, std::uint32_t capacity, std::uint32_t* frames,
+    std::uint64_t* sampleIds, double* gpuMs, std::uint8_t* dropped,
+    std::uint32_t* written) {
+    clearError();
+    if (!handle) { setError("terrain_lab handle is null"); return 0; }
+    try {
+        if (!written) throw std::runtime_error("GPU timing output count pointer is null");
+        if (capacity && (!frames || !sampleIds || !gpuMs || !dropped))
+            throw std::runtime_error("GPU timing output buffer pointer is null");
+        auto& lab = *static_cast<spqr::TerrainLab*>(handle);
+        const auto samples = lab.pollGpuTiming(capacity);
+        for (std::size_t i = 0; i < samples.size(); ++i) {
+            frames[i] = samples[i].frame;
+            sampleIds[i] = samples[i].sampleId;
+            gpuMs[i] = samples[i].gpuMs;
+            dropped[i] = samples[i].dropped ? 1 : 0;
+        }
+        *written = static_cast<std::uint32_t>(samples.size());
         return 1;
     } catch (...) { setCurrentException(); return 0; }
 }
@@ -729,9 +867,10 @@ extern "C" __declspec(dllexport) int lab_capture(void* handle, const char* stemU
     try {
         auto& lab = *static_cast<spqr::TerrainLab*>(handle);
         lab.requireOwner();
-        const auto& frame = lab.frameAt(frameIndex);
-        const auto stats = lab.renderer_->render(frame);
-        lab.renderer_->capture(frame, capturePathFromUtf8(stemUtf8, "capture stem"), frameIndex, stats);
+        const auto stats = lab.renderForCapture(frameIndex);
+        lab.renderer_->capture(lab.frameAt(frameIndex),
+                               capturePathFromUtf8(stemUtf8, "capture stem"),
+                               frameIndex, stats);
         return 1;
     } catch (...) { setCurrentException(); return 0; }
 }

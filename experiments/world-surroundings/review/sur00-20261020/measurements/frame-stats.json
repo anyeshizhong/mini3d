@@ -1,0 +1,123 @@
+{
+  "aerial_frame": 3,
+  "aerial_stats": {
+    "color_draws": 42,
+    "color_near": 84.03354360984866,
+    "color_triangles": 321353,
+    "far_shadow_depth_span": 11454.660820971678,
+    "input_near": 0.1,
+    "near_shadow_depth_span": 17385.04966037442,
+    "shadow_draws": 44,
+    "shadow_triangles": 561163
+  },
+  "bundle": "F:\\python_project\\mini3d\\captures\\world-surroundings\\sur00-20261020\\day-haze\\C\\bundle",
+  "capture_render_stats": {
+    "color_draws": 38,
+    "color_near": 1.9273425142772327,
+    "color_triangles": 302047,
+    "far_shadow_depth_span": 11875.16726331363,
+    "input_near": 0.1,
+    "near_shadow_depth_span": 17385.04966037442,
+    "shadow_draws": 83,
+    "shadow_triangles": 611317
+  },
+  "capture_stem": "F:\\python_project\\mini3d\\captures\\world-surroundings\\sur00-frame-stats-check\\capture-refresh",
+  "checks": [
+    "library exists",
+    "bundle has scene and camera frames",
+    "Pygame supports a hidden window",
+    "OpenGL context reports a version",
+    "OpenGL context is at least 3.3",
+    "DLL exports optional frame stats",
+    "frame stats reject access before render",
+    "aerial render field names",
+    "aerial render finite values",
+    "aerial render count types",
+    "aerial render near/depth types",
+    "aerial render nonnegative counts",
+    "aerial near values are plausible",
+    "active aerial shadow spans are plausible",
+    "aerial frame has color geometry",
+    "null handle is rejected",
+    "null handle preserves the saved snapshot",
+    "short capacity is rejected",
+    "short capacity preserves the saved snapshot",
+    "null output is rejected",
+    "null output preserves the saved snapshot",
+    "foreign-thread frame stats are rejected",
+    "foreign-thread call preserves the saved snapshot",
+    "ordinary walk render field names",
+    "ordinary walk render finite values",
+    "ordinary walk render count types",
+    "ordinary walk render near/depth types",
+    "ordinary walk render nonnegative counts",
+    "capture refresh uses a distinguishable frame",
+    "capture render matches ordinary render: input_near",
+    "capture render matches ordinary render: color_near",
+    "capture render matches ordinary render: color_draws",
+    "capture render matches ordinary render: color_triangles",
+    "renders and capture add no explicit updates or shader compiles"
+  ],
+  "final_stats": {
+    "gl_version": "3.3.0 - Build 27.20.100.8682",
+    "meshes": 42,
+    "renderer": "Intel(R) UHD Graphics 620",
+    "shader_compiles": 3,
+    "texture_updates": 0,
+    "texture_uploaded_bytes": 0,
+    "updates": 0,
+    "uploaded_bytes": 0
+  },
+  "foreign_thread_call": {
+    "error": "terrain_lab call rejected: handle belongs to another thread",
+    "result": 0
+  },
+  "initial_stats": {
+    "gl_version": "3.3.0 - Build 27.20.100.8682",
+    "meshes": 42,
+    "renderer": "Intel(R) UHD Graphics 620",
+    "shader_compiles": 3,
+    "texture_updates": 0,
+    "texture_uploaded_bytes": 0,
+    "updates": 0,
+    "uploaded_bytes": 0
+  },
+  "invalid_calls": [
+    {
+      "case": "null handle",
+      "error": "terrain_lab handle is null",
+      "result": 0
+    },
+    {
+      "case": "short capacity",
+      "error": "frame stats output buffer is too small; expected 8 doubles",
+      "result": 0
+    },
+    {
+      "case": "null output",
+      "error": "frame stats output pointer is null",
+      "result": 0
+    }
+  ],
+  "library": "F:\\python_project\\mini3d\\captures\\world-surroundings\\build-sur00\\bin\\terrain_lab.dll",
+  "native_handle_closed": true,
+  "opengl": {
+    "renderer": "Intel(R) UHD Graphics 620",
+    "vendor": "Intel",
+    "version": "3.3.0 - Build 27.20.100.8682"
+  },
+  "ordinary_walk_stats": {
+    "color_draws": 38,
+    "color_near": 1.9273425142772327,
+    "color_triangles": 302047,
+    "far_shadow_depth_span": 11875.16726331363,
+    "input_near": 0.1,
+    "near_shadow_depth_span": 17385.04966037442,
+    "shadow_draws": 83,
+    "shadow_triangles": 611317
+  },
+  "output": "F:\\python_project\\mini3d\\captures\\world-surroundings\\sur00-frame-stats-check",
+  "passed": true,
+  "pre_render_error": "frame stats are unavailable until a frame has been rendered",
+  "stage": "SUR-00 native frame stats smoke"
+}

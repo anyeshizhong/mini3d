@@ -1,6 +1,6 @@
 # LAB-02B · 三层材质绘制与更新方案
 
-2026-10-19，HEAD `4c8b380` 及当前未提交工作区。结论：**独立三层材质实验通过，选择“静态预滤材质atlas＋动态权重图”继续后续实验。** 土壤、岩石、草地均为真实Base Color/Normal/Roughness贴图；支持绘制、擦除、提交、取消、区域差异Undo/Redo和预算回滚。尚未接入主编辑器。
+2026-10-19，原实现报告基于 HEAD `4c8b380` 及当时工作区，随后提交至 `spqr-terra@7a4e884`。结论：**独立三层材质实验功能通过，视觉待验收；选择“静态预滤材质atlas＋动态权重图”继续实验。** 土壤、岩石、草地均为真实Base Color/Normal/Roughness贴图；支持绘制、擦除、提交、取消、区域差异Undo/Redo和预算回滚。尚未接入主编辑器。材质真实感改进另见 [LAB-02B-Q1](QUALITY.md)，本报告保留原始功能与性能证据。
 
 ## 复现与输入
 
@@ -79,4 +79,4 @@ GIF来自同一持久Renderer恢复初始权重后的第二轮实际回放，每
 F:/gymenv/python.exe -B -m unittest discover -s tests -p 'test_world_surroundings_*.py'
 ```
 
-当前是有限规模原型，预滤使用各向同性世界XY映射；陡坡拉伸、各向异性过滤、正式Texture Array/材质类型、完整Editor UI、统一模型/地形/权重历史、Scene持久化、Shot同步和Python fallback留待集成。当前权重的`.npy`仅为证据，不是Scene格式。下一阶段为LAB-02C Spline路面、纵断面与地形挖填。
+当前是有限规模原型，预滤使用各向同性世界XY映射；陡坡拉伸、各向异性过滤、正式Texture Array/材质类型、完整Editor UI、统一模型/地形/权重历史、Scene持久化、Shot同步和Python fallback仍待处理。当前权重的`.npy`仅为证据，不是Scene格式。Q-1后续原型与限制见[QUALITY.md](QUALITY.md)。当前优先级改为[SUR-00外围实验](SURROUNDINGS.md)，Q续作与LAB-02C完整Spline/挖填后置，保留各自验收关卡。

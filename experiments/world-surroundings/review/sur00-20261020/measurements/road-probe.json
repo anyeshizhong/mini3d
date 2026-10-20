@@ -1,0 +1,9 @@
+{
+  "samples": 29700,
+  "samples_per_triangle": 66,
+  "all_min_clearance_m": 0.018532125601822713,
+  "all_max_clearance_m": 0.032194511983220764,
+  "camera_area_min_clearance_m": 0.019855499267578125,
+  "camera_area_max_clearance_m": 0.02556724548340128,
+  "penetration_below_minus_1mm_count": 0
+}

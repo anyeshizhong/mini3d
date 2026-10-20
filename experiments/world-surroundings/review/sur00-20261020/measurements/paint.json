@@ -1,0 +1,3575 @@
+{
+  "passed": true,
+  "stage": "LAB-02B",
+  "commands": [
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "log": "git-head.log",
+      "exit_code": 0,
+      "wall_seconds": 0.039167799999999975
+    },
+    {
+      "argv": [
+        "git",
+        "status",
+        "--short"
+      ],
+      "log": "git-status.log",
+      "exit_code": 0,
+      "wall_seconds": 0.04817199999999988
+    },
+    {
+      "argv": [
+        "D:\\CMake\\CMake\\bin\\cmake.EXE",
+        "-S",
+        "F:\\python_project\\mini3d\\experiments\\world-surroundings",
+        "-B",
+        "F:\\python_project\\mini3d\\captures\\world-surroundings\\build-sur00",
+        "-G",
+        "Ninja",
+        "-DCMAKE_BUILD_TYPE=Release",
+        "-DCMAKE_CXX_COMPILER=D:\\mingw64\\bin\\g++.EXE",
+        "-DCMAKE_MAKE_PROGRAM=D:\\anaconda3\\Scripts\\ninja.EXE"
+      ],
+      "log": "configure.log",
+      "exit_code": 0,
+      "wall_seconds": 0.34373849999999995
+    },
+    {
+      "argv": [
+        "D:\\CMake\\CMake\\bin\\cmake.EXE",
+        "--build",
+        "F:\\python_project\\mini3d\\captures\\world-surroundings\\build-sur00",
+        "--target",
+        "terrain_lab",
+        "--parallel",
+        "2"
+      ],
+      "log": "build.log",
+      "exit_code": 0,
+      "wall_seconds": 0.0518540999999999
+    }
+  ],
+  "schemes": {
+    "baked": {
+      "initial_stats": {
+        "shader_compiles": 3,
+        "updates": 0,
+        "uploaded_bytes": 0,
+        "texture_updates": 0,
+        "texture_uploaded_bytes": 0,
+        "meshes": 7,
+        "renderer": "Intel(R) UHD Graphics 620",
+        "gl_version": "3.3.0 - Build 27.20.100.8682"
+      },
+      "invalid_batches": [
+        {
+          "case": "later-id",
+          "error": "texture ID is out of range"
+        },
+        {
+          "case": "duplicate",
+          "error": "texture update batch contains a duplicate texture ID"
+        },
+        {
+          "case": "out-of-bounds",
+          "error": "texture update rectangle is outside the texture bounds"
+        }
+      ],
+      "transfer_state_check": {
+        "pixel_transfer_state_exact": true,
+        "wrong_thread": "terrain_lab call rejected: handle belongs to another thread",
+        "wrong_context": "terrain_lab call rejected: handle belongs to another OpenGL context"
+      },
+      "budget_event_check": {
+        "rejected_without_exiting": true,
+        "rollback_gpu_exact": true
+      },
+      "measurement_start_stats": {
+        "shader_compiles": 3,
+        "updates": 0,
+        "uploaded_bytes": 0,
+        "texture_updates": 3,
+        "texture_uploaded_bytes": 97204,
+        "meshes": 7,
+        "renderer": "Intel(R) UHD Graphics 620",
+        "gl_version": "3.3.0 - Build 27.20.100.8682"
+      },
+      "checkpoints": {
+        "initial": {
+          "weight_sha256": "7f1c69071af35aa1467ca786e1ead11be620793ea3cef67d026c657e50a448fb",
+          "gpu_textures_exact": true,
+          "geometry_unchanged": true,
+          "fresh_color_far_shadow_exact": true
+        },
+        "rock": {
+          "weight_sha256": "41c0e36c01b0531e2ce25d93df7ae5bb9289112513860dcb8ca11aedb8358c99",
+          "gpu_textures_exact": true,
+          "geometry_unchanged": true,
+          "fresh_color_far_shadow_exact": true
+        },
+        "grass": {
+          "weight_sha256": "241bb3fa8504b1c0c61b4ab092e5965e40b2922cba3323a0b91f5254bfb7837c",
+          "gpu_textures_exact": true,
+          "geometry_unchanged": true,
+          "fresh_color_far_shadow_exact": true
+        },
+        "soil": {
+          "weight_sha256": "ad87faa11a9361fe7e686f498fe55e32e17b7cd64524cd10c6f192165dc23bc6",
+          "gpu_textures_exact": true,
+          "geometry_unchanged": true,
+          "fresh_color_far_shadow_exact": true
+        },
+        "erase": {
+          "weight_sha256": "6ab203f81d824ee98ff1d354e18c42875ade7967829dbc3c14ca9675aa62f07c",
+          "gpu_textures_exact": true,
+          "geometry_unchanged": true,
+          "fresh_color_far_shadow_exact": true
+        },
+        "cancel": {
+          "weight_sha256": "6ab203f81d824ee98ff1d354e18c42875ade7967829dbc3c14ca9675aa62f07c",
+          "gpu_textures_exact": true,
+          "geometry_unchanged": true
+        },
+        "undo": {
+          "weight_sha256": "ad87faa11a9361fe7e686f498fe55e32e17b7cd64524cd10c6f192165dc23bc6",
+          "gpu_textures_exact": true,
+          "geometry_unchanged": true,
+          "fresh_color_far_shadow_exact": true
+        },
+        "redo": {
+          "weight_sha256": "6ab203f81d824ee98ff1d354e18c42875ade7967829dbc3c14ca9675aa62f07c",
+          "gpu_textures_exact": true,
+          "geometry_unchanged": true
+        }
+      },
+      "measured_frames": [
+        {
+          "frame": 0,
+          "frame_ms": 46.29180000000055,
+          "cpu_and_upload_ms": 36.664500000000544,
+          "render_finish_ms": 9.577000000000169,
+          "swap_ms": 0.05029999999983659,
+          "rect": [
+            119,
+            32,
+            193,
+            86
+          ],
+          "bytes": 47952
+        },
+        {
+          "frame": 1,
+          "frame_ms": 41.7550999999996,
+          "cpu_and_upload_ms": 32.100899999999655,
+          "render_finish_ms": 9.574599999998767,
+          "swap_ms": 0.07960000000117873,
+          "rect": [
+            121,
+            34,
+            196,
+            88
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 2,
+          "frame_ms": 43.472500000000025,
+          "cpu_and_upload_ms": 34.255200000000485,
+          "render_finish_ms": 9.168499999999469,
+          "swap_ms": 0.04880000000007101,
+          "rect": [
+            122,
+            38,
+            197,
+            92
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 3,
+          "frame_ms": 47.63589999999951,
+          "cpu_and_upload_ms": 38.64119999999893,
+          "render_finish_ms": 8.945600000000553,
+          "swap_ms": 0.049100000000024124,
+          "rect": [
+            120,
+            40,
+            196,
+            97
+          ],
+          "bytes": 51984
+        },
+        {
+          "frame": 4,
+          "frame_ms": 44.6945000000003,
+          "cpu_and_upload_ms": 35.024200000000505,
+          "render_finish_ms": 9.624099999999913,
+          "swap_ms": 0.04619999999988522,
+          "rect": [
+            121,
+            47,
+            196,
+            101
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 5,
+          "frame_ms": 46.174099999999996,
+          "cpu_and_upload_ms": 35.66690000000072,
+          "render_finish_ms": 10.453299999999999,
+          "swap_ms": 0.05389999999927397,
+          "rect": [
+            120,
+            51,
+            195,
+            105
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 6,
+          "frame_ms": 47.42270000000026,
+          "cpu_and_upload_ms": 36.524199999998785,
+          "render_finish_ms": 10.826400000000902,
+          "swap_ms": 0.07210000000057448,
+          "rect": [
+            121,
+            55,
+            196,
+            109
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 7,
+          "frame_ms": 45.58739999999872,
+          "cpu_and_upload_ms": 36.226099999998596,
+          "render_finish_ms": 9.31190000000015,
+          "swap_ms": 0.04939999999997724,
+          "rect": [
+            120,
+            59,
+            195,
+            113
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 8,
+          "frame_ms": 46.07350000000032,
+          "cpu_and_upload_ms": 35.82360000000051,
+          "render_finish_ms": 10.20010000000049,
+          "swap_ms": 0.04979999999932261,
+          "rect": [
+            120,
+            63,
+            195,
+            117
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 9,
+          "frame_ms": 48.25390000000063,
+          "cpu_and_upload_ms": 38.67000000000154,
+          "render_finish_ms": 9.536899999998738,
+          "swap_ms": 0.047000000000352316,
+          "rect": [
+            120,
+            68,
+            195,
+            122
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 10,
+          "frame_ms": 45.38829999999905,
+          "cpu_and_upload_ms": 34.7931999999993,
+          "render_finish_ms": 10.542299999999116,
+          "swap_ms": 0.05280000000063012,
+          "rect": [
+            120,
+            72,
+            195,
+            126
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 11,
+          "frame_ms": 49.255099999999885,
+          "cpu_and_upload_ms": 39.889499999999245,
+          "render_finish_ms": 9.311000000000291,
+          "swap_ms": 0.054600000000348814,
+          "rect": [
+            121,
+            76,
+            196,
+            130
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 12,
+          "frame_ms": 46.61229999999961,
+          "cpu_and_upload_ms": 36.63740000000004,
+          "render_finish_ms": 9.891800000000117,
+          "swap_ms": 0.0830999999994475,
+          "rect": [
+            121,
+            80,
+            195,
+            134
+          ],
+          "bytes": 47952
+        },
+        {
+          "frame": 13,
+          "frame_ms": 46.7645000000001,
+          "cpu_and_upload_ms": 37.62200000000071,
+          "render_finish_ms": 9.095999999999549,
+          "swap_ms": 0.04649999999983834,
+          "rect": [
+            120,
+            84,
+            195,
+            138
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 14,
+          "frame_ms": 45.44540000000019,
+          "cpu_and_upload_ms": 36.18330000000114,
+          "render_finish_ms": 9.215899999999166,
+          "swap_ms": 0.04619999999988522,
+          "rect": [
+            120,
+            88,
+            195,
+            142
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 15,
+          "frame_ms": 47.0486999999995,
+          "cpu_and_upload_ms": 36.0788000000003,
+          "render_finish_ms": 10.919999999998709,
+          "swap_ms": 0.04990000000049122,
+          "rect": [
+            121,
+            92,
+            196,
+            146
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 16,
+          "frame_ms": 45.64530000000033,
+          "cpu_and_upload_ms": 35.91379999999944,
+          "render_finish_ms": 9.67380000000162,
+          "swap_ms": 0.05769999999927222,
+          "rect": [
+            121,
+            96,
+            196,
+            150
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 17,
+          "frame_ms": 44.29390000000133,
+          "cpu_and_upload_ms": 35.20160000000061,
+          "render_finish_ms": 9.025100000000563,
+          "swap_ms": 0.06720000000015602,
+          "rect": [
+            121,
+            101,
+            196,
+            155
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 18,
+          "frame_ms": 49.18610000000001,
+          "cpu_and_upload_ms": 39.90609999999961,
+          "render_finish_ms": 9.231800000000234,
+          "swap_ms": 0.04820000000016478,
+          "rect": [
+            120,
+            105,
+            195,
+            159
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 19,
+          "frame_ms": 45.59269999999849,
+          "cpu_and_upload_ms": 36.385999999998475,
+          "render_finish_ms": 9.153400000000644,
+          "swap_ms": 0.05329999999936774,
+          "rect": [
+            120,
+            109,
+            195,
+            163
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 20,
+          "frame_ms": 45.95079999999996,
+          "cpu_and_upload_ms": 36.12419999999972,
+          "render_finish_ms": 9.772599999999798,
+          "swap_ms": 0.05400000000044258,
+          "rect": [
+            121,
+            113,
+            195,
+            167
+          ],
+          "bytes": 47952
+        },
+        {
+          "frame": 21,
+          "frame_ms": 46.98840000000004,
+          "cpu_and_upload_ms": 36.30260000000085,
+          "render_finish_ms": 10.637600000000802,
+          "swap_ms": 0.04819999999838842,
+          "rect": [
+            121,
+            117,
+            196,
+            171
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 22,
+          "frame_ms": 44.8214999999994,
+          "cpu_and_upload_ms": 35.52080000000046,
+          "render_finish_ms": 9.230399999999861,
+          "swap_ms": 0.07029999999907943,
+          "rect": [
+            121,
+            121,
+            196,
+            175
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 23,
+          "frame_ms": 46.425800000001516,
+          "cpu_and_upload_ms": 36.82990000000075,
+          "render_finish_ms": 9.521700000000521,
+          "swap_ms": 0.07420000000024629,
+          "rect": [
+            120,
+            126,
+            195,
+            180
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 24,
+          "frame_ms": 46.456199999999725,
+          "cpu_and_upload_ms": 37.41650000000085,
+          "render_finish_ms": 8.9946999999988,
+          "swap_ms": 0.04500000000007276,
+          "rect": [
+            120,
+            130,
+            195,
+            184
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 25,
+          "frame_ms": 45.77169999999953,
+          "cpu_and_upload_ms": 35.19050000000057,
+          "render_finish_ms": 10.51169999999857,
+          "swap_ms": 0.0695000000003887,
+          "rect": [
+            121,
+            133,
+            196,
+            187
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 26,
+          "frame_ms": 49.029800000001345,
+          "cpu_and_upload_ms": 39.12040000000161,
+          "render_finish_ms": 9.860399999999103,
+          "swap_ms": 0.04900000000063187,
+          "rect": [
+            120,
+            138,
+            195,
+            192
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 27,
+          "frame_ms": 48.334899999998626,
+          "cpu_and_upload_ms": 37.151299999999665,
+          "render_finish_ms": 11.130599999999546,
+          "swap_ms": 0.052999999999414626,
+          "rect": [
+            120,
+            142,
+            195,
+            196
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 28,
+          "frame_ms": 46.528499999999084,
+          "cpu_and_upload_ms": 36.925899999999956,
+          "render_finish_ms": 9.55409999999901,
+          "swap_ms": 0.04850000000011789,
+          "rect": [
+            121,
+            146,
+            196,
+            200
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 29,
+          "frame_ms": 47.66779999999926,
+          "cpu_and_upload_ms": 38.18309999999947,
+          "render_finish_ms": 9.424599999999117,
+          "swap_ms": 0.060100000000673504,
+          "rect": [
+            121,
+            150,
+            196,
+            204
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 30,
+          "frame_ms": 47.04369999999969,
+          "cpu_and_upload_ms": 37.812300000000576,
+          "render_finish_ms": 9.183399999999509,
+          "swap_ms": 0.047999999999603915,
+          "rect": [
+            121,
+            154,
+            196,
+            208
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 31,
+          "frame_ms": 44.658100000001255,
+          "cpu_and_upload_ms": 35.67920000000058,
+          "render_finish_ms": 8.9295000000007,
+          "swap_ms": 0.04939999999997724,
+          "rect": [
+            121,
+            158,
+            196,
+            212
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 32,
+          "frame_ms": 11.183499999999569,
+          "cpu_and_upload_ms": 1.324300000000278,
+          "render_finish_ms": 9.807399999999689,
+          "swap_ms": 0.051799999999602164,
+          "rect": null,
+          "bytes": 0
+        },
+        {
+          "frame": 33,
+          "frame_ms": 60.37110000000112,
+          "cpu_and_upload_ms": 50.1497999999998,
+          "render_finish_ms": 10.145200000000187,
+          "swap_ms": 0.0761000000011336,
+          "rect": [
+            61,
+            37,
+            136,
+            92
+          ],
+          "bytes": 49500
+        },
+        {
+          "frame": 34,
+          "frame_ms": 66.83989999999973,
+          "cpu_and_upload_ms": 55.29869999999981,
+          "render_finish_ms": 11.37270000000079,
+          "swap_ms": 0.16849999999912768,
+          "rect": [
+            62,
+            42,
+            136,
+            96
+          ],
+          "bytes": 47952
+        },
+        {
+          "frame": 35,
+          "frame_ms": 63.54219999999877,
+          "cpu_and_upload_ms": 52.6257999999995,
+          "render_finish_ms": 10.832199999999403,
+          "swap_ms": 0.08419999999986771,
+          "rect": [
+            62,
+            45,
+            137,
+            99
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 36,
+          "frame_ms": 73.53970000000132,
+          "cpu_and_upload_ms": 61.820799999999565,
+          "render_finish_ms": 11.639800000001088,
+          "swap_ms": 0.07910000000066475,
+          "rect": [
+            62,
+            50,
+            137,
+            104
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 37,
+          "frame_ms": 59.974900000000275,
+          "cpu_and_upload_ms": 50.14070000000004,
+          "render_finish_ms": 9.75700000000046,
+          "swap_ms": 0.07719999999977745,
+          "rect": [
+            62,
+            54,
+            137,
+            108
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 38,
+          "frame_ms": 73.03639999999945,
+          "cpu_and_upload_ms": 63.15780000000082,
+          "render_finish_ms": 9.82250000000029,
+          "swap_ms": 0.056099999998338035,
+          "rect": [
+            61,
+            58,
+            136,
+            112
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 39,
+          "frame_ms": 54.3736999999993,
+          "cpu_and_upload_ms": 44.37760000000068,
+          "render_finish_ms": 9.877099999998862,
+          "swap_ms": 0.11899999999975819,
+          "rect": [
+            61,
+            62,
+            136,
+            116
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 40,
+          "frame_ms": 56.72139999999892,
+          "cpu_and_upload_ms": 46.899500000000316,
+          "render_finish_ms": 9.765800000000269,
+          "swap_ms": 0.056099999998338035,
+          "rect": [
+            61,
+            66,
+            136,
+            120
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 41,
+          "frame_ms": 58.40420000000002,
+          "cpu_and_upload_ms": 47.06099999999935,
+          "render_finish_ms": 11.291599999999846,
+          "swap_ms": 0.05160000000081766,
+          "rect": [
+            62,
+            70,
+            136,
+            124
+          ],
+          "bytes": 47952
+        },
+        {
+          "frame": 42,
+          "frame_ms": 52.52539999999861,
+          "cpu_and_upload_ms": 43.00879999999907,
+          "render_finish_ms": 9.458800000000878,
+          "swap_ms": 0.057799999998664475,
+          "rect": [
+            62,
+            75,
+            137,
+            129
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 43,
+          "frame_ms": 52.90920000000021,
+          "cpu_and_upload_ms": 43.17670000000007,
+          "render_finish_ms": 9.6822999999997,
+          "swap_ms": 0.050200000000444334,
+          "rect": [
+            62,
+            79,
+            136,
+            133
+          ],
+          "bytes": 47952
+        },
+        {
+          "frame": 44,
+          "frame_ms": 50.857499999999334,
+          "cpu_and_upload_ms": 41.537799999998626,
+          "render_finish_ms": 9.248300000001208,
+          "swap_ms": 0.07139999999949964,
+          "rect": [
+            61,
+            83,
+            136,
+            137
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 45,
+          "frame_ms": 46.46660000000047,
+          "cpu_and_upload_ms": 37.1447000000007,
+          "render_finish_ms": 9.273399999999654,
+          "swap_ms": 0.04850000000011789,
+          "rect": [
+            62,
+            87,
+            137,
+            141
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 46,
+          "frame_ms": 44.68229999999984,
+          "cpu_and_upload_ms": 35.01250000000056,
+          "render_finish_ms": 9.620099999999354,
+          "swap_ms": 0.049699999999930355,
+          "rect": [
+            62,
+            91,
+            136,
+            145
+          ],
+          "bytes": 47952
+        },
+        {
+          "frame": 47,
+          "frame_ms": 46.893600000000646,
+          "cpu_and_upload_ms": 36.53880000000065,
+          "render_finish_ms": 10.306599999999833,
+          "swap_ms": 0.04820000000016478,
+          "rect": [
+            62,
+            95,
+            137,
+            149
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 48,
+          "frame_ms": 46.303999999999235,
+          "cpu_and_upload_ms": 36.87729999999867,
+          "render_finish_ms": 9.375900000000215,
+          "swap_ms": 0.050800000000350565,
+          "rect": [
+            61,
+            99,
+            136,
+            154
+          ],
+          "bytes": 49500
+        },
+        {
+          "frame": 49,
+          "frame_ms": 45.80410000000157,
+          "cpu_and_upload_ms": 36.24510000000036,
+          "render_finish_ms": 9.509900000001181,
+          "swap_ms": 0.049100000000024124,
+          "rect": [
+            62,
+            103,
+            137,
+            157
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 50,
+          "frame_ms": 43.09680000000071,
+          "cpu_and_upload_ms": 33.05399999999992,
+          "render_finish_ms": 9.993900000001332,
+          "swap_ms": 0.04889999999946326,
+          "rect": [
+            62,
+            108,
+            137,
+            162
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 51,
+          "frame_ms": 45.08249999999947,
+          "cpu_and_upload_ms": 34.557899999999364,
+          "render_finish_ms": 10.476900000000455,
+          "swap_ms": 0.0476999999996508,
+          "rect": [
+            61,
+            112,
+            136,
+            166
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 52,
+          "frame_ms": 42.04869999999872,
+          "cpu_and_upload_ms": 32.6594999999994,
+          "render_finish_ms": 9.33359999999972,
+          "swap_ms": 0.055599999999600414,
+          "rect": [
+            62,
+            116,
+            137,
+            170
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 53,
+          "frame_ms": 43.56259999999956,
+          "cpu_and_upload_ms": 33.16159999999968,
+          "render_finish_ms": 10.190300000001429,
+          "swap_ms": 0.2106999999984538,
+          "rect": [
+            62,
+            120,
+            137,
+            174
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 54,
+          "frame_ms": 44.885600000000636,
+          "cpu_and_upload_ms": 34.31600000000046,
+          "render_finish_ms": 10.52199999999992,
+          "swap_ms": 0.04760000000025855,
+          "rect": [
+            61,
+            124,
+            136,
+            178
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 55,
+          "frame_ms": 40.90249999999962,
+          "cpu_and_upload_ms": 31.675599999999804,
+          "render_finish_ms": 9.179500000000118,
+          "swap_ms": 0.047399999999697684,
+          "rect": [
+            62,
+            128,
+            136,
+            182
+          ],
+          "bytes": 47952
+        },
+        {
+          "frame": 56,
+          "frame_ms": 45.47479999999915,
+          "cpu_and_upload_ms": 34.536400000000356,
+          "render_finish_ms": 10.886199999999846,
+          "swap_ms": 0.05219999999894753,
+          "rect": [
+            62,
+            133,
+            136,
+            187
+          ],
+          "bytes": 47952
+        },
+        {
+          "frame": 57,
+          "frame_ms": 46.63480000000142,
+          "cpu_and_upload_ms": 36.8347,
+          "render_finish_ms": 9.749400000000463,
+          "swap_ms": 0.05070000000095831,
+          "rect": [
+            62,
+            136,
+            137,
+            190
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 58,
+          "frame_ms": 44.902199999999226,
+          "cpu_and_upload_ms": 35.80089999999991,
+          "render_finish_ms": 9.053299999999709,
+          "swap_ms": 0.047999999999603915,
+          "rect": [
+            61,
+            141,
+            136,
+            195
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 59,
+          "frame_ms": 45.295599999999325,
+          "cpu_and_upload_ms": 36.066299999999885,
+          "render_finish_ms": 9.182400000000257,
+          "swap_ms": 0.046899999999183706,
+          "rect": [
+            61,
+            145,
+            136,
+            199
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 60,
+          "frame_ms": 46.949899999999545,
+          "cpu_and_upload_ms": 37.55219999999859,
+          "render_finish_ms": 9.349100000001442,
+          "swap_ms": 0.048599999999510146,
+          "rect": [
+            62,
+            149,
+            137,
+            203
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 61,
+          "frame_ms": 47.04859999999833,
+          "cpu_and_upload_ms": 36.89169999999997,
+          "render_finish_ms": 10.088799999998344,
+          "swap_ms": 0.06810000000001537,
+          "rect": [
+            62,
+            153,
+            137,
+            207
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 62,
+          "frame_ms": 47.06400000000066,
+          "cpu_and_upload_ms": 37.2482999999999,
+          "render_finish_ms": 9.766900000000689,
+          "swap_ms": 0.04880000000007101,
+          "rect": [
+            61,
+            158,
+            136,
+            212
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 63,
+          "frame_ms": 45.351500000000655,
+          "cpu_and_upload_ms": 36.317100000001545,
+          "render_finish_ms": 8.959399999998396,
+          "swap_ms": 0.07500000000071338,
+          "rect": [
+            61,
+            162,
+            136,
+            216
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 64,
+          "frame_ms": 45.52280000000053,
+          "cpu_and_upload_ms": 36.3478999999991,
+          "render_finish_ms": 8.997300000000763,
+          "swap_ms": 0.17760000000066611,
+          "rect": [
+            62,
+            166,
+            137,
+            220
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 65,
+          "frame_ms": 10.708899999999133,
+          "cpu_and_upload_ms": 0.6814999999988913,
+          "render_finish_ms": 9.979000000001292,
+          "swap_ms": 0.048399999998949284,
+          "rect": null,
+          "bytes": 0
+        },
+        {
+          "frame": 66,
+          "frame_ms": 44.3832000000004,
+          "cpu_and_upload_ms": 34.73500000000129,
+          "render_finish_ms": 9.531599999998974,
+          "swap_ms": 0.11660000000013326,
+          "rect": [
+            91,
+            80,
+            166,
+            134
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 67,
+          "frame_ms": 42.03709999999994,
+          "cpu_and_upload_ms": 32.43349999999978,
+          "render_finish_ms": 9.546699999999575,
+          "swap_ms": 0.056900000000581485,
+          "rect": [
+            91,
+            83,
+            166,
+            137
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 68,
+          "frame_ms": 41.06960000000015,
+          "cpu_and_upload_ms": 31.46680000000046,
+          "render_finish_ms": 9.553399999999712,
+          "swap_ms": 0.04939999999997724,
+          "rect": [
+            91,
+            86,
+            166,
+            140
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 69,
+          "frame_ms": 42.645499999999004,
+          "cpu_and_upload_ms": 32.89999999999971,
+          "render_finish_ms": 9.665000000000035,
+          "swap_ms": 0.08049999999926172,
+          "rect": [
+            91,
+            89,
+            166,
+            143
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 70,
+          "frame_ms": 41.70509999999972,
+          "cpu_and_upload_ms": 32.47999999999962,
+          "render_finish_ms": 9.178699999999651,
+          "swap_ms": 0.046400000000446084,
+          "rect": [
+            91,
+            92,
+            166,
+            146
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 71,
+          "frame_ms": 45.22240000000011,
+          "cpu_and_upload_ms": 34.11170000000041,
+          "render_finish_ms": 11.055199999999488,
+          "swap_ms": 0.05550000000020816,
+          "rect": [
+            91,
+            94,
+            166,
+            148
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 72,
+          "frame_ms": 41.57750000000071,
+          "cpu_and_upload_ms": 32.604799999999656,
+          "render_finish_ms": 8.923900000000984,
+          "swap_ms": 0.04880000000007101,
+          "rect": [
+            91,
+            97,
+            166,
+            151
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 73,
+          "frame_ms": 44.5846999999997,
+          "cpu_and_upload_ms": 35.46560000000021,
+          "render_finish_ms": 9.069999999999467,
+          "swap_ms": 0.049100000000024124,
+          "rect": [
+            91,
+            100,
+            166,
+            154
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 74,
+          "frame_ms": 45.06379999999943,
+          "cpu_and_upload_ms": 35.56939999999997,
+          "render_finish_ms": 9.445200000000042,
+          "swap_ms": 0.04919999999941638,
+          "rect": [
+            91,
+            103,
+            166,
+            157
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 75,
+          "frame_ms": 42.904200000000614,
+          "cpu_and_upload_ms": 33.480300000000796,
+          "render_finish_ms": 9.300099999999034,
+          "swap_ms": 0.1238000000007844,
+          "rect": [
+            91,
+            106,
+            166,
+            160
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 76,
+          "frame_ms": 51.42460000000071,
+          "cpu_and_upload_ms": 41.6635000000003,
+          "render_finish_ms": 9.709000000000856,
+          "swap_ms": 0.05209999999955528,
+          "rect": [
+            91,
+            108,
+            166,
+            162
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 77,
+          "frame_ms": 53.72569999999932,
+          "cpu_and_upload_ms": 43.61339999999991,
+          "render_finish_ms": 10.061999999999571,
+          "swap_ms": 0.05029999999983659,
+          "rect": [
+            91,
+            111,
+            166,
+            165
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 78,
+          "frame_ms": 46.56780000000005,
+          "cpu_and_upload_ms": 37.08880000000114,
+          "render_finish_ms": 9.430099999999442,
+          "swap_ms": 0.04889999999946326,
+          "rect": [
+            91,
+            114,
+            166,
+            168
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 79,
+          "frame_ms": 43.85130000000004,
+          "cpu_and_upload_ms": 34.05670000000072,
+          "render_finish_ms": 9.745199999999343,
+          "swap_ms": 0.04939999999997724,
+          "rect": [
+            91,
+            117,
+            166,
+            171
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 80,
+          "frame_ms": 44.18030000000073,
+          "cpu_and_upload_ms": 33.860699999999966,
+          "render_finish_ms": 10.267200000001253,
+          "swap_ms": 0.052399999999508395,
+          "rect": [
+            91,
+            120,
+            166,
+            174
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 81,
+          "frame_ms": 45.01299999999908,
+          "cpu_and_upload_ms": 34.05459999999927,
+          "render_finish_ms": 10.907600000001239,
+          "swap_ms": 0.05079999999857421,
+          "rect": [
+            91,
+            123,
+            166,
+            177
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 82,
+          "frame_ms": 10.4406000000008,
+          "cpu_and_upload_ms": 1.0734000000010013,
+          "render_finish_ms": 9.318600000000288,
+          "swap_ms": 0.048599999999510146,
+          "rect": null,
+          "bytes": 0
+        },
+        {
+          "frame": 83,
+          "frame_ms": 42.07620000000034,
+          "cpu_and_upload_ms": 32.84189999999754,
+          "render_finish_ms": 9.186100000000863,
+          "swap_ms": 0.048200000001941135,
+          "rect": [
+            62,
+            108,
+            136,
+            162
+          ],
+          "bytes": 47952
+        },
+        {
+          "frame": 84,
+          "frame_ms": 40.873899999997576,
+          "cpu_and_upload_ms": 31.111799999997913,
+          "render_finish_ms": 9.710200000000668,
+          "swap_ms": 0.05189999999899442,
+          "rect": [
+            61,
+            111,
+            136,
+            165
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 85,
+          "frame_ms": 41.00359999999981,
+          "cpu_and_upload_ms": 31.622599999998613,
+          "render_finish_ms": 9.333500000000328,
+          "swap_ms": 0.047500000000866294,
+          "rect": [
+            62,
+            112,
+            136,
+            166
+          ],
+          "bytes": 47952
+        },
+        {
+          "frame": 86,
+          "frame_ms": 40.57030000000239,
+          "cpu_and_upload_ms": 31.230100000001926,
+          "render_finish_ms": 9.255299999999522,
+          "swap_ms": 0.08490000000094255,
+          "rect": [
+            61,
+            114,
+            136,
+            168
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 87,
+          "frame_ms": 40.84310000000002,
+          "cpu_and_upload_ms": 31.532399999999683,
+          "render_finish_ms": 9.266300000000172,
+          "swap_ms": 0.04440000000016653,
+          "rect": [
+            62,
+            116,
+            137,
+            170
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 88,
+          "frame_ms": 42.5723999999974,
+          "cpu_and_upload_ms": 31.532199999997346,
+          "render_finish_ms": 10.991900000000498,
+          "swap_ms": 0.04829999999955703,
+          "rect": [
+            62,
+            118,
+            136,
+            172
+          ],
+          "bytes": 47952
+        },
+        {
+          "frame": 89,
+          "frame_ms": 45.11209999999721,
+          "cpu_and_upload_ms": 34.48009999999968,
+          "render_finish_ms": 10.582499999998163,
+          "swap_ms": 0.04949999999936949,
+          "rect": [
+            62,
+            120,
+            136,
+            174
+          ],
+          "bytes": 47952
+        },
+        {
+          "frame": 90,
+          "frame_ms": 42.991499999999405,
+          "cpu_and_upload_ms": 32.54049999999964,
+          "render_finish_ms": 10.402500000001424,
+          "swap_ms": 0.048499999998341536,
+          "rect": [
+            62,
+            122,
+            137,
+            176
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 91,
+          "frame_ms": 43.08509999999899,
+          "cpu_and_upload_ms": 33.405800000000596,
+          "render_finish_ms": 9.631399999999957,
+          "swap_ms": 0.047899999998435305,
+          "rect": [
+            61,
+            124,
+            136,
+            178
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 92,
+          "frame_ms": 48.009300000000366,
+          "cpu_and_upload_ms": 38.10140000000217,
+          "render_finish_ms": 9.841800000000234,
+          "swap_ms": 0.06609999999795946,
+          "rect": [
+            61,
+            126,
+            136,
+            180
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 93,
+          "frame_ms": 54.71610000000027,
+          "cpu_and_upload_ms": 45.11279999999829,
+          "render_finish_ms": 9.54150000000098,
+          "swap_ms": 0.061800000000999944,
+          "rect": [
+            61,
+            128,
+            136,
+            182
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 94,
+          "frame_ms": 50.14369999999957,
+          "cpu_and_upload_ms": 40.0747999999993,
+          "render_finish_ms": 10.015599999999125,
+          "swap_ms": 0.0533000000011441,
+          "rect": [
+            61,
+            129,
+            136,
+            184
+          ],
+          "bytes": 49500
+        },
+        {
+          "frame": 95,
+          "frame_ms": 47.08929999999967,
+          "cpu_and_upload_ms": 37.49829999999932,
+          "render_finish_ms": 9.536799999999346,
+          "swap_ms": 0.054200000001003446,
+          "rect": [
+            62,
+            131,
+            137,
+            185
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 96,
+          "frame_ms": 43.699900000000014,
+          "cpu_and_upload_ms": 33.870999999997764,
+          "render_finish_ms": 9.426799999999957,
+          "swap_ms": 0.4021000000022923,
+          "rect": [
+            62,
+            133,
+            137,
+            187
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 97,
+          "frame_ms": 45.32000000000025,
+          "cpu_and_upload_ms": 35.740199999999334,
+          "render_finish_ms": 9.523600000001409,
+          "swap_ms": 0.056199999999506645,
+          "rect": [
+            62,
+            135,
+            136,
+            189
+          ],
+          "bytes": 47952
+        },
+        {
+          "frame": 98,
+          "frame_ms": 46.22409999999988,
+          "cpu_and_upload_ms": 36.697300000000155,
+          "render_finish_ms": 9.479100000000074,
+          "swap_ms": 0.0476999999996508,
+          "rect": [
+            61,
+            137,
+            136,
+            191
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 99,
+          "frame_ms": 10.157800000001771,
+          "cpu_and_upload_ms": 1.0970999999990738,
+          "render_finish_ms": 9.004600000000806,
+          "swap_ms": 0.05610000000189075,
+          "rect": null,
+          "bytes": 0
+        },
+        {
+          "frame": 100,
+          "frame_ms": 41.50339999999986,
+          "cpu_and_upload_ms": 32.658500000000146,
+          "render_finish_ms": 8.797999999998751,
+          "swap_ms": 0.04690000000096006,
+          "rect": [
+            52,
+            130,
+            127,
+            184
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 101,
+          "frame_ms": 42.27739999999969,
+          "cpu_and_upload_ms": 31.813499999998385,
+          "render_finish_ms": 10.415500000000577,
+          "swap_ms": 0.04840000000072564,
+          "rect": [
+            52,
+            130,
+            127,
+            184
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 102,
+          "frame_ms": 96.79270000000173,
+          "cpu_and_upload_ms": 87.33319999999978,
+          "render_finish_ms": 9.355900000002748,
+          "swap_ms": 0.10359999999920433,
+          "rect": [
+            52,
+            130,
+            127,
+            184
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 103,
+          "frame_ms": 45.35669999999925,
+          "cpu_and_upload_ms": 35.78819999999894,
+          "render_finish_ms": 9.514200000001694,
+          "swap_ms": 0.05429999999861934,
+          "rect": [
+            52,
+            130,
+            127,
+            184
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 104,
+          "frame_ms": 46.538199999996976,
+          "cpu_and_upload_ms": 35.79509999999786,
+          "render_finish_ms": 10.687400000001901,
+          "swap_ms": 0.05569999999721631,
+          "rect": [
+            52,
+            130,
+            127,
+            184
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 105,
+          "frame_ms": 44.30149999999955,
+          "cpu_and_upload_ms": 34.5835000000001,
+          "render_finish_ms": 9.665500000000549,
+          "swap_ms": 0.05249999999890065,
+          "rect": [
+            52,
+            130,
+            127,
+            184
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 106,
+          "frame_ms": 44.75350000000233,
+          "cpu_and_upload_ms": 35.37550000000067,
+          "render_finish_ms": 9.328100000001172,
+          "swap_ms": 0.04990000000049122,
+          "rect": [
+            52,
+            130,
+            127,
+            184
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 107,
+          "frame_ms": 48.90770000000089,
+          "cpu_and_upload_ms": 39.76040000000225,
+          "render_finish_ms": 9.067999999999188,
+          "swap_ms": 0.07929999999944926,
+          "rect": [
+            52,
+            130,
+            127,
+            184
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 108,
+          "frame_ms": 51.574099999999845,
+          "cpu_and_upload_ms": 42.30240000000052,
+          "render_finish_ms": 9.197100000001512,
+          "swap_ms": 0.0745999999978153,
+          "rect": [
+            52,
+            130,
+            127,
+            184
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 109,
+          "frame_ms": 44.216199999997485,
+          "cpu_and_upload_ms": 34.943299999998345,
+          "render_finish_ms": 9.224100000000846,
+          "swap_ms": 0.04879999999829465,
+          "rect": [
+            52,
+            130,
+            127,
+            184
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 110,
+          "frame_ms": 46.346100000000945,
+          "cpu_and_upload_ms": 35.98699999999866,
+          "render_finish_ms": 10.308900000001842,
+          "swap_ms": 0.050200000000444334,
+          "rect": [
+            52,
+            130,
+            127,
+            184
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 111,
+          "frame_ms": 43.10919999999996,
+          "cpu_and_upload_ms": 33.530599999998856,
+          "render_finish_ms": 9.527700000003136,
+          "swap_ms": 0.05089999999796646,
+          "rect": [
+            52,
+            130,
+            127,
+            184
+          ],
+          "bytes": 48600
+        },
+        {
+          "frame": 112,
+          "frame_ms": 56.643099999998725,
+          "cpu_and_upload_ms": 47.06109999999697,
+          "render_finish_ms": 9.515700000001459,
+          "swap_ms": 0.06630000000029668,
+          "rect": [
+            61,
+            108,
+            137,
+            191
+          ],
+          "bytes": 75696
+        },
+        {
+          "frame": 113,
+          "frame_ms": 54.58709999999911,
+          "cpu_and_upload_ms": 44.843499999998926,
+          "render_finish_ms": 9.695300000000628,
+          "swap_ms": 0.04829999999955703,
+          "rect": [
+            61,
+            108,
+            137,
+            191
+          ],
+          "bytes": 75696
+        }
+      ],
+      "timing_ms": {
+        "frame_ms": {
+          "p50": 45.61899999999941,
+          "p95": 60.11357000000057,
+          "p99": 73.47427100000108
+        },
+        "cpu_and_upload_ms": {
+          "p50": 36.02664999999927,
+          "p95": 50.143884999999955,
+          "p99": 62.98399000000066
+        },
+        "render_finish_ms": {
+          "p50": 9.553749999999361,
+          "p95": 10.945164999999335,
+          "p99": 11.362157000000668
+        },
+        "swap_ms": {
+          "p50": 0.05084999999915851,
+          "p95": 0.11744000000000197,
+          "p99": 0.20639699999874153
+        }
+      },
+      "history_bytes": 996744,
+      "weight_sha256": "6ab203f81d824ee98ff1d354e18c42875ade7967829dbc3c14ca9675aa62f07c",
+      "weight_bytes": 792588,
+      "texture_level0_bytes": 792592,
+      "measured_stats": {
+        "shader_compiles": 3,
+        "updates": 0,
+        "uploaded_bytes": 0,
+        "texture_updates": 113,
+        "texture_uploaded_bytes": 5494408,
+        "meshes": 7,
+        "renderer": "Intel(R) UHD Graphics 620",
+        "gl_version": "3.3.0 - Build 27.20.100.8682"
+      },
+      "measured_texture_updates": 110,
+      "measured_uploaded_bytes": 5397204,
+      "final_stats": {
+        "shader_compiles": 3,
+        "updates": 0,
+        "uploaded_bytes": 0,
+        "texture_updates": 113,
+        "texture_uploaded_bytes": 5494408,
+        "meshes": 7,
+        "renderer": "Intel(R) UHD Graphics 620",
+        "gl_version": "3.3.0 - Build 27.20.100.8682"
+      }
+    },
+    "layered": {
+      "initial_stats": {
+        "shader_compiles": 3,
+        "updates": 0,
+        "uploaded_bytes": 0,
+        "texture_updates": 0,
+        "texture_uploaded_bytes": 0,
+        "meshes": 7,
+        "renderer": "Intel(R) UHD Graphics 620",
+        "gl_version": "3.3.0 - Build 27.20.100.8682"
+      },
+      "invalid_batches": [
+        {
+          "case": "later-id",
+          "error": "texture ID is out of range"
+        },
+        {
+          "case": "duplicate",
+          "error": "texture update batch contains a duplicate texture ID"
+        },
+        {
+          "case": "out-of-bounds",
+          "error": "texture update rectangle is outside the texture bounds"
+        }
+      ],
+      "transfer_state_check": {
+        "pixel_transfer_state_exact": true,
+        "wrong_thread": "terrain_lab call rejected: handle belongs to another thread",
+        "wrong_context": "terrain_lab call rejected: handle belongs to another OpenGL context"
+      },
+      "budget_event_check": {
+        "rejected_without_exiting": true,
+        "rollback_gpu_exact": true
+      },
+      "measurement_start_stats": {
+        "shader_compiles": 3,
+        "updates": 0,
+        "uploaded_bytes": 0,
+        "texture_updates": 3,
+        "texture_uploaded_bytes": 32404,
+        "meshes": 7,
+        "renderer": "Intel(R) UHD Graphics 620",
+        "gl_version": "3.3.0 - Build 27.20.100.8682"
+      },
+      "checkpoints": {
+        "initial": {
+          "weight_sha256": "7f1c69071af35aa1467ca786e1ead11be620793ea3cef67d026c657e50a448fb",
+          "gpu_textures_exact": true,
+          "geometry_unchanged": true,
+          "fresh_color_far_shadow_exact": true
+        },
+        "rock": {
+          "weight_sha256": "41c0e36c01b0531e2ce25d93df7ae5bb9289112513860dcb8ca11aedb8358c99",
+          "gpu_textures_exact": true,
+          "geometry_unchanged": true,
+          "fresh_color_far_shadow_exact": true
+        },
+        "grass": {
+          "weight_sha256": "241bb3fa8504b1c0c61b4ab092e5965e40b2922cba3323a0b91f5254bfb7837c",
+          "gpu_textures_exact": true,
+          "geometry_unchanged": true,
+          "fresh_color_far_shadow_exact": true
+        },
+        "soil": {
+          "weight_sha256": "ad87faa11a9361fe7e686f498fe55e32e17b7cd64524cd10c6f192165dc23bc6",
+          "gpu_textures_exact": true,
+          "geometry_unchanged": true,
+          "fresh_color_far_shadow_exact": true
+        },
+        "erase": {
+          "weight_sha256": "6ab203f81d824ee98ff1d354e18c42875ade7967829dbc3c14ca9675aa62f07c",
+          "gpu_textures_exact": true,
+          "geometry_unchanged": true,
+          "fresh_color_far_shadow_exact": true
+        },
+        "cancel": {
+          "weight_sha256": "6ab203f81d824ee98ff1d354e18c42875ade7967829dbc3c14ca9675aa62f07c",
+          "gpu_textures_exact": true,
+          "geometry_unchanged": true
+        },
+        "undo": {
+          "weight_sha256": "ad87faa11a9361fe7e686f498fe55e32e17b7cd64524cd10c6f192165dc23bc6",
+          "gpu_textures_exact": true,
+          "geometry_unchanged": true,
+          "fresh_color_far_shadow_exact": true
+        },
+        "redo": {
+          "weight_sha256": "6ab203f81d824ee98ff1d354e18c42875ade7967829dbc3c14ca9675aa62f07c",
+          "gpu_textures_exact": true,
+          "geometry_unchanged": true
+        }
+      },
+      "measured_frames": [
+        {
+          "frame": 0,
+          "frame_ms": 18.596200000004615,
+          "cpu_and_upload_ms": 8.283099999999877,
+          "render_finish_ms": 10.241700000001686,
+          "swap_ms": 0.07140000000305236,
+          "rect": [
+            119,
+            32,
+            193,
+            86
+          ],
+          "bytes": 15984
+        },
+        {
+          "frame": 1,
+          "frame_ms": 14.861299999999744,
+          "cpu_and_upload_ms": 4.756700000001501,
+          "render_finish_ms": 9.99829999999946,
+          "swap_ms": 0.10629999999878237,
+          "rect": [
+            121,
+            34,
+            196,
+            88
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 2,
+          "frame_ms": 14.272500000004129,
+          "cpu_and_upload_ms": 3.90469999999965,
+          "render_finish_ms": 10.164500000001908,
+          "swap_ms": 0.20330000000257087,
+          "rect": [
+            122,
+            38,
+            197,
+            92
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 3,
+          "frame_ms": 16.38120000000498,
+          "cpu_and_upload_ms": 6.201400000001911,
+          "render_finish_ms": 10.131100000002391,
+          "swap_ms": 0.048700000000678756,
+          "rect": [
+            120,
+            40,
+            196,
+            97
+          ],
+          "bytes": 17328
+        },
+        {
+          "frame": 4,
+          "frame_ms": 14.387999999996737,
+          "cpu_and_upload_ms": 4.2545999999958894,
+          "render_finish_ms": 10.08570000000475,
+          "swap_ms": 0.047699999996098086,
+          "rect": [
+            121,
+            47,
+            196,
+            101
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 5,
+          "frame_ms": 14.885100000000762,
+          "cpu_and_upload_ms": 4.549999999994725,
+          "render_finish_ms": 10.284300000002133,
+          "swap_ms": 0.05080000000390328,
+          "rect": [
+            120,
+            51,
+            195,
+            105
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 6,
+          "frame_ms": 14.47650000000067,
+          "cpu_and_upload_ms": 4.110600000004183,
+          "render_finish_ms": 10.311099999995577,
+          "swap_ms": 0.05480000000090968,
+          "rect": [
+            121,
+            55,
+            196,
+            109
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 7,
+          "frame_ms": 14.738700000002325,
+          "cpu_and_upload_ms": 4.086100000002091,
+          "render_finish_ms": 10.536899999998184,
+          "swap_ms": 0.11570000000205027,
+          "rect": [
+            120,
+            59,
+            195,
+            113
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 8,
+          "frame_ms": 14.362199999993663,
+          "cpu_and_upload_ms": 3.891599999995776,
+          "render_finish_ms": 10.420000000003427,
+          "swap_ms": 0.05059999999446063,
+          "rect": [
+            120,
+            63,
+            195,
+            117
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 9,
+          "frame_ms": 14.70650000000262,
+          "cpu_and_upload_ms": 4.097300000005077,
+          "render_finish_ms": 10.559099999994714,
+          "swap_ms": 0.05010000000282844,
+          "rect": [
+            120,
+            68,
+            195,
+            122
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 10,
+          "frame_ms": 14.54869999999886,
+          "cpu_and_upload_ms": 4.226299999999128,
+          "render_finish_ms": 10.272000000000503,
+          "swap_ms": 0.05039999999922884,
+          "rect": [
+            120,
+            72,
+            195,
+            126
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 11,
+          "frame_ms": 14.558100000002128,
+          "cpu_and_upload_ms": 4.2061999999987165,
+          "render_finish_ms": 10.291799999997409,
+          "swap_ms": 0.060100000006002574,
+          "rect": [
+            121,
+            76,
+            196,
+            130
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 12,
+          "frame_ms": 14.159999999996842,
+          "cpu_and_upload_ms": 3.9488999999974794,
+          "render_finish_ms": 10.159500000000321,
+          "swap_ms": 0.0515999999990413,
+          "rect": [
+            121,
+            80,
+            195,
+            134
+          ],
+          "bytes": 15984
+        },
+        {
+          "frame": 13,
+          "frame_ms": 15.019399999999905,
+          "cpu_and_upload_ms": 4.083700000002466,
+          "render_finish_ms": 10.407999999998196,
+          "swap_ms": 0.5276999999992427,
+          "rect": [
+            120,
+            84,
+            195,
+            138
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 14,
+          "frame_ms": 15.514000000003136,
+          "cpu_and_upload_ms": 5.465800000003185,
+          "render_finish_ms": 9.996299999997404,
+          "swap_ms": 0.05190000000254713,
+          "rect": [
+            120,
+            88,
+            195,
+            142
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 15,
+          "frame_ms": 14.774899999999036,
+          "cpu_and_upload_ms": 4.509699999999839,
+          "render_finish_ms": 10.213199999995481,
+          "swap_ms": 0.05200000000371574,
+          "rect": [
+            121,
+            92,
+            196,
+            146
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 16,
+          "frame_ms": 14.668999999997823,
+          "cpu_and_upload_ms": 4.564999999999486,
+          "render_finish_ms": 10.052899999998033,
+          "swap_ms": 0.05110000000030368,
+          "rect": [
+            121,
+            96,
+            196,
+            150
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 17,
+          "frame_ms": 14.730200000002469,
+          "cpu_and_upload_ms": 4.044000000000381,
+          "render_finish_ms": 10.637899999998979,
+          "swap_ms": 0.048300000003109744,
+          "rect": [
+            121,
+            101,
+            196,
+            155
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 18,
+          "frame_ms": 14.512899999999718,
+          "cpu_and_upload_ms": 3.8489999999953284,
+          "render_finish_ms": 10.607900000003667,
+          "swap_ms": 0.05600000000072214,
+          "rect": [
+            120,
+            105,
+            195,
+            159
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 19,
+          "frame_ms": 14.358500000000163,
+          "cpu_and_upload_ms": 3.9555999999976166,
+          "render_finish_ms": 10.353600000001961,
+          "swap_ms": 0.04930000000058499,
+          "rect": [
+            120,
+            109,
+            195,
+            163
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 20,
+          "frame_ms": 15.885699999998337,
+          "cpu_and_upload_ms": 4.446000000001504,
+          "render_finish_ms": 11.384299999996017,
+          "swap_ms": 0.05540000000081591,
+          "rect": [
+            121,
+            113,
+            195,
+            167
+          ],
+          "bytes": 15984
+        },
+        {
+          "frame": 21,
+          "frame_ms": 15.206200000001502,
+          "cpu_and_upload_ms": 4.616100000006895,
+          "render_finish_ms": 10.535099999998465,
+          "swap_ms": 0.05499999999614147,
+          "rect": [
+            121,
+            117,
+            196,
+            171
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 22,
+          "frame_ms": 15.713200000000427,
+          "cpu_and_upload_ms": 4.607200000002365,
+          "render_finish_ms": 11.05139999999949,
+          "swap_ms": 0.05459999999857246,
+          "rect": [
+            121,
+            121,
+            196,
+            175
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 23,
+          "frame_ms": 15.444999999999709,
+          "cpu_and_upload_ms": 4.612299999998015,
+          "render_finish_ms": 10.762700000000791,
+          "swap_ms": 0.07000000000090267,
+          "rect": [
+            120,
+            126,
+            195,
+            180
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 24,
+          "frame_ms": 15.644399999999337,
+          "cpu_and_upload_ms": 4.732400000001746,
+          "render_finish_ms": 10.847599999998181,
+          "swap_ms": 0.06439999999940937,
+          "rect": [
+            120,
+            130,
+            195,
+            184
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 25,
+          "frame_ms": 15.950499999995316,
+          "cpu_and_upload_ms": 4.9263999999951125,
+          "render_finish_ms": 10.969700000003968,
+          "swap_ms": 0.05439999999623524,
+          "rect": [
+            121,
+            133,
+            196,
+            187
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 26,
+          "frame_ms": 16.53980000000388,
+          "cpu_and_upload_ms": 5.2170000000018035,
+          "render_finish_ms": 11.271100000001866,
+          "swap_ms": 0.05170000000020991,
+          "rect": [
+            120,
+            138,
+            195,
+            192
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 27,
+          "frame_ms": 17.353400000004626,
+          "cpu_and_upload_ms": 5.037100000002681,
+          "render_finish_ms": 12.260300000001223,
+          "swap_ms": 0.05600000000072214,
+          "rect": [
+            120,
+            142,
+            195,
+            196
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 28,
+          "frame_ms": 17.664199999998687,
+          "cpu_and_upload_ms": 5.107399999999984,
+          "render_finish_ms": 12.499900000001674,
+          "swap_ms": 0.05689999999702877,
+          "rect": [
+            121,
+            146,
+            196,
+            200
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 29,
+          "frame_ms": 17.443000000000097,
+          "cpu_and_upload_ms": 4.9120999999985315,
+          "render_finish_ms": 12.470399999997994,
+          "swap_ms": 0.060500000003571586,
+          "rect": [
+            121,
+            150,
+            196,
+            204
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 30,
+          "frame_ms": 17.072599999998772,
+          "cpu_and_upload_ms": 4.359699999994859,
+          "render_finish_ms": 12.64770000000226,
+          "swap_ms": 0.06520000000165282,
+          "rect": [
+            121,
+            154,
+            196,
+            208
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 31,
+          "frame_ms": 15.549199999995267,
+          "cpu_and_upload_ms": 4.433999999996274,
+          "render_finish_ms": 11.05789999999729,
+          "swap_ms": 0.05730000000170321,
+          "rect": [
+            121,
+            158,
+            196,
+            212
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 32,
+          "frame_ms": 11.77950000000294,
+          "cpu_and_upload_ms": 0.7698000000004868,
+          "render_finish_ms": 10.940900000001363,
+          "swap_ms": 0.06880000000109021,
+          "rect": null,
+          "bytes": 0
+        },
+        {
+          "frame": 33,
+          "frame_ms": 18.46739999999869,
+          "cpu_and_upload_ms": 7.008100000000184,
+          "render_finish_ms": 11.389999999998679,
+          "swap_ms": 0.06929999999982783,
+          "rect": [
+            61,
+            37,
+            136,
+            92
+          ],
+          "bytes": 16500
+        },
+        {
+          "frame": 34,
+          "frame_ms": 16.248199999999713,
+          "cpu_and_upload_ms": 5.072600000005423,
+          "render_finish_ms": 11.120099999999411,
+          "swap_ms": 0.05549999999487909,
+          "rect": [
+            62,
+            42,
+            136,
+            96
+          ],
+          "bytes": 15984
+        },
+        {
+          "frame": 35,
+          "frame_ms": 15.471500000003857,
+          "cpu_and_upload_ms": 4.159700000002431,
+          "render_finish_ms": 11.243299999996736,
+          "swap_ms": 0.06850000000468981,
+          "rect": [
+            62,
+            45,
+            137,
+            99
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 36,
+          "frame_ms": 15.819600000000378,
+          "cpu_and_upload_ms": 4.587600000000691,
+          "render_finish_ms": 11.165900000001727,
+          "swap_ms": 0.06609999999795946,
+          "rect": [
+            62,
+            50,
+            137,
+            104
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 37,
+          "frame_ms": 16.8783000000019,
+          "cpu_and_upload_ms": 4.748100000000477,
+          "render_finish_ms": 12.061099999996827,
+          "swap_ms": 0.06910000000459604,
+          "rect": [
+            62,
+            54,
+            137,
+            108
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 38,
+          "frame_ms": 19.026099999997825,
+          "cpu_and_upload_ms": 7.1730999999957135,
+          "render_finish_ms": 11.75930000000136,
+          "swap_ms": 0.09370000000075152,
+          "rect": [
+            61,
+            58,
+            136,
+            112
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 39,
+          "frame_ms": 19.375699999997664,
+          "cpu_and_upload_ms": 7.649300000004189,
+          "render_finish_ms": 11.669099999998878,
+          "swap_ms": 0.05729999999459778,
+          "rect": [
+            61,
+            62,
+            136,
+            116
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 40,
+          "frame_ms": 16.71200000000539,
+          "cpu_and_upload_ms": 5.2511000000023955,
+          "render_finish_ms": 11.406200000003253,
+          "swap_ms": 0.05469999999974107,
+          "rect": [
+            61,
+            66,
+            136,
+            120
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 41,
+          "frame_ms": 17.81109999999586,
+          "cpu_and_upload_ms": 6.796299999997757,
+          "render_finish_ms": 10.94489999999837,
+          "swap_ms": 0.06989999999973406,
+          "rect": [
+            62,
+            70,
+            136,
+            124
+          ],
+          "bytes": 15984
+        },
+        {
+          "frame": 42,
+          "frame_ms": 15.909700000001692,
+          "cpu_and_upload_ms": 4.8918999999969515,
+          "render_finish_ms": 10.908499999999322,
+          "swap_ms": 0.10930000000541895,
+          "rect": [
+            62,
+            75,
+            137,
+            129
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 43,
+          "frame_ms": 15.842499999997983,
+          "cpu_and_upload_ms": 5.028500000001657,
+          "render_finish_ms": 10.727699999996787,
+          "swap_ms": 0.08629999999953952,
+          "rect": [
+            62,
+            79,
+            136,
+            133
+          ],
+          "bytes": 15984
+        },
+        {
+          "frame": 44,
+          "frame_ms": 16.140000000000043,
+          "cpu_and_upload_ms": 4.498200000000452,
+          "render_finish_ms": 11.549999999999727,
+          "swap_ms": 0.09179999999986421,
+          "rect": [
+            61,
+            83,
+            136,
+            137
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 45,
+          "frame_ms": 16.662799999998867,
+          "cpu_and_upload_ms": 5.619400000000496,
+          "render_finish_ms": 10.989399999999705,
+          "swap_ms": 0.053999999998666226,
+          "rect": [
+            62,
+            87,
+            137,
+            141
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 46,
+          "frame_ms": 15.488099999998894,
+          "cpu_and_upload_ms": 4.624499999998477,
+          "render_finish_ms": 10.794400000001758,
+          "swap_ms": 0.06919999999865922,
+          "rect": [
+            62,
+            91,
+            136,
+            145
+          ],
+          "bytes": 15984
+        },
+        {
+          "frame": 47,
+          "frame_ms": 15.731800000004625,
+          "cpu_and_upload_ms": 4.577100000005885,
+          "render_finish_ms": 11.068999999999107,
+          "swap_ms": 0.08569999999963329,
+          "rect": [
+            62,
+            95,
+            137,
+            149
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 48,
+          "frame_ms": 15.464200000003814,
+          "cpu_and_upload_ms": 4.708100000001991,
+          "render_finish_ms": 10.702500000000725,
+          "swap_ms": 0.053600000001097214,
+          "rect": [
+            61,
+            99,
+            136,
+            154
+          ],
+          "bytes": 16500
+        },
+        {
+          "frame": 49,
+          "frame_ms": 15.64010000000593,
+          "cpu_and_upload_ms": 4.775800000004438,
+          "render_finish_ms": 10.812000000001376,
+          "swap_ms": 0.05230000000011614,
+          "rect": [
+            62,
+            103,
+            137,
+            157
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 50,
+          "frame_ms": 15.037700000000598,
+          "cpu_and_upload_ms": 4.562799999995093,
+          "render_finish_ms": 10.420100000004595,
+          "swap_ms": 0.05480000000090968,
+          "rect": [
+            62,
+            108,
+            137,
+            162
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 51,
+          "frame_ms": 15.2282000000028,
+          "cpu_and_upload_ms": 4.816500000003998,
+          "render_finish_ms": 10.3577999999942,
+          "swap_ms": 0.053900000004603044,
+          "rect": [
+            61,
+            112,
+            136,
+            166
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 52,
+          "frame_ms": 15.380000000000393,
+          "cpu_and_upload_ms": 4.760399999995002,
+          "render_finish_ms": 10.558000000003176,
+          "swap_ms": 0.06160000000221544,
+          "rect": [
+            62,
+            116,
+            137,
+            170
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 53,
+          "frame_ms": 15.514400000000705,
+          "cpu_and_upload_ms": 4.889200000000926,
+          "render_finish_ms": 10.559000000000651,
+          "swap_ms": 0.06619999999912807,
+          "rect": [
+            62,
+            120,
+            137,
+            174
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 54,
+          "frame_ms": 15.165400000000773,
+          "cpu_and_upload_ms": 4.542100000001881,
+          "render_finish_ms": 10.553500000000327,
+          "swap_ms": 0.06979999999856545,
+          "rect": [
+            61,
+            124,
+            136,
+            178
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 55,
+          "frame_ms": 15.280800000006423,
+          "cpu_and_upload_ms": 4.505800000004001,
+          "render_finish_ms": 10.720299999995575,
+          "swap_ms": 0.054700000006846494,
+          "rect": [
+            62,
+            128,
+            136,
+            182
+          ],
+          "bytes": 15984
+        },
+        {
+          "frame": 56,
+          "frame_ms": 15.117199999998832,
+          "cpu_and_upload_ms": 4.24499999999739,
+          "render_finish_ms": 10.818499999999176,
+          "swap_ms": 0.053700000002265824,
+          "rect": [
+            62,
+            133,
+            136,
+            187
+          ],
+          "bytes": 15984
+        },
+        {
+          "frame": 57,
+          "frame_ms": 15.443100000005927,
+          "cpu_and_upload_ms": 4.290200000006905,
+          "render_finish_ms": 11.099999999999,
+          "swap_ms": 0.052900000000022374,
+          "rect": [
+            62,
+            136,
+            137,
+            190
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 58,
+          "frame_ms": 15.58090000000334,
+          "cpu_and_upload_ms": 4.51580000000007,
+          "render_finish_ms": 11.007900000002735,
+          "swap_ms": 0.0572000000005346,
+          "rect": [
+            61,
+            141,
+            136,
+            195
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 59,
+          "frame_ms": 15.697100000004127,
+          "cpu_and_upload_ms": 4.282099999997513,
+          "render_finish_ms": 11.362400000002992,
+          "swap_ms": 0.05260000000362197,
+          "rect": [
+            61,
+            145,
+            136,
+            199
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 60,
+          "frame_ms": 15.306000000002484,
+          "cpu_and_upload_ms": 4.416900000002499,
+          "render_finish_ms": 10.828399999994076,
+          "swap_ms": 0.060700000005908805,
+          "rect": [
+            62,
+            149,
+            137,
+            203
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 61,
+          "frame_ms": 15.82390000000089,
+          "cpu_and_upload_ms": 4.524600000003431,
+          "render_finish_ms": 11.245899999998699,
+          "swap_ms": 0.053399999998759995,
+          "rect": [
+            62,
+            153,
+            137,
+            207
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 62,
+          "frame_ms": 15.304200000002766,
+          "cpu_and_upload_ms": 4.367099999996071,
+          "render_finish_ms": 10.880600000000129,
+          "swap_ms": 0.05650000000656519,
+          "rect": [
+            61,
+            158,
+            136,
+            212
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 63,
+          "frame_ms": 15.94159999999789,
+          "cpu_and_upload_ms": 4.62670000000287,
+          "render_finish_ms": 11.26159999999743,
+          "swap_ms": 0.053299999997591385,
+          "rect": [
+            61,
+            162,
+            136,
+            216
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 64,
+          "frame_ms": 15.170300000001191,
+          "cpu_and_upload_ms": 4.3973000000008255,
+          "render_finish_ms": 10.717100000000812,
+          "swap_ms": 0.05589999999955353,
+          "rect": [
+            62,
+            166,
+            137,
+            220
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 65,
+          "frame_ms": 11.19680000000045,
+          "cpu_and_upload_ms": 0.8205000000032214,
+          "render_finish_ms": 10.325699999995663,
+          "swap_ms": 0.05060000000156606,
+          "rect": null,
+          "bytes": 0
+        },
+        {
+          "frame": 66,
+          "frame_ms": 19.652200000003006,
+          "cpu_and_upload_ms": 7.446000000001618,
+          "render_finish_ms": 12.13210000000231,
+          "swap_ms": 0.07409999999907768,
+          "rect": [
+            91,
+            80,
+            166,
+            134
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 67,
+          "frame_ms": 18.23840000000132,
+          "cpu_and_upload_ms": 7.274299999998846,
+          "render_finish_ms": 10.914300000003152,
+          "swap_ms": 0.04979999999932261,
+          "rect": [
+            91,
+            83,
+            166,
+            137
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 68,
+          "frame_ms": 15.550900000000922,
+          "cpu_and_upload_ms": 4.020599999996932,
+          "render_finish_ms": 11.470000000002756,
+          "swap_ms": 0.060300000001234366,
+          "rect": [
+            91,
+            86,
+            166,
+            140
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 69,
+          "frame_ms": 14.970199999993383,
+          "cpu_and_upload_ms": 4.06319999999738,
+          "render_finish_ms": 10.852999999997337,
+          "swap_ms": 0.053999999998666226,
+          "rect": [
+            91,
+            89,
+            166,
+            143
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 70,
+          "frame_ms": 17.645100000002856,
+          "cpu_and_upload_ms": 5.69960000000691,
+          "render_finish_ms": 11.874199999994062,
+          "swap_ms": 0.07130000000188375,
+          "rect": [
+            91,
+            92,
+            166,
+            146
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 71,
+          "frame_ms": 18.822899999996423,
+          "cpu_and_upload_ms": 6.867200000002072,
+          "render_finish_ms": 11.82060000000007,
+          "swap_ms": 0.13509999999428146,
+          "rect": [
+            91,
+            94,
+            166,
+            148
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 72,
+          "frame_ms": 18.931600000001936,
+          "cpu_and_upload_ms": 5.679200000002993,
+          "render_finish_ms": 13.184500000001265,
+          "swap_ms": 0.06789999999767815,
+          "rect": [
+            91,
+            97,
+            166,
+            151
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 73,
+          "frame_ms": 19.513299999999845,
+          "cpu_and_upload_ms": 8.820899999996357,
+          "render_finish_ms": 10.640800000004447,
+          "swap_ms": 0.0515999999990413,
+          "rect": [
+            91,
+            100,
+            166,
+            154
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 74,
+          "frame_ms": 15.714700000003745,
+          "cpu_and_upload_ms": 4.963500000002341,
+          "render_finish_ms": 10.692800000001057,
+          "swap_ms": 0.05840000000034706,
+          "rect": [
+            91,
+            103,
+            166,
+            157
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 75,
+          "frame_ms": 16.68740000000213,
+          "cpu_and_upload_ms": 5.304999999999893,
+          "render_finish_ms": 11.323699999998382,
+          "swap_ms": 0.05870000000385289,
+          "rect": [
+            91,
+            106,
+            166,
+            160
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 76,
+          "frame_ms": 23.895500000001846,
+          "cpu_and_upload_ms": 10.906200000000865,
+          "render_finish_ms": 12.916199999999378,
+          "swap_ms": 0.07310000000160244,
+          "rect": [
+            91,
+            108,
+            166,
+            162
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 77,
+          "frame_ms": 16.310500000003003,
+          "cpu_and_upload_ms": 5.0687000000024796,
+          "render_finish_ms": 11.084400000001438,
+          "swap_ms": 0.15739999999908605,
+          "rect": [
+            91,
+            111,
+            166,
+            165
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 78,
+          "frame_ms": 15.605799999995895,
+          "cpu_and_upload_ms": 4.461599999999066,
+          "render_finish_ms": 11.032000000000153,
+          "swap_ms": 0.11219999999667607,
+          "rect": [
+            91,
+            114,
+            166,
+            168
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 79,
+          "frame_ms": 15.718299999996077,
+          "cpu_and_upload_ms": 4.511599999993621,
+          "render_finish_ms": 11.047500000003652,
+          "swap_ms": 0.15919999999880474,
+          "rect": [
+            91,
+            117,
+            166,
+            171
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 80,
+          "frame_ms": 16.321200000000147,
+          "cpu_and_upload_ms": 5.146299999999826,
+          "render_finish_ms": 11.118299999999692,
+          "swap_ms": 0.05660000000062837,
+          "rect": [
+            91,
+            120,
+            166,
+            174
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 81,
+          "frame_ms": 16.237300000000232,
+          "cpu_and_upload_ms": 5.1714000000018245,
+          "render_finish_ms": 11.008599999996704,
+          "swap_ms": 0.05730000000170321,
+          "rect": [
+            91,
+            123,
+            166,
+            177
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 82,
+          "frame_ms": 12.146399999998891,
+          "cpu_and_upload_ms": 0.5683999999988032,
+          "render_finish_ms": 11.511499999997454,
+          "swap_ms": 0.0665000000026339,
+          "rect": null,
+          "bytes": 0
+        },
+        {
+          "frame": 83,
+          "frame_ms": 16.17800000000358,
+          "cpu_and_upload_ms": 4.922600000000443,
+          "render_finish_ms": 11.205799999999044,
+          "swap_ms": 0.049600000004090816,
+          "rect": [
+            62,
+            108,
+            136,
+            162
+          ],
+          "bytes": 15984
+        },
+        {
+          "frame": 84,
+          "frame_ms": 14.754499999995119,
+          "cpu_and_upload_ms": 4.191499999997461,
+          "render_finish_ms": 10.504400000002079,
+          "swap_ms": 0.058599999995578855,
+          "rect": [
+            61,
+            111,
+            136,
+            165
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 85,
+          "frame_ms": 14.107100000003925,
+          "cpu_and_upload_ms": 3.756900000006169,
+          "render_finish_ms": 10.267999999996391,
+          "swap_ms": 0.08220000000136451,
+          "rect": [
+            62,
+            112,
+            136,
+            166
+          ],
+          "bytes": 15984
+        },
+        {
+          "frame": 86,
+          "frame_ms": 13.723599999998726,
+          "cpu_and_upload_ms": 3.739699999997015,
+          "render_finish_ms": 9.925899999998933,
+          "swap_ms": 0.05800000000277805,
+          "rect": [
+            61,
+            114,
+            136,
+            168
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 87,
+          "frame_ms": 14.650099999997224,
+          "cpu_and_upload_ms": 3.8650999999987334,
+          "render_finish_ms": 10.738400000001036,
+          "swap_ms": 0.04659999999745423,
+          "rect": [
+            62,
+            116,
+            137,
+            170
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 88,
+          "frame_ms": 14.521800000004248,
+          "cpu_and_upload_ms": 4.736499999999921,
+          "render_finish_ms": 9.73809999999986,
+          "swap_ms": 0.04720000000446589,
+          "rect": [
+            62,
+            118,
+            136,
+            172
+          ],
+          "bytes": 15984
+        },
+        {
+          "frame": 89,
+          "frame_ms": 14.637300000003961,
+          "cpu_and_upload_ms": 4.068000000003735,
+          "render_finish_ms": 10.520599999999547,
+          "swap_ms": 0.048700000000678756,
+          "rect": [
+            62,
+            120,
+            136,
+            174
+          ],
+          "bytes": 15984
+        },
+        {
+          "frame": 90,
+          "frame_ms": 14.141999999999655,
+          "cpu_and_upload_ms": 3.768099999994945,
+          "render_finish_ms": 10.3253000000052,
+          "swap_ms": 0.048599999999510146,
+          "rect": [
+            62,
+            122,
+            137,
+            176
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 91,
+          "frame_ms": 14.287000000003047,
+          "cpu_and_upload_ms": 3.834099999998841,
+          "render_finish_ms": 10.404499999999928,
+          "swap_ms": 0.048400000004278354,
+          "rect": [
+            61,
+            124,
+            136,
+            178
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 92,
+          "frame_ms": 14.942900000001202,
+          "cpu_and_upload_ms": 3.8843999999969014,
+          "render_finish_ms": 11.009600000001285,
+          "swap_ms": 0.048900000003015975,
+          "rect": [
+            61,
+            126,
+            136,
+            180
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 93,
+          "frame_ms": 14.635599999998306,
+          "cpu_and_upload_ms": 3.875799999995877,
+          "render_finish_ms": 10.709900000001937,
+          "swap_ms": 0.04990000000049122,
+          "rect": [
+            61,
+            128,
+            136,
+            182
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 94,
+          "frame_ms": 14.94549999999606,
+          "cpu_and_upload_ms": 4.185199999994893,
+          "render_finish_ms": 10.687600000004238,
+          "swap_ms": 0.072699999996928,
+          "rect": [
+            61,
+            129,
+            136,
+            184
+          ],
+          "bytes": 16500
+        },
+        {
+          "frame": 95,
+          "frame_ms": 16.459799999999802,
+          "cpu_and_upload_ms": 6.247899999998197,
+          "render_finish_ms": 10.163300000002096,
+          "swap_ms": 0.048599999999510146,
+          "rect": [
+            62,
+            131,
+            137,
+            185
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 96,
+          "frame_ms": 14.088700000002063,
+          "cpu_and_upload_ms": 3.896399999995026,
+          "render_finish_ms": 10.117800000003285,
+          "swap_ms": 0.07450000000375212,
+          "rect": [
+            62,
+            133,
+            137,
+            187
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 97,
+          "frame_ms": 14.25079999999923,
+          "cpu_and_upload_ms": 4.311700000002361,
+          "render_finish_ms": 9.878399999998067,
+          "swap_ms": 0.06069999999880338,
+          "rect": [
+            62,
+            135,
+            136,
+            189
+          ],
+          "bytes": 15984
+        },
+        {
+          "frame": 98,
+          "frame_ms": 14.207300000002476,
+          "cpu_and_upload_ms": 4.021999999999082,
+          "render_finish_ms": 10.138600000004772,
+          "swap_ms": 0.04669999999862284,
+          "rect": [
+            61,
+            137,
+            136,
+            191
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 99,
+          "frame_ms": 10.89799999999741,
+          "cpu_and_upload_ms": 0.46659999999576485,
+          "render_finish_ms": 10.376200000003166,
+          "swap_ms": 0.05519999999847869,
+          "rect": null,
+          "bytes": 0
+        },
+        {
+          "frame": 100,
+          "frame_ms": 19.647700000000157,
+          "cpu_and_upload_ms": 5.1930999999996175,
+          "render_finish_ms": 14.381900000003611,
+          "swap_ms": 0.072699999996928,
+          "rect": [
+            52,
+            130,
+            127,
+            184
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 101,
+          "frame_ms": 51.74670000000248,
+          "cpu_and_upload_ms": 31.3896999999983,
+          "render_finish_ms": 20.28789999999958,
+          "swap_ms": 0.06910000000459604,
+          "rect": [
+            52,
+            130,
+            127,
+            184
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 102,
+          "frame_ms": 20.376800000001083,
+          "cpu_and_upload_ms": 6.481000000000847,
+          "render_finish_ms": 13.806899999998734,
+          "swap_ms": 0.08890000000150167,
+          "rect": [
+            52,
+            130,
+            127,
+            184
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 103,
+          "frame_ms": 19.366099999999165,
+          "cpu_and_upload_ms": 8.250400000001434,
+          "render_finish_ms": 11.06060000000042,
+          "swap_ms": 0.05509999999731008,
+          "rect": [
+            52,
+            130,
+            127,
+            184
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 104,
+          "frame_ms": 15.189900000002865,
+          "cpu_and_upload_ms": 4.463399999998785,
+          "render_finish_ms": 10.671200000004433,
+          "swap_ms": 0.0552999999996473,
+          "rect": [
+            52,
+            130,
+            127,
+            184
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 105,
+          "frame_ms": 15.486199999998007,
+          "cpu_and_upload_ms": 4.540399999996225,
+          "render_finish_ms": 10.861600000005467,
+          "swap_ms": 0.084199999996315,
+          "rect": [
+            52,
+            130,
+            127,
+            184
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 106,
+          "frame_ms": 15.412999999995236,
+          "cpu_and_upload_ms": 4.355899999993085,
+          "render_finish_ms": 11.001400000004935,
+          "swap_ms": 0.05569999999721631,
+          "rect": [
+            52,
+            130,
+            127,
+            184
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 107,
+          "frame_ms": 15.529399999998361,
+          "cpu_and_upload_ms": 4.466899999997054,
+          "render_finish_ms": 11.004700000000867,
+          "swap_ms": 0.05780000000044083,
+          "rect": [
+            52,
+            130,
+            127,
+            184
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 108,
+          "frame_ms": 15.419100000002572,
+          "cpu_and_upload_ms": 4.496799999998302,
+          "render_finish_ms": 10.848100000004024,
+          "swap_ms": 0.07420000000024629,
+          "rect": [
+            52,
+            130,
+            127,
+            184
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 109,
+          "frame_ms": 15.525599999996587,
+          "cpu_and_upload_ms": 4.701499999995917,
+          "render_finish_ms": 10.770400000005509,
+          "swap_ms": 0.0536999999951604,
+          "rect": [
+            52,
+            130,
+            127,
+            184
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 110,
+          "frame_ms": 15.093000000000245,
+          "cpu_and_upload_ms": 4.366199999999765,
+          "render_finish_ms": 10.667399999995553,
+          "swap_ms": 0.05940000000492773,
+          "rect": [
+            52,
+            130,
+            127,
+            184
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 111,
+          "frame_ms": 12.803899999994428,
+          "cpu_and_upload_ms": 2.3363999999972407,
+          "render_finish_ms": 10.416399999996884,
+          "swap_ms": 0.05110000000030368,
+          "rect": [
+            52,
+            130,
+            127,
+            184
+          ],
+          "bytes": 16200
+        },
+        {
+          "frame": 112,
+          "frame_ms": 13.579299999996408,
+          "cpu_and_upload_ms": 2.9024999999975876,
+          "render_finish_ms": 10.618100000002073,
+          "swap_ms": 0.058699999996747465,
+          "rect": [
+            61,
+            108,
+            137,
+            191
+          ],
+          "bytes": 25232
+        },
+        {
+          "frame": 113,
+          "frame_ms": 14.286599999998373,
+          "cpu_and_upload_ms": 3.7223999999937973,
+          "render_finish_ms": 10.51180000000329,
+          "swap_ms": 0.05240000000128475,
+          "rect": [
+            61,
+            108,
+            137,
+            191
+          ],
+          "bytes": 25232
+        }
+      ],
+      "timing_ms": {
+        "frame_ms": {
+          "p50": 15.478850000000932,
+          "p95": 19.423859999998427,
+          "p99": 23.43806900000176
+        },
+        "cpu_and_upload_ms": {
+          "p50": 4.532499999999828,
+          "p95": 7.517155000002517,
+          "p99": 10.635111000000288
+        },
+        "render_finish_ms": {
+          "p50": 10.815250000000276,
+          "p95": 12.551630000001879,
+          "p99": 14.307150000002979
+        },
+        "swap_ms": {
+          "p50": 0.05674999999882857,
+          "p95": 0.11342499999855703,
+          "p99": 0.19756700000208147
+        }
+      },
+      "history_bytes": 996744,
+      "weight_sha256": "6ab203f81d824ee98ff1d354e18c42875ade7967829dbc3c14ca9675aa62f07c",
+      "weight_bytes": 792588,
+      "texture_level0_bytes": 4973572,
+      "measured_stats": {
+        "shader_compiles": 3,
+        "updates": 0,
+        "uploaded_bytes": 0,
+        "texture_updates": 113,
+        "texture_uploaded_bytes": 1831472,
+        "meshes": 7,
+        "renderer": "Intel(R) UHD Graphics 620",
+        "gl_version": "3.3.0 - Build 27.20.100.8682"
+      },
+      "measured_texture_updates": 110,
+      "measured_uploaded_bytes": 1799068,
+      "recording": {
+        "separate_replay": true,
+        "frames": 23,
+        "file": "paint-replay.gif"
+      },
+      "final_stats": {
+        "shader_compiles": 3,
+        "updates": 0,
+        "uploaded_bytes": 0,
+        "texture_updates": 224,
+        "texture_uploaded_bytes": 3894736,
+        "meshes": 7,
+        "renderer": "Intel(R) UHD Graphics 620",
+        "gl_version": "3.3.0 - Build 27.20.100.8682"
+      }
+    }
+  },
+  "git_head": "7a4e8849ab91aa6f448426916373cb53559d2846",
+  "git_status_before": " M FIRST.md\n M PROJECT.md\n M docs/ARCHITECTURE.md\n M docs/ai-api-v1.md\n M docs/ai-view-api.md\n M docs/ai/FILE_REGISTRY.md\n M docs/editor-startup.md\n M docs/live-editor-ipc.md\n M experiments/world-surroundings/PAINT-DESIGN.md\n M experiments/world-surroundings/PAINT.md\n M experiments/world-surroundings/README.md\n M experiments/world-surroundings/review/README.md\n M experiments/world-surroundings/sculpt_native.py\n M experiments/world-surroundings/terrain_bridge.cpp\n M mini3d/api.py\n M mini3d/editor.py\n M mini3d/editor_runtime.py\n M mini3d/editor_ui.py\n M mini3d/native_renderer.py\n M spqr-native/src/renderer.cpp\n M spqr-native/src/renderer.hpp\n M tests/editor_ui_layout_smoke.py\n M tests/photo_workflow_ui_smoke.py\n M tests/test_api.py\n M tests/test_api_view.py\n M tests/test_editor.py\n?? experiments/world-surroundings/QUALITY-SOURCES.md\n?? experiments/world-surroundings/QUALITY.md\n?? experiments/world-surroundings/SUR-00.md\n?? experiments/world-surroundings/SURROUNDINGS.md\n?? experiments/world-surroundings/assets/material-heights/\n?? experiments/world-surroundings/capture_quality_slope.py\n?? experiments/world-surroundings/prepare_quality_assets.py\n?? experiments/world-surroundings/quality_blend.py\n?? experiments/world-surroundings/quality_materials.py\n?? experiments/world-surroundings/review/lab02b-q1-20261019/\n?? experiments/world-surroundings/review/sur00-20261020/\n?? experiments/world-surroundings/run_quality.py\n?? experiments/world-surroundings/run_surroundings.py\n?? experiments/world-surroundings/surroundings_routes.py\n?? experiments/world-surroundings/surroundings_scene.py\n?? tests/editor_loading_capture_smoke.py\n?? tests/test_world_surroundings_frame_stats.py\n?? tests/test_world_surroundings_height_assets.py\n?? tests/test_world_surroundings_quality_blend.py\n?? tests/test_world_surroundings_quality_materials.py\n?? tests/test_world_surroundings_sur00.py\n?? tests/test_world_surroundings_surroundings_routes.py\n?? tests/test_world_surroundings_surroundings_scene.py\n?? tests/world_surroundings_frame_stats_smoke.py\n",
+  "library_sha256": "7af5e4f604f1d9291944a1409d3e32f9c1544f422c4909725fc00b603f9837ae",
+  "source_sha256": {
+    "experiments/world-surroundings/baseline_scene.py": "e9b5fdd485fcaa0190a30a927632f2ca04764be5292f6cf62061f78ba7bc1c30",
+    "experiments/world-surroundings/capture_quality_slope.py": "59e10892751d9efb1d6b359f2b8e15eb088061e74efbf2862a817b2d5c8c5052",
+    "experiments/world-surroundings/heightfield.py": "3d7eb16969955715ece931f60853ed8f1aa14572a06fd00a89bd7868d8aad98b",
+    "experiments/world-surroundings/heightmap_io.py": "b6e51ca1909e6b6b6ec30a9da81a218ea4194dee69d04bf863c26e78fa8d3292",
+    "experiments/world-surroundings/material_maps.py": "672a6a1405c5f085d7c7bf8614dc2de820b20295b5d3aba21972a6da429238a4",
+    "experiments/world-surroundings/paint.py": "4ee82716e798c4dd13fb16f21f55f6fa453efe4aa72279f236d5d7964cc1b37b",
+    "experiments/world-surroundings/prepare_material_assets.py": "a1f9f216e0a70e126da24d9a0bfaa61d5e2e2b14801930b2aaa7222835e9f607",
+    "experiments/world-surroundings/prepare_quality_assets.py": "4e6e30ec043396994fa989a5fd4ffe11789c62ffe5f734e9f8a6ca62cc350a39",
+    "experiments/world-surroundings/quality_blend.py": "2739563e9e69ec1acf4b6115c7d5623522ac723260965f9badaa37401f354189",
+    "experiments/world-surroundings/quality_materials.py": "26d5b54d799a1ede60c666fc3787a348c88175531ec83c78e755e526700bd1b1",
+    "experiments/world-surroundings/run_baseline.py": "1402a7807c9c615e65dc5448368f617dc84a7d81abace8841d46774ebb728a17",
+    "experiments/world-surroundings/run_heightmap.py": "69595b72dbf05d5d20d2b3495bd8347db624bc61432bb9165c671997b2931574",
+    "experiments/world-surroundings/run_paint.py": "327065746c7a4c85ddf404669f88cfb6026ef72eb829629b401d47f80a5232a3",
+    "experiments/world-surroundings/run_quality.py": "f56acd54c41b13342a2122f9bafd387c20c525916a3419b3f1be297e5225aa78",
+    "experiments/world-surroundings/run_sculpt.py": "5e3e023de702a4aadc6a942302a132cb29c4c32ea253a5012e623e71891a5460",
+    "experiments/world-surroundings/run_surroundings.py": "8444ffac23f990e061432a658816fc765589a03813dcaf41c4447ede93e0f188",
+    "experiments/world-surroundings/sculpt.py": "a728fa37fdae575137347cfc9cd657c02c0b4cac20dbbd23ff5b1a7baa87635c",
+    "experiments/world-surroundings/sculpt_native.py": "8a8dc9de83c700691adcf5cf8986e035ca14f5ed05a4469b3faca7a409b6c484",
+    "experiments/world-surroundings/surroundings_routes.py": "f1f293260ba815dd1708b5df6db51724f794f064a2cede853c2dc6305fa0eb0e",
+    "experiments/world-surroundings/surroundings_scene.py": "e1938d89152f79efe50ad9a99ddc69b0d4765cf0691d964e8c6a8fd2b291f4e2",
+    "mini3d/atmosphere.py": "e5902a2807692ed169a339e31f1d572c40b111bf2b98b24771a00be306aa9be9",
+    "mini3d/camera.py": "4dc8a3cae6eedf088add4355d683276fd3bb49c1843031ce6d9cf7d73ad7f96e",
+    "mini3d/environment.py": "8237dae2d8bc2cea0c4c9234e78a1954925b6c9c38569df79bbaba763bf6c746",
+    "mini3d/gl_renderer.py": "04c11313465698ce40141f997898fcca1297c693269bae57a07690cf3bee8e1b",
+    "mini3d/lighting.py": "fb3b7cfc34b17d1ba4995bb7848e94d8fdb87039ab9c8e44ee4eb0cfb7ef20db",
+    "mini3d/material_renderer.py": "e7cb48b338cef325543bc37aba435547bf23e10c67a472fe46dd5e34f7da4e11",
+    "mini3d/material_shaders.py": "753e4c71127ba0be80286ed6194bc49c9d920faf3f29410c02b5c3bac1f8f4ae",
+    "mini3d/native_photo_bundle.py": "ad8ec232cd2d77878353d019eeb1fade0ef55dee06c7d27e9b4cd022a141ca53",
+    "mini3d/photo_environment.py": "419fa9817da6580dec008b00c9223def1b1c0a71aa6fb9575fa27c800234c7dd",
+    "mini3d/resources/ibl/neutral.json": "06dd9392a8988ae900dc4393fe62c55fdbdccd44fbe672823a6425cbbb0610d1",
+    "mini3d/resources/ibl/neutral.npz": "6679cedf9bc3a683be6ec70b3cf4208305b0929045753e1244df3bbc150c3cc9",
+    "mini3d/resources/ibl/NOTICE.md": "d6aac45253dd4baf85a0742fb1d736dc6f779a630a9d2902feb6b9b259633f3b",
+    "mini3d/scene.py": "b0cc2d5f548265fc1eca040b74aeea7495ee17cfd2b5b4555b8fdf75dbc80424",
+    "mini3d/shadow_map.py": "1741610950a88ad01c13de32bb24c19de3a729b9c74e5512074103294595b4f3",
+    "mini3d/sky_renderer.py": "eca4057bde62094414828681514affdd7c27d5d94fb3ba12e56b67792fa65845",
+    "native/export_scene.py": "74b0aee9286ed4fd54585e2ef980492ebc65fe135d2e3764853df3345c0cb47d",
+    "spqr-native/CMakeLists.txt": "6757b2691d7024b21d9229bf16f856aee404460452a6a821c49244699516b77d",
+    "spqr-native/FORMAT.md": "24e2cf54ae0a3d39d41d7b39e308974c6e9055cbc5f24a58729fa914648389d5",
+    "spqr-native/shaders/shadow_cascade.glsl": "b86ee641c861a3749c886a953d447bd17e45784fd8d453ae89ab6b268a920dad",
+    "spqr-native/src/bundle.cpp": "ed68ecc54671a3aebe245bd28b92c19c31b22a0363c9f684669e29349f3349cb",
+    "spqr-native/src/bundle.hpp": "93a76e64da21c7ebde033ecd89d2fae0251d76f4de56f349e25251b90694c7ee",
+    "spqr-native/src/gl_api.cpp": "5e19bd2a86ca10339ce34c7e74864f1855d700d88eea95fc37a088b056e8e9e9",
+    "spqr-native/src/gl_api.hpp": "d3803316de402ed8c9f32d301290e4ea87c9e78017b6a8050ec15f93d5a63417",
+    "spqr-native/src/main.cpp": "21acbd4a2143a250b01a8ad7c4b29ae96c08043ae82a2ce4dea3ee1851ef29a6",
+    "spqr-native/src/native_photo.cpp": "65bc3015b6a20544be6e18b411191077d5814751ded67e90227d5968108670c4",
+    "spqr-native/src/native_photo.h": "b1f24689fce0ff83e31f3de425dba32784188dd5d18545232fd81a8fca22905b",
+    "spqr-native/src/platform_win32.cpp": "a7e1e1eb5b93e89e74a111c30df30f4fa747d2885b9be2adadfef013c87ba808",
+    "spqr-native/src/platform_win32.hpp": "998cf091af50ec5eb08b31e3f6845c1082b502e3bf394755628e5634bc11e3c3",
+    "spqr-native/src/renderer.cpp": "579f25d104d67486513a7863a44c56013b0e5059b5720a8112b34b967a6168c2",
+    "spqr-native/src/renderer.hpp": "1aebbb58e4f275a966aac8f51a441798d982efd4e89cd16d2317a8f66ce01e8e",
+    "spqr-native/src/shadow_fit.cpp": "6787b3ad0088835e51e8dd9446dbeee76b65069b5bddc08c2bd0e7449197665c",
+    "spqr-native/src/shadow_fit.hpp": "e8094ecc94c74da774da04c7245935803c1afa686e28e72465e1917a9426f2a7",
+    "experiments/world-surroundings/terrain_bridge.cpp": "7d607690bf1b868dd7654b853950bd30e0ed958ec2c785747fd39bb01e6efa9b",
+    "experiments/world-surroundings/CMakeLists.txt": "dfc10250ce43348354bae9d6af2471b56bf12ef32af74ec57ea8ab0d11a71fb2",
+    "experiments/world-surroundings/assets/materials/manifest.json": "71e0ffe3aa5b1fc573cf59f97044b2fac5f868ae1d8f7f4f1a863a770abadb87",
+    "experiments/world-surroundings/assets/materials/NOTICE.md": "862803620e54262bd40a64fe9f79ae6abb082648f23183b4878388bb9f9942ad",
+    "experiments/world-surroundings/assets/materials/grass/diff.png": "70142ecef681606819df20a1b4fd83d470001a062bc18f5c24b902c5b8ca1f19",
+    "experiments/world-surroundings/assets/materials/grass/nor_gl.png": "f69e476b63f272dbc562e92840db81805d12c5b3f651e2af4e94fef59341549b",
+    "experiments/world-surroundings/assets/materials/grass/rough.png": "2410bb5e52b5f583cc7df670b480e82df659ebfc6f94b69c0c2a1c7984b8861d",
+    "experiments/world-surroundings/assets/materials/rock/diff.png": "a1916d3aebcd68593163a84a41925954f180a24f29d6ed50b04189bc9e8fd41c",
+    "experiments/world-surroundings/assets/materials/rock/nor_gl.png": "b39fdbf9a9895d5146e6ca66da7574d0aeae9a0bf57504a2915718434c023745",
+    "experiments/world-surroundings/assets/materials/rock/rough.png": "13c0915d226521fb56bba264c92a227dbdebcf9a4add3a4957fd9c810582dbe8",
+    "experiments/world-surroundings/assets/materials/soil/diff.png": "159331b676f11fd7956682aa74c0597293f9e2f320d059beaad4efc8b29e6eff",
+    "experiments/world-surroundings/assets/materials/soil/nor_gl.png": "1e3cdf34743e7058be712010835554f66efb1664df92872feaeddda11a77744a",
+    "experiments/world-surroundings/assets/materials/soil/rough.png": "64d259b108d97c29c6b3310c39d95e15becc094863e0f6fdc5f5fe57b4dc3bf9"
+  },
+  "mode": "automated-replay",
+  "automated_checks": true,
+  "identical_input_events": true
+}

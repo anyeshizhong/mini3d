@@ -1,0 +1,1300 @@
+{
+  "stage": "SUR-00",
+  "script_checks_passed": true,
+  "world_visual_acceptance": "not passed",
+  "performance_acceptance": "not passed; SUR-PERF remains open",
+  "interpretation": "representation/diagnostic prototype complete, not a complete freely navigable world",
+  "environment": {
+    "vendor": "Intel",
+    "renderer": "Intel(R) UHD Graphics 620",
+    "version": "3.3.0 - Build 27.20.100.8682",
+    "width": 1081,
+    "height": 662,
+    "msaa": 1,
+    "shadow_far": 1024,
+    "shadow_near": 4096
+  },
+  "samples_per_phase_variant": 360,
+  "measured_frames": 7560,
+  "frame_hashes": {
+    "day-clear": {
+      "A": "af02c872da667ad82e05e511624d55ad1a006fcd16304a68bb974d203f40b1ae",
+      "B": "af02c872da667ad82e05e511624d55ad1a006fcd16304a68bb974d203f40b1ae",
+      "C": "af02c872da667ad82e05e511624d55ad1a006fcd16304a68bb974d203f40b1ae"
+    },
+    "day-haze": {
+      "A": "af02c872da667ad82e05e511624d55ad1a006fcd16304a68bb974d203f40b1ae",
+      "B": "af02c872da667ad82e05e511624d55ad1a006fcd16304a68bb974d203f40b1ae",
+      "C": "af02c872da667ad82e05e511624d55ad1a006fcd16304a68bb974d203f40b1ae"
+    },
+    "day-haze-strong": {
+      "A": "af02c872da667ad82e05e511624d55ad1a006fcd16304a68bb974d203f40b1ae",
+      "B": "af02c872da667ad82e05e511624d55ad1a006fcd16304a68bb974d203f40b1ae",
+      "C": "af02c872da667ad82e05e511624d55ad1a006fcd16304a68bb974d203f40b1ae"
+    },
+    "sunset-haze": {
+      "A": "af02c872da667ad82e05e511624d55ad1a006fcd16304a68bb974d203f40b1ae",
+      "B": "af02c872da667ad82e05e511624d55ad1a006fcd16304a68bb974d203f40b1ae",
+      "C": "af02c872da667ad82e05e511624d55ad1a006fcd16304a68bb974d203f40b1ae"
+    }
+  },
+  "current_camera_bytes_match_measurement": true,
+  "full_frame_ms": {
+    "A": {
+      "static": {
+        "n": 360,
+        "p50": 41.88435000004631,
+        "p95": 66.51553500000205,
+        "p99": 84.86116800001219,
+        "maximum": 179.33579999998983
+      },
+      "outbound": {
+        "n": 360,
+        "p50": 57.88760000001503,
+        "p95": 89.2936999999904,
+        "p99": 117.14493799998183,
+        "maximum": 156.62129999998342
+      },
+      "lateral": {
+        "n": 360,
+        "p50": 48.47299999995869,
+        "p95": 67.66096000001198,
+        "p99": 79.6078420000368,
+        "maximum": 111.43070000002808
+      },
+      "ascent": {
+        "n": 360,
+        "p50": 41.53775000000337,
+        "p95": 51.99070999991592,
+        "p99": 67.75053599999981,
+        "maximum": 100.3877000000557
+      },
+      "orbit": {
+        "n": 360,
+        "p50": 90.66949999997576,
+        "p95": 115.04829999999659,
+        "p99": 125.50201999997745,
+        "maximum": 156.57889999999952
+      },
+      "boundary": {
+        "n": 360,
+        "p50": 91.49700000000394,
+        "p95": 111.15139000003751,
+        "p99": 125.18356200001799,
+        "maximum": 149.54049999994368
+      },
+      "boundary_low": {
+        "n": 360,
+        "p50": 43.91275000000405,
+        "p95": 60.133110000046486,
+        "p99": 67.88552000001235,
+        "maximum": 130.16210000000683
+      }
+    },
+    "B": {
+      "static": {
+        "n": 360,
+        "p50": 35.46675000004029,
+        "p95": 47.03199000000212,
+        "p99": 56.420328000068636,
+        "maximum": 96.00249999999733
+      },
+      "outbound": {
+        "n": 360,
+        "p50": 43.74904999997398,
+        "p95": 74.9428599999959,
+        "p99": 83.47766899997454,
+        "maximum": 88.00619999999526
+      },
+      "lateral": {
+        "n": 360,
+        "p50": 46.224749999993264,
+        "p95": 71.05055499998518,
+        "p99": 97.07431700000092,
+        "maximum": 202.39249999997355
+      },
+      "ascent": {
+        "n": 360,
+        "p50": 41.530299999976705,
+        "p95": 55.89109999998812,
+        "p99": 67.904726999995,
+        "maximum": 122.223100000042
+      },
+      "orbit": {
+        "n": 360,
+        "p50": 97.01250000000528,
+        "p95": 115.55365000004372,
+        "p99": 126.62090400001603,
+        "maximum": 133.141500000022
+      },
+      "boundary": {
+        "n": 360,
+        "p50": 92.56855000000996,
+        "p95": 116.17044500003999,
+        "p99": 131.71320199997078,
+        "maximum": 174.8101999999676
+      },
+      "boundary_low": {
+        "n": 360,
+        "p50": 46.92649999998366,
+        "p95": 56.609214999980395,
+        "p99": 61.44878100002249,
+        "maximum": 69.64120000003504
+      }
+    },
+    "C": {
+      "static": {
+        "n": 360,
+        "p50": 38.8240000000053,
+        "p95": 43.825729999963414,
+        "p99": 46.273391999998246,
+        "maximum": 47.75059999997211
+      },
+      "outbound": {
+        "n": 360,
+        "p50": 64.08189999999081,
+        "p95": 89.00588499998322,
+        "p99": 122.74732000002138,
+        "maximum": 226.17360000003828
+      },
+      "lateral": {
+        "n": 360,
+        "p50": 62.07664999993767,
+        "p95": 84.0314450000676,
+        "p99": 95.16160699998755,
+        "maximum": 100.34319999999752
+      },
+      "ascent": {
+        "n": 360,
+        "p50": 47.28324999999245,
+        "p95": 69.48190499998645,
+        "p99": 82.34346700002287,
+        "maximum": 112.66349999999647
+      },
+      "orbit": {
+        "n": 360,
+        "p50": 104.14710000003424,
+        "p95": 140.37921000006008,
+        "p99": 160.9775179999919,
+        "maximum": 201.58409999999094
+      },
+      "boundary": {
+        "n": 360,
+        "p50": 93.59060000002728,
+        "p95": 122.7665949999988,
+        "p99": 129.8474819999433,
+        "maximum": 147.86800000001676
+      },
+      "boundary_low": {
+        "n": 360,
+        "p50": 52.89035000004105,
+        "p95": 71.27878999995689,
+        "p99": 85.34936999998996,
+        "maximum": 112.62890000000425
+      }
+    }
+  },
+  "geometry": {
+    "terrain": {
+      "vertices": 120373,
+      "triangles": 239360,
+      "grid_rows": 353,
+      "grid_cols": 341,
+      "xy_bounds": [
+        [
+          -9000.0,
+          9000.0
+        ],
+        [
+          -9000.0,
+          9000.0
+        ]
+      ]
+    },
+    "exit_road": {
+      "vertices": 452,
+      "triangles": 450,
+      "sample_count": 226,
+      "width": 6.0,
+      "surface_lift": 0.025,
+      "length": 1799.991174004031
+    },
+    "far_mountains": {
+      "vertices": 12504,
+      "triangles": 24435,
+      "grid_rows": 86,
+      "grid_cols": 195,
+      "xy_bounds": [
+        [
+          -1980.0,
+          1980.0
+        ],
+        [
+          120.0,
+          1890.0
+        ]
+      ]
+    },
+    "city": {
+      "render_mesh_instances": 249,
+      "unique_mesh_resources": 39,
+      "unique_material_resources": 11,
+      "vertices": 15028,
+      "triangles": 8420,
+      "instance_vertices": 87084,
+      "instance_triangles": 57108
+    },
+    "scene": {
+      "render_mesh_instances": 252,
+      "unique_mesh_resources": 42,
+      "unique_material_resources": 14,
+      "vertices": 148357,
+      "triangles": 272665,
+      "instance_vertices": 220413,
+      "instance_triangles": 321353
+    },
+    "scene_root_entities": 106,
+    "external_models": 0,
+    "external_textures": 0,
+    "photographic_ground": false
+  },
+  "resources": {
+    "A": {
+      "counts": {
+        "entities": 251,
+        "meshes": 41,
+        "materials": 13,
+        "textures": 3,
+        "opaque_order": 251,
+        "ground": false,
+        "atmosphere": true
+      },
+      "textures": {
+        "textures": [
+          {
+            "index": 0,
+            "target": 34067,
+            "internal_format": 34843,
+            "parameters": [
+              9729,
+              9729,
+              33071,
+              33071,
+              33071
+            ],
+            "levels": [
+              {
+                "width": 32,
+                "height": 32,
+                "faces": 6,
+                "source_bytes": 98304
+              }
+            ],
+            "allocated_bytes_estimate": 36864
+          },
+          {
+            "index": 1,
+            "target": 34067,
+            "internal_format": 34843,
+            "parameters": [
+              9987,
+              9729,
+              33071,
+              33071,
+              33071
+            ],
+            "levels": [
+              {
+                "width": 256,
+                "height": 256,
+                "faces": 6,
+                "source_bytes": 6291456
+              },
+              {
+                "width": 128,
+                "height": 128,
+                "faces": 6,
+                "source_bytes": 1572864
+              },
+              {
+                "width": 64,
+                "height": 64,
+                "faces": 6,
+                "source_bytes": 393216
+              },
+              {
+                "width": 32,
+                "height": 32,
+                "faces": 6,
+                "source_bytes": 98304
+              },
+              {
+                "width": 16,
+                "height": 16,
+                "faces": 6,
+                "source_bytes": 24576
+              },
+              {
+                "width": 8,
+                "height": 8,
+                "faces": 6,
+                "source_bytes": 6144
+              },
+              {
+                "width": 4,
+                "height": 4,
+                "faces": 6,
+                "source_bytes": 1536
+              },
+              {
+                "width": 2,
+                "height": 2,
+                "faces": 6,
+                "source_bytes": 384
+              },
+              {
+                "width": 1,
+                "height": 1,
+                "faces": 6,
+                "source_bytes": 96
+              }
+            ],
+            "allocated_bytes_estimate": 3145716
+          },
+          {
+            "index": 2,
+            "target": 3553,
+            "internal_format": 33327,
+            "parameters": [
+              9729,
+              9729,
+              33071,
+              33071,
+              10497
+            ],
+            "levels": [
+              {
+                "width": 256,
+                "height": 256,
+                "faces": 1,
+                "source_bytes": 1048576
+              }
+            ],
+            "allocated_bytes_estimate": 262144
+          }
+        ],
+        "initial_float32_source_bytes": 9535456,
+        "known_storage_bytes": 3444724,
+        "unknown_internal_formats": [],
+        "excludes": "framebuffers, shadows, drivers, CPU exporter cache; not peak VRAM"
+      },
+      "initial_counters": {
+        "shader_compiles": 3,
+        "updates": 0,
+        "uploaded_bytes": 0,
+        "texture_updates": 0,
+        "texture_uploaded_bytes": 0,
+        "meshes": 41,
+        "renderer": "Intel(R) UHD Graphics 620",
+        "gl_version": "3.3.0 - Build 27.20.100.8682"
+      }
+    },
+    "B": {
+      "counts": {
+        "entities": 257,
+        "meshes": 47,
+        "materials": 19,
+        "textures": 9,
+        "opaque_order": 251,
+        "ground": false,
+        "atmosphere": true
+      },
+      "textures": {
+        "textures": [
+          {
+            "index": 0,
+            "target": 3553,
+            "internal_format": 32856,
+            "parameters": [
+              9987,
+              9729,
+              33071,
+              33071,
+              10497
+            ],
+            "levels": [
+              {
+                "width": 512,
+                "height": 512,
+                "faces": 1,
+                "source_bytes": 4194304
+              },
+              {
+                "width": 256,
+                "height": 256,
+                "faces": 1,
+                "source_bytes": 1048576
+              },
+              {
+                "width": 128,
+                "height": 128,
+                "faces": 1,
+                "source_bytes": 262144
+              },
+              {
+                "width": 64,
+                "height": 64,
+                "faces": 1,
+                "source_bytes": 65536
+              },
+              {
+                "width": 32,
+                "height": 32,
+                "faces": 1,
+                "source_bytes": 16384
+              },
+              {
+                "width": 16,
+                "height": 16,
+                "faces": 1,
+                "source_bytes": 4096
+              },
+              {
+                "width": 8,
+                "height": 8,
+                "faces": 1,
+                "source_bytes": 1024
+              },
+              {
+                "width": 4,
+                "height": 4,
+                "faces": 1,
+                "source_bytes": 256
+              },
+              {
+                "width": 2,
+                "height": 2,
+                "faces": 1,
+                "source_bytes": 64
+              },
+              {
+                "width": 1,
+                "height": 1,
+                "faces": 1,
+                "source_bytes": 16
+              }
+            ],
+            "allocated_bytes_estimate": 1398100
+          },
+          {
+            "index": 1,
+            "target": 3553,
+            "internal_format": 32856,
+            "parameters": [
+              9987,
+              9729,
+              33071,
+              33071,
+              10497
+            ],
+            "levels": [
+              {
+                "width": 512,
+                "height": 512,
+                "faces": 1,
+                "source_bytes": 4194304
+              },
+              {
+                "width": 256,
+                "height": 256,
+                "faces": 1,
+                "source_bytes": 1048576
+              },
+              {
+                "width": 128,
+                "height": 128,
+                "faces": 1,
+                "source_bytes": 262144
+              },
+              {
+                "width": 64,
+                "height": 64,
+                "faces": 1,
+                "source_bytes": 65536
+              },
+              {
+                "width": 32,
+                "height": 32,
+                "faces": 1,
+                "source_bytes": 16384
+              },
+              {
+                "width": 16,
+                "height": 16,
+                "faces": 1,
+                "source_bytes": 4096
+              },
+              {
+                "width": 8,
+                "height": 8,
+                "faces": 1,
+                "source_bytes": 1024
+              },
+              {
+                "width": 4,
+                "height": 4,
+                "faces": 1,
+                "source_bytes": 256
+              },
+              {
+                "width": 2,
+                "height": 2,
+                "faces": 1,
+                "source_bytes": 64
+              },
+              {
+                "width": 1,
+                "height": 1,
+                "faces": 1,
+                "source_bytes": 16
+              }
+            ],
+            "allocated_bytes_estimate": 1398100
+          },
+          {
+            "index": 2,
+            "target": 3553,
+            "internal_format": 32856,
+            "parameters": [
+              9987,
+              9729,
+              33071,
+              33071,
+              10497
+            ],
+            "levels": [
+              {
+                "width": 512,
+                "height": 512,
+                "faces": 1,
+                "source_bytes": 4194304
+              },
+              {
+                "width": 256,
+                "height": 256,
+                "faces": 1,
+                "source_bytes": 1048576
+              },
+              {
+                "width": 128,
+                "height": 128,
+                "faces": 1,
+                "source_bytes": 262144
+              },
+              {
+                "width": 64,
+                "height": 64,
+                "faces": 1,
+                "source_bytes": 65536
+              },
+              {
+                "width": 32,
+                "height": 32,
+                "faces": 1,
+                "source_bytes": 16384
+              },
+              {
+                "width": 16,
+                "height": 16,
+                "faces": 1,
+                "source_bytes": 4096
+              },
+              {
+                "width": 8,
+                "height": 8,
+                "faces": 1,
+                "source_bytes": 1024
+              },
+              {
+                "width": 4,
+                "height": 4,
+                "faces": 1,
+                "source_bytes": 256
+              },
+              {
+                "width": 2,
+                "height": 2,
+                "faces": 1,
+                "source_bytes": 64
+              },
+              {
+                "width": 1,
+                "height": 1,
+                "faces": 1,
+                "source_bytes": 16
+              }
+            ],
+            "allocated_bytes_estimate": 1398100
+          },
+          {
+            "index": 3,
+            "target": 3553,
+            "internal_format": 32856,
+            "parameters": [
+              9987,
+              9729,
+              33071,
+              33071,
+              10497
+            ],
+            "levels": [
+              {
+                "width": 512,
+                "height": 512,
+                "faces": 1,
+                "source_bytes": 4194304
+              },
+              {
+                "width": 256,
+                "height": 256,
+                "faces": 1,
+                "source_bytes": 1048576
+              },
+              {
+                "width": 128,
+                "height": 128,
+                "faces": 1,
+                "source_bytes": 262144
+              },
+              {
+                "width": 64,
+                "height": 64,
+                "faces": 1,
+                "source_bytes": 65536
+              },
+              {
+                "width": 32,
+                "height": 32,
+                "faces": 1,
+                "source_bytes": 16384
+              },
+              {
+                "width": 16,
+                "height": 16,
+                "faces": 1,
+                "source_bytes": 4096
+              },
+              {
+                "width": 8,
+                "height": 8,
+                "faces": 1,
+                "source_bytes": 1024
+              },
+              {
+                "width": 4,
+                "height": 4,
+                "faces": 1,
+                "source_bytes": 256
+              },
+              {
+                "width": 2,
+                "height": 2,
+                "faces": 1,
+                "source_bytes": 64
+              },
+              {
+                "width": 1,
+                "height": 1,
+                "faces": 1,
+                "source_bytes": 16
+              }
+            ],
+            "allocated_bytes_estimate": 1398100
+          },
+          {
+            "index": 4,
+            "target": 3553,
+            "internal_format": 32856,
+            "parameters": [
+              9987,
+              9729,
+              33071,
+              33071,
+              10497
+            ],
+            "levels": [
+              {
+                "width": 512,
+                "height": 512,
+                "faces": 1,
+                "source_bytes": 4194304
+              },
+              {
+                "width": 256,
+                "height": 256,
+                "faces": 1,
+                "source_bytes": 1048576
+              },
+              {
+                "width": 128,
+                "height": 128,
+                "faces": 1,
+                "source_bytes": 262144
+              },
+              {
+                "width": 64,
+                "height": 64,
+                "faces": 1,
+                "source_bytes": 65536
+              },
+              {
+                "width": 32,
+                "height": 32,
+                "faces": 1,
+                "source_bytes": 16384
+              },
+              {
+                "width": 16,
+                "height": 16,
+                "faces": 1,
+                "source_bytes": 4096
+              },
+              {
+                "width": 8,
+                "height": 8,
+                "faces": 1,
+                "source_bytes": 1024
+              },
+              {
+                "width": 4,
+                "height": 4,
+                "faces": 1,
+                "source_bytes": 256
+              },
+              {
+                "width": 2,
+                "height": 2,
+                "faces": 1,
+                "source_bytes": 64
+              },
+              {
+                "width": 1,
+                "height": 1,
+                "faces": 1,
+                "source_bytes": 16
+              }
+            ],
+            "allocated_bytes_estimate": 1398100
+          },
+          {
+            "index": 5,
+            "target": 3553,
+            "internal_format": 32856,
+            "parameters": [
+              9987,
+              9729,
+              33071,
+              33071,
+              10497
+            ],
+            "levels": [
+              {
+                "width": 512,
+                "height": 512,
+                "faces": 1,
+                "source_bytes": 4194304
+              },
+              {
+                "width": 256,
+                "height": 256,
+                "faces": 1,
+                "source_bytes": 1048576
+              },
+              {
+                "width": 128,
+                "height": 128,
+                "faces": 1,
+                "source_bytes": 262144
+              },
+              {
+                "width": 64,
+                "height": 64,
+                "faces": 1,
+                "source_bytes": 65536
+              },
+              {
+                "width": 32,
+                "height": 32,
+                "faces": 1,
+                "source_bytes": 16384
+              },
+              {
+                "width": 16,
+                "height": 16,
+                "faces": 1,
+                "source_bytes": 4096
+              },
+              {
+                "width": 8,
+                "height": 8,
+                "faces": 1,
+                "source_bytes": 1024
+              },
+              {
+                "width": 4,
+                "height": 4,
+                "faces": 1,
+                "source_bytes": 256
+              },
+              {
+                "width": 2,
+                "height": 2,
+                "faces": 1,
+                "source_bytes": 64
+              },
+              {
+                "width": 1,
+                "height": 1,
+                "faces": 1,
+                "source_bytes": 16
+              }
+            ],
+            "allocated_bytes_estimate": 1398100
+          },
+          {
+            "index": 6,
+            "target": 34067,
+            "internal_format": 34843,
+            "parameters": [
+              9729,
+              9729,
+              33071,
+              33071,
+              33071
+            ],
+            "levels": [
+              {
+                "width": 32,
+                "height": 32,
+                "faces": 6,
+                "source_bytes": 98304
+              }
+            ],
+            "allocated_bytes_estimate": 36864
+          },
+          {
+            "index": 7,
+            "target": 34067,
+            "internal_format": 34843,
+            "parameters": [
+              9987,
+              9729,
+              33071,
+              33071,
+              33071
+            ],
+            "levels": [
+              {
+                "width": 256,
+                "height": 256,
+                "faces": 6,
+                "source_bytes": 6291456
+              },
+              {
+                "width": 128,
+                "height": 128,
+                "faces": 6,
+                "source_bytes": 1572864
+              },
+              {
+                "width": 64,
+                "height": 64,
+                "faces": 6,
+                "source_bytes": 393216
+              },
+              {
+                "width": 32,
+                "height": 32,
+                "faces": 6,
+                "source_bytes": 98304
+              },
+              {
+                "width": 16,
+                "height": 16,
+                "faces": 6,
+                "source_bytes": 24576
+              },
+              {
+                "width": 8,
+                "height": 8,
+                "faces": 6,
+                "source_bytes": 6144
+              },
+              {
+                "width": 4,
+                "height": 4,
+                "faces": 6,
+                "source_bytes": 1536
+              },
+              {
+                "width": 2,
+                "height": 2,
+                "faces": 6,
+                "source_bytes": 384
+              },
+              {
+                "width": 1,
+                "height": 1,
+                "faces": 6,
+                "source_bytes": 96
+              }
+            ],
+            "allocated_bytes_estimate": 3145716
+          },
+          {
+            "index": 8,
+            "target": 3553,
+            "internal_format": 33327,
+            "parameters": [
+              9729,
+              9729,
+              33071,
+              33071,
+              10497
+            ],
+            "levels": [
+              {
+                "width": 256,
+                "height": 256,
+                "faces": 1,
+                "source_bytes": 1048576
+              }
+            ],
+            "allocated_bytes_estimate": 262144
+          }
+        ],
+        "initial_float32_source_bytes": 43089856,
+        "known_storage_bytes": 11833324,
+        "unknown_internal_formats": [],
+        "excludes": "framebuffers, shadows, drivers, CPU exporter cache; not peak VRAM"
+      },
+      "initial_counters": {
+        "shader_compiles": 3,
+        "updates": 0,
+        "uploaded_bytes": 0,
+        "texture_updates": 0,
+        "texture_uploaded_bytes": 0,
+        "meshes": 47,
+        "renderer": "Intel(R) UHD Graphics 620",
+        "gl_version": "3.3.0 - Build 27.20.100.8682"
+      }
+    },
+    "C": {
+      "counts": {
+        "entities": 252,
+        "meshes": 42,
+        "materials": 14,
+        "textures": 3,
+        "opaque_order": 252,
+        "ground": false,
+        "atmosphere": true
+      },
+      "textures": {
+        "textures": [
+          {
+            "index": 0,
+            "target": 34067,
+            "internal_format": 34843,
+            "parameters": [
+              9729,
+              9729,
+              33071,
+              33071,
+              33071
+            ],
+            "levels": [
+              {
+                "width": 32,
+                "height": 32,
+                "faces": 6,
+                "source_bytes": 98304
+              }
+            ],
+            "allocated_bytes_estimate": 36864
+          },
+          {
+            "index": 1,
+            "target": 34067,
+            "internal_format": 34843,
+            "parameters": [
+              9987,
+              9729,
+              33071,
+              33071,
+              33071
+            ],
+            "levels": [
+              {
+                "width": 256,
+                "height": 256,
+                "faces": 6,
+                "source_bytes": 6291456
+              },
+              {
+                "width": 128,
+                "height": 128,
+                "faces": 6,
+                "source_bytes": 1572864
+              },
+              {
+                "width": 64,
+                "height": 64,
+                "faces": 6,
+                "source_bytes": 393216
+              },
+              {
+                "width": 32,
+                "height": 32,
+                "faces": 6,
+                "source_bytes": 98304
+              },
+              {
+                "width": 16,
+                "height": 16,
+                "faces": 6,
+                "source_bytes": 24576
+              },
+              {
+                "width": 8,
+                "height": 8,
+                "faces": 6,
+                "source_bytes": 6144
+              },
+              {
+                "width": 4,
+                "height": 4,
+                "faces": 6,
+                "source_bytes": 1536
+              },
+              {
+                "width": 2,
+                "height": 2,
+                "faces": 6,
+                "source_bytes": 384
+              },
+              {
+                "width": 1,
+                "height": 1,
+                "faces": 6,
+                "source_bytes": 96
+              }
+            ],
+            "allocated_bytes_estimate": 3145716
+          },
+          {
+            "index": 2,
+            "target": 3553,
+            "internal_format": 33327,
+            "parameters": [
+              9729,
+              9729,
+              33071,
+              33071,
+              10497
+            ],
+            "levels": [
+              {
+                "width": 256,
+                "height": 256,
+                "faces": 1,
+                "source_bytes": 1048576
+              }
+            ],
+            "allocated_bytes_estimate": 262144
+          }
+        ],
+        "initial_float32_source_bytes": 9535456,
+        "known_storage_bytes": 3444724,
+        "unknown_internal_formats": [],
+        "excludes": "framebuffers, shadows, drivers, CPU exporter cache; not peak VRAM"
+      },
+      "initial_counters": {
+        "shader_compiles": 3,
+        "updates": 0,
+        "uploaded_bytes": 0,
+        "texture_updates": 0,
+        "texture_uploaded_bytes": 0,
+        "meshes": 42,
+        "renderer": "Intel(R) UHD Graphics 620",
+        "gl_version": "3.3.0 - Build 27.20.100.8682"
+      }
+    }
+  },
+  "navigation_counters_unchanged": true,
+  "counter_scope": "explicit experiment mesh/texture updates and compiles; excludes internal instance uploads",
+  "foreground_sample_points": [
+    [
+      380,
+      480
+    ],
+    [
+      400,
+      520
+    ],
+    [
+      350,
+      550
+    ],
+    [
+      400,
+      600
+    ],
+    [
+      100,
+      600
+    ]
+  ],
+  "foreground_sample_rgb": {
+    "A": [
+      [
+        124,
+        107,
+        88
+      ],
+      [
+        122,
+        76,
+        60
+      ],
+      [
+        106,
+        107,
+        111
+      ],
+      [
+        108,
+        113,
+        102
+      ],
+      [
+        108,
+        113,
+        102
+      ]
+    ],
+    "B": [
+      [
+        124,
+        107,
+        88
+      ],
+      [
+        122,
+        76,
+        60
+      ],
+      [
+        106,
+        107,
+        111
+      ],
+      [
+        108,
+        113,
+        102
+      ],
+      [
+        108,
+        113,
+        102
+      ]
+    ],
+    "C": [
+      [
+        124,
+        107,
+        88
+      ],
+      [
+        122,
+        76,
+        60
+      ],
+      [
+        106,
+        107,
+        111
+      ],
+      [
+        108,
+        113,
+        102
+      ],
+      [
+        108,
+        113,
+        102
+      ]
+    ]
+  },
+  "source_changes_after_measurement": {
+    "experiments/world-surroundings/run_surroundings.py": {
+      "measured": "013b3091870fd8d7708c66ead60d925e2bd5f6db4bcd4169c5387da7fb5c38c2",
+      "current": "8444ffac23f990e061432a658816fc765589a03813dcaf41c4447ede93e0f188"
+    },
+    "experiments/world-surroundings/surroundings_routes.py": {
+      "measured": "e700248444bbdbbc809e76252ee9243b60179f0c097134711c32037320ea3ba1",
+      "current": "f1f293260ba815dd1708b5df6db51724f794f064a2cede853c2dc6305fa0eb0e"
+    },
+    "experiments/world-surroundings/surroundings_scene.py": {
+      "measured": "e1938d89152f79efe50ad9a99ddc69b0d4765cf0691d964e8c6a8fd2b291f4e2",
+      "current": "25a5362148ba6ad9cbbaddbbe808a53d695b8a80a44088c3cf1221b5eae94ce8"
+    }
+  },
+  "post_measurement_change_note": "B short-far input rejection, explicit vertical-fit lens metadata, and final blank-line-at-EOF cleanup in scene.py only; camera bytes are identical. No performance rerun claimed.",
+  "cpu_tests": {
+    "command": "F:/gymenv/python.exe -B -m unittest discover -s tests -p test_world_surroundings*.py",
+    "count": 102,
+    "passed": true
+  },
+  "regressions": {
+    "frame-stats": {
+      "passed": true,
+      "source": "captures/world-surroundings/sur00-frame-stats-check/frame_stats_smoke.json",
+      "sha256": "584e8df04babfc499db411d04a891fe043576aa0a836ea902e915a8efddd6f14"
+    },
+    "sculpt": {
+      "passed": true,
+      "source": "captures/world-surroundings/sur00-sculpt-regression/report.json",
+      "sha256": "7d0736d6c083ea99bcb78b0eba911513cfeada56fcd501fc1422c055229b41b0"
+    },
+    "paint": {
+      "passed": true,
+      "source": "captures/world-surroundings/sur00-paint-regression/report.json",
+      "sha256": "b2264329659c107848865ec4afa2c099420f0fa338af8af4ed7ba9270d9624e3"
+    }
+  },
+  "road_probe": {
+    "samples": 29700,
+    "samples_per_triangle": 66,
+    "all_min_clearance_m": 0.018532125601822713,
+    "all_max_clearance_m": 0.032194511983220764,
+    "camera_area_min_clearance_m": 0.019855499267578125,
+    "camera_area_max_clearance_m": 0.02556724548340128,
+    "penetration_below_minus_1mm_count": 0
+  },
+  "short_far_cli_rejected_before_output": true,
+  "supplementary_source_sha256": {
+    "experiments/world-surroundings/terrain_bridge.cpp": "7d607690bf1b868dd7654b853950bd30e0ed958ec2c785747fd39bb01e6efa9b",
+    "experiments/world-surroundings/CMakeLists.txt": "dfc10250ce43348354bae9d6af2471b56bf12ef32af74ec57ea8ab0d11a71fb2",
+    "mini3d/roman_assets.py": "71f1728b63ee13ef445c8e6e5fb7ea3cadf792adf25d122f12564797023cb5d8",
+    "mini3d/street.py": "c749911271bc17e26fba026bd7c2418b01bb94c3c2b18153cea33f63e5774753",
+    "mini3d/commands.py": "d17aba93e52123ee069cccf246a3ed33cee72b19f19515530d496f312bc05a98",
+    "mini3d/assets.py": "5dfd0e3f91a5fe12d22aab8be37072aab7904d72947a040121c74fd1120b4def",
+    "mini3d/asset_loader.py": "502a7bedcf61af96429a9c2333691cdc01f6890d4ccd032cc2ba6fd48a89bdf7",
+    "experiments/world-surroundings/run_surroundings.py": "8444ffac23f990e061432a658816fc765589a03813dcaf41c4447ede93e0f188",
+    "experiments/world-surroundings/surroundings_routes.py": "f1f293260ba815dd1708b5df6db51724f794f064a2cede853c2dc6305fa0eb0e",
+    "experiments/world-surroundings/surroundings_scene.py": "25a5362148ba6ad9cbbaddbbe808a53d695b8a80a44088c3cf1221b5eae94ce8",
+    "tests/world_surroundings_frame_stats_smoke.py": "fd814f0221df09688a471c2b315cbc4b775576dcb7bfcd09e069e22c5f648fab"
+  }
+}

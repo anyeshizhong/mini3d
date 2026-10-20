@@ -1,0 +1,698 @@
+{
+  "copy_method": "byte-identical file copy; no image modification",
+  "files": {
+    "baseline/A/views/close.png": {
+      "source": "captures/world-surroundings/q1-20261019-active/baseline/A/views/close.png",
+      "sha256": "b72148b17ba59e76d32edb4ffeba6eb0f32880e4d1a994efdef58b37a31277e5",
+      "bytes": 823275
+    },
+    "baseline/A/views/distant.png": {
+      "source": "captures/world-surroundings/q1-20261019-active/baseline/A/views/distant.png",
+      "sha256": "88e0f786634b9c1b599d97a6aa3f054c51287ed3c930bb23d0fbb63fa621cb9f",
+      "bytes": 19792
+    },
+    "baseline/A/views/oblique.png": {
+      "source": "captures/world-surroundings/q1-20261019-active/baseline/A/views/oblique.png",
+      "sha256": "53e3468564ac59220c42f8732ede2bf98d27e83e75a647af284fea96a8c9addf",
+      "bytes": 123574
+    },
+    "baseline/A/views/steep.png": {
+      "source": "captures/world-surroundings/q1-20261019-active/baseline/A/views/steep.png",
+      "sha256": "b15cb65678417a3b6b8e15ac55d8e63fff202c0af90eb3a78212692d3b51ff82",
+      "bytes": 87946
+    },
+    "baseline/A/diagnostic-close.png": {
+      "source": "captures/world-surroundings/q1-20261019-active/baseline/A/diagnostic-close.png",
+      "sha256": "6c6bf0e27cb2b34feb750188c7ddf541d9ee53ce722fb8da9e0dc8cf5154a6db",
+      "bytes": 710945
+    },
+    "baseline/A/diagnostic-distant.png": {
+      "source": "captures/world-surroundings/q1-20261019-active/baseline/A/diagnostic-distant.png",
+      "sha256": "0934b8ff1be705ffb6097ae099c7e81e86d86e89410022a7bfd47daeaab072fe",
+      "bytes": 21390
+    },
+    "baseline/A/diagnostic-oblique.png": {
+      "source": "captures/world-surroundings/q1-20261019-active/baseline/A/diagnostic-oblique.png",
+      "sha256": "0b4d32c64aa23ef1fa182298ac0a8dc7b14884efaf6b730e53e13723c90c158d",
+      "bytes": 121004
+    },
+    "baseline/A/diagnostic-steep.png": {
+      "source": "captures/world-surroundings/q1-20261019-active/baseline/A/diagnostic-steep.png",
+      "sha256": "629a21c0ad3c058fa0d974153d6836605cb9bdf00855522062c9205475dec553",
+      "bytes": 89529
+    },
+    "baseline/A/camera-motion.gif": {
+      "source": "captures/world-surroundings/q1-20261019-active/baseline/A/camera-motion.gif",
+      "sha256": "81fb63068ba44f3747241a8fe71f520118378803286cbf194f9292882f6d5576",
+      "bytes": 3074691
+    },
+    "baseline/A/paint-replay.gif": {
+      "source": "captures/world-surroundings/q1-20261019-active/baseline/A/paint-replay.gif",
+      "sha256": "8c86986d04f44ee0dd270045bf44bd02218ea19ef705681d501ef3689eac9f7d",
+      "bytes": 842421
+    },
+    "baseline/A_control/views/close.png": {
+      "source": "captures/world-surroundings/q1-guard-forward/baseline/A_control/views/close.png",
+      "sha256": "b72148b17ba59e76d32edb4ffeba6eb0f32880e4d1a994efdef58b37a31277e5",
+      "bytes": 823275
+    },
+    "baseline/A_control/views/distant.png": {
+      "source": "captures/world-surroundings/q1-guard-forward/baseline/A_control/views/distant.png",
+      "sha256": "88e0f786634b9c1b599d97a6aa3f054c51287ed3c930bb23d0fbb63fa621cb9f",
+      "bytes": 19792
+    },
+    "baseline/A_control/views/oblique.png": {
+      "source": "captures/world-surroundings/q1-guard-forward/baseline/A_control/views/oblique.png",
+      "sha256": "53e3468564ac59220c42f8732ede2bf98d27e83e75a647af284fea96a8c9addf",
+      "bytes": 123574
+    },
+    "baseline/A_control/views/steep.png": {
+      "source": "captures/world-surroundings/q1-guard-forward/baseline/A_control/views/steep.png",
+      "sha256": "b15cb65678417a3b6b8e15ac55d8e63fff202c0af90eb3a78212692d3b51ff82",
+      "bytes": 87946
+    },
+    "baseline/A_control/diagnostic-close.png": {
+      "source": "captures/world-surroundings/q1-guard-forward/baseline/A_control/diagnostic-close.png",
+      "sha256": "26ca50a4bbba7b83434be8624b148b6d38026fb295a6ec013a002e43df0a8038",
+      "bytes": 710948
+    },
+    "baseline/A_control/diagnostic-distant.png": {
+      "source": "captures/world-surroundings/q1-guard-forward/baseline/A_control/diagnostic-distant.png",
+      "sha256": "0934b8ff1be705ffb6097ae099c7e81e86d86e89410022a7bfd47daeaab072fe",
+      "bytes": 21390
+    },
+    "baseline/A_control/diagnostic-oblique.png": {
+      "source": "captures/world-surroundings/q1-guard-forward/baseline/A_control/diagnostic-oblique.png",
+      "sha256": "4dbf3c5a15c640074ba4731975e6d9f467d9939b94d487b35796cf902535ba85",
+      "bytes": 121004
+    },
+    "baseline/A_control/diagnostic-steep.png": {
+      "source": "captures/world-surroundings/q1-guard-forward/baseline/A_control/diagnostic-steep.png",
+      "sha256": "629a21c0ad3c058fa0d974153d6836605cb9bdf00855522062c9205475dec553",
+      "bytes": 89529
+    },
+    "baseline/A_control/camera-motion.gif": {
+      "source": "captures/world-surroundings/q1-guard-forward/baseline/A_control/camera-motion.gif",
+      "sha256": "9a0785ecd210e6cd6a8a172c4d37c6c63896671d49e83a98e80acacbd9429d99",
+      "bytes": 3074708
+    },
+    "baseline/A_control/paint-replay.gif": {
+      "source": "captures/world-surroundings/q1-guard-forward/baseline/A_control/paint-replay.gif",
+      "sha256": "8c86986d04f44ee0dd270045bf44bd02218ea19ef705681d501ef3689eac9f7d",
+      "bytes": 842421
+    },
+    "baseline/B_depth/views/close.png": {
+      "source": "captures/world-surroundings/q1-guard-forward/baseline/B_depth/views/close.png",
+      "sha256": "4f1214db38d991ddf09fa020cfc0e9deb9990a7498d203cf44d702358cfd0858",
+      "bytes": 829596
+    },
+    "baseline/B_depth/views/distant.png": {
+      "source": "captures/world-surroundings/q1-guard-forward/baseline/B_depth/views/distant.png",
+      "sha256": "d49f65f48690bd7929fc73f7b393ae28238080ca4294006ec86d7e18cef4ef91",
+      "bytes": 19781
+    },
+    "baseline/B_depth/views/oblique.png": {
+      "source": "captures/world-surroundings/q1-guard-forward/baseline/B_depth/views/oblique.png",
+      "sha256": "c8f62ee742f73d963fcd51ff3b2a5d5cc68dbc9017f512c46b4bcd39d2a94e43",
+      "bytes": 124106
+    },
+    "baseline/B_depth/views/steep.png": {
+      "source": "captures/world-surroundings/q1-guard-forward/baseline/B_depth/views/steep.png",
+      "sha256": "89441a89a77a57f9d5f607ed08d222423573d88c33b2325ab1e43cd6538747ff",
+      "bytes": 88551
+    },
+    "baseline/B_depth/diagnostic-close.png": {
+      "source": "captures/world-surroundings/q1-guard-forward/baseline/B_depth/diagnostic-close.png",
+      "sha256": "46b62100833e0533052f9022cc1ffcde44be800486ba70cab3ba10102c5c96af",
+      "bytes": 757935
+    },
+    "baseline/B_depth/diagnostic-distant.png": {
+      "source": "captures/world-surroundings/q1-guard-forward/baseline/B_depth/diagnostic-distant.png",
+      "sha256": "421999ddecfa5c254c70740108949bdd54aef2527effaeafd9a4649272ed506f",
+      "bytes": 22705
+    },
+    "baseline/B_depth/diagnostic-oblique.png": {
+      "source": "captures/world-surroundings/q1-guard-forward/baseline/B_depth/diagnostic-oblique.png",
+      "sha256": "77acfb3f041fbb2fbd53cbeb2e19e2c617b69fcaaef04194201dc16cec3d44b4",
+      "bytes": 127304
+    },
+    "baseline/B_depth/diagnostic-steep.png": {
+      "source": "captures/world-surroundings/q1-guard-forward/baseline/B_depth/diagnostic-steep.png",
+      "sha256": "0263ebf4884bcb90a56b2464fc166a3959a33c412fd14098eaa4faf61805704b",
+      "bytes": 89821
+    },
+    "baseline/B_depth/camera-motion.gif": {
+      "source": "captures/world-surroundings/q1-guard-forward/baseline/B_depth/camera-motion.gif",
+      "sha256": "41b6715f4a61b288e9367c90f257b21b708e407c4f8e4997bc88856437960f19",
+      "bytes": 3218023
+    },
+    "baseline/B_depth/paint-replay.gif": {
+      "source": "captures/world-surroundings/q1-guard-forward/baseline/B_depth/paint-replay.gif",
+      "sha256": "b1574bf1e2c2fd83cb3f1d20b3aea619fd82c7759faec8b4dab81a200ed8c681",
+      "bytes": 815291
+    },
+    "baseline/B_power/views/close.png": {
+      "source": "captures/world-surroundings/q1-20261019-active/baseline/B_power/views/close.png",
+      "sha256": "408272109e8bdecc57e29cb19abe92e74664023c18114611ac2301fef0ac0ec4",
+      "bytes": 827062
+    },
+    "baseline/B_power/views/distant.png": {
+      "source": "captures/world-surroundings/q1-20261019-active/baseline/B_power/views/distant.png",
+      "sha256": "fbaa50589378c4ec6f94f512e4d42c82400f58b6be1eb4d0180346b43d2d8112",
+      "bytes": 19727
+    },
+    "baseline/B_power/views/oblique.png": {
+      "source": "captures/world-surroundings/q1-20261019-active/baseline/B_power/views/oblique.png",
+      "sha256": "79a78d20ed6c9e7c1886151aa31c9c036f0978f51a4ecdc3c3a6f2d4505256e3",
+      "bytes": 124138
+    },
+    "baseline/B_power/views/steep.png": {
+      "source": "captures/world-surroundings/q1-20261019-active/baseline/B_power/views/steep.png",
+      "sha256": "8adaad00456557a3357c6117cc4c4117b17eeb1be619b58de6c6efed496b9461",
+      "bytes": 88176
+    },
+    "baseline/B_power/diagnostic-close.png": {
+      "source": "captures/world-surroundings/q1-20261019-active/baseline/B_power/diagnostic-close.png",
+      "sha256": "2106767864311f75616bf0701d9ebfbb41bad7eb3aeb4d4ea8a2e93298b8be40",
+      "bytes": 745016
+    },
+    "baseline/B_power/diagnostic-distant.png": {
+      "source": "captures/world-surroundings/q1-20261019-active/baseline/B_power/diagnostic-distant.png",
+      "sha256": "1a14a89b97e51af34059f783b2f4ca1b5c39fdf2a2924f04162cca61ec4589a6",
+      "bytes": 22289
+    },
+    "baseline/B_power/diagnostic-oblique.png": {
+      "source": "captures/world-surroundings/q1-20261019-active/baseline/B_power/diagnostic-oblique.png",
+      "sha256": "e5e489f2f8c499dab906ae251e83359f95ef0e3930be69d4302f54badfa865d4",
+      "bytes": 125425
+    },
+    "baseline/B_power/diagnostic-steep.png": {
+      "source": "captures/world-surroundings/q1-20261019-active/baseline/B_power/diagnostic-steep.png",
+      "sha256": "988540dab4ebfc66d977e7f1599f34208b9aafa41d033dda0c538ea0fbdc63f7",
+      "bytes": 89672
+    },
+    "baseline/B_power/camera-motion.gif": {
+      "source": "captures/world-surroundings/q1-20261019-active/baseline/B_power/camera-motion.gif",
+      "sha256": "027b3c49b722342ea85f9eb0c2bb5c93c7e63ba00d0693499b033732bc827e3e",
+      "bytes": 3184612
+    },
+    "baseline/B_power/paint-replay.gif": {
+      "source": "captures/world-surroundings/q1-20261019-active/baseline/B_power/paint-replay.gif",
+      "sha256": "3fde51c80ed0f560b8d0754df77b2b390bdab1b6a151df8348b0bef0f772e484",
+      "bytes": 827544
+    },
+    "baseline/inputs/weights.npy": {
+      "source": "captures/world-surroundings/q1-20261019-active/baseline/A/weights.npy",
+      "sha256": "c6097663731e66634b039a1d4bcbc2b53d0e64ab1b2145fb49f2b42b08bd8d3e",
+      "bytes": 792716
+    },
+    "baseline/inputs/diagnostic-weights.npy": {
+      "source": "captures/world-surroundings/q1-20261019-active/baseline/A/diagnostic-weights.npy",
+      "sha256": "e6d27e3dbb4458aff941a0e42bb51f4d17f2efdbd94a4f96cae3ef8715a48ac0",
+      "bytes": 792716
+    },
+    "baseline/inputs/terrain.npy": {
+      "source": "captures/world-surroundings/q1-20261019-active/baseline/terrain.npy",
+      "sha256": "58d1c6b8b2586f5b92f0ebb73451872c70504cc0838f94cf820d50eef6b596c1",
+      "bytes": 33928
+    },
+    "baseline/inputs/views.json": {
+      "source": "captures/world-surroundings/q1-20261019-active/baseline/views.json",
+      "sha256": "c02f217b3161c87995e7735ca6cf1f490ec24b3304aa6b906342ac1b2100322d",
+      "bytes": 2406
+    },
+    "steep/A/views/close.png": {
+      "source": "captures/world-surroundings/q1-20261019-active/steep/A/views/close.png",
+      "sha256": "47f3a58ed7863cebcdda6fa3c8ff4979f6cc7d6387c50a5795202349f1abc57f",
+      "bytes": 726518
+    },
+    "steep/A/views/distant.png": {
+      "source": "captures/world-surroundings/q1-20261019-active/steep/A/views/distant.png",
+      "sha256": "96013aa72dfaea2a51922846d43bdcc13d46d5014ec594f87d36dd603a8066f8",
+      "bytes": 18252
+    },
+    "steep/A/views/oblique.png": {
+      "source": "captures/world-surroundings/q1-20261019-active/steep/A/views/oblique.png",
+      "sha256": "bf4b77efe22f7f8581898c6aef6972190bfca7e703d8b8c4248aac493edb01dc",
+      "bytes": 108538
+    },
+    "steep/A/views/steep.png": {
+      "source": "captures/world-surroundings/q1-20261019-active/steep/A/views/steep.png",
+      "sha256": "9caeb6a51d2fb0e56e0cf4981e329cc6c9272f49e993ffca6e651b7d066e3bb5",
+      "bytes": 169181
+    },
+    "steep/A/diagnostic-close.png": {
+      "source": "captures/world-surroundings/q1-20261019-active/steep/A/diagnostic-close.png",
+      "sha256": "3ebf305902674ab09a1e9471dd1f96e5c7bfa17748ab417e10759d1500ccc357",
+      "bytes": 641788
+    },
+    "steep/A/diagnostic-distant.png": {
+      "source": "captures/world-surroundings/q1-20261019-active/steep/A/diagnostic-distant.png",
+      "sha256": "fa15a1d524c3a1cc8f96c4a680ff1cbce9a96a1128f49311c3cae6c56e503893",
+      "bytes": 19680
+    },
+    "steep/A/diagnostic-oblique.png": {
+      "source": "captures/world-surroundings/q1-20261019-active/steep/A/diagnostic-oblique.png",
+      "sha256": "b66f30abc75b8dae73bdc5a0062a157507f71540da842bd4dbe55af36c8eefa6",
+      "bytes": 106472
+    },
+    "steep/A/diagnostic-steep.png": {
+      "source": "captures/world-surroundings/q1-20261019-active/steep/A/diagnostic-steep.png",
+      "sha256": "c2daf3942b55ef3219cf79a24fbc62c0f9754f96898bdf39ca276797660ac172",
+      "bytes": 169368
+    },
+    "steep/A/camera-motion.gif": {
+      "source": "captures/world-surroundings/q1-20261019-active/steep/A/camera-motion.gif",
+      "sha256": "64d5be5ef39e1042b85c67ea2c022707a4c4941c010c613efd03b83292b587b2",
+      "bytes": 3624916
+    },
+    "steep/A/paint-replay.gif": {
+      "source": "captures/world-surroundings/q1-20261019-active/steep/A/paint-replay.gif",
+      "sha256": "f65ffb92ad842558c322972f04361a603bbc4d3578c418bbdac58bdea608aeb1",
+      "bytes": 769295
+    },
+    "steep/A_control/views/close.png": {
+      "source": "captures/world-surroundings/q1-guard-forward/steep/A_control/views/close.png",
+      "sha256": "47f3a58ed7863cebcdda6fa3c8ff4979f6cc7d6387c50a5795202349f1abc57f",
+      "bytes": 726518
+    },
+    "steep/A_control/views/distant.png": {
+      "source": "captures/world-surroundings/q1-guard-forward/steep/A_control/views/distant.png",
+      "sha256": "96013aa72dfaea2a51922846d43bdcc13d46d5014ec594f87d36dd603a8066f8",
+      "bytes": 18252
+    },
+    "steep/A_control/views/oblique.png": {
+      "source": "captures/world-surroundings/q1-guard-forward/steep/A_control/views/oblique.png",
+      "sha256": "bf4b77efe22f7f8581898c6aef6972190bfca7e703d8b8c4248aac493edb01dc",
+      "bytes": 108538
+    },
+    "steep/A_control/views/steep.png": {
+      "source": "captures/world-surroundings/q1-guard-forward/steep/A_control/views/steep.png",
+      "sha256": "9caeb6a51d2fb0e56e0cf4981e329cc6c9272f49e993ffca6e651b7d066e3bb5",
+      "bytes": 169181
+    },
+    "steep/A_control/diagnostic-close.png": {
+      "source": "captures/world-surroundings/q1-guard-forward/steep/A_control/diagnostic-close.png",
+      "sha256": "3ebf305902674ab09a1e9471dd1f96e5c7bfa17748ab417e10759d1500ccc357",
+      "bytes": 641788
+    },
+    "steep/A_control/diagnostic-distant.png": {
+      "source": "captures/world-surroundings/q1-guard-forward/steep/A_control/diagnostic-distant.png",
+      "sha256": "fa15a1d524c3a1cc8f96c4a680ff1cbce9a96a1128f49311c3cae6c56e503893",
+      "bytes": 19680
+    },
+    "steep/A_control/diagnostic-oblique.png": {
+      "source": "captures/world-surroundings/q1-guard-forward/steep/A_control/diagnostic-oblique.png",
+      "sha256": "9514671d826f9c80dab930a2377a11a9655168f9a9bf3bd1bc4d98d75a4096cf",
+      "bytes": 106472
+    },
+    "steep/A_control/diagnostic-steep.png": {
+      "source": "captures/world-surroundings/q1-guard-forward/steep/A_control/diagnostic-steep.png",
+      "sha256": "c2daf3942b55ef3219cf79a24fbc62c0f9754f96898bdf39ca276797660ac172",
+      "bytes": 169368
+    },
+    "steep/A_control/camera-motion.gif": {
+      "source": "captures/world-surroundings/q1-guard-forward/steep/A_control/camera-motion.gif",
+      "sha256": "61c46869aaf2c5cde764fd8fc8723276535053f5b8b81a9be113ad2ae915e3e0",
+      "bytes": 3624912
+    },
+    "steep/A_control/paint-replay.gif": {
+      "source": "captures/world-surroundings/q1-guard-forward/steep/A_control/paint-replay.gif",
+      "sha256": "f65ffb92ad842558c322972f04361a603bbc4d3578c418bbdac58bdea608aeb1",
+      "bytes": 769295
+    },
+    "steep/B_depth/views/close.png": {
+      "source": "captures/world-surroundings/q1-guard-forward/steep/B_depth/views/close.png",
+      "sha256": "b1d017a12bb4d683c5da696a74c46ae7dd59e7a51cdeb9cc37295690d0b081d5",
+      "bytes": 750683
+    },
+    "steep/B_depth/views/distant.png": {
+      "source": "captures/world-surroundings/q1-guard-forward/steep/B_depth/views/distant.png",
+      "sha256": "5a239d0a45778808e03b273487b79afb64bc9de01c45ab43accfdc9e0edf52f8",
+      "bytes": 18066
+    },
+    "steep/B_depth/views/oblique.png": {
+      "source": "captures/world-surroundings/q1-guard-forward/steep/B_depth/views/oblique.png",
+      "sha256": "2f6ad890493c12e31d5cda7b5074c97d40b8c698caac9f3dc99c18ec2d917d34",
+      "bytes": 109620
+    },
+    "steep/B_depth/views/steep.png": {
+      "source": "captures/world-surroundings/q1-guard-forward/steep/B_depth/views/steep.png",
+      "sha256": "86272b9d73c734d408172b71c2c718e496c1bed813d9170f53054b0735943360",
+      "bytes": 172944
+    },
+    "steep/B_depth/diagnostic-close.png": {
+      "source": "captures/world-surroundings/q1-guard-forward/steep/B_depth/diagnostic-close.png",
+      "sha256": "7610d905be26ee1ff253f07b9d4c245b7848915911368e504fc77b0c9ccb2fe5",
+      "bytes": 673673
+    },
+    "steep/B_depth/diagnostic-distant.png": {
+      "source": "captures/world-surroundings/q1-guard-forward/steep/B_depth/diagnostic-distant.png",
+      "sha256": "4106f129a755f8171e1e3c679a138de9aaea4b802dc95da9b154b0f856746132",
+      "bytes": 20670
+    },
+    "steep/B_depth/diagnostic-oblique.png": {
+      "source": "captures/world-surroundings/q1-guard-forward/steep/B_depth/diagnostic-oblique.png",
+      "sha256": "7ca1586fb100c37f86d1ce1f5aff44570fcb1e1ad12107d0afa172e77ea582bf",
+      "bytes": 112561
+    },
+    "steep/B_depth/diagnostic-steep.png": {
+      "source": "captures/world-surroundings/q1-guard-forward/steep/B_depth/diagnostic-steep.png",
+      "sha256": "eb7022ec96e4a6ea3b65425c3a89554f1c625420d6b9aaac6317397e83f98dbc",
+      "bytes": 172859
+    },
+    "steep/B_depth/camera-motion.gif": {
+      "source": "captures/world-surroundings/q1-guard-forward/steep/B_depth/camera-motion.gif",
+      "sha256": "7511278cf600cfe3906dc31cd59ffd947aa4523c60ec23d6a1afc8196d64c512",
+      "bytes": 3783387
+    },
+    "steep/B_depth/paint-replay.gif": {
+      "source": "captures/world-surroundings/q1-guard-forward/steep/B_depth/paint-replay.gif",
+      "sha256": "d50653411a59c886dc25ea541506380a4b542921ae1f4a964e72bf5b58b8bbd9",
+      "bytes": 770003
+    },
+    "steep/B_power/views/close.png": {
+      "source": "captures/world-surroundings/q1-20261019-active/steep/B_power/views/close.png",
+      "sha256": "589bfd55783ca371e1efc5cd966c4f19eb7d3ed1aa31004166e50f0d37f1eb8c",
+      "bytes": 748735
+    },
+    "steep/B_power/views/distant.png": {
+      "source": "captures/world-surroundings/q1-20261019-active/steep/B_power/views/distant.png",
+      "sha256": "ec8a33dae5dde5fb2b58e9b0258f706b216c7d4884437ca25c20e0de3bc62b29",
+      "bytes": 18062
+    },
+    "steep/B_power/views/oblique.png": {
+      "source": "captures/world-surroundings/q1-20261019-active/steep/B_power/views/oblique.png",
+      "sha256": "1e57284d7523a40c01155b89b1e11988a3192a247fc2291ac05edb957ba6db01",
+      "bytes": 109126
+    },
+    "steep/B_power/views/steep.png": {
+      "source": "captures/world-surroundings/q1-20261019-active/steep/B_power/views/steep.png",
+      "sha256": "ea16f37bed79986b2a09d05e5c02d147b7cf122639898befdbc15cf2b67a5593",
+      "bytes": 171541
+    },
+    "steep/B_power/diagnostic-close.png": {
+      "source": "captures/world-surroundings/q1-20261019-active/steep/B_power/diagnostic-close.png",
+      "sha256": "09cc5c080c623afa30959ae1953debd8485052dbdeede4abbeeac34f830aecb6",
+      "bytes": 665142
+    },
+    "steep/B_power/diagnostic-distant.png": {
+      "source": "captures/world-surroundings/q1-20261019-active/steep/B_power/diagnostic-distant.png",
+      "sha256": "757e6f55f8f6f959a3f799403eacacd053c031cc67cfbc8e8b015843269d72a1",
+      "bytes": 20451
+    },
+    "steep/B_power/diagnostic-oblique.png": {
+      "source": "captures/world-surroundings/q1-20261019-active/steep/B_power/diagnostic-oblique.png",
+      "sha256": "c088ebf51f6db7bea3861b46acd6cc040c50807909d26af09c39e8d2c200f57b",
+      "bytes": 110678
+    },
+    "steep/B_power/diagnostic-steep.png": {
+      "source": "captures/world-surroundings/q1-20261019-active/steep/B_power/diagnostic-steep.png",
+      "sha256": "86875a526ffb5697d13a6b12dd30a39e88f48aecdf115a009bfe3758a061f606",
+      "bytes": 171640
+    },
+    "steep/B_power/camera-motion.gif": {
+      "source": "captures/world-surroundings/q1-20261019-active/steep/B_power/camera-motion.gif",
+      "sha256": "894fd145736f4f048fd5e27bd3945287f881cc31d4ea5ccb781e1d5e53c42f92",
+      "bytes": 3739060
+    },
+    "steep/B_power/paint-replay.gif": {
+      "source": "captures/world-surroundings/q1-20261019-active/steep/B_power/paint-replay.gif",
+      "sha256": "6473dc6ce00c3a39853ce863ac08efb4ad3d8ab65c08664c8acdbf2c9e94a647",
+      "bytes": 756912
+    },
+    "steep/inputs/weights.npy": {
+      "source": "captures/world-surroundings/q1-20261019-active/steep/A/weights.npy",
+      "sha256": "573133083eff18f1a04785d03cc1960a5a613dc697814affa879d583a4877e23",
+      "bytes": 792716
+    },
+    "steep/inputs/diagnostic-weights.npy": {
+      "source": "captures/world-surroundings/q1-20261019-active/steep/A/diagnostic-weights.npy",
+      "sha256": "e6d27e3dbb4458aff941a0e42bb51f4d17f2efdbd94a4f96cae3ef8715a48ac0",
+      "bytes": 792716
+    },
+    "steep/inputs/terrain.npy": {
+      "source": "captures/world-surroundings/q1-20261019-active/steep/terrain.npy",
+      "sha256": "1736bbcfdccc2088ff23c1bf1ff4bf512514ab7c0ef857622d880a83090fea72",
+      "bytes": 33928
+    },
+    "steep/inputs/views.json": {
+      "source": "captures/world-surroundings/q1-20261019-active/steep/views.json",
+      "sha256": "2f1fd0d768f929a70f52eae6e40fec0f396957bb7f6a82b952f6e7ad69616b01",
+      "bytes": 2401
+    },
+    "measurements/forward/report.json": {
+      "source": "captures/world-surroundings/q1-20261019-active/report.json",
+      "sha256": "51b1dd9d332bbe47f3c4a204b3a8a9aa4c980ee8dd3ba5e8cea5fa9263d90bd8",
+      "bytes": 2358573
+    },
+    "measurements/forward/build.log": {
+      "source": "captures/world-surroundings/q1-20261019-active/build.log",
+      "sha256": "71aa391ec7d7e291b419a7f40fba91919e14ac2394ab4e8b66ed126e267d70f6",
+      "bytes": 23
+    },
+    "measurements/forward/configure.log": {
+      "source": "captures/world-surroundings/q1-20261019-active/configure.log",
+      "sha256": "8777081b68d0664fd13d2363c9d70c35dc59b4ecb077bb8a5aa0ff4d708cf614",
+      "bytes": 161
+    },
+    "measurements/reverse/report.json": {
+      "source": "captures/world-surroundings/q1-20261019-reversed/report.json",
+      "sha256": "53887570fc0f7130d6d99fcd1acb8f1a46982950de2070fc88e0f53ff709a2f7",
+      "bytes": 1473267
+    },
+    "measurements/reverse/build.log": {
+      "source": "captures/world-surroundings/q1-20261019-reversed/build.log",
+      "sha256": "71aa391ec7d7e291b419a7f40fba91919e14ac2394ab4e8b66ed126e267d70f6",
+      "bytes": 23
+    },
+    "measurements/reverse/configure.log": {
+      "source": "captures/world-surroundings/q1-20261019-reversed/configure.log",
+      "sha256": "0237d78e4cf75e4d358c5977a18fd760cb7dbbeab500c75e583d796a29898343",
+      "bytes": 161
+    },
+    "measurements/guard-forward/report.json": {
+      "source": "captures/world-surroundings/q1-guard-forward/report.json",
+      "sha256": "21888f8de8a3d38debcfc655e10332a4a26005a1f86533848e8cb49f7b0dc371",
+      "bytes": 1185864
+    },
+    "measurements/guard-forward/build.log": {
+      "source": "captures/world-surroundings/q1-guard-forward/build.log",
+      "sha256": "71aa391ec7d7e291b419a7f40fba91919e14ac2394ab4e8b66ed126e267d70f6",
+      "bytes": 23
+    },
+    "measurements/guard-forward/configure.log": {
+      "source": "captures/world-surroundings/q1-guard-forward/configure.log",
+      "sha256": "0237d78e4cf75e4d358c5977a18fd760cb7dbbeab500c75e583d796a29898343",
+      "bytes": 161
+    },
+    "measurements/guard-reverse/report.json": {
+      "source": "captures/world-surroundings/q1-guard-reverse/report.json",
+      "sha256": "15038337ab0e6abaad17a16718b898b4018c67c174101b339e83497329e3725c",
+      "bytes": 743084
+    },
+    "measurements/guard-reverse/build.log": {
+      "source": "captures/world-surroundings/q1-guard-reverse/build.log",
+      "sha256": "71aa391ec7d7e291b419a7f40fba91919e14ac2394ab4e8b66ed126e267d70f6",
+      "bytes": 23
+    },
+    "measurements/guard-reverse/configure.log": {
+      "source": "captures/world-surroundings/q1-guard-reverse/configure.log",
+      "sha256": "0237d78e4cf75e4d358c5977a18fd760cb7dbbeab500c75e583d796a29898343",
+      "bytes": 161
+    },
+    "measurements/sculpt/report.json": {
+      "source": "captures/world-surroundings/q1-sculpt-regression/report.json",
+      "sha256": "6468a0b543b5bc69c8747529c17c8df5468e979aebd89695149e5834d35e15c6",
+      "bytes": 251940
+    },
+    "measurements/sculpt/build.log": {
+      "source": "captures/world-surroundings/q1-sculpt-regression/build.log",
+      "sha256": "71aa391ec7d7e291b419a7f40fba91919e14ac2394ab4e8b66ed126e267d70f6",
+      "bytes": 23
+    },
+    "measurements/sculpt/configure.log": {
+      "source": "captures/world-surroundings/q1-sculpt-regression/configure.log",
+      "sha256": "0237d78e4cf75e4d358c5977a18fd760cb7dbbeab500c75e583d796a29898343",
+      "bytes": 161
+    },
+    "measurements/q1-cpu-tests-world-guard.txt": {
+      "source": "captures/world-surroundings/q1-cpu-tests-world-guard.txt",
+      "sha256": "320f4c638de5502c6c42916c19e6d04368f44c96664ff5eb6fb2418f14a71090",
+      "bytes": 185
+    },
+    "measurements/q1-cpu-tests.txt": {
+      "source": "captures/world-surroundings/q1-cpu-tests.txt",
+      "sha256": "64929288f2dd6f341312933d467a2447c0945083d86bdd2938e11a157d23487d",
+      "bytes": 666
+    },
+    "README.md": {
+      "sha256": "d4453a840d6862b5dfd6f653cfab90c877e9842e094567e617d321243f787fac",
+      "bytes": 2353
+    },
+    "summary.json": {
+      "sha256": "8e48ec3db9761fa7e7687e881e024fa205b044280cdf5ca669626d279ed69579",
+      "bytes": 26186
+    },
+    "baseline/inputs/input-replay.json": {
+      "source": "captures/world-surroundings/q1-20261019-active/baseline/A/input-replay.json",
+      "sha256": "326c46d4355a9fe2e943f2b7ed1b3fa06538f837dca685921f578f1d833d1e7b",
+      "bytes": 21641
+    },
+    "baseline/A/steep-painted.png": {
+      "source": "captures/world-surroundings/q1-unoccluded-slope/baseline/A/steep-painted.png",
+      "sha256": "e5b4642b1e305998a6915fb54553fa33b390fc3c39bf15d3d7501fc73c5f3460",
+      "bytes": 428731
+    },
+    "baseline/A/steep-diagnostic.png": {
+      "source": "captures/world-surroundings/q1-unoccluded-slope/baseline/A/steep-diagnostic.png",
+      "sha256": "39750506644d9892c87dee26892cf004db961dab2fddf1865e97811bb0a99806",
+      "bytes": 458938
+    },
+    "measurements/shaders/baseline/A.frag": {
+      "source": "captures/world-surroundings/q1-20261019-active/baseline/A/initial-bundle/shaders/material.frag",
+      "sha256": "dae8b0a262c405893eec80fb46e69dbca675845912d951fac487e53129b7d8ec",
+      "bytes": 21054
+    },
+    "baseline/A_control/steep-painted.png": {
+      "source": "captures/world-surroundings/q1-guard-slope/baseline/A_control/steep-painted.png",
+      "sha256": "beaa504e5faca11ad205c954132f95783e1e2f993682ac39b89b0269244048f7",
+      "bytes": 428730
+    },
+    "baseline/A_control/steep-diagnostic.png": {
+      "source": "captures/world-surroundings/q1-guard-slope/baseline/A_control/steep-diagnostic.png",
+      "sha256": "39750506644d9892c87dee26892cf004db961dab2fddf1865e97811bb0a99806",
+      "bytes": 458938
+    },
+    "measurements/shaders/baseline/A_control.frag": {
+      "source": "captures/world-surroundings/q1-guard-forward/baseline/A_control/initial-bundle/shaders/material.frag",
+      "sha256": "e9147454211762d1df10e875ace2bd56265d93fb0c3b408e087bfffcf4398fab",
+      "bytes": 22922
+    },
+    "baseline/B_depth/steep-painted.png": {
+      "source": "captures/world-surroundings/q1-guard-slope/baseline/B_depth/steep-painted.png",
+      "sha256": "c8a8904478ab1fd8251d20fb30a10bfa64ee9b247ab1429c1c99be638bfbdc9e",
+      "bytes": 434521
+    },
+    "baseline/B_depth/steep-diagnostic.png": {
+      "source": "captures/world-surroundings/q1-guard-slope/baseline/B_depth/steep-diagnostic.png",
+      "sha256": "17449c731a91383a52640a9dd1daca364348cbc128c30add18e26fda92a5280c",
+      "bytes": 478173
+    },
+    "measurements/shaders/baseline/B_depth.frag": {
+      "source": "captures/world-surroundings/q1-guard-forward/baseline/B_depth/initial-bundle/shaders/material.frag",
+      "sha256": "4fa38113cb66da8e5aef04548a60e34b6fd335232ffa1011c4c3747664a231dc",
+      "bytes": 22923
+    },
+    "baseline/B_power/steep-painted.png": {
+      "source": "captures/world-surroundings/q1-unoccluded-slope/baseline/B_power/steep-painted.png",
+      "sha256": "af4a9e87e069a6521a3c16a451ca16452077b530009fa64d2bf3f09e76abe016",
+      "bytes": 431338
+    },
+    "baseline/B_power/steep-diagnostic.png": {
+      "source": "captures/world-surroundings/q1-unoccluded-slope/baseline/B_power/steep-diagnostic.png",
+      "sha256": "f1cccbbf72031588d5f6d78adac51020bdff83641145fbba9aeacdd3a19330d5",
+      "bytes": 471467
+    },
+    "measurements/shaders/baseline/B_power.frag": {
+      "source": "captures/world-surroundings/q1-20261019-active/baseline/B_power/initial-bundle/shaders/material.frag",
+      "sha256": "3fe46071ee7d3e0f6457b3d8beabf124d14b6aeba4aa55d31ce4cbd8992b799f",
+      "bytes": 22792
+    },
+    "steep/inputs/input-replay.json": {
+      "source": "captures/world-surroundings/q1-20261019-active/steep/A/input-replay.json",
+      "sha256": "450263fcc2e68df9195503ec73b425b779f9c1992819f6ee3174ce283470295f",
+      "bytes": 21641
+    },
+    "steep/A/steep-painted.png": {
+      "source": "captures/world-surroundings/q1-unoccluded-slope/steep/A/steep-painted.png",
+      "sha256": "539143ac69878c3ae6ba78e16aa31cce751ebbf0b9472724df59dc2f7e14e3a6",
+      "bytes": 568011
+    },
+    "steep/A/steep-diagnostic.png": {
+      "source": "captures/world-surroundings/q1-unoccluded-slope/steep/A/steep-diagnostic.png",
+      "sha256": "f02bfcfdd8cb103db73ab9744cff4559e95dc87596bbd901d840e1152b4487df",
+      "bytes": 627242
+    },
+    "measurements/shaders/steep/A.frag": {
+      "source": "captures/world-surroundings/q1-20261019-active/steep/A/initial-bundle/shaders/material.frag",
+      "sha256": "dae8b0a262c405893eec80fb46e69dbca675845912d951fac487e53129b7d8ec",
+      "bytes": 21054
+    },
+    "steep/A_control/steep-painted.png": {
+      "source": "captures/world-surroundings/q1-guard-slope/steep/A_control/steep-painted.png",
+      "sha256": "395b34b03f4624ff24c740fd5fe0b12f092418328a05439db44e0c8b1f4a1928",
+      "bytes": 568012
+    },
+    "steep/A_control/steep-diagnostic.png": {
+      "source": "captures/world-surroundings/q1-guard-slope/steep/A_control/steep-diagnostic.png",
+      "sha256": "f02bfcfdd8cb103db73ab9744cff4559e95dc87596bbd901d840e1152b4487df",
+      "bytes": 627242
+    },
+    "measurements/shaders/steep/A_control.frag": {
+      "source": "captures/world-surroundings/q1-guard-forward/steep/A_control/initial-bundle/shaders/material.frag",
+      "sha256": "e9147454211762d1df10e875ace2bd56265d93fb0c3b408e087bfffcf4398fab",
+      "bytes": 22922
+    },
+    "steep/B_depth/steep-painted.png": {
+      "source": "captures/world-surroundings/q1-guard-slope/steep/B_depth/steep-painted.png",
+      "sha256": "ac54ec83ec1fe7e475b198bc94d98bafc1f31041929209f2e4850272f4461dca",
+      "bytes": 587854
+    },
+    "steep/B_depth/steep-diagnostic.png": {
+      "source": "captures/world-surroundings/q1-guard-slope/steep/B_depth/steep-diagnostic.png",
+      "sha256": "195f246f271d55308a6f812a77cee79a447a136db5bbe331cc49d4b89c9ffdab",
+      "bytes": 644948
+    },
+    "measurements/shaders/steep/B_depth.frag": {
+      "source": "captures/world-surroundings/q1-guard-forward/steep/B_depth/initial-bundle/shaders/material.frag",
+      "sha256": "4fa38113cb66da8e5aef04548a60e34b6fd335232ffa1011c4c3747664a231dc",
+      "bytes": 22923
+    },
+    "steep/B_power/steep-painted.png": {
+      "source": "captures/world-surroundings/q1-unoccluded-slope/steep/B_power/steep-painted.png",
+      "sha256": "ff591ae68d0f49f31d5334110ac09cf2b70bf8e226012c11f5da67f24fc7d402",
+      "bytes": 582972
+    },
+    "steep/B_power/steep-diagnostic.png": {
+      "source": "captures/world-surroundings/q1-unoccluded-slope/steep/B_power/steep-diagnostic.png",
+      "sha256": "18dd360d417ea24f3e6ea46dc56f0cfbfc2ca90becc0f714d13bfc5747c0112a",
+      "bytes": 638383
+    },
+    "measurements/shaders/steep/B_power.frag": {
+      "source": "captures/world-surroundings/q1-20261019-active/steep/B_power/initial-bundle/shaders/material.frag",
+      "sha256": "3fe46071ee7d3e0f6457b3d8beabf124d14b6aeba4aa55d31ce4cbd8992b799f",
+      "bytes": 22792
+    },
+    "measurements/unoccluded-slope-report.json": {
+      "source": "captures/world-surroundings/q1-unoccluded-slope/report.json",
+      "sha256": "d827ce3ddb57a62e4536c913b94d014116139f1d0354d85c9c82d363c2292ac2",
+      "bytes": 6088
+    },
+    "measurements/guard-slope-report.json": {
+      "source": "captures/world-surroundings/q1-guard-slope/report.json",
+      "sha256": "c9a97cbab4d9e0f2d1a0021b3a4bce99ec2d2c7330dba9ff0f5c76b90b9ba544",
+      "bytes": 3804
+    },
+    "measurements/forward/source-snapshot/quality_blend.py": {
+      "source": "captures/world-surroundings/q1-20261019-active/source-snapshot/quality_blend.py",
+      "sha256": "f2e62ccc48684be39dd967625cfa52575b826ba227d001f0383d30f0cec18b9d",
+      "bytes": 9693
+    },
+    "measurements/forward/source-snapshot/quality_materials.py": {
+      "source": "captures/world-surroundings/q1-20261019-active/source-snapshot/quality_materials.py",
+      "sha256": "1f992718c820f970a410088ce24f6324bd7b9b7141cddc760c0c43d7b898a404",
+      "bytes": 7256
+    },
+    "measurements/forward/source-snapshot/run_quality.py": {
+      "source": "captures/world-surroundings/q1-20261019-active/source-snapshot/run_quality.py",
+      "sha256": "f56acd54c41b13342a2122f9bafd387c20c525916a3419b3f1be297e5225aa78",
+      "bytes": 25510
+    },
+    "measurements/q1-production-build.log": {
+      "source": "captures/world-surroundings/q1-production-build.log",
+      "sha256": "71aa391ec7d7e291b419a7f40fba91919e14ac2394ab4e8b66ed126e267d70f6",
+      "bytes": 23
+    }
+  }
+}

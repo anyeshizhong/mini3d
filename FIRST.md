@@ -17,6 +17,7 @@ Mini3D 是一个以**三维场景摆放、渲染、摄影和 AI API** 为核心�
 | AI 控制及活动窗口连接方式 | [ai-api-v1.md](docs/ai-api-v1.md)、[live-editor-ipc.md](docs/live-editor-ipc.md) |
 | 旧实验、修复经验、专项验收及测试入口 | 在 `docs/` 及相关项目资料中**按任务关键词、条件和时间搜索原始日志**，再核实相应源码和测试 |
 | 当前项目入口 | 如果有的话请查看 [PROJECT.md](PROJECT.md) 来确定目前需要做什么，当前需要查看 |
+| World Surroundings：城市外围、摄影范围、地理构图与分项验收 | 先看 [PROJECT.md](PROJECT.md) 当前优先线，再看 [SURROUNDINGS.md](experiments/world-surroundings/SURROUNDINGS.md)；世界构建与性能分开验收，已有地形实验不代表外围系统已完成 |
 
 **按需阅读**：不要求每位 AI 阅读所有领域的代码、日志和测试。先根据任务进入有关文件；若追踪到共享状态、接口或其他模块，才扩大阅读范围。详见对应文档。
 

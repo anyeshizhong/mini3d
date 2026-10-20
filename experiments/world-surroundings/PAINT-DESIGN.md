@@ -2,6 +2,8 @@
 
 本设计先于纹理更新扩展实施。边界仍是独立实验，不接入正式Editor/Scene/API。
 
+LAB-02B 原方案保留为 A。后续 [Q-1 设计与验收](QUALITY.md) 通过独立 `quality_materials.py` 扩展 Shader 副本：不透明地形 baseColor alpha 可存线性材质高度，手绘权重和事务仍由原 `PaintSession` 管理。高度权重仅为派生值，不改地形高程或用户绘制数据；原 `MaterialMaps`、PBR 素材与生产 Shader 不变。[上游及适配记录](QUALITY-SOURCES.md) 明确算法来源和实验 GPU 计时边界。
+
 权威数据为独立于65×65高度网格的257×257三层非负归一化float32权重，列向+X、行向+Y，映射同一36×26米区域。默认土壤层为1；绘制/擦除按时间与圆形衰减累计，提交/取消和预算限制的矩形差异Undo/Redo独立验证。
 
 使用来源明确的真实PBR图片，记录原始下载、SHA256、作者、许可和缩放；Base Color按sRGB解码为线性再混合，Normal按OpenGL切线空间解码、加权后归一，Roughness为线性。各层世界纹理尺度明确给出，不把三种纯色或顶点颜色当作材质。

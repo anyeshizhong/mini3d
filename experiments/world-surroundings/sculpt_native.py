@@ -5,16 +5,31 @@ from pathlib import Path
 import numpy as np
 
 
+_FRAME_STATS_FIELDS = (
+    'input_near', 'color_near', 'color_draws', 'shadow_draws',
+    'color_triangles', 'shadow_triangles',
+    'near_shadow_depth_span', 'far_shadow_depth_span',
+)
+_FRAME_STATS_INTEGER_FIELDS = frozenset((
+    'color_draws', 'shadow_draws', 'color_triangles', 'shadow_triangles',
+))
+
+
 class NativeTerrain:
     def __init__(self, library, bundle, width=1081, height=662):
         self.dll = C.CDLL(str(Path(library).resolve()))
         u32p, f32p = C.POINTER(C.c_uint32), C.POINTER(C.c_float)
+        u64p = C.POINTER(C.c_uint64)
+        f64p = C.POINTER(C.c_double)
         u8p = C.POINTER(C.c_uint8)
         signatures = {
             'lab_error': ([], C.c_char_p),
             'lab_create': ([C.c_char_p, C.c_int, C.c_int], C.c_void_p),
             'lab_destroy': ([C.c_void_p], C.c_int),
             'lab_render': ([C.c_void_p, C.c_uint32], C.c_int),
+            'lab_enable_gpu_timing': ([C.c_void_p, C.c_int], C.c_int),
+            'lab_poll_gpu_timing': ([C.c_void_p, C.c_uint32, u32p, u64p, f64p, u8p,
+                                     u32p], C.c_int),
             'lab_capture': ([C.c_void_p, C.c_char_p, C.c_uint32], C.c_int),
             'lab_capture_color': ([C.c_void_p, C.c_char_p], C.c_int),
             'lab_compile_count': ([C.c_void_p], C.c_uint32),
@@ -37,6 +52,10 @@ class NativeTerrain:
         for name, (arguments, result) in signatures.items():
             function = getattr(self.dll, name)
             function.argtypes, function.restype = arguments, result
+        self._frame_stats = getattr(self.dll, 'lab_frame_stats', None)
+        if self._frame_stats is not None:
+            self._frame_stats.argtypes = [C.c_void_p, f64p, C.c_uint32]
+            self._frame_stats.restype = C.c_int
         self.handle = self.dll.lab_create(str(Path(bundle).resolve()).encode('utf-8'), width, height)
         if not self.handle:
             raise RuntimeError(self.error())
@@ -55,6 +74,49 @@ class NativeTerrain:
 
     def render(self, frame=168):
         self.check(self.dll.lab_render(self.handle, frame))
+
+    def frame_stats(self):
+        """Return the last rendered frame's near/depth and draw statistics."""
+        if self._frame_stats is None:
+            raise RuntimeError(
+                'terrain_lab DLL does not export optional lab_frame_stats; '
+                'frame statistics require a rebuilt experiment DLL'
+            )
+        values = np.empty(len(_FRAME_STATS_FIELDS), dtype=np.float64)
+        self.check(self._frame_stats(
+            self.handle, values.ctypes.data_as(C.POINTER(C.c_double)), len(values)))
+        return {
+            name: int(value) if name in _FRAME_STATS_INTEGER_FIELDS else float(value)
+            for name, value in zip(_FRAME_STATS_FIELDS, values)
+        }
+
+    def enable_gpu_timing(self, enabled):
+        """Opt in to async Terrain color-draw GPU timestamps for subsequent renders."""
+        if not isinstance(enabled, bool):
+            raise TypeError('enabled must be a bool')
+        self.check(self.dll.lab_enable_gpu_timing(self.handle, int(enabled)))
+
+    def poll_gpu_timing(self):
+        """Return ready Terrain color-draw timestamps without waiting.
+
+        Each value sums contiguous hasAO Terrain draw regions and excludes marker
+        draws, sky, shadows, and resolve. It is not a pure shader/material cost;
+        a ring-overflow or failed render is reported with ``dropped=True``.
+        """
+        capacity = 256
+        frames = np.empty(capacity, dtype=np.uint32)
+        sample_ids = np.empty(capacity, dtype=np.uint64)
+        gpu_ms = np.empty(capacity, dtype=np.float64)
+        dropped = np.empty(capacity, dtype=np.uint8)
+        written = C.c_uint32()
+        self.check(self.dll.lab_poll_gpu_timing(self.handle, capacity,
+            frames.ctypes.data_as(C.POINTER(C.c_uint32)),
+            sample_ids.ctypes.data_as(C.POINTER(C.c_uint64)),
+            gpu_ms.ctypes.data_as(C.POINTER(C.c_double)),
+            dropped.ctypes.data_as(C.POINTER(C.c_uint8)), C.byref(written)))
+        return [dict(frame=int(frames[i]), sample_id=int(sample_ids[i]),
+                     gpu_ms=float(gpu_ms[i]), dropped=bool(dropped[i]))
+                for i in range(written.value)]
 
     def capture(self, stem, frame=168):
         stem = Path(stem).resolve()

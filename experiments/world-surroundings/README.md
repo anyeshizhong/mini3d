@@ -1,10 +1,24 @@
 # World Surroundings · 独立实验
 
-本目录是地形功能的独立验证入口，使用仓库现有 SPQR C++20/OpenGL 查看器与同一 Renderer 核心。LAB-00 只建立有限平地、简单几何与固定机位基线；完整路线见根目录 [PROJECT.md](../../PROJECT.md)。
+本目录复用仓库现有 SPQR C++20/OpenGL 查看器与同一 Renderer 核心，保留已完成的地形基础实验。当前优先为**World Surroundings世界外围环境系统**：约定摄影范围内，城市、郊外和远景连续可信。设计、源码接入与验收见 [SURROUNDINGS.md](SURROUNDINGS.md)，完整路线见 [PROJECT.md](../../PROJECT.md)。
+
+**SUR-00固定场景、A/B/C回放和首轮实测已完成，下一步SUR-01先修地表分块/阴影参与再建设连续世界。** 摄影范围X/Y各±200m、地表上1.6～120m仍是完整世界待验收目标；没有手动自由摄影窗口或正式Editor集成。代码、复现与已发现风险见 [SUR-00](SUR-00.md)。近景材质和完整Spline继续后置。
+
+当前方案为[SURROUNDINGS v0.3](SURROUNDINGS.md)：单个罗马郊外的地理布局、A天空基线/B最小二维对照/C三维外围已有独立原型；SUR-01连续世界、SUR-02可信郊外、SUR-03完整自由摄影与性能诊断。世界构建和性能分别验收，30 FPS/25ms目标留给后续SUR-PERF，不阻断前期建设；明显架构问题、深度/遮挡和阴影错误仍须当期解决。
 
 GitHub审阅入口：[精简图像、动画与测量报告](review/README.md)。完整构建及原始捕获由下列命令在本地captures生成。
 
+LAB-02B当前为**功能通过、视觉待验收**。[Q-1材质高度混合](QUALITY.md)已有原型，但整体Q画质/导航预算未通过，续作和完整道路让位于SUR。[源码调查与实际适配](QUALITY-SOURCES.md)保留上游版本、许可和公式变化。Q-1不含去重复、Triplanar、草丛/碎石散布或正式Editor集成；SUR仅允许为固定示例准备少量静态外围元素，不算这些编辑功能完成。
+
 LAB-01 高度图/查询、LAB-02A 雕刻和 LAB-02B 材质绘制入口见本文后半部分，实测结果见 [HEIGHTMAP.md](HEIGHTMAP.md)、[SCULPT.md](SCULPT.md) 和 [PAINT.md](PAINT.md)。以下先保留 LAB-00 的复现方式。
+
+## SUR-00：当前外围实验入口
+
+```powershell
+F:/gymenv/python.exe -B experiments/world-surroundings/run_surroundings.py --output captures/world-surroundings/sur00-reproduce --conditions day-clear day-haze day-haze-strong sunset-haze
+```
+
+A为共同罗马场景与天空，B为从同一C烘焙的固定二维背景，C为真实三维山脊；三者共享地表、出城道路、光照和相机帧。固定机位、连续路线、截图/录像、三轮完整帧测量和镜头扫参相互分离。`--visible`仅显示回放，不是SUR-03自由导航。具体依赖、输出、范围、测量限制和下一阶段风险见 [SUR-00.md](SUR-00.md)。旧LAB/Q命令与证据保持独立。
 
 ## 一条命令复现
 
@@ -131,4 +145,4 @@ F:/gymenv/python.exe -B experiments/world-surroundings/run_paint.py --output cap
 
 仍构建同一个实验`terrain_lab` target，但默认使用独立`build-lab02b`目录。分层方案只上传权重脏区，预滤材质atlas保持静态；CPU烘焙方案保留为对照。正式SPQR ABI、生产shader、Editor/Scene/API没有新增地形功能。自动报告包含两方案相同输入/权重检查、GPU纹理和几何读回、全量新建参考、近景/斜俯/远景、独立录像和帧时；`weights.npy`是实验证据，不是正式Scene存档。
 
-实测选择、图像、复现和边界见 [PAINT.md](PAINT.md)、[纹理扩展设计](PAINT-DESIGN.md)。下一步为 LAB-02C Spline道路与挖填。
+实测选择、图像、复现和边界见 [PAINT.md](PAINT.md)、[纹理扩展设计](PAINT-DESIGN.md)。当前下一步为 [SUR-01连续世界](SURROUNDINGS.md)，首轮证据见[SUR-00](SUR-00.md)，完整Spline道路与挖填继续HOLD。

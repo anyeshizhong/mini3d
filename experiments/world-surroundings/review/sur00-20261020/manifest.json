@@ -1,0 +1,835 @@
+{
+  "measured_source": "captures/world-surroundings/sur00-20261020",
+  "note": "Artifacts copied byte-for-byte. README is authored documentation, not a measured artifact.",
+  "files": [
+    {
+      "path": "day-clear/A/views/aerial.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-clear/A/views/aerial.png",
+      "bytes": 80247,
+      "sha256": "eefc29a359eabc70df981dbf8c922ea6692e4e6e0d45f1b724b990ac023043ca"
+    },
+    {
+      "path": "day-clear/A/views/aerial_35.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-clear/A/views/aerial_35.png",
+      "bytes": 53727,
+      "sha256": "656c8c58cb30c9d478428cebb179014c76e129fab4224cd4ca949ca121a3ad9d"
+    },
+    {
+      "path": "day-clear/A/views/aerial_75.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-clear/A/views/aerial_75.png",
+      "bytes": 105988,
+      "sha256": "76f8fba51d0bb39733bb494346f81ace041f34d58ca4a495eb17adb9d72b1c15"
+    },
+    {
+      "path": "day-clear/A/views/bake_anchor.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-clear/A/views/bake_anchor.png",
+      "bytes": 126571,
+      "sha256": "2c3acc1a7949b79f90d52a7744b29db9e804c14dc06e19d884a633d4edd917f7"
+    },
+    {
+      "path": "day-clear/A/views/corner_ne.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-clear/A/views/corner_ne.png",
+      "bytes": 49118,
+      "sha256": "7dbfb09ec425d8343952a10d295f9cbedb2cd175ae426ceff0861d9ed88dab0d"
+    },
+    {
+      "path": "day-clear/A/views/corner_nw.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-clear/A/views/corner_nw.png",
+      "bytes": 55255,
+      "sha256": "30dda05d9a11e92b529bc9d3c2cbcb831ddd4f9f1ba28b014987f24596aa2466"
+    },
+    {
+      "path": "day-clear/A/views/corner_se.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-clear/A/views/corner_se.png",
+      "bytes": 49278,
+      "sha256": "a4d0ea5f5ac7970f4a882c73a427c034a2817112fe3609b839cd969ed501d1f4"
+    },
+    {
+      "path": "day-clear/A/views/corner_sw.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-clear/A/views/corner_sw.png",
+      "bytes": 50876,
+      "sha256": "45dd8abd5baad65a5e2c1efa49b16ffb2a5cfd5229c59e54cecd5bfa94de2293"
+    },
+    {
+      "path": "day-clear/A/views/edge_east.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-clear/A/views/edge_east.png",
+      "bytes": 24111,
+      "sha256": "4a53b319e0bc62ad5e8b2e5a3020f8b4d619f56d0b4f9374526178d010bae0a9"
+    },
+    {
+      "path": "day-clear/A/views/edge_north.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-clear/A/views/edge_north.png",
+      "bytes": 26703,
+      "sha256": "f394614a38ea54eee12c27ad1dc5d037aa9d8ff23e243f712989498fc2c8f4c3"
+    },
+    {
+      "path": "day-clear/A/views/edge_south.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-clear/A/views/edge_south.png",
+      "bytes": 19657,
+      "sha256": "c568f19f4cec4474ae2537ec861e761531634da3c04126bd7f09defa3cffbce1"
+    },
+    {
+      "path": "day-clear/A/views/edge_west.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-clear/A/views/edge_west.png",
+      "bytes": 31547,
+      "sha256": "e882b54e1bc981a91d752b761b2d6ecc01a0c2076f157451d3fe8b3a555fe8be"
+    },
+    {
+      "path": "day-clear/A/views/exit.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-clear/A/views/exit.png",
+      "bytes": 88238,
+      "sha256": "4b3b5ea307a80bc233fcde3f54f13d111326bafb95bd1acbd224f35bc9fd1cb6"
+    },
+    {
+      "path": "day-clear/A/views/exit_return.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-clear/A/views/exit_return.png",
+      "bytes": 137521,
+      "sha256": "612b88ebd22382dc49ed79742be04783e83da6da39a76c790ebde192e673171c"
+    },
+    {
+      "path": "day-clear/A/views/nadir.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-clear/A/views/nadir.png",
+      "bytes": 10400,
+      "sha256": "b12c09619a29f69675e3aca84448d325751885ddc1f94de172d24a4f88b3a32d"
+    },
+    {
+      "path": "day-clear/A/views/outward_east.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-clear/A/views/outward_east.png",
+      "bytes": 121202,
+      "sha256": "2532689090562c609f227e632e460725321ff5b0aeb00f8cc1822ee95608bbe3"
+    },
+    {
+      "path": "day-clear/A/views/outward_north.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-clear/A/views/outward_north.png",
+      "bytes": 117238,
+      "sha256": "67a188dfdaed6c5c4252338e9ce429978890f3403519a3a5de314b693b736704"
+    },
+    {
+      "path": "day-clear/A/views/outward_south.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-clear/A/views/outward_south.png",
+      "bytes": 111284,
+      "sha256": "0a6a22e2d265c3c17964b54b322872f2a17a34d359bf7127bb1f17431f4cd3c2"
+    },
+    {
+      "path": "day-clear/A/views/outward_west.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-clear/A/views/outward_west.png",
+      "bytes": 91190,
+      "sha256": "5344d5030ba4946e0bc7e0291284d07c3ba8ca738a6dfdc9dd0f026729007ace"
+    },
+    {
+      "path": "day-clear/A/views/street.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-clear/A/views/street.png",
+      "bytes": 175949,
+      "sha256": "3c2f2ac053818875091002f192581d5aecc3b8b7b83e5872f8e1caf4ecb45992"
+    },
+    {
+      "path": "day-clear/A/views/telephoto.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-clear/A/views/telephoto.png",
+      "bytes": 95775,
+      "sha256": "ede115654704d0ec5daa74c382f64d879b454b14a4f33d5e85f201344909648f"
+    },
+    {
+      "path": "day-haze/A/views/street.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-haze/A/views/street.png",
+      "bytes": 176147,
+      "sha256": "7adbbfd9ae9c19c9bd8bf6ad32ec061655cb73caede3406ac2ea31b9df0ccbc3"
+    },
+    {
+      "path": "day-haze/A/views/aerial.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-haze/A/views/aerial.png",
+      "bytes": 87222,
+      "sha256": "76a2dd5c6185259c098ece6a24450a7359ec2ba2c987d3ea91829c4aa239ce66"
+    },
+    {
+      "path": "day-haze/A/views/telephoto.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-haze/A/views/telephoto.png",
+      "bytes": 96130,
+      "sha256": "f8110c5dce14f20c1e3870919252d7236705102d4e5c5adb405097c7aa26df2a"
+    },
+    {
+      "path": "day-haze/A/views/nadir.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-haze/A/views/nadir.png",
+      "bytes": 10597,
+      "sha256": "d0f0b261d110eaaec93cfd58e69adbfa63f9899d0d118615e87e78f38d872a32"
+    },
+    {
+      "path": "sunset-haze/A/views/street.png",
+      "source": "captures/world-surroundings/sur00-20261020/sunset-haze/A/views/street.png",
+      "bytes": 196797,
+      "sha256": "a688686e5c953ad574d0cb44b5bb94961498a6ddf8a88a944839a7703a518abc"
+    },
+    {
+      "path": "sunset-haze/A/views/aerial.png",
+      "source": "captures/world-surroundings/sur00-20261020/sunset-haze/A/views/aerial.png",
+      "bytes": 112157,
+      "sha256": "f0b1662f6f1eccff09e64ef4eb957fc9dca7762b5149d2dee2db3ec008f04951"
+    },
+    {
+      "path": "sunset-haze/A/views/telephoto.png",
+      "source": "captures/world-surroundings/sur00-20261020/sunset-haze/A/views/telephoto.png",
+      "bytes": 103470,
+      "sha256": "7e55256c12e100652849d9c7f30975ed2a02658f2028340391a83de52830bb17"
+    },
+    {
+      "path": "day-haze/A/motion/lateral.gif",
+      "source": "captures/world-surroundings/sur00-20261020/day-haze/A/motion/lateral.gif",
+      "bytes": 1245603,
+      "sha256": "0a3614452e589bc073da2353d44638313babc03f7fe9274966749ebbe23510f0"
+    },
+    {
+      "path": "day-haze/A/motion/ascent.gif",
+      "source": "captures/world-surroundings/sur00-20261020/day-haze/A/motion/ascent.gif",
+      "bytes": 923994,
+      "sha256": "aa963f28c71d241f54749ca7c28fb8a4446cc300c757e202503bc2abd6ffde0e"
+    },
+    {
+      "path": "day-clear/B/views/aerial.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-clear/B/views/aerial.png",
+      "bytes": 55872,
+      "sha256": "89bce20107f84a0edd757732b8f1d148469ab3b8e2ec541518cd20be84f577a6"
+    },
+    {
+      "path": "day-clear/B/views/aerial_35.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-clear/B/views/aerial_35.png",
+      "bytes": 27672,
+      "sha256": "cb229c54ee6d103bc7105f92667622cecb2b5b7a800d7f81e25255ad75113bcb"
+    },
+    {
+      "path": "day-clear/B/views/aerial_75.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-clear/B/views/aerial_75.png",
+      "bytes": 88276,
+      "sha256": "41baa5bd17d6e6c0b0f0ad48e916a68d56c3602d8f2a21b2ae114c8cf4cb0be7"
+    },
+    {
+      "path": "day-clear/B/views/bake_anchor.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-clear/B/views/bake_anchor.png",
+      "bytes": 84099,
+      "sha256": "e28ce198b1184ec4e62f517f63c54a05284b280c77f51abb82cb8208d1b51bc9"
+    },
+    {
+      "path": "day-clear/B/views/corner_ne.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-clear/B/views/corner_ne.png",
+      "bytes": 49111,
+      "sha256": "e23b98b0626148285d588060ca0a92cd3ca184f352a3758dbe3d0316c7c6d122"
+    },
+    {
+      "path": "day-clear/B/views/corner_nw.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-clear/B/views/corner_nw.png",
+      "bytes": 55252,
+      "sha256": "be66f58a1d73c14094233e0b6c869484cdafaff454d9f486b353a383080b113f"
+    },
+    {
+      "path": "day-clear/B/views/corner_se.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-clear/B/views/corner_se.png",
+      "bytes": 33935,
+      "sha256": "23c99f93ad674174552382a8843207153cc03618ea4d186248642b4f3b6afc52"
+    },
+    {
+      "path": "day-clear/B/views/corner_sw.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-clear/B/views/corner_sw.png",
+      "bytes": 38665,
+      "sha256": "67ce7a3837430f05e96e41b327b59957bc9c8606cee4a2d0d4186cf247ec30ff"
+    },
+    {
+      "path": "day-clear/B/views/edge_east.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-clear/B/views/edge_east.png",
+      "bytes": 24234,
+      "sha256": "54996f430c5fc95cd0251d8076716f11bef21998c8fc0792df76a96981e9915c"
+    },
+    {
+      "path": "day-clear/B/views/edge_north.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-clear/B/views/edge_north.png",
+      "bytes": 26654,
+      "sha256": "471d690a89e1df6dc51f5cf68995e0f3f9d865f8050da2ef4152a98c4c21833f"
+    },
+    {
+      "path": "day-clear/B/views/edge_south.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-clear/B/views/edge_south.png",
+      "bytes": 19555,
+      "sha256": "1afe966d88c46a231713b3f9a3c51c6a9390330e51ad08a2f5a6f38844743190"
+    },
+    {
+      "path": "day-clear/B/views/edge_west.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-clear/B/views/edge_west.png",
+      "bytes": 32087,
+      "sha256": "c9929839b8e646f7ad882d5b2788bab306ab774ea1f992938156c4514d61b8f2"
+    },
+    {
+      "path": "day-clear/B/views/exit.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-clear/B/views/exit.png",
+      "bytes": 88238,
+      "sha256": "4b3b5ea307a80bc233fcde3f54f13d111326bafb95bd1acbd224f35bc9fd1cb6"
+    },
+    {
+      "path": "day-clear/B/views/exit_return.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-clear/B/views/exit_return.png",
+      "bytes": 103230,
+      "sha256": "5f869cf741a8d9b2318ab6e421bdaacb64f9e0c763d6143e42fc0d597391ebbf"
+    },
+    {
+      "path": "day-clear/B/views/nadir.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-clear/B/views/nadir.png",
+      "bytes": 10400,
+      "sha256": "b12c09619a29f69675e3aca84448d325751885ddc1f94de172d24a4f88b3a32d"
+    },
+    {
+      "path": "day-clear/B/views/outward_east.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-clear/B/views/outward_east.png",
+      "bytes": 119166,
+      "sha256": "f90f78662b01adb9a33338d52734b8336e3e81d8045bde259a56fa575fef3785"
+    },
+    {
+      "path": "day-clear/B/views/outward_north.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-clear/B/views/outward_north.png",
+      "bytes": 78564,
+      "sha256": "28aa4f03c475b15737e2622cb6bd04a78c08b552aa4cee38192983a871bfa638"
+    },
+    {
+      "path": "day-clear/B/views/outward_south.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-clear/B/views/outward_south.png",
+      "bytes": 111284,
+      "sha256": "0a6a22e2d265c3c17964b54b322872f2a17a34d359bf7127bb1f17431f4cd3c2"
+    },
+    {
+      "path": "day-clear/B/views/outward_west.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-clear/B/views/outward_west.png",
+      "bytes": 89181,
+      "sha256": "ea5619479ed1d55977df49b539cb421bc01bc87b997f295a09c9c3a1455ce17b"
+    },
+    {
+      "path": "day-clear/B/views/street.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-clear/B/views/street.png",
+      "bytes": 167839,
+      "sha256": "475da1e572481aedb1cda319c3557f7c3cfb03439fdcb782db31610cb943ad09"
+    },
+    {
+      "path": "day-clear/B/views/telephoto.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-clear/B/views/telephoto.png",
+      "bytes": 32066,
+      "sha256": "34bf5f58568775b7e40bceeb85835619ab24bc66afd285a1f9bfcb70dd104cae"
+    },
+    {
+      "path": "day-haze/B/views/street.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-haze/B/views/street.png",
+      "bytes": 168589,
+      "sha256": "6fce09908ba4d930e7537db6e715ed9db59669cc478f5bc9257b9a96824d858b"
+    },
+    {
+      "path": "day-haze/B/views/aerial.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-haze/B/views/aerial.png",
+      "bytes": 63852,
+      "sha256": "e37662f093089cde2d7c8e3f77e84eaea4136d5f930a091dbb7392549553ffc9"
+    },
+    {
+      "path": "day-haze/B/views/telephoto.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-haze/B/views/telephoto.png",
+      "bytes": 35170,
+      "sha256": "e37ebb565f5442c7cb13139f05435902495a37c71830b2dfedddc7649ec45440"
+    },
+    {
+      "path": "day-haze/B/views/nadir.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-haze/B/views/nadir.png",
+      "bytes": 10597,
+      "sha256": "d0f0b261d110eaaec93cfd58e69adbfa63f9899d0d118615e87e78f38d872a32"
+    },
+    {
+      "path": "sunset-haze/B/views/street.png",
+      "source": "captures/world-surroundings/sur00-20261020/sunset-haze/B/views/street.png",
+      "bytes": 190756,
+      "sha256": "93ae6a51a3391c6a6d13a5cf18c2ca1c70f9ee84d81c7ab50044fa54018e2a6c"
+    },
+    {
+      "path": "sunset-haze/B/views/aerial.png",
+      "source": "captures/world-surroundings/sur00-20261020/sunset-haze/B/views/aerial.png",
+      "bytes": 95527,
+      "sha256": "ce0fd682b4af2acf4ee2caeb437cb8b5947af09e45e6a29dcea8d1770e6d16a1"
+    },
+    {
+      "path": "sunset-haze/B/views/telephoto.png",
+      "source": "captures/world-surroundings/sur00-20261020/sunset-haze/B/views/telephoto.png",
+      "bytes": 47712,
+      "sha256": "d1d1991fe32b0df4a1ff55e7a1d747a9c0fe3afa3c087a11f66585fa58eb721b"
+    },
+    {
+      "path": "day-haze/B/motion/lateral.gif",
+      "source": "captures/world-surroundings/sur00-20261020/day-haze/B/motion/lateral.gif",
+      "bytes": 1049513,
+      "sha256": "47ea452764988c93e6c28892123e826563b386a9e4ed4997ea53a8baccf75e3a"
+    },
+    {
+      "path": "day-haze/B/motion/ascent.gif",
+      "source": "captures/world-surroundings/sur00-20261020/day-haze/B/motion/ascent.gif",
+      "bytes": 763668,
+      "sha256": "d994e3dff40f47a1340ef13fd4dc1505a45ee46392712536112980f429634ef8"
+    },
+    {
+      "path": "day-clear/C/views/aerial.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-clear/C/views/aerial.png",
+      "bytes": 76180,
+      "sha256": "2cd7066cc5fc19cf1ef8d018c83c91716733e8671d2b764465367cc820e1b3f0"
+    },
+    {
+      "path": "day-clear/C/views/aerial_35.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-clear/C/views/aerial_35.png",
+      "bytes": 42306,
+      "sha256": "1ae0d14cf824214c6aadf9bc7863261d4bc04780a532a027cf3c68ade365a83b"
+    },
+    {
+      "path": "day-clear/C/views/aerial_75.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-clear/C/views/aerial_75.png",
+      "bytes": 103756,
+      "sha256": "b2322e97268d3a190e1f280410565acdf92f4f7263a2a90b1b70b9c78f4cbddd"
+    },
+    {
+      "path": "day-clear/C/views/bake_anchor.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-clear/C/views/bake_anchor.png",
+      "bytes": 86251,
+      "sha256": "21467a3e0fd032fc8c04e4f94f185f9ae6fa9c24c8d64eedfb38d6d94dfb0042"
+    },
+    {
+      "path": "day-clear/C/views/corner_ne.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-clear/C/views/corner_ne.png",
+      "bytes": 49607,
+      "sha256": "02e4bd3f314b7bbcfdf66dd922827c89273b61585a53dfd85b90bed4953531ad"
+    },
+    {
+      "path": "day-clear/C/views/corner_nw.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-clear/C/views/corner_nw.png",
+      "bytes": 55563,
+      "sha256": "6891103ce2f77c839231c9d885bef51c15cde1d3e872a0735443495b03eaca8c"
+    },
+    {
+      "path": "day-clear/C/views/corner_se.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-clear/C/views/corner_se.png",
+      "bytes": 48287,
+      "sha256": "9adf21d99756de358a48efb1d28b126afa81072af41eeb07c4757f9023f4583d"
+    },
+    {
+      "path": "day-clear/C/views/corner_sw.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-clear/C/views/corner_sw.png",
+      "bytes": 51832,
+      "sha256": "73e400e3b43d241baa9e8ea8237e4a52e090e6119eaa3faddd0262d4733c7b68"
+    },
+    {
+      "path": "day-clear/C/views/edge_east.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-clear/C/views/edge_east.png",
+      "bytes": 29553,
+      "sha256": "fc03d16acac464f26baec95bfad9bd3f721ff95fb7c4dc621c1c5081bcc7b5f4"
+    },
+    {
+      "path": "day-clear/C/views/edge_north.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-clear/C/views/edge_north.png",
+      "bytes": 26824,
+      "sha256": "a6eb260c2d8de46058c3c815b6b06522f6307b052f6a6ed437789c1511227928"
+    },
+    {
+      "path": "day-clear/C/views/edge_south.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-clear/C/views/edge_south.png",
+      "bytes": 25199,
+      "sha256": "40c3a08603b10f4b6ac71ae2da51b28d2dd81a2efa3e9d83a403de37b088a376"
+    },
+    {
+      "path": "day-clear/C/views/edge_west.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-clear/C/views/edge_west.png",
+      "bytes": 35808,
+      "sha256": "78c831547898c0cbb7a6a5b15ec6ca66da1fcdfba8cc9d13eaa30694b8a726ef"
+    },
+    {
+      "path": "day-clear/C/views/exit.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-clear/C/views/exit.png",
+      "bytes": 88238,
+      "sha256": "4b3b5ea307a80bc233fcde3f54f13d111326bafb95bd1acbd224f35bc9fd1cb6"
+    },
+    {
+      "path": "day-clear/C/views/exit_return.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-clear/C/views/exit_return.png",
+      "bytes": 103547,
+      "sha256": "aafa5a588a86ca29750d5fd0c4263d6edb1821d5e6e490647ebc1b0d363990b7"
+    },
+    {
+      "path": "day-clear/C/views/nadir.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-clear/C/views/nadir.png",
+      "bytes": 10400,
+      "sha256": "b12c09619a29f69675e3aca84448d325751885ddc1f94de172d24a4f88b3a32d"
+    },
+    {
+      "path": "day-clear/C/views/outward_east.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-clear/C/views/outward_east.png",
+      "bytes": 128152,
+      "sha256": "8a2b0e52a57b795816a14d07fb45b1d85e13ae81dbaab6ac4792738d1a826535"
+    },
+    {
+      "path": "day-clear/C/views/outward_north.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-clear/C/views/outward_north.png",
+      "bytes": 96663,
+      "sha256": "3c11b8943be68e37c8a176a22e7fb1fd9cf80672da446f759cbb85a79298bf70"
+    },
+    {
+      "path": "day-clear/C/views/outward_south.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-clear/C/views/outward_south.png",
+      "bytes": 111284,
+      "sha256": "0a6a22e2d265c3c17964b54b322872f2a17a34d359bf7127bb1f17431f4cd3c2"
+    },
+    {
+      "path": "day-clear/C/views/outward_west.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-clear/C/views/outward_west.png",
+      "bytes": 98320,
+      "sha256": "1065c9b0f61dd292dff6ee04ce201de632b6d9b7617ea07d38e924da621635fd"
+    },
+    {
+      "path": "day-clear/C/views/street.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-clear/C/views/street.png",
+      "bytes": 166880,
+      "sha256": "9c68963b068a6296418f780b09994c6b5d4922bf9398d90ad0e62fa7a391bee4"
+    },
+    {
+      "path": "day-clear/C/views/telephoto.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-clear/C/views/telephoto.png",
+      "bytes": 33939,
+      "sha256": "c6873e1e46b26be8b29e663e31376b73f5df755b45bcd57197d17caea2f9173a"
+    },
+    {
+      "path": "day-haze/C/views/street.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-haze/C/views/street.png",
+      "bytes": 167395,
+      "sha256": "781d1b150c84d3718df36987f09397aa68f422b62ce36c2a82ff6716b2c7fdfb"
+    },
+    {
+      "path": "day-haze/C/views/aerial.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-haze/C/views/aerial.png",
+      "bytes": 81010,
+      "sha256": "8f5a6d1ca211a06a62238bff653c9b3134898f5d89224dce14263fb0d7e9acff"
+    },
+    {
+      "path": "day-haze/C/views/telephoto.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-haze/C/views/telephoto.png",
+      "bytes": 35885,
+      "sha256": "c8c1819b14abace3088dfccd81a650e3e61cc7920916143e02227a46af8b2b3a"
+    },
+    {
+      "path": "day-haze/C/views/nadir.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-haze/C/views/nadir.png",
+      "bytes": 10597,
+      "sha256": "d0f0b261d110eaaec93cfd58e69adbfa63f9899d0d118615e87e78f38d872a32"
+    },
+    {
+      "path": "sunset-haze/C/views/street.png",
+      "source": "captures/world-surroundings/sur00-20261020/sunset-haze/C/views/street.png",
+      "bytes": 190344,
+      "sha256": "8f4bec5826340eea8175b058014069f56ae2324c7d3ef2ae19866eaecd4a43ef"
+    },
+    {
+      "path": "sunset-haze/C/views/aerial.png",
+      "source": "captures/world-surroundings/sur00-20261020/sunset-haze/C/views/aerial.png",
+      "bytes": 119439,
+      "sha256": "bfd634924118cb62fe17a7d7df5ecbfa9bda470569b00c8b2cb988f8fcc520f1"
+    },
+    {
+      "path": "sunset-haze/C/views/telephoto.png",
+      "source": "captures/world-surroundings/sur00-20261020/sunset-haze/C/views/telephoto.png",
+      "bytes": 58206,
+      "sha256": "3bfc38c5902cb0e200106ab4e5766cc615dcd8f2b79a1a6cc7d96d88b47a99d4"
+    },
+    {
+      "path": "day-haze/C/motion/outbound.gif",
+      "source": "captures/world-surroundings/sur00-20261020/day-haze/C/motion/outbound.gif",
+      "bytes": 863604,
+      "sha256": "665f392c408fc084253283ffd08d911be75faa01abc95fc5f2c371cd0d1a3928"
+    },
+    {
+      "path": "day-haze/C/motion/lateral.gif",
+      "source": "captures/world-surroundings/sur00-20261020/day-haze/C/motion/lateral.gif",
+      "bytes": 1057589,
+      "sha256": "02923951be04b39b22c82ca71758c98c0988a2038e9c7830d21830a534fcda0d"
+    },
+    {
+      "path": "day-haze/C/motion/ascent.gif",
+      "source": "captures/world-surroundings/sur00-20261020/day-haze/C/motion/ascent.gif",
+      "bytes": 821610,
+      "sha256": "fb2ad04d20fedd9436db5fa564401d117c7e988087698044474dd86907b3c960"
+    },
+    {
+      "path": "day-haze/C/motion/orbit.gif",
+      "source": "captures/world-surroundings/sur00-20261020/day-haze/C/motion/orbit.gif",
+      "bytes": 664422,
+      "sha256": "6420545049f6cdb246fd6ca3c3978784bdcbb28da9d199dafcb3b9e5907ce263"
+    },
+    {
+      "path": "day-haze/C/motion/boundary.gif",
+      "source": "captures/world-surroundings/sur00-20261020/day-haze/C/motion/boundary.gif",
+      "bytes": 401589,
+      "sha256": "80b5772d53443f0bbdaaf9b7e51ddf25d7066810e92d4864eb90c4dea57333b1"
+    },
+    {
+      "path": "day-haze/C/motion/boundary_low.gif",
+      "source": "captures/world-surroundings/sur00-20261020/day-haze/C/motion/boundary_low.gif",
+      "bytes": 919266,
+      "sha256": "e568cc5ce445bc8860e61b932943c50c96b471a1cd8eacf9a9ed817a9618f468"
+    },
+    {
+      "path": "day-haze-strong/C/views/street.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-haze-strong/C/views/street.png",
+      "bytes": 168822,
+      "sha256": "4f8a25cc4fb88a4e4ee290d1857e2dc0e927c50938d017cce4d9388091c07f88"
+    },
+    {
+      "path": "day-haze-strong/C/views/aerial.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-haze-strong/C/views/aerial.png",
+      "bytes": 86992,
+      "sha256": "bb57038c74253517df9ff649a88571132727091e67917ea6be41d2df3b2f0dfa"
+    },
+    {
+      "path": "day-haze-strong/C/views/telephoto.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-haze-strong/C/views/telephoto.png",
+      "bytes": 39067,
+      "sha256": "4c75e2cdd600cdf8a5bc4bead7218a0ccc6610e4700e45d28ddfe5976d2326dd"
+    },
+    {
+      "path": "lens-sweep/n0.05-f2000/views/aerial.png",
+      "source": "captures/world-surroundings/sur00-20261020/lens-sweep/n0.05-f2000/views/aerial.png",
+      "bytes": 77704,
+      "sha256": "edaa8ff1fc536bf05e674063c59fd6364c87d429c18ccdd84f5ef40b9936f1a9"
+    },
+    {
+      "path": "lens-sweep/n0.05-f2000/views/street.png",
+      "source": "captures/world-surroundings/sur00-20261020/lens-sweep/n0.05-f2000/views/street.png",
+      "bytes": 170354,
+      "sha256": "4f40af1ca9c572a4f5538d93f54783c0dddeec385bcb8053deb9573a6a20b593"
+    },
+    {
+      "path": "lens-sweep/n0.05-f2000/views/telephoto.png",
+      "source": "captures/world-surroundings/sur00-20261020/lens-sweep/n0.05-f2000/views/telephoto.png",
+      "bytes": 33939,
+      "sha256": "c6873e1e46b26be8b29e663e31376b73f5df755b45bcd57197d17caea2f9173a"
+    },
+    {
+      "path": "lens-sweep/n0.05-f4000/views/aerial.png",
+      "source": "captures/world-surroundings/sur00-20261020/lens-sweep/n0.05-f4000/views/aerial.png",
+      "bytes": 76508,
+      "sha256": "bdafa4810dee9d79bfbe64c4c7237f0ad08d65ecb6cf5ddfce046a868643c2c5"
+    },
+    {
+      "path": "lens-sweep/n0.05-f4000/views/street.png",
+      "source": "captures/world-surroundings/sur00-20261020/lens-sweep/n0.05-f4000/views/street.png",
+      "bytes": 166992,
+      "sha256": "4a66ed5e580260c0aaf3f6ac6017a6a47f8557dc0eff143848ef38e66276c586"
+    },
+    {
+      "path": "lens-sweep/n0.05-f4000/views/telephoto.png",
+      "source": "captures/world-surroundings/sur00-20261020/lens-sweep/n0.05-f4000/views/telephoto.png",
+      "bytes": 33939,
+      "sha256": "c6873e1e46b26be8b29e663e31376b73f5df755b45bcd57197d17caea2f9173a"
+    },
+    {
+      "path": "lens-sweep/n0.05-f8000/views/aerial.png",
+      "source": "captures/world-surroundings/sur00-20261020/lens-sweep/n0.05-f8000/views/aerial.png",
+      "bytes": 76180,
+      "sha256": "2cd7066cc5fc19cf1ef8d018c83c91716733e8671d2b764465367cc820e1b3f0"
+    },
+    {
+      "path": "lens-sweep/n0.05-f8000/views/street.png",
+      "source": "captures/world-surroundings/sur00-20261020/lens-sweep/n0.05-f8000/views/street.png",
+      "bytes": 166880,
+      "sha256": "9c68963b068a6296418f780b09994c6b5d4922bf9398d90ad0e62fa7a391bee4"
+    },
+    {
+      "path": "lens-sweep/n0.05-f8000/views/telephoto.png",
+      "source": "captures/world-surroundings/sur00-20261020/lens-sweep/n0.05-f8000/views/telephoto.png",
+      "bytes": 33939,
+      "sha256": "c6873e1e46b26be8b29e663e31376b73f5df755b45bcd57197d17caea2f9173a"
+    },
+    {
+      "path": "lens-sweep/n0.1-f2000/views/aerial.png",
+      "source": "captures/world-surroundings/sur00-20261020/lens-sweep/n0.1-f2000/views/aerial.png",
+      "bytes": 77704,
+      "sha256": "edaa8ff1fc536bf05e674063c59fd6364c87d429c18ccdd84f5ef40b9936f1a9"
+    },
+    {
+      "path": "lens-sweep/n0.1-f2000/views/street.png",
+      "source": "captures/world-surroundings/sur00-20261020/lens-sweep/n0.1-f2000/views/street.png",
+      "bytes": 170354,
+      "sha256": "4f40af1ca9c572a4f5538d93f54783c0dddeec385bcb8053deb9573a6a20b593"
+    },
+    {
+      "path": "lens-sweep/n0.1-f2000/views/telephoto.png",
+      "source": "captures/world-surroundings/sur00-20261020/lens-sweep/n0.1-f2000/views/telephoto.png",
+      "bytes": 33939,
+      "sha256": "c6873e1e46b26be8b29e663e31376b73f5df755b45bcd57197d17caea2f9173a"
+    },
+    {
+      "path": "lens-sweep/n0.1-f4000/views/aerial.png",
+      "source": "captures/world-surroundings/sur00-20261020/lens-sweep/n0.1-f4000/views/aerial.png",
+      "bytes": 76508,
+      "sha256": "bdafa4810dee9d79bfbe64c4c7237f0ad08d65ecb6cf5ddfce046a868643c2c5"
+    },
+    {
+      "path": "lens-sweep/n0.1-f4000/views/street.png",
+      "source": "captures/world-surroundings/sur00-20261020/lens-sweep/n0.1-f4000/views/street.png",
+      "bytes": 166992,
+      "sha256": "4a66ed5e580260c0aaf3f6ac6017a6a47f8557dc0eff143848ef38e66276c586"
+    },
+    {
+      "path": "lens-sweep/n0.1-f4000/views/telephoto.png",
+      "source": "captures/world-surroundings/sur00-20261020/lens-sweep/n0.1-f4000/views/telephoto.png",
+      "bytes": 33939,
+      "sha256": "c6873e1e46b26be8b29e663e31376b73f5df755b45bcd57197d17caea2f9173a"
+    },
+    {
+      "path": "lens-sweep/n0.1-f8000/views/aerial.png",
+      "source": "captures/world-surroundings/sur00-20261020/lens-sweep/n0.1-f8000/views/aerial.png",
+      "bytes": 76180,
+      "sha256": "2cd7066cc5fc19cf1ef8d018c83c91716733e8671d2b764465367cc820e1b3f0"
+    },
+    {
+      "path": "lens-sweep/n0.1-f8000/views/street.png",
+      "source": "captures/world-surroundings/sur00-20261020/lens-sweep/n0.1-f8000/views/street.png",
+      "bytes": 166880,
+      "sha256": "9c68963b068a6296418f780b09994c6b5d4922bf9398d90ad0e62fa7a391bee4"
+    },
+    {
+      "path": "lens-sweep/n0.1-f8000/views/telephoto.png",
+      "source": "captures/world-surroundings/sur00-20261020/lens-sweep/n0.1-f8000/views/telephoto.png",
+      "bytes": 33939,
+      "sha256": "c6873e1e46b26be8b29e663e31376b73f5df755b45bcd57197d17caea2f9173a"
+    },
+    {
+      "path": "lens-sweep/n0.2-f2000/views/aerial.png",
+      "source": "captures/world-surroundings/sur00-20261020/lens-sweep/n0.2-f2000/views/aerial.png",
+      "bytes": 77704,
+      "sha256": "edaa8ff1fc536bf05e674063c59fd6364c87d429c18ccdd84f5ef40b9936f1a9"
+    },
+    {
+      "path": "lens-sweep/n0.2-f2000/views/street.png",
+      "source": "captures/world-surroundings/sur00-20261020/lens-sweep/n0.2-f2000/views/street.png",
+      "bytes": 170354,
+      "sha256": "4f40af1ca9c572a4f5538d93f54783c0dddeec385bcb8053deb9573a6a20b593"
+    },
+    {
+      "path": "lens-sweep/n0.2-f2000/views/telephoto.png",
+      "source": "captures/world-surroundings/sur00-20261020/lens-sweep/n0.2-f2000/views/telephoto.png",
+      "bytes": 33939,
+      "sha256": "c6873e1e46b26be8b29e663e31376b73f5df755b45bcd57197d17caea2f9173a"
+    },
+    {
+      "path": "lens-sweep/n0.2-f4000/views/aerial.png",
+      "source": "captures/world-surroundings/sur00-20261020/lens-sweep/n0.2-f4000/views/aerial.png",
+      "bytes": 76508,
+      "sha256": "bdafa4810dee9d79bfbe64c4c7237f0ad08d65ecb6cf5ddfce046a868643c2c5"
+    },
+    {
+      "path": "lens-sweep/n0.2-f4000/views/street.png",
+      "source": "captures/world-surroundings/sur00-20261020/lens-sweep/n0.2-f4000/views/street.png",
+      "bytes": 166992,
+      "sha256": "4a66ed5e580260c0aaf3f6ac6017a6a47f8557dc0eff143848ef38e66276c586"
+    },
+    {
+      "path": "lens-sweep/n0.2-f4000/views/telephoto.png",
+      "source": "captures/world-surroundings/sur00-20261020/lens-sweep/n0.2-f4000/views/telephoto.png",
+      "bytes": 33939,
+      "sha256": "c6873e1e46b26be8b29e663e31376b73f5df755b45bcd57197d17caea2f9173a"
+    },
+    {
+      "path": "lens-sweep/n0.2-f8000/views/aerial.png",
+      "source": "captures/world-surroundings/sur00-20261020/lens-sweep/n0.2-f8000/views/aerial.png",
+      "bytes": 76180,
+      "sha256": "2cd7066cc5fc19cf1ef8d018c83c91716733e8671d2b764465367cc820e1b3f0"
+    },
+    {
+      "path": "lens-sweep/n0.2-f8000/views/street.png",
+      "source": "captures/world-surroundings/sur00-20261020/lens-sweep/n0.2-f8000/views/street.png",
+      "bytes": 166880,
+      "sha256": "9c68963b068a6296418f780b09994c6b5d4922bf9398d90ad0e62fa7a391bee4"
+    },
+    {
+      "path": "lens-sweep/n0.2-f8000/views/telephoto.png",
+      "source": "captures/world-surroundings/sur00-20261020/lens-sweep/n0.2-f8000/views/telephoto.png",
+      "bytes": 33939,
+      "sha256": "c6873e1e46b26be8b29e663e31376b73f5df755b45bcd57197d17caea2f9173a"
+    },
+    {
+      "path": "day-haze/bake/face-0.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-haze/bake/face-0.png",
+      "bytes": 57606,
+      "sha256": "67ce188212d21c45d20a598d14ac7bd9e373a9270d4626563508b872bcbbcb55"
+    },
+    {
+      "path": "day-haze/bake/face-1.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-haze/bake/face-1.png",
+      "bytes": 53631,
+      "sha256": "052561b0605e82c86760dd8785ace1a8021c5a2931d3e5f0fd3ee04ec6760e4c"
+    },
+    {
+      "path": "day-haze/bake/face-2.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-haze/bake/face-2.png",
+      "bytes": 43462,
+      "sha256": "08453569ef2036bf022296504938cfc510165c5c6349b7f25ef6acc2a227096e"
+    },
+    {
+      "path": "day-haze/bake/face-3.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-haze/bake/face-3.png",
+      "bytes": 57493,
+      "sha256": "c28554b5e67095c6fd4a091721a2d6822834308ecc81bdf906cd8d3f9bd3f6c3"
+    },
+    {
+      "path": "day-haze/bake/face-4.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-haze/bake/face-4.png",
+      "bytes": 27431,
+      "sha256": "143d33e932447fa19495516c01feabedec46d274ba7901afdb09789653c7094d"
+    },
+    {
+      "path": "day-haze/bake/face-5.png",
+      "source": "captures/world-surroundings/sur00-20261020/day-haze/bake/face-5.png",
+      "bytes": 2201,
+      "sha256": "ca0043473f758256d0124b623774fcf051d91bab788dd3d1de3e9c4a911edb3a"
+    },
+    {
+      "path": "day-haze/bake.json",
+      "source": "captures/world-surroundings/sur00-20261020/day-haze/bake.json",
+      "bytes": 9936,
+      "sha256": "a9d837f4af582bd45316ae55b6227f884dbfbb72e851f1c367637425473361d5"
+    },
+    {
+      "path": "measurements/report.json",
+      "source": "captures/world-surroundings/sur00-20261020/report.json",
+      "bytes": 8156753,
+      "sha256": "7c8be543c33575c19ad70bfbdb4f341d8d7d9aa85a9f78c7ca4b9bf02e846995"
+    },
+    {
+      "path": "measurements/frame-stats.json",
+      "source": "captures/world-surroundings/sur00-frame-stats-check/frame_stats_smoke.json",
+      "bytes": 4335,
+      "sha256": "584e8df04babfc499db411d04a891fe043576aa0a836ea902e915a8efddd6f14"
+    },
+    {
+      "path": "measurements/sculpt.json",
+      "source": "captures/world-surroundings/sur00-sculpt-regression/report.json",
+      "bytes": 253204,
+      "sha256": "7d0736d6c083ea99bcb78b0eba911513cfeada56fcd501fc1422c055229b41b0"
+    },
+    {
+      "path": "measurements/paint.json",
+      "source": "captures/world-surroundings/sur00-paint-regression/report.json",
+      "bytes": 104136,
+      "sha256": "b2264329659c107848865ec4afa2c099420f0fa338af8af4ed7ba9270d9624e3"
+    },
+    {
+      "path": "measurements/road-probe.json",
+      "source": "captures/world-surroundings/sur00-road-check.json",
+      "bytes": 305,
+      "sha256": "3c6bd8093d379cd3af4e3c028d0bbc57926eb0719a39970a0c765308170765d6"
+    },
+    {
+      "path": "measurements/cpu-tests.utf16.log",
+      "source": "captures/world-surroundings/sur00-cpu-tests.log",
+      "bytes": 1120,
+      "sha256": "78c1d3ebdd791a764e7c785a5048ad6bc5f5aeab460fa7965cc65892fa0084de"
+    },
+    {
+      "path": "summary.json",
+      "source": "captures/world-surroundings/sur00-summary.json",
+      "bytes": 35343,
+      "sha256": "0277100fb56d18e9f4288ac589b5a136f83183704d5977e458e6c7328ad787ac"
+    }
+  ],
+  "total_bytes": 26805443
+}

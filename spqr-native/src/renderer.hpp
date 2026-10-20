@@ -5,6 +5,9 @@
 
 #include <array>
 #include <cstdint>
+#ifdef SPQR_TERRAIN_LAB
+#include <deque>
+#endif
 #include <filesystem>
 #include <memory>
 #include <string>
@@ -19,6 +22,15 @@ struct FrameStats {
     std::uint32_t colorVisible = 0, shadowCasters = 0;
     double inputNear = 0, colorNear = 0;
 };
+
+#ifdef SPQR_TERRAIN_LAB
+struct TerrainGpuTimingSample {
+    std::uint32_t frame = 0;
+    std::uint64_t sampleId = 0;
+    double gpuMs = 0.0;
+    bool dropped = false;
+};
+#endif
 
 // Shader source is captured once per initialization so cache keys and compiled
 // programs always use the same complete source bytes.
@@ -59,6 +71,12 @@ public:
     void captureColor(const std::filesystem::path& path, bool presented = false);
     std::string rendererName() const;
     void close();
+#ifdef SPQR_TERRAIN_LAB
+    void setTerrainGpuTimingEnabled(bool enabled);
+    void beginTerrainGpuTimingSample(std::uint32_t frameIndex);
+    void endTerrainGpuTimingSample(bool successful = true);
+    std::vector<TerrainGpuTimingSample> pollTerrainGpuTiming(std::size_t capacity);
+#endif
     // Compile and upload a bounded portion of the renderer on the current GL
     // context. Returns true once all resources and targets are ready.
     bool initializeStep();
@@ -116,6 +134,35 @@ private:
     void applyGlobalUniforms();
     void requireReady() const;
 
+#ifdef SPQR_TERRAIN_LAB
+    using GenQueriesProc = void (APIENTRY*)(GLsizei, GLuint*);
+    using DeleteQueriesProc = void (APIENTRY*)(GLsizei, const GLuint*);
+    using QueryCounterProc = void (APIENTRY*)(GLuint, GLenum);
+    using GetQueryivProc = void (APIENTRY*)(GLenum, GLenum, GLint*);
+    using GetQueryObjectivProc = void (APIENTRY*)(GLuint, GLenum, GLint*);
+    using GetQueryObjectui64vProc = void (APIENTRY*)(GLuint, GLenum, GLuint64*);
+    struct TerrainGpuQueryPair {
+        GLuint begin = 0, end = 0;
+        std::uint64_t sampleId = 0;
+        bool inFlight = false;
+    };
+    struct PendingTerrainGpuSample {
+        std::uint32_t frame = 0;
+        std::uint64_t sampleId = 0, gpuNanoseconds = 0;
+        std::size_t pendingSegments = 0;
+        bool sealed = false, dropped = false;
+    };
+    static constexpr std::size_t terrainGpuQueryPairCapacity_ = 32;
+    void loadTerrainGpuTimingApi();
+    void destroyTerrainGpuTiming();
+    std::size_t acquireTerrainGpuQueryPair();
+    void beginTerrainGpuTimingInterval();
+    void endTerrainGpuTimingInterval();
+    void finalizeTerrainGpuSamples();
+    PendingTerrainGpuSample& currentTerrainGpuSample();
+    PendingTerrainGpuSample* findTerrainGpuSample(std::uint64_t sampleId);
+#endif
+
     enum class InitStage { Material, Ground, Sky, Shadow, Textures, Meshes, Finalize, Ready };
 
     GLApi& gl_;
@@ -155,6 +202,25 @@ private:
     std::size_t nextMesh_ = 0;
     bool stabilizeDepth_ = true;
     bool stableShadows_ = true, nearShadowActive_ = false;
+#ifdef SPQR_TERRAIN_LAB
+    bool terrainGpuTimingEnabled_ = false;
+    bool terrainGpuTimingSampleActive_ = false;
+    bool terrainGpuTimingIntervalActive_ = false;
+    std::uint32_t terrainGpuTimingFrame_ = 0;
+    std::uint64_t terrainGpuTimingNextSampleId_ = 1;
+    std::uint64_t terrainGpuTimingCurrentSampleId_ = 0;
+    std::size_t terrainGpuTimingActivePair_ = static_cast<std::size_t>(-1);
+    bool terrainGpuTimingSampleDropped_ = false;
+    std::vector<TerrainGpuQueryPair> terrainGpuQueryPairs_;
+    std::deque<PendingTerrainGpuSample> terrainGpuPendingSamples_;
+    std::deque<TerrainGpuTimingSample> terrainGpuReadySamples_;
+    GenQueriesProc terrainGpuGenQueries_ = nullptr;
+    DeleteQueriesProc terrainGpuDeleteQueries_ = nullptr;
+    QueryCounterProc terrainGpuQueryCounter_ = nullptr;
+    GetQueryivProc terrainGpuGetQueryiv_ = nullptr;
+    GetQueryObjectivProc terrainGpuGetQueryObjectiv_ = nullptr;
+    GetQueryObjectui64vProc terrainGpuGetQueryObjectui64v_ = nullptr;
+#endif
 };
 
 } // namespace spqr

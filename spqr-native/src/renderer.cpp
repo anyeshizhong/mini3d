@@ -4,6 +4,9 @@
 
 #include <algorithm>
 #include <array>
+#ifdef SPQR_TERRAIN_LAB
+#include <bit>
+#endif
 #include <cmath>
 #include <cstring>
 #include <fstream>
@@ -43,6 +46,20 @@ constexpr GLenum GL_TEXTURE_BORDER_COLOR_VALUE = 0x1004;
 constexpr GLenum GL_DEPTH_COMPONENT24_VALUE = 0x81a6;
 constexpr GLenum GL_FRAMEBUFFER_SRGB_VALUE = 0x8db9;
 constexpr GLenum GL_POLYGON_OFFSET_FILL_VALUE = 0x8037;
+
+#ifdef SPQR_TERRAIN_LAB
+template<class Function>
+Function loadTerrainGpuFunction(const char* name) {
+    PROC proc = wglGetProcAddress(name);
+    const auto value = reinterpret_cast<std::uintptr_t>(proc);
+    if (!proc || value == 1 || value == 2 || value == 3 ||
+        value == static_cast<std::uintptr_t>(-1)) {
+        static HMODULE module = GetModuleHandleW(L"opengl32.dll");
+        proc = module ? GetProcAddress(module, name) : nullptr;
+    }
+    return std::bit_cast<Function>(proc);
+}
+#endif
 
 using M4 = std::array<double, 16>;
 using M3 = std::array<double, 9>;
@@ -290,6 +307,208 @@ Renderer::Renderer(GLApi& gl, Bundle& bundle, const std::filesystem::path& bundl
 }
 
 Renderer::~Renderer() { close(); }
+
+#ifdef SPQR_TERRAIN_LAB
+void Renderer::loadTerrainGpuTimingApi() {
+    terrainGpuGenQueries_ = loadTerrainGpuFunction<GenQueriesProc>("glGenQueries");
+    terrainGpuDeleteQueries_ = loadTerrainGpuFunction<DeleteQueriesProc>("glDeleteQueries");
+    terrainGpuQueryCounter_ = loadTerrainGpuFunction<QueryCounterProc>("glQueryCounter");
+    terrainGpuGetQueryiv_ = loadTerrainGpuFunction<GetQueryivProc>("glGetQueryiv");
+    terrainGpuGetQueryObjectiv_ = loadTerrainGpuFunction<GetQueryObjectivProc>("glGetQueryObjectiv");
+    terrainGpuGetQueryObjectui64v_ = loadTerrainGpuFunction<GetQueryObjectui64vProc>("glGetQueryObjectui64v");
+    if (!terrainGpuGenQueries_ || !terrainGpuDeleteQueries_ || !terrainGpuQueryCounter_ ||
+        !terrainGpuGetQueryiv_ || !terrainGpuGetQueryObjectiv_ ||
+        !terrainGpuGetQueryObjectui64v_)
+        throw std::runtime_error("OpenGL timer-query timestamp functions are unavailable");
+}
+
+void Renderer::setTerrainGpuTimingEnabled(bool enabled) {
+    requireReady();
+    if (enabled == terrainGpuTimingEnabled_) return;
+    if (!enabled) {
+        destroyTerrainGpuTiming();
+        return;
+    }
+
+    loadTerrainGpuTimingApi();
+    GLint counterBits = 0;
+    terrainGpuGetQueryiv_(GL_TIMESTAMP, GL_QUERY_COUNTER_BITS, &counterBits);
+    if (counterBits <= 0)
+        throw std::runtime_error("OpenGL timestamp queries are unsupported by this context");
+
+    constexpr GLsizei queryCount = static_cast<GLsizei>(terrainGpuQueryPairCapacity_ * 2);
+    std::array<GLuint, terrainGpuQueryPairCapacity_ * 2> queries{};
+    terrainGpuGenQueries_(queryCount, queries.data());
+    if (std::any_of(queries.begin(), queries.end(), [](GLuint query) { return query == 0; })) {
+        std::vector<GLuint> generated;
+        for (GLuint query : queries) if (query) generated.push_back(query);
+        if (!generated.empty())
+            terrainGpuDeleteQueries_(static_cast<GLsizei>(generated.size()), generated.data());
+        throw std::runtime_error("OpenGL failed to allocate the terrain GPU timing query ring");
+    }
+
+    terrainGpuQueryPairs_.clear();
+    terrainGpuQueryPairs_.reserve(terrainGpuQueryPairCapacity_);
+    for (std::size_t i = 0; i < terrainGpuQueryPairCapacity_; ++i)
+        terrainGpuQueryPairs_.push_back({queries[i * 2], queries[i * 2 + 1], 0, false});
+    terrainGpuPendingSamples_.clear();
+    terrainGpuReadySamples_.clear();
+    terrainGpuTimingNextSampleId_ = 1;
+    terrainGpuTimingSampleActive_ = false;
+    terrainGpuTimingIntervalActive_ = false;
+    terrainGpuTimingSampleDropped_ = false;
+    terrainGpuTimingEnabled_ = true;
+}
+
+void Renderer::destroyTerrainGpuTiming() {
+    if (!terrainGpuQueryPairs_.empty() && terrainGpuDeleteQueries_) {
+        std::array<GLuint, terrainGpuQueryPairCapacity_ * 2> queries{};
+        std::size_t count = 0;
+        for (const TerrainGpuQueryPair& pair : terrainGpuQueryPairs_) {
+            if (pair.begin) queries[count++] = pair.begin;
+            if (pair.end) queries[count++] = pair.end;
+        }
+        if (count)
+            terrainGpuDeleteQueries_(static_cast<GLsizei>(count), queries.data());
+    }
+    terrainGpuQueryPairs_.clear();
+    terrainGpuPendingSamples_.clear();
+    terrainGpuReadySamples_.clear();
+    terrainGpuTimingEnabled_ = false;
+    terrainGpuTimingSampleActive_ = false;
+    terrainGpuTimingIntervalActive_ = false;
+    terrainGpuTimingSampleDropped_ = false;
+    terrainGpuTimingCurrentSampleId_ = 0;
+    terrainGpuTimingActivePair_ = static_cast<std::size_t>(-1);
+}
+
+std::size_t Renderer::acquireTerrainGpuQueryPair() {
+    for (std::size_t i = 0; i < terrainGpuQueryPairs_.size(); ++i)
+        if (!terrainGpuQueryPairs_[i].inFlight && i != terrainGpuTimingActivePair_)
+            return i;
+    return static_cast<std::size_t>(-1);
+}
+
+Renderer::PendingTerrainGpuSample& Renderer::currentTerrainGpuSample() {
+    PendingTerrainGpuSample* sample = findTerrainGpuSample(terrainGpuTimingCurrentSampleId_);
+    if (!sample) throw std::runtime_error("active terrain GPU timing sample was lost");
+    return *sample;
+}
+
+Renderer::PendingTerrainGpuSample* Renderer::findTerrainGpuSample(std::uint64_t sampleId) {
+    for (PendingTerrainGpuSample& sample : terrainGpuPendingSamples_)
+        if (sample.sampleId == sampleId) return &sample;
+    return nullptr;
+}
+
+void Renderer::beginTerrainGpuTimingSample(std::uint32_t frameIndex) {
+    if (!terrainGpuTimingEnabled_) return;
+    if (terrainGpuTimingSampleActive_ || terrainGpuTimingIntervalActive_)
+        throw std::runtime_error("nested terrain GPU timing sample was rejected");
+    if (terrainGpuTimingNextSampleId_ == 0)
+        throw std::runtime_error("terrain GPU timing sample ID overflow");
+    terrainGpuTimingFrame_ = frameIndex;
+    terrainGpuTimingCurrentSampleId_ = terrainGpuTimingNextSampleId_++;
+    terrainGpuPendingSamples_.push_back({terrainGpuTimingFrame_, terrainGpuTimingCurrentSampleId_});
+    terrainGpuTimingSampleDropped_ = false;
+    terrainGpuTimingSampleActive_ = true;
+}
+
+void Renderer::endTerrainGpuTimingSample(bool successful) {
+    if (!terrainGpuTimingEnabled_ || !terrainGpuTimingSampleActive_) return;
+    if (terrainGpuTimingIntervalActive_) endTerrainGpuTimingInterval();
+    PendingTerrainGpuSample& sample = currentTerrainGpuSample();
+    sample.sealed = true;
+    if (!successful && !sample.dropped) {
+        sample.dropped = true;
+    }
+    terrainGpuTimingSampleActive_ = false;
+    terrainGpuTimingSampleDropped_ = false;
+    finalizeTerrainGpuSamples();
+}
+
+void Renderer::beginTerrainGpuTimingInterval() {
+    if (!terrainGpuTimingEnabled_ || !terrainGpuTimingSampleActive_ ||
+        terrainGpuTimingSampleDropped_) return;
+    if (terrainGpuTimingIntervalActive_)
+        throw std::runtime_error("nested terrain GPU timing interval was rejected");
+    const std::size_t pairIndex = acquireTerrainGpuQueryPair();
+    if (pairIndex == static_cast<std::size_t>(-1)) {
+        PendingTerrainGpuSample& sample = currentTerrainGpuSample();
+        sample.dropped = true;
+        terrainGpuTimingSampleDropped_ = true;
+        return;
+    }
+
+    TerrainGpuQueryPair& pair = terrainGpuQueryPairs_[pairIndex];
+    pair.sampleId = terrainGpuTimingCurrentSampleId_;
+    terrainGpuQueryCounter_(pair.begin, GL_TIMESTAMP);
+    ++currentTerrainGpuSample().pendingSegments;
+    terrainGpuTimingActivePair_ = pairIndex;
+    terrainGpuTimingIntervalActive_ = true;
+}
+
+void Renderer::endTerrainGpuTimingInterval() {
+    if (!terrainGpuTimingEnabled_ || !terrainGpuTimingIntervalActive_) return;
+    TerrainGpuQueryPair& pair = terrainGpuQueryPairs_[terrainGpuTimingActivePair_];
+    terrainGpuQueryCounter_(pair.end, GL_TIMESTAMP);
+    pair.inFlight = true;
+    terrainGpuTimingActivePair_ = static_cast<std::size_t>(-1);
+    terrainGpuTimingIntervalActive_ = false;
+}
+
+void Renderer::finalizeTerrainGpuSamples() {
+    for (auto it = terrainGpuPendingSamples_.begin(); it != terrainGpuPendingSamples_.end();) {
+        if (!it->sealed || it->pendingSegments) {
+            ++it;
+            continue;
+        }
+        terrainGpuReadySamples_.push_back({
+            it->frame, it->sampleId,
+            it->dropped ? 0.0 : static_cast<double>(it->gpuNanoseconds) / 1.0e6,
+            it->dropped
+        });
+        it = terrainGpuPendingSamples_.erase(it);
+    }
+}
+
+std::vector<TerrainGpuTimingSample> Renderer::pollTerrainGpuTiming(std::size_t capacity) {
+    std::vector<TerrainGpuTimingSample> result;
+    if (!terrainGpuTimingEnabled_) return result;
+
+    for (TerrainGpuQueryPair& pair : terrainGpuQueryPairs_) {
+        if (!pair.inFlight) continue;
+        GLint beginAvailable = GL_FALSE, endAvailable = GL_FALSE;
+        terrainGpuGetQueryObjectiv_(pair.begin, GL_QUERY_RESULT_AVAILABLE, &beginAvailable);
+        terrainGpuGetQueryObjectiv_(pair.end, GL_QUERY_RESULT_AVAILABLE, &endAvailable);
+        if (beginAvailable != GL_TRUE || endAvailable != GL_TRUE) continue;
+
+        GLuint64 beginTime = 0, endTime = 0;
+        terrainGpuGetQueryObjectui64v_(pair.begin, GL_QUERY_RESULT, &beginTime);
+        terrainGpuGetQueryObjectui64v_(pair.end, GL_QUERY_RESULT, &endTime);
+        if (PendingTerrainGpuSample* sample = findTerrainGpuSample(pair.sampleId)) {
+            if (endTime >= beginTime &&
+                sample->gpuNanoseconds <= std::numeric_limits<std::uint64_t>::max() - (endTime - beginTime)) {
+                sample->gpuNanoseconds += endTime - beginTime;
+            } else if (!sample->dropped) {
+                sample->dropped = true;
+            }
+            if (sample->pendingSegments) --sample->pendingSegments;
+        }
+        pair.inFlight = false;
+        pair.sampleId = 0;
+    }
+    finalizeTerrainGpuSamples();
+
+    const std::size_t count = std::min(capacity, terrainGpuReadySamples_.size());
+    result.reserve(count);
+    for (std::size_t i = 0; i < count; ++i) {
+        result.push_back(terrainGpuReadySamples_.front());
+        terrainGpuReadySamples_.pop_front();
+    }
+    return result;
+}
+#endif
 
 bool Renderer::initializeStep() {
     if (closed_) throw std::runtime_error("renderer is closed");
@@ -1198,10 +1417,25 @@ void Renderer::drawColor(const CameraFrame& frame, const std::vector<bool>& visi
 
     const auto opaqueBatches = makeBatches(opaque);
     std::unordered_map<std::uint32_t, std::size_t> instanceOrdinals;
+#ifdef SPQR_TERRAIN_LAB
+    bool terrainGpuIntervalOpen = false;
+    auto setTerrainGpuInterval = [&](bool terrain) {
+        if (!terrainGpuTimingEnabled_ || !terrainGpuTimingSampleActive_ ||
+            terrain == terrainGpuIntervalOpen) return;
+        if (terrain) beginTerrainGpuTimingInterval();
+        else endTerrainGpuTimingInterval();
+        terrainGpuIntervalOpen = terrain;
+    };
+#endif
     for (const Batch& batch : opaqueBatches) {
         const Mesh& mesh = bundle_.meshes[batch.mesh];
         const std::uint32_t materialIndex = mesh.material;
         const Material& material = bundle_.materials[materialIndex];
+#ifdef SPQR_TERRAIN_LAB
+        // This isolated fixture reserves the AO texture slot for Terrain only.
+        // It is not a general-purpose material classification contract.
+        setTerrainGpuInterval(material.textureIndices[3] != kNone);
+#endif
         std::int32_t alpha = 0;
         for (const auto& value : material.parameters)
             if (value.name == "alphaMode" && value.components == 1 && isIntegerUniform(value.type))
@@ -1253,6 +1487,9 @@ void Renderer::drawColor(const CameraFrame& frame, const std::vector<bool>& visi
         ++stats.colorDraws;
         stats.colorTriangles += (mesh.indexCount / 3u) * batch.entities.size();
     }
+#ifdef SPQR_TERRAIN_LAB
+    setTerrainGpuInterval(false);
+#endif
 
     std::vector<DrawEntry> transparent;
     for (std::uint32_t i = 0; i < bundle_.entities.size(); ++i) {
@@ -1286,6 +1523,9 @@ void Renderer::drawColor(const CameraFrame& frame, const std::vector<bool>& visi
         for (const DrawEntry& entry : transparent) {
             const Entity& entity = bundle_.entities[entry.entity];
             const Mesh& mesh = bundle_.meshes[entity.mesh];
+#ifdef SPQR_TERRAIN_LAB
+            setTerrainGpuInterval(bundle_.materials[mesh.material].textureIndices[3] != kNone);
+#endif
             const GLuint program = (entity.flags & 1u) && groundProgram_ ? groundProgram_ : materialProgram_;
             if (activeColorProgram_ != program) {
                 activeColorProgram_ = program;
@@ -1302,6 +1542,9 @@ void Renderer::drawColor(const CameraFrame& frame, const std::vector<bool>& visi
             ++stats.colorDraws;
             stats.colorTriangles += mesh.indexCount / 3u;
         }
+#ifdef SPQR_TERRAIN_LAB
+        setTerrainGpuInterval(false);
+#endif
     }
     gl_.Disable(GL_BLEND);
     gl_.DepthMask(GL_TRUE);
@@ -1719,6 +1962,9 @@ void Renderer::requireReady() const {
 
 void Renderer::close() {
     if (closed_) return;
+#ifdef SPQR_TERRAIN_LAB
+    destroyTerrainGpuTiming();
+#endif
     closed_ = true;
     ready_ = false;
     destroyShadowTarget();

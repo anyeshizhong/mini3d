@@ -1,0 +1,133 @@
+{
+  "passed": true,
+  "visual_only": true,
+  "performance_remeasured": false,
+  "input_report_sha256": "21888f8de8a3d38debcfc655e10332a4a26005a1f86533848e8cb49f7b0dc371",
+  "script_sha256": "59e10892751d9efb1d6b359f2b8e15eb088061e74efbf2862a817b2d5c8c5052",
+  "camera": {
+    "position": [
+      -7.0,
+      4.0,
+      5.8
+    ],
+    "target": [
+      0.0,
+      2.0,
+      3.3
+    ],
+    "up": [
+      0.0,
+      0.0,
+      1.0
+    ],
+    "fov_y": 52.0,
+    "near": 0.05,
+    "far": 300.0,
+    "view": [
+      [
+        -0.27472112789737807,
+        -0.9615239476408232,
+        0.0,
+        1.923047895281646
+      ],
+      [
+        0.3122884603655885,
+        -0.08922527439016815,
+        0.9457879085357823,
+        -2.9426495493877454
+      ],
+      [
+        -0.9093977234462832,
+        0.25982792098465235,
+        0.32478490123081544,
+        -9.288848175201322
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "projection": [
+      [
+        1.2555977272206233,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        2.050303841579296,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        -1.0003333888981498,
+        -0.10001666944490749
+      ],
+      [
+        0.0,
+        0.0,
+        -1.0,
+        0.0
+      ]
+    ]
+  },
+  "fixtures": {
+    "baseline": {
+      "A_control": {
+        "painted": {
+          "png": "baseline/A_control/steep-painted.png",
+          "sha256": "beaa504e5faca11ad205c954132f95783e1e2f993682ac39b89b0269244048f7",
+          "weight_sha256": "6ab203f81d824ee98ff1d354e18c42875ade7967829dbc3c14ca9675aa62f07c"
+        },
+        "diagnostic": {
+          "png": "baseline/A_control/steep-diagnostic.png",
+          "sha256": "39750506644d9892c87dee26892cf004db961dab2fddf1865e97811bb0a99806",
+          "weight_sha256": "d93949c4f4f9b4f97f2e6d155ddd7968080edccc4a30a2929c236f616412efeb"
+        }
+      },
+      "B_depth": {
+        "painted": {
+          "png": "baseline/B_depth/steep-painted.png",
+          "sha256": "c8a8904478ab1fd8251d20fb30a10bfa64ee9b247ab1429c1c99be638bfbdc9e",
+          "weight_sha256": "6ab203f81d824ee98ff1d354e18c42875ade7967829dbc3c14ca9675aa62f07c"
+        },
+        "diagnostic": {
+          "png": "baseline/B_depth/steep-diagnostic.png",
+          "sha256": "17449c731a91383a52640a9dd1daca364348cbc128c30add18e26fda92a5280c",
+          "weight_sha256": "d93949c4f4f9b4f97f2e6d155ddd7968080edccc4a30a2929c236f616412efeb"
+        }
+      }
+    },
+    "steep": {
+      "A_control": {
+        "painted": {
+          "png": "steep/A_control/steep-painted.png",
+          "sha256": "395b34b03f4624ff24c740fd5fe0b12f092418328a05439db44e0c8b1f4a1928",
+          "weight_sha256": "130a750ea16b881843dc0a4c6d0064bf65cd0f105e28b0f5b73be4d0b79938e6"
+        },
+        "diagnostic": {
+          "png": "steep/A_control/steep-diagnostic.png",
+          "sha256": "f02bfcfdd8cb103db73ab9744cff4559e95dc87596bbd901d840e1152b4487df",
+          "weight_sha256": "d93949c4f4f9b4f97f2e6d155ddd7968080edccc4a30a2929c236f616412efeb"
+        }
+      },
+      "B_depth": {
+        "painted": {
+          "png": "steep/B_depth/steep-painted.png",
+          "sha256": "ac54ec83ec1fe7e475b198bc94d98bafc1f31041929209f2e4850272f4461dca",
+          "weight_sha256": "130a750ea16b881843dc0a4c6d0064bf65cd0f105e28b0f5b73be4d0b79938e6"
+        },
+        "diagnostic": {
+          "png": "steep/B_depth/steep-diagnostic.png",
+          "sha256": "195f246f271d55308a6f812a77cee79a447a136db5bbe331cc49d4b89c9ffdab",
+          "weight_sha256": "d93949c4f4f9b4f97f2e6d155ddd7968080edccc4a30a2929c236f616412efeb"
+        }
+      }
+    }
+  }
+}

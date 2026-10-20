@@ -1,0 +1,345 @@
+{
+  "license": "CC0-1.0",
+  "license_url": "https://polyhaven.com/license",
+  "maps": {
+    "grass.png": {
+      "asset_id": "leafy_grass",
+      "asset_name": "Leafy Grass",
+      "asset_page": "https://polyhaven.com/a/leafy_grass",
+      "author": "Charlotte Baglioni",
+      "authors": [
+        {
+          "name": "Charlotte Baglioni",
+          "role": "All"
+        }
+      ],
+      "bit_depth": 16,
+      "bundled_bytes": 121435,
+      "bundled_max": 54012,
+      "bundled_mean": 24237.796112060547,
+      "bundled_min": 6851,
+      "bundled_sha256": "7a147e69567c3bb56fc265ff524eefa13c481fcbd3adad86ad6d4b1645f94844",
+      "channels": "grayscale uint16",
+      "processing": {
+        "area_mean_rounding_error_lsb": {
+          "comparison": "stored uint16 result versus exact 4x4 block mean",
+          "max_absolute": 0.5,
+          "mean_absolute": 0.24979877471923828
+        },
+        "box_factor": [
+          4,
+          4
+        ],
+        "max": 54012,
+        "mean": 24237.796112060547,
+        "min": 6851,
+        "resampling": "arithmetic 4x4 area mean, rounded half-up to uint16",
+        "size": [
+          256,
+          256
+        ],
+        "source_to_area_mean_error_lsb": {
+          "comparison": "source samples versus their exact 4x4 block mean",
+          "max_absolute": 24116.25,
+          "mean_absolute": 2055.0280833244324,
+          "rms": 2780.0288226659927
+        }
+      },
+      "sample_encoding": "linear scalar; sample / 65535.0",
+      "size": [
+        256,
+        256
+      ],
+      "source": {
+        "api_bytes": 1896460,
+        "api_files_endpoint": "https://api.polyhaven.com/files/leafy_grass",
+        "api_info_endpoint": "https://api.polyhaven.com/info/leafy_grass",
+        "api_md5": "9c38b0ae5af703060e010f96f03a5e3d",
+        "asset_files_hash": "90fd49a21ddface404d32d9956c3a9f3ca8e0679",
+        "asset_page": "https://polyhaven.com/a/leafy_grass",
+        "author_display": "Charlotte Baglioni",
+        "authors": [
+          {
+            "name": "Charlotte Baglioni",
+            "role": "All"
+          }
+        ],
+        "cache_file": "leafy_grass_disp_1k.png",
+        "source_dimensions_mm": [
+          2000,
+          2000
+        ],
+        "tile_metres": 2.0,
+        "upstream_bytes": 1896460,
+        "upstream_sha256": "6e77cbd0c745bf02700dc235ac107083be788c23ac1d8a9d86e56863eecbc537",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/1k/leafy_grass/leafy_grass_disp_1k.png"
+      },
+      "source_sample_info": {
+        "bit_depth": 16,
+        "color_type": "grayscale",
+        "converted_uint16_range": {
+          "maximum_code": 60092,
+          "mean_code": 24237.76379108429,
+          "minimum_code": 3593
+        },
+        "ignored_color_chunks": [
+          "gAMA",
+          "sRGB",
+          "cHRM"
+        ],
+        "max": 60092,
+        "mean": 24237.76379108429,
+        "min": 3593,
+        "sample_mode": "linear scalar data; PNG color metadata ignored",
+        "size": [
+          1024,
+          1024
+        ],
+        "source_range": {
+          "full_scale_code": 65535,
+          "maximum_code": 60092,
+          "mean_code": 24237.76379108429,
+          "minimum_code": 3593,
+          "normalized_maximum": 0.9169451438162813,
+          "normalized_minimum": 0.05482566567483024
+        },
+        "uint16_conversion": "none; source uint16 samples retained",
+        "unique_sample_count": 33714
+      },
+      "tile_metres": 2.0
+    },
+    "rock.png": {
+      "asset_id": "rock_face",
+      "asset_name": "Rock Face",
+      "asset_page": "https://polyhaven.com/a/rock_face",
+      "author": "Dario Barresi (processing), Greg Zaal (photography)",
+      "authors": [
+        {
+          "name": "Dario Barresi",
+          "role": "Processing"
+        },
+        {
+          "name": "Greg Zaal",
+          "role": "Photography"
+        }
+      ],
+      "bit_depth": 16,
+      "bundled_bytes": 111212,
+      "bundled_max": 64635,
+      "bundled_mean": 34347.18630981445,
+      "bundled_min": 690,
+      "bundled_sha256": "33a588c74e17ce023093dfd9031c94504650ff82dab8dea755b7f05fc9957b0b",
+      "channels": "grayscale uint16",
+      "processing": {
+        "area_mean_rounding_error_lsb": {
+          "comparison": "stored uint16 result versus exact 4x4 block mean",
+          "max_absolute": 0.5,
+          "mean_absolute": 0.2500877380371094
+        },
+        "box_factor": [
+          4,
+          4
+        ],
+        "max": 64635,
+        "mean": 34347.18630981445,
+        "min": 690,
+        "resampling": "arithmetic 4x4 area mean, rounded half-up to uint16",
+        "size": [
+          256,
+          256
+        ],
+        "source_to_area_mean_error_lsb": {
+          "comparison": "source samples versus their exact 4x4 block mean",
+          "max_absolute": 11921.5,
+          "mean_absolute": 403.8009258508682,
+          "rms": 630.8609119499074
+        }
+      },
+      "sample_encoding": "linear scalar; sample / 65535.0",
+      "size": [
+        256,
+        256
+      ],
+      "source": {
+        "api_bytes": 1642402,
+        "api_files_endpoint": "https://api.polyhaven.com/files/rock_face",
+        "api_info_endpoint": "https://api.polyhaven.com/info/rock_face",
+        "api_md5": "8bf91d98c1a607239630e21968821621",
+        "asset_files_hash": "99a9a8ad19728556cbd1a53440087998ae007697",
+        "asset_page": "https://polyhaven.com/a/rock_face",
+        "author_display": "Dario Barresi (processing), Greg Zaal (photography)",
+        "authors": [
+          {
+            "name": "Dario Barresi",
+            "role": "Processing"
+          },
+          {
+            "name": "Greg Zaal",
+            "role": "Photography"
+          }
+        ],
+        "cache_file": "rock_face_disp_1k.png",
+        "source_dimensions_mm": [
+          2380.000114440918,
+          2380.000114440918
+        ],
+        "tile_metres": 2.4,
+        "upstream_bytes": 1642402,
+        "upstream_sha256": "6277b01c2aaa6e76e1bac41f37e8bfce6408b9baf609824f8a95aa8e442b7fd7",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/1k/rock_face/rock_face_disp_1k.png"
+      },
+      "source_sample_info": {
+        "bit_depth": 16,
+        "color_type": "grayscale",
+        "converted_uint16_range": {
+          "maximum_code": 64954,
+          "mean_code": 34347.156019210815,
+          "minimum_code": 138
+        },
+        "ignored_color_chunks": [],
+        "max": 64954,
+        "mean": 34347.156019210815,
+        "min": 138,
+        "sample_mode": "linear scalar data; PNG color metadata ignored",
+        "size": [
+          1024,
+          1024
+        ],
+        "source_range": {
+          "full_scale_code": 65535,
+          "maximum_code": 64954,
+          "mean_code": 34347.156019210815,
+          "minimum_code": 138,
+          "normalized_maximum": 0.9911345082780194,
+          "normalized_minimum": 0.002105745021744106
+        },
+        "uint16_conversion": "none; source uint16 samples retained",
+        "unique_sample_count": 54039
+      },
+      "tile_metres": 2.4
+    },
+    "soil.png": {
+      "asset_id": "brown_mud_02",
+      "asset_name": "Brown Mud 02",
+      "asset_page": "https://polyhaven.com/a/brown_mud_02",
+      "author": "Rob Tuytel",
+      "authors": [
+        {
+          "name": "Rob Tuytel",
+          "role": "All"
+        }
+      ],
+      "bit_depth": 16,
+      "bundled_bytes": 113481,
+      "bundled_max": 64443,
+      "bundled_mean": 42291.05743408203,
+      "bundled_min": 3646,
+      "bundled_sha256": "0f228a2b65503c5756b679bfa0f8e8cd742ab836635f8f5ed6d134a93d8902db",
+      "channels": "grayscale uint16",
+      "processing": {
+        "area_mean_rounding_error_lsb": {
+          "comparison": "stored uint16 result versus exact 4x4 block mean",
+          "max_absolute": 0.5,
+          "mean_absolute": 0.2476959228515625
+        },
+        "box_factor": [
+          4,
+          4
+        ],
+        "max": 64443,
+        "mean": 42291.05743408203,
+        "min": 3646,
+        "resampling": "arithmetic 4x4 area mean, rounded half-up to uint16",
+        "size": [
+          256,
+          256
+        ],
+        "source_to_area_mean_error_lsb": {
+          "comparison": "source samples versus their exact 4x4 block mean",
+          "max_absolute": 18648.5625,
+          "mean_absolute": 567.8942450284958,
+          "rms": 881.9658555160829
+        }
+      },
+      "sample_encoding": "linear scalar; sample / 65535.0",
+      "size": [
+        256,
+        256
+      ],
+      "source": {
+        "api_bytes": 576580,
+        "api_files_endpoint": "https://api.polyhaven.com/files/brown_mud_02",
+        "api_info_endpoint": "https://api.polyhaven.com/info/brown_mud_02",
+        "api_md5": "fdec96574f0d5986320e99d0d63e592c",
+        "asset_files_hash": "6a62cb727f45d057bef755785ef55144c0523e23",
+        "asset_page": "https://polyhaven.com/a/brown_mud_02",
+        "author_display": "Rob Tuytel",
+        "authors": [
+          {
+            "name": "Rob Tuytel",
+            "role": "All"
+          }
+        ],
+        "cache_file": "brown_mud_02_disp_1k.png",
+        "source_dimensions_mm": [
+          1299.996018409729,
+          1299.996018409729
+        ],
+        "tile_metres": 1.3,
+        "upstream_bytes": 576580,
+        "upstream_sha256": "01e010e2d230f93ab4686b52d588bb74837f4e97d5dfae49f910225bfe57d7bb",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/1k/brown_mud_02/brown_mud_02_disp_1k.png"
+      },
+      "source_sample_info": {
+        "bit_depth": 8,
+        "color_type": "grayscale",
+        "converted_uint16_range": {
+          "maximum_code": 65535,
+          "mean_code": 42291.02722930908,
+          "minimum_code": 2056
+        },
+        "ignored_color_chunks": [
+          "gAMA",
+          "cHRM"
+        ],
+        "max": 65535,
+        "mean": 42291.02722930908,
+        "min": 2056,
+        "sample_mode": "linear scalar data; PNG color metadata ignored",
+        "size": [
+          1024,
+          1024
+        ],
+        "source_range": {
+          "full_scale_code": 255,
+          "maximum_code": 255,
+          "mean_code": 164.55652618408203,
+          "minimum_code": 8,
+          "normalized_maximum": 1.0,
+          "normalized_minimum": 0.03137254901960784
+        },
+        "uint16_conversion": "uint8 sample multiplied by 257; exact 0..255 to 0..65535 code-space mapping",
+        "unique_sample_count": 248
+      },
+      "tile_metres": 1.3
+    }
+  },
+  "preparation": {
+    "linear_data": true,
+    "normalization": "none; source numeric range is preserved",
+    "orientation": "source row/column order preserved; no flip",
+    "output_format": "single-channel grayscale uint16 PNG",
+    "output_resolution": [
+      256,
+      256
+    ],
+    "resampling": "4x4 arithmetic area mean, round-half-up to uint16",
+    "runtime_decode": "sample / 65535.0",
+    "source_8bit_mapping": "sample * 257; no precision is added",
+    "source_color_metadata": "ignored; output color metadata omitted",
+    "source_resolution": [
+      1024,
+      1024
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+LAB-02B-Q1 CPU regression record, 2026-10-19
+Recorded from the actual command output in this session, after the zero-layer sampling change and before final GPU measurements. No GPU measurements ran concurrently.
+
+F:/gymenv/python.exe -B -m unittest discover -s tests -p 'test_world_surroundings_*.py'
+Ran 79 tests in 4.765s
+OK
+Exit code: 0
+
+F:/gymenv/python.exe -B - (unittest.TestSuite, loader.discover for each pattern)
+Patterns: test_native_renderer.py, test_native_preparation.py, test_scene_snapshot.py, test_placement.py
+Ran 43 tests in 0.868s
+OK
+Exit code: 0
+
+Total: 122 tests passed. This is a scoped regression set, not all repository tests.
